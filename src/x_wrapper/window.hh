@@ -22,8 +22,9 @@ namespace x_wrapper
         operator Window() const { return val; }
         operator bool() const { return val != 0; }
 
-        inline int size() const { return 1; }
-        inline Atom type() const { return XA_WINDOW; }
+        inline int  length() const { return 1; }
+        inline Atom type()   const { return XA_WINDOW; }
+        inline int  size()   const { return 32; }
 
     private:
         Window val;

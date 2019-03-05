@@ -21,8 +21,9 @@ namespace x_wrapper
         operator ::std::string() const { return val; }
         operator bool() const { return !val.empty(); }
 
-        inline int size() const { return val.size(); }
-        inline Atom type() const { return get_atom("UTF8_STRING"); }
+        inline int  length() const { return val.size(); }
+        inline Atom type()   const { return get_atom("UTF8_STRING"); }
+        inline int  size()   const { return 8; }
 
     private:
         ::std::string val;

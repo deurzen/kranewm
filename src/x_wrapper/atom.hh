@@ -21,15 +21,26 @@ namespace x_wrapper
     public:
         static ::std::map<::std::string, Atom> g_interned_atoms;
 
+        atom_t() = default;
+
         atom_t(Atom atom)
             : val(atom)
+        {}
+
+        atom_t(const ::std::string& name)
+            : val(XInternAtom(g_dpy, name.c_str(), False))
+        {}
+
+        atom_t(const char* name)
+            : val(XInternAtom(g_dpy, name, False))
         {}
 
         operator Atom() const { return val; }
         operator bool() const { return val != 0; }
 
-        inline int size() const { return 1; }
-        inline Atom type() const { return XA_ATOM; }
+        inline int  length() const { return 1; }
+        inline Atom type()   const { return XA_ATOM; }
+        inline int  size()   const { return 32; }
 
     private:
         Atom val;

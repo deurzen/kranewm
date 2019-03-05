@@ -13,6 +13,7 @@ namespace x_wrapper
     class x_type
     {
     protected:
+        virtual int length() { return 0; }
         virtual Atom type() { return 0; }
         virtual int size() { return 0; }
     };
