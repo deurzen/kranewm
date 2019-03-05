@@ -1,5 +1,6 @@
 #include "atom.hh"
 
+
 ::std::map<::std::string, Atom> x_wrapper::atom_t::g_interned_atoms;
 
 x_wrapper::atom_t x_wrapper::get_atom(::std::string name) {

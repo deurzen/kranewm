@@ -18,5 +18,7 @@ using namespace x_wrapper;
 int
 main(int argc, char **argv)
 {
+    window_t win = create_window(true);
+    ::std::cout << win.get() << ::std::endl;
     return 0;
 }
