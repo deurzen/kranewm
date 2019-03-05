@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e
+XEPHYR=$(which Xephyr)
+xinit ./xinitrc -- "$XEPHYR" :100 -ac -screen 1080x720+277+24 -host-cursor
