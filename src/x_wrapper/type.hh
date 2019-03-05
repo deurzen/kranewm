@@ -3,6 +3,7 @@
 
 extern "C" {
 #include <X11/X.h>
+#include <X11/Xatom.h>
 }
 
 
@@ -12,8 +13,8 @@ namespace x_wrapper
     class x_type
     {
     protected:
-        virtual Atom type();
-        virtual int size();
+        virtual Atom type() { return 0; }
+        virtual int size() { return 0; }
     };
 
 }

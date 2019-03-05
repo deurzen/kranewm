@@ -11,14 +11,18 @@ namespace x_wrapper
     class display_t
     {
     public:
-        display_t() = default;
+        display_t(const char* dpy)
+            : dpy(XOpenDisplay(dpy))
+        {}
 
         operator Display*() const { return dpy; }
 
     private:
         Display* dpy;
 
-    } g_dpy;
+    };
+
+    extern display_t g_dpy;
 }
 
 #endif//__KRANEWM__X_WRAPPER__DISPLAY__GUARD__

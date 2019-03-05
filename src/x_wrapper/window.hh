@@ -15,7 +15,9 @@ namespace x_wrapper
     class window_t : protected x_type
     {
     public:
-        window_t() = default;
+        explicit window_t(Window win)
+            : val(win)
+        {}
 
         operator Window() const { return val; }
         operator bool() const { return val != 0; }

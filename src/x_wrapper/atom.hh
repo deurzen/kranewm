@@ -18,9 +18,9 @@ namespace x_wrapper
 {
     class atom_t : protected x_type
     {
-        friend atom_t get_atom(::std::string);
-
     public:
+        static ::std::map<::std::string, Atom> g_interned_atoms;
+
         atom_t(Atom atom)
             : val(atom)
         {}
@@ -34,17 +34,9 @@ namespace x_wrapper
     private:
         Atom val;
 
-        static ::std::map<::std::string, Atom> g_interned_atoms;
-
     };
 
-    atom_t get_atom(::std::string name) {
-        if (atom_t::g_interned_atoms.count(name) > 0)
-            return atom_t::g_interned_atoms[name];
-        Atom atom = XInternAtom(g_dpy, name.c_str(), False);
-        atom_t::g_interned_atoms[name] = atom;
-        return atom;
-    }
+    extern atom_t get_atom(::std::string name);
 }
 
 #endif//__KRANEWM__X_WRAPPER__ATOM__GUARD__

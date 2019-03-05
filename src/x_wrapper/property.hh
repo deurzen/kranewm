@@ -16,17 +16,18 @@ namespace x_wrapper
     public:
         explicit property_t(T t)
             : data(t),
-              atom(t.type()),
-              size(t.size()),
-              raw_data(t)
+              data_type(t.type()),
+              data_size(t.size())
         {}
 
+        inline int size() const { return data_size; }
+        inline Atom type() const { return data_type; }
 
     private:
         T data;
-        atom_t atom;
+        atom_t data_type;
         unsigned char* raw_data;
-        int size;
+        int data_size;
 
     };
 
