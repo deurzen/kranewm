@@ -9,6 +9,7 @@ extern "C" {
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+#include <X11/Xutil.h>
 }
 
 #include <vector>
@@ -22,6 +23,10 @@ namespace x_wrapper
     class window_t : public x_type
     {
     public:
+        window_t()
+            : val(None)
+        {}
+
         window_t(Window win)
             : val(win)
         {}
@@ -85,14 +90,68 @@ namespace x_wrapper
             return *this;
         }
 
-        void close();
-        void force_close();
+
+        window_t& set_border_color(unsigned long color)
+        {
+            XSetWindowBorder(g_dpy, val, color);
+            return *this;
+        }
+
+        window_t& set_background_color(unsigned long color)
+        {
+            XSetWindowBackground(g_dpy, val, color);
+            XClearWindow(g_dpy, val);
+            return *this;
+        }
+
+        ::std::string get_class()
+        {
+            ::std::string cls;
+            XClassHint* hint = XAllocClassHint();
+            XGetClassHint(g_dpy, val, hint);
+
+            if (hint->res_class) {
+                cls.assign(hint->res_class);
+                XFree(hint);
+            }
+
+            return cls;
+        }
+
+        ::std::string get_instance()
+        {
+            ::std::string inst;
+            XClassHint* hint = XAllocClassHint();
+            XGetClassHint(g_dpy, val, hint);
+
+            if (hint->res_name) {
+                inst.assign(hint->res_name);
+                XFree(hint);
+            }
+
+            return inst;
+        }
 
         void destroy()
         {
             XDestroyWindow(g_dpy, val);
         }
 
+        void grab()
+        {
+            XGrabButton(g_dpy, AnyButton, AnyModifier, val, True,
+                ButtonPressMask | ButtonReleaseMask,
+                GrabModeAsync, GrabModeAsync, None, None);
+        }
+
+        void ungrab()
+        {
+            XUngrabButton(g_dpy, AnyButton, AnyModifier, val);
+        }
+
+        ::std::string get_name();
+        void close();
+        void force_close();
 
     private:
         Window val;
@@ -104,6 +163,11 @@ namespace x_wrapper
 
     extern window_t create_window(bool do_not_manage);
     extern void get_top_level_windows(::std::vector<window_t>&);
+
+    extern window_t get_transient_for(window_t&);
+
+    extern window_t get_input_focus();
+    extern bool set_input_focus(window_t&);
 
 }
 

@@ -46,7 +46,8 @@ namespace x_wrapper
     };
 
 
-    extern void remove_property(Window, const ::std::string&);
+    extern void remove_property(window_t, const ::std::string&);
+    extern bool get_text_property(window_t, atom_t, char*, unsigned int);
 
     template <typename T>
     bool has_property(Window win, atom_t atom)

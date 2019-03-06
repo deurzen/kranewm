@@ -1,0 +1,59 @@
+#ifndef __KRANEWM__X_WRAPPER__HINTS__GUARD__
+#define __KRANEWM__X_WRAPPER__HINTS__GUARD__
+
+#include "display.hh"
+
+extern "C" {
+#include <X11/Xutil.h>
+}
+
+
+namespace x_wrapper
+{
+    class wmhints_t
+    {
+    public:
+        wmhints_t() = default;
+
+        wmhints_t(XWMHints wmhints)
+            : val(wmhints)
+        {}
+
+        operator XWMHints() const { return val; }
+
+        inline XWMHints get() const { return val; }
+        inline XWMHints* get_ptr() { return &val; }
+
+    private:
+        XWMHints val;
+
+    };
+
+    class sizehints_t
+    {
+    public:
+        sizehints_t() = default;
+
+        sizehints_t(XSizeHints sizehints)
+            : val(sizehints)
+        {}
+
+        operator XSizeHints() const { return val; }
+
+        inline XSizeHints get() const { return val; }
+        inline XSizeHints* get_ptr() { return &val; }
+
+    private:
+        XSizeHints val;
+
+    };
+
+    class window_t;
+
+    extern wmhints_t get_wmhints(window_t&);
+    extern void set_wmhints(wmhints_t&, window_t&);
+
+    extern sizehints_t get_sizehints(window_t&);
+}
+
+#endif//__KRANEWM__X_WRAPPER__HINTS__GUARD__

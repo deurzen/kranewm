@@ -1,6 +1,6 @@
 #include "atom.hh"
 #include "attributes.hh"
-#include "button.hh"
+#include "mouse.hh"
 #include "cardinal.hh"
 #include "display.hh"
 #include "event.hh"

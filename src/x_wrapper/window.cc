@@ -1,6 +1,9 @@
 #include "window.hh"
 #include "event.hh"
 #include "error.hh"
+#include "property.hh"
+
+#include <cstring>
 
 using namespace x_wrapper;
 
@@ -38,12 +41,40 @@ x_wrapper::get_top_level_windows(::std::vector<window_t>& wins)
         XFree(children);
 }
 
+window_t
+x_wrapper::get_transient_for(window_t& trans)
+{
+    Window win = None;
+    XGetTransientForHint(g_dpy, trans.get(), &win);
+    return win;
+}
+
+window_t
+x_wrapper::get_input_focus()
+{
+    Window focused;
+    int _i;
+    XGetInputFocus(g_dpy, &focused, &_i);
+    return focused;
+}
+
+bool
+x_wrapper::set_input_focus(window_t& win)
+{
+    if (win.get() == None)
+        win = g_root;
+
+    XSetInputFocus(g_dpy, win.get(), RevertToNone, CurrentTime);
+    return get_input_focus().get() == win.get();
+}
+
 
 void
 x_wrapper::window_t::close()
 {
     event_t event = create_event(val, get_atom("WM_PROTOCOLS").get(),
         get_atom("WM_DELETE_WINDOW").get());
+    event.send(NoEventMask);
 }
 
 void
@@ -70,4 +101,19 @@ x_wrapper::window_t::force_close()
         XSetErrorHandler(g_xerror);
         XUngrabServer(g_dpy);
     }
+}
+
+::std::string
+x_wrapper::window_t::get_name()
+{
+    ::std::string name;
+    char name_arr[512];
+    if (!get_text_property(val, get_atom("_NET_WM_NAME"), name_arr, sizeof name_arr))
+        get_text_property(val, XA_WM_NAME, name_arr, sizeof name_arr);
+
+    if (name_arr[0] == '\0')
+        strcpy(name_arr, "No name");
+
+    name.assign(name_arr);
+    return name;
 }
