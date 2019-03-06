@@ -38,3 +38,9 @@ x_wrapper::g_xerroroff(Display* dpy, XErrorEvent* error)
 {
     return 0;
 }
+
+XErrorHandler
+x_wrapper::set_error_handler(int (*handler)(Display*, XErrorEvent*))
+{
+    return XSetErrorHandler(handler);
+}

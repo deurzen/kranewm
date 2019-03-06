@@ -8,9 +8,12 @@ extern "C" {
 }
 
 
-namespace x_wrapper {
+namespace x_wrapper
+{
     extern int g_xerror(Display*, XErrorEvent*);
     extern int g_xerroroff(Display*, XErrorEvent*);
+
+    extern XErrorHandler set_error_handler(int (*)(Display*, XErrorEvent*));
 }
 
 #endif//__KRANEWM__X_WRAPPER__ERROR__GUARD__
