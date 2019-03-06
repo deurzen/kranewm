@@ -1,6 +1,7 @@
 #ifndef __KRANEWM__X_WRAPPER__ATOM__GUARD__
 #define __KRANEWM__X_WRAPPER__ATOM__GUARD__
 
+#include "common.hh"
 #include "type.hh"
 #include "display.hh"
 
@@ -16,7 +17,7 @@ extern "C" {
 
 namespace x_wrapper
 {
-    class atom_t : protected x_type
+    class atom_t : public x_type
     {
     public:
         static ::std::map<::std::string, Atom> g_interned_atoms;
@@ -35,12 +36,19 @@ namespace x_wrapper
             : val(XInternAtom(g_dpy, name, False))
         {}
 
+        explicit atom_t(void* raw_data)
+            : val(*(Atom*)raw_data)
+        {}
+
         operator Atom() const { return val; }
         operator bool() const { return val != 0; }
 
         inline int  length() const { return 1; }
         inline Atom type()   const { return XA_ATOM; }
         inline int  size()   const { return 32; }
+
+        inline Atom get() const { return val; }
+        inline const Atom* get_ptr() const { return &val; }
 
     private:
         Atom val;

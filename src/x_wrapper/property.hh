@@ -1,6 +1,7 @@
 #ifndef __KRANEWM__X_WRAPPER__PROPERTY__GUARD__
 #define __KRANEWM__X_WRAPPER__PROPERTY__GUARD__
 
+#include "common.hh"
 #include "type.hh"
 #include "atom.hh"
 #include "window.hh"
@@ -11,7 +12,7 @@
 namespace x_wrapper
 {
     template <class T>
-    class property_t : protected x_type
+    class property_t : public x_type
     {
     public:
         property_t(const ::std::string& name, T t = T())
@@ -28,10 +29,12 @@ namespace x_wrapper
         inline Atom type()   const { return data_type; }
         inline int  size()   const { return type_size; }
 
-        inline Atom get_id() const { return id; }
-        inline T get_data() const { return data; }
+        inline Atom get_id()   const { return id; }
+        inline T    get_data() const { return data; }
 
-        inline void set_data(T* data_ptr) { data = *data_ptr; }
+        inline void set_data(void* data_ptr) {
+            data = T(data_ptr);
+        }
 
     private:
         Atom id;
@@ -42,6 +45,8 @@ namespace x_wrapper
 
     };
 
+
+    extern void remove_property(Window, const ::std::string&);
 
     template <typename T>
     bool has_property(Window win, atom_t atom)
@@ -69,37 +74,35 @@ namespace x_wrapper
         unsigned long _ul;
         unsigned char* ucp = nullptr;
         Atom _a = None;
-        T data();
+        T data = T();
         property_t<T> prop(name, data);
 
         if (XGetWindowProperty(g_dpy, win, prop.get_id(),
             0L, prop.size(), False, prop.type(),
             &_a, &_i, &_ul, &_ul, &ucp) == Success && ucp) {
-            prop.set_data((T*)ucp);
+            prop.set_data(ucp);
             XFree(ucp);
         }
+        return prop;
     }
 
     template <typename T>
     void replace_property(window_t win, property_t<T> prop)
     {
-        T data = prop.get_data();
         XChangeProperty(g_dpy, win, prop.get_id(), prop.type(), prop.size(),
-            PropModeReplace, (unsigned char*) &data, prop.length());
+            PropModeReplace, (unsigned char*) prop.get_data().get_ptr(), prop.length());
     }
 
     template <typename T>
     void append_property(window_t win, property_t<T> prop)
     {
-        T data = prop.get_data();
         XChangeProperty(g_dpy, win, prop.get_id(), prop.type(), prop.size(),
-            PropModeAppend, (unsigned char*) &data, prop.length());
+            PropModeAppend, (unsigned char*) prop.get_data().get_ptr(), prop.length());
     }
 
     template <typename T>
     void unset_property(window_t win, property_t<T> prop)
     {
-        T data = prop.get_data();
         XChangeProperty(g_dpy, win, prop.get_id(), prop.type(), prop.size(),
             PropModeReplace, (unsigned char*) 0, 0);
     }

@@ -9,15 +9,13 @@ extern "C" {
 
 namespace x_wrapper
 {
-
     class x_type
     {
     protected:
-        virtual int length() { return 0; }
-        virtual Atom type() { return 0; }
-        virtual int size() { return 0; }
+        virtual int  length() { return 0; }
+        virtual Atom type()   { return 0; }
+        virtual int  size()   { return 0; }
     };
-
 }
 
 #endif//__KRANEWM__X_WRAPPER__TYPE__GUARD__
