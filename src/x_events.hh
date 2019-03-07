@@ -182,7 +182,7 @@ public:
     void register_window(x_wrapper::window_t);
 
 private:
-    void apply_rule(x_wrapper::window_t, unsigned&, bool&, bool&, bool&, bool&);
+    Rule apply_rule(x_wrapper::window_t);
 
     void on_button_press();
     void on_button_release();

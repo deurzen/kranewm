@@ -49,18 +49,16 @@ struct SizeConstraints
 };
 
 
-typedef class client_t* client_ptr_t;
-typedef class ::std::set<client_ptr_t> client_ptr_set_t;
-typedef class client_t
+typedef struct client_t* client_ptr_t;
+typedef struct ::std::set<client_ptr_t> client_ptr_set_t;
+typedef struct client_t
 {
-public:
     client_t(x_wrapper::window_t _win, x_wrapper::window_t _frame)
         : win(_win), frame(_frame), effect(NO_EFFECT),
           floating(false), fullscreen(false), shaded(false),
           iconified(false), urgent(false), parent(nullptr)
     {}
 
-private:
     x_wrapper::window_t win;
     x_wrapper::window_t frame;
     x_wrapper::window_t mr_indicator;

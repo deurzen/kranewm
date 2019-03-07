@@ -11,15 +11,15 @@ enum AutocloseMethod {
     PERSIST
 };
 
-struct Rule
+struct RuleSpec
 {
-    Rule(bool _floating, bool _center, bool _iconify,
+    RuleSpec(bool _floating, bool _center, bool _iconify,
         AutocloseMethod _autoclose, unsigned _workspace)
-      : floating(_floating),
-        center(_center),
-        iconify(_iconify),
-        autoclose(_autoclose),
-        workspace(_workspace)
+        : floating(_floating),
+          center(_center),
+          iconify(_iconify),
+          autoclose(_autoclose),
+          workspace(_workspace)
     {}
 
     bool floating;
@@ -29,8 +29,26 @@ struct Rule
     unsigned workspace;
 };
 
+struct Rule
+{
+    Rule(bool _floating, bool _center, bool _iconify,
+        bool _autoclose, unsigned _workspace)
+        : floating(_floating),
+          center(_center),
+          iconify(_iconify),
+          autoclose(_autoclose),
+          workspace(_workspace)
+    {}
+
+    bool floating;
+    bool center;
+    bool iconify;
+    bool autoclose;
+    unsigned workspace;
+};
+
 inline bool
-operator<(const Rule& r1, const Rule& r2)
+operator<(const RuleSpec& r1, const RuleSpec& r2)
 {
     return (r1.autoclose + r1.center + r1.floating + r1.iconify + r1.workspace)
         == (r2.autoclose + r2.center + r2.floating + r2.iconify + r2.workspace);
@@ -61,6 +79,7 @@ struct CompareRule {
     }
 };
 
-typedef ::std::map<RuleId, Rule, CompareRule> Rules;
+typedef ::std::map<RuleId, RuleSpec, CompareRule> Rules;
+
 
 #endif//__KRANEWM__X_EVENTS__GUARD__

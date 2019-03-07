@@ -66,7 +66,9 @@ enum KeyOperation
 struct KeyShortcut
 {
     KeyShortcut(KeySym _keysym, unsigned _mask)
-      : keysym(_keysym), mask(_mask) {}
+        : keysym(_keysym),
+          mask(_mask)
+    {}
 
     KeySym keysym;
     unsigned mask;
