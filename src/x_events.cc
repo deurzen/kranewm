@@ -1,4 +1,6 @@
 #include "x_events.hh"
+#include "ewmh.hh"
+#include "client_model.hh"
 
 bool
 x_events::step()
@@ -33,92 +35,83 @@ x_events::register_window(x_wrapper::window_t win)
 
 }
 
-/* void */
-/* x_events::apply_rule(Window win, unsigned& workspace, bool& floating, */
-/*     bool& center, bool& iconify, bool& autoclose) */
-/* { */
-/*     floating  = false; */
-/*     center    = false; */
-/*     autoclose = false; */
+Rule
+x_events::retrieve_rule(x_wrapper::window_t win)
+{
+    bool floating  = false;
+    bool center    = false;
+    bool iconify   = false;
+    bool autoclose = false;
+    unsigned workspace = 0;
 
-/*     ::std::string cls, inst, title; */
-/*     xh_.get_class(win, cls); */
-/*     xh_.get_instance(win, inst); */
-/*     xh_.get_window_name(win, title); */
+    ::std::string cls = win.get_class();
+    ::std::string inst = win.get_instance();
+    ::std::string title = win.get_name();
 
-/*     for (auto&& [rule_id,rule] : rules_) { */
-/*         const ::std::string& rule_cls   = ::std::get<0>(rule_id); */
-/*         const ::std::string& rule_inst  = ::std::get<1>(rule_id); */
-/*         const ::std::string& rule_title = ::std::get<2>(rule_id); */
+    for (auto&& [rule_id,rule] : m_rules) {
+        const ::std::string& rule_cls   = ::std::get<0>(rule_id);
+        const ::std::string& rule_inst  = ::std::get<1>(rule_id);
+        const ::std::string& rule_title = ::std::get<2>(rule_id);
 
-/*         bool same_cls, same_inst, same_title; */
-/*         same_cls   = !rule_cls.compare(cls)     || rule_cls.empty(); */
-/*         same_inst  = !rule_inst.compare(inst)   || rule_inst.empty(); */
-/*         same_title = !rule_title.compare(title) || rule_title.empty(); */
+        bool same_cls, same_inst, same_title;
+        same_cls   = !rule_cls.compare(cls)     || rule_cls.empty();
+        same_inst  = !rule_inst.compare(inst)   || rule_inst.empty();
+        same_title = !rule_title.compare(title) || rule_title.empty();
 
-/*         if (same_cls && same_inst && same_title) { */
-/*             if (rule.workspace != 0) */
-/*                 workspace = rule.workspace; */
-/*             floating = rule.floating; */
-/*             center   = rule.center; */
-/*             iconify  = rule.iconify; */
-/*             if (rule.autoclose != OFF) { */
-/*                 autoclose = true; */
-/*                 if (rule.autoclose == ONCE) */
-/*                     rule.autoclose = OFF; */
-/*             } */
-/*             return; */
-/*         } */
-/*     } */
-/* } */
+        if (same_cls && same_inst && same_title) {
+            if (rule.workspace != 0)
+                workspace = rule.workspace;
+            floating = rule.floating;
+            center   = rule.center;
+            iconify  = rule.iconify;
+            if (rule.autoclose != OFF) {
+                autoclose = true;
+                if (rule.autoclose == ONCE)
+                    rule.autoclose = OFF;
+            }
+            return {floating, center, iconify, autoclose, workspace};
+        }
+    }
 
-/* void */
-/* x_events::on_button_press() */
-/* { */
-/*     Window win = m_current_event.xbutton.window; */
+    return {false, false ,false, false, 0};
+}
 
-/*     if ((m_current_event.xbutton.state & MODMASK)) { */
-/*         switch (m_current_event.xbutton.button) { */
-/*         case SCROLL_UP_BUTTON:   cm_.goto_next_workspace(); return; */
-/*         case SCROLL_DOWN_BUTTON: cm_.goto_prev_workspace(); return; */
-/*         default: break; */
-/*         } */
-/*     } */
+void
+x_events::on_button_press()
+{
+    x_wrapper::window_t win = m_current_event.get().xbutton.window;
+    x_wrapper::window_t subwin = m_current_event.get().xbutton.subwindow;
+    unsigned button = m_current_event.get().xbutton.button;
+    unsigned mask = m_current_event.get().xbutton.state;
 
-/*     if (xh_.is_root(win)) { */
-/*         if (m_current_event.xbutton.subwindow == None) { */
-/*             switch (m_current_event.xbutton.button) { */
-/*             case FORWARD_BUTTON:  cm_.goto_next_workspace(); return; */
-/*             case BACKWARD_BUTTON: cm_.goto_prev_workspace(); return; */
-/*             default: break; */
-/*             } */
-/*         } else */
-/*             win = m_current_event.xbutton.subwindow; */
-/*     } */
+    if (win.get() == x_wrapper::g_root.get()) {
+        if (subwin.get() == None) {
+            if (m_mousebinds.count({button, mask, false})) {
+                switch (m_mousebinds[{button, mask, false}]) {
+                case GOTO_NEXT_WS:        break;
+                case GOTO_PREV_WS:        break;
+                default: break;
+                }
+            }
+        } else
+            win = subwin;
+    }
 
-/*     if (cm_.is_icon(win)) { */
-/*         Client_ptr iconified_client = cm_.get_iconified_client(win); */
-/*         cm_.toggle_iconify(iconified_client); */
-/*         return; */
-/*     } */
-
-/*     Client_ptr client = cm_.get_client(win); */
-/*     if (!client) */
-/*         return; */
-
-/*     cm_.focus(client); */
-
-/*     if ((m_current_event.xbutton.state & MODMASK)) { */
-/*         switch (m_current_event.xbutton.button) { */
-/*         case MOVE_BUTTON:     cm_.start_moving(client);             break; */
-/*         case RESIZE_BUTTON:   cm_.start_resizing(client);           break; */
-/*         case CENTER_BUTTON:   cm_.center_client(client);            break; */
-/*         case FORWARD_BUTTON:  cm_.client_to_next_workspace(client); break; */
-/*         case BACKWARD_BUTTON: cm_.client_to_prev_workspace(client); break; */
-/*         default: break; */
-/*         } */
-/*     } */
-/* } */
+    client_ptr_t client = m_clients.win_to_client(win);
+    if (client) {
+        m_clients.focus(client);
+        if (m_mousebinds.count({button, mask, true}))
+            switch (m_mousebinds[{button, mask, true}]) {
+            case CLIENT_MOVE:         break;
+            case CLIENT_RESIZE:       break;
+            case CLIENT_CENTER:       break;
+            case CLIENT_NEXT_WS:      break;
+            case CLIENT_PREV_WS:      break;
+            default: break;
+            }
+        return;
+    }
+}
 
 /* void */
 /* x_events::on_button_release() */

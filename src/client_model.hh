@@ -24,6 +24,10 @@ public:
                 m_user_workspaces.push_back(new user_workspace_t{nr, name.c_str()});
         }
 
+    client_ptr_t win_to_client(x_wrapper::window_t);
+
+    void focus(client_ptr_t);
+
 private:
     user_workspace_ptr_t m_current_workspace;
 

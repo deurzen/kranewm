@@ -5,7 +5,7 @@
 
 #include <map>
 
-// TODO group
+
 enum MouseOperation
 {
     MOUSE_NOOP = 0,
@@ -20,13 +20,13 @@ enum MouseOperation
 
 struct MouseShortcut
 {
-    MouseShortcut(int _button , unsigned _mask, bool _on_client)
+    MouseShortcut(unsigned _button , unsigned _mask, bool _on_client)
         : button(_button),
           mask(_mask),
           on_client(_on_client)
     {}
 
-    int button;
+    unsigned button;
     unsigned mask;
     bool on_client;
 };

@@ -14,12 +14,14 @@
 
 // Forward decls
 class ewmh;
+class client_model;
 
 class x_events
 {
 public:
-    explicit x_events(ewmh& ewmh)
+    explicit x_events(ewmh& ewmh, client_model& clients)
         : m_ewmh(ewmh),
+          m_clients(clients),
           m_running(true),
           m_rules({
               //  class            inst             title      float center icon close  workspace
@@ -184,7 +186,7 @@ public:
     void register_window(x_wrapper::window_t);
 
 private:
-    Rule apply_rule(x_wrapper::window_t);
+    Rule retrieve_rule(x_wrapper::window_t);
 
     void on_button_press();
     void on_button_release();
@@ -205,6 +207,7 @@ private:
     void fork_external(::std::string&&);
 
     ewmh& m_ewmh;
+    client_model& m_clients;
     bool m_running;
     x_wrapper::event_t m_current_event;
     Rules m_rules;

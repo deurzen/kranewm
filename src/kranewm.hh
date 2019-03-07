@@ -5,6 +5,8 @@
 #include "x_wrapper/error.hh"
 
 #include "ewmh.hh"
+#include "client_model.hh"
+#include "x_events.hh"
 
 #include <memory>
 
@@ -12,7 +14,9 @@
 class Kranewm
 {
 public:
-    Kranewm() = default;
+    Kranewm()
+        : m_events(m_ewmh, m_clients)
+    {}
 
     void setup();
     void run();
@@ -27,6 +31,8 @@ private:
     void check_otherwm();
 
     ewmh m_ewmh;
+    client_model m_clients;
+    x_events m_events;
 
 };
 
