@@ -20,11 +20,6 @@ debug_parallel: build
 	@echo generating tags
 	@ctags -R --exclude=.git --c++-kinds=+p --fields=+iaS --extras=+q .
 
-# TODO
-# debug: TARGET = $(BIN)
-# debug: CXXFLAGS += $(DEBUG_FLAGS)
-# debug: build run tags
-
 install:
 	install $(RELEASE) /usr/$(BIN)
 
@@ -36,6 +31,7 @@ bin:
 
 obj:
 	@[ -d obj ] || mkdir obj
+	@[ -d obj/x_wrapper ] || mkdir obj/x_wrapper
 
 notify-build:
 	@echo building
@@ -50,7 +46,11 @@ build: notify-build release bin obj ${OBJ_FILES} notify-link
 -include $(DEPS)
 
 obj/%.o: obj
+
 obj/%.o: src/%.cc
+	${CC} ${CXXFLAGS} -MMD -c $< -o $@
+
+obj/%.o: src/x_wrapper/%.cc
 	${CC} ${CXXFLAGS} -MMD -c $< -o $@
 
 run:

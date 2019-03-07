@@ -39,3 +39,12 @@ x_wrapper::get_text_property(window_t win, atom_t atom, char* text, unsigned int
     XFree(name.value);
     return true;
 }
+
+
+void
+x_wrapper::set_text_property(window_t win, property_t<string_list_t> prop)
+{
+    XTextProperty textprop = prop.get_data().get();
+    XSetTextProperty(g_dpy, g_root, &textprop, prop.get_id());
+    XFree(textprop.value);
+}

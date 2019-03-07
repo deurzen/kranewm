@@ -31,12 +31,22 @@ namespace x_wrapper
             : val(win)
         {}
 
-        explicit window_t(void* raw_data)
+        explicit window_t(void* raw_data, unsigned long _)
             : val(*(Window*)raw_data)
         {}
 
         operator Window() const { return val; }
         operator bool()   const { return val != 0; }
+
+        inline bool operator==(const window_t& win) const
+        {
+            return win.val == val;
+        }
+
+        inline bool operator==(const Window& win) const
+        {
+            return win == val;
+        }
 
         inline int  length() const { return 1; }
         inline Atom type()   const { return XA_WINDOW; }

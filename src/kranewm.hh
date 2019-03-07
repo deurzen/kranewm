@@ -4,6 +4,8 @@
 #include "x_wrapper/display.hh"
 #include "x_wrapper/error.hh"
 
+#include "ewmh.hh"
+
 #include <memory>
 
 
@@ -23,6 +25,8 @@ private:
     static int (*m_xerrorxlib)(Display*, XErrorEvent*);
 
     void check_otherwm();
+
+    EWMH m_ewmh;
 
 };
 

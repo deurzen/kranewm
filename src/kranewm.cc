@@ -1,6 +1,7 @@
 #include "kranewm.hh"
 #include "x_wrapper/input.hh"
 #include "x_wrapper/event.hh"
+#include "x_wrapper/attributes.hh"
 #include "common.hh"
 #include "util.hh"
 
@@ -28,13 +29,26 @@ Kranewm::setup()
     x_wrapper::select_input(x_wrapper::g_root, ButtonPressMask | PointerMotionMask
         | StructureNotifyMask | SubstructureNotifyMask | SubstructureRedirectMask);
 
+    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+
+    auto root_draw_win = x_wrapper::create_window(true);
+    root_draw_win.resize({SIDEBAR_WIDTH, root_attrs.get().height}).move({0, 0});
+    m_ewmh.set_strut_property(root_draw_win, SIDEBAR_WIDTH, 0, 0, 0);
+    root_draw_win.set_background_color(REG_ROOT_BG_COLOR);
+    root_draw_win.map();
+
+    m_ewmh.set_wm_name_property(x_wrapper::g_root, WMNAME);
+    m_ewmh.set_wm_name_property(root_draw_win, WMNAME);
+
+    m_ewmh.set_supporting_wm_check_property(x_wrapper::g_root, root_draw_win);
+    m_ewmh.set_supporting_wm_check_property(root_draw_win, root_draw_win);
 
 }
 
 void
 Kranewm::run()
 {
-
+    while(true);
 }
 
 void

@@ -25,6 +25,14 @@ namespace x_wrapper
 
         operator T() { return data; }
 
+        inline bool operator==(const property_t& prop) const
+        {
+            if (prop.id != id)
+                return false;
+
+            return data == prop.data;
+        }
+
         inline int  length() const { return data_length; }
         inline Atom type()   const { return data_type; }
         inline int  size()   const { return type_size; }
@@ -32,8 +40,8 @@ namespace x_wrapper
         inline Atom get_id()   const { return id; }
         inline T    get_data() const { return data; }
 
-        inline void set_data(void* data_ptr) {
-            data = T(data_ptr);
+        inline void set_data(void* data_ptr, unsigned long len) {
+            data = T(data_ptr, len);
         }
 
     private:
@@ -48,6 +56,7 @@ namespace x_wrapper
 
     extern void remove_property(window_t, const ::std::string&);
     extern bool get_text_property(window_t, atom_t, char*, unsigned int);
+    extern void set_text_property(window_t, property_t<string_list_t>);
 
     template <typename T>
     bool has_property(Window win, atom_t atom)
@@ -72,6 +81,7 @@ namespace x_wrapper
     property_t<T> get_property(Window win, const ::std::string& name)
     {
         int _i;
+        unsigned long n;
         unsigned long _ul;
         unsigned char* ucp = nullptr;
         Atom _a = None;
@@ -80,10 +90,11 @@ namespace x_wrapper
 
         if (XGetWindowProperty(g_dpy, win, prop.get_id(),
             0L, prop.size(), False, prop.type(),
-            &_a, &_i, &_ul, &_ul, &ucp) == Success && ucp) {
-            prop.set_data(ucp);
+            &_a, &_i, &n, &_ul, &ucp) == Success && ucp) {
+            prop.set_data(ucp, n);
             XFree(ucp);
         }
+
         return prop;
     }
 

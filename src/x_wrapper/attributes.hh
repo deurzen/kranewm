@@ -16,6 +16,8 @@ namespace x_wrapper
 
         operator XWindowAttributes() const { return val; }
 
+        inline XWindowAttributes get() const { return val; }
+
     private:
         XWindowAttributes val;
 

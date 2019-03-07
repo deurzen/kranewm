@@ -11,7 +11,9 @@ extern "C" {
 #include <X11/Xatom.h>
 }
 
+#include <vector>
 #include <string>
+#include <cstring>
 #include <map>
 
 
@@ -36,12 +38,22 @@ namespace x_wrapper
             : val(XInternAtom(g_dpy, name, False))
         {}
 
-        explicit atom_t(void* raw_data)
+        explicit atom_t(void* raw_data, unsigned long _)
             : val(*(Atom*)raw_data)
         {}
 
         operator Atom() const { return val; }
         operator bool() const { return val != 0; }
+
+        inline bool operator==(const atom_t& atom) const
+        {
+            return atom.val == val;
+        }
+
+        inline bool operator==(const Atom& atom) const
+        {
+            return atom == val;
+        }
 
         inline int  length() const { return 1; }
         inline Atom type()   const { return XA_ATOM; }
@@ -52,6 +64,53 @@ namespace x_wrapper
 
     private:
         Atom val;
+
+    };
+
+    class atom_list_t : public x_type
+    {
+    public:
+        atom_list_t() = default;
+
+        atom_list_t(Atom* atom_list, size_t list_length)
+            : len(list_length)
+        {
+            ::std::memcpy(val, atom_list, list_length);
+        }
+
+        explicit atom_list_t(void* raw_data, unsigned long data_len)
+            : len(data_len)
+        {
+            ::std::memcpy(val, (Atom*)raw_data, data_len);
+        }
+
+        operator ::std::vector<Atom>() const { return ::std::vector<Atom>(val, val + len); }
+        operator Atom*() const { return val; }
+        operator bool() const { return val != nullptr; }
+
+        inline bool operator==(const atom_list_t& atom_list) const
+        {
+            if (atom_list.len != len)
+                return false;
+
+            bool different = false;
+            for (size_t i = 0; i < len; ++i)
+                if (val[i] != atom_list.val[i])
+                    different = true;
+
+            return !different;
+        }
+
+        inline int  length() const { return len; }
+        inline Atom type()   const { return XA_ATOM; }
+        inline int  size()   const { return 32; }
+
+        inline Atom* get() const { return val; }
+        inline Atom* get_ptr() const { return val; }
+
+    private:
+        Atom* val;
+        size_t len;
 
     };
 
