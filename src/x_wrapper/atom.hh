@@ -78,9 +78,10 @@ namespace x_wrapper
             ::std::memcpy(val, atom_list, list_length);
         }
 
-        explicit atom_list_t(void* raw_data, unsigned long data_len)
+        atom_list_t(void* raw_data, unsigned long data_len)
             : len(data_len)
         {
+
             ::std::memcpy(val, (Atom*)raw_data, data_len);
         }
 
