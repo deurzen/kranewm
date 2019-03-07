@@ -9,11 +9,11 @@ extern "C" {
 #include <X11/X.h>
 }
 
-const int MOVE_BUTTON        = 1;
-const int RESIZE_BUTTON      = 3;
+const int LEFT_BUTTON        = 1;
+const int RIGHT_BUTTON       = 3;
 const int SCROLL_UP_BUTTON   = 4;
 const int SCROLL_DOWN_BUTTON = 5;
-const int CENTER_BUTTON      = 2;
+const int MIDDLE_BUTTON      = 2;
 const int BACKWARD_BUTTON    = 8;
 const int FORWARD_BUTTON     = 9;
 #ifndef DEBUG

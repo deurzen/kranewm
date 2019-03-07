@@ -5,8 +5,8 @@
 #include "ewmh.hh"
 #include "rule.hh"
 #include "keybind.hh"
+#include "mousebind.hh"
 #include "x_wrapper/event.hh"
-#include "x_wrapper/mouse.hh"
 
 #define ALL ""
 #define YES true
@@ -30,7 +30,7 @@ public:
               { { "URxvt",         ALL,             ALL },   {  NO,  YES,   NO,   OFF,  CURRENT } },
           }),
           m_keybinds({
-              //  keysym           mask                   command
+              //  keysym           mask                   operation
               { { 0x1008ff13,      0 },                   VOLUMEUP                     },
               { { 0x1008ff11,      0 },                   VOLUMEDOWN                   },
               { { 0x1008ff12,      0 },                   VOLUMEMUTE                   },
@@ -157,25 +157,29 @@ public:
               { { XK_i,            MODMASK|ShiftMask|ControlMask }, FLOAT_SHRINK_UP    },
               { { XK_o,            MODMASK|ShiftMask|ControlMask }, FLOAT_SHRINK_RIGHT },
               { { XK_q,            MODMASK|ShiftMask|ControlMask }, QUIT               },
+          }),
+          m_mousebinds({
+              //  keysym              mask     client  operation
+              { { SCROLL_UP_BUTTON,   MODMASK,  NO },  GOTO_NEXT_WS   },
+              { { SCROLL_DOWN_BUTTON, MODMASK,  NO },  GOTO_PREV_WS   },
+              { { FORWARD_BUTTON,     MODMASK,  NO },  GOTO_NEXT_WS   },
+              { { BACKWARD_BUTTON,    MODMASK,  NO },  GOTO_PREV_WS   },
+              { { LEFT_BUTTON,        MODMASK, YES },  CLIENT_MOVE    },
+              { { RIGHT_BUTTON,       MODMASK, YES },  CLIENT_RESIZE  },
+              { { MIDDLE_BUTTON,      MODMASK, YES },  CLIENT_CENTER  },
+              { { FORWARD_BUTTON,     MODMASK, YES },  CLIENT_NEXT_WS },
+              { { BACKWARD_BUTTON,    MODMASK, YES },  CLIENT_PREV_WS },
           })
     {
-        x_wrapper::grab_button(MOVE_BUTTON, MODMASK);
-        x_wrapper::grab_button(RESIZE_BUTTON, MODMASK);
-        x_wrapper::grab_button(CENTER_BUTTON, MODMASK);
-        x_wrapper::grab_button(SCROLL_UP_BUTTON, MODMASK);
-        x_wrapper::grab_button(SCROLL_DOWN_BUTTON, MODMASK);
-        x_wrapper::grab_button(FORWARD_BUTTON, MODMASK);
-        x_wrapper::grab_button(BACKWARD_BUTTON, MODMASK);
-
         for (auto&& [shortcut,_] : m_keybinds)
             x_wrapper::grab_key(shortcut.keysym, shortcut.mask);
 
-        x_wrapper::grab_keycode(97, MODMASK);
+        for (auto&& [shortcut,_] : m_mousebinds)
+            x_wrapper::grab_button(shortcut.button, shortcut.mask);
     }
 
     bool step();
     void register_window(x_wrapper::window_t);
-
 
 private:
     void apply_rule(x_wrapper::window_t, unsigned&, bool&, bool&, bool&, bool&);
@@ -203,9 +207,9 @@ private:
     x_wrapper::event_t m_current_event;
     Rules m_rules;
     KeyBinds m_keybinds;
+    MouseBinds m_mousebinds;
 
 };
-
 
 #undef ALL
 #undef YES

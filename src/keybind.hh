@@ -5,10 +5,10 @@
 
 #include <map>
 
-
-enum Operation
+// TODO group
+enum KeyOperation
 {
-    NOOP = 0,
+    KEY_NOOP = 0,
     QUIT, ZOOM, TOGGLE_FLOAT, TOGGLE_FULLSCREEN,
     TOGGLE_SHADE, CENTER_CLIENT,
     TOGGLE_ICONIFY, POP_ICONIFIED,
@@ -63,25 +63,23 @@ enum Operation
     CLIENT_TO_SCRATCHPAD_2
 };
 
-struct Shortcut
+struct KeyShortcut
 {
-    Shortcut(KeySym _keysym, unsigned _mask)
-      : keysym(_keysym),
-        mask(_mask)
-    {}
+    KeyShortcut(KeySym _keysym, unsigned _mask)
+      : keysym(_keysym), mask(_mask) {}
 
     KeySym keysym;
     unsigned mask;
 };
 
 inline bool
-operator<(const Shortcut& sc1, const Shortcut& sc2)
+operator<(const KeyShortcut& ks1, const KeyShortcut& ks2)
 {
-    auto cmp1 = sc1.keysym + 1973 * sc1.mask;
-    auto cmp2 = sc2.keysym + 1973 * sc2.mask;
+    auto cmp1 = ks1.keysym + 10000 * ks1.mask;
+    auto cmp2 = ks2.keysym + 10000 * ks2.mask;
     return cmp1 < cmp2;
 }
 
-typedef ::std::map<Shortcut, Operation> KeyBinds;
+typedef ::std::map<KeyShortcut, KeyOperation> KeyBinds;
 
-#endif//__KRANEWM__X_EVENTS__GUARD__
+#endif//__KRANEWM__KEYBIND__GUARD__
