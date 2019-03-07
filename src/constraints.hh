@@ -1,5 +1,5 @@
-#ifndef __KRANEWM_CLIENT_MODEL_GUARD__
-#define __KRANEWM_CLIENT_MODEL_GUARD__
+#ifndef __KRANEWM_CONSTRAINTS_GUARD__
+#define __KRANEWM_CONSTRAINTS_GUARD__
 
 #include "util.hh"
 #include "x_wrapper/window.hh"
@@ -33,4 +33,4 @@ struct SizeConstraints
     Range<float> aspect;
 };
 
-#endif//__KRANEWM_CLIENT_MODEL_GUARD__
+#endif//__KRANEWM_CONSTRAINTS_GUARD__

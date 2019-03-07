@@ -4,8 +4,10 @@
 client_ptr_t
 client_model::win_to_client(x_wrapper::window_t win)
 {
-    if (m_client_windows.count(win))
-        return m_client_windows[win];
+    for (auto&& [_win,_client] : m_client_windows)
+        if (_win.get() == win.get())
+            return _client;
+
     return nullptr;
 }
 

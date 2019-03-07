@@ -13,3 +13,9 @@ user_workspace_t::set_layout(LayoutType _layout)
     previous_layout = current_layout;
     return *this;
 }
+
+void
+user_workspace_t::arrange() const
+{
+
+}
