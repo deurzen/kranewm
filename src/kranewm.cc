@@ -38,14 +38,12 @@ Kranewm::setup()
     root_draw_win.map();
 
     m_ewmh.clear_client_list_property();
-    m_ewmh.clear_workarea_property();
 
     m_ewmh.set_wm_name_property(x_wrapper::g_root, WMNAME);
     m_ewmh.set_wm_name_property(root_draw_win, WMNAME);
 
     m_ewmh.set_supporting_wm_check_property(x_wrapper::g_root, root_draw_win);
     m_ewmh.set_supporting_wm_check_property(root_draw_win, root_draw_win);
-
 
     m_ewmh.set_desktop_geometry_property();
     m_ewmh.set_desktop_viewport_property();
@@ -60,6 +58,14 @@ Kranewm::setup()
     for (auto&& [_,name] : SCRATCHPADS)
         desktop_names.push_back(name);
     m_ewmh.set_desktop_names_property(desktop_names);
+
+
+    x_wrapper::sync(true);
+
+#ifndef DEBUG
+    ::std::system("cd ~/.kranewm; ./blocking_autostart.sh");
+    ::std::system("cd ~/.kranewm; ./nonblocking_autostart.sh &");
+#endif
 }
 
 void

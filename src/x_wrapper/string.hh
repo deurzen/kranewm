@@ -74,7 +74,7 @@ namespace x_wrapper
                 });
         }
 
-        explicit string_list_t(void* raw_data, unsigned long data_len)
+        string_list_t(void* raw_data, unsigned long data_len)
             : len(data_len)
         {
             char** c_str_list = (char**)raw_data;

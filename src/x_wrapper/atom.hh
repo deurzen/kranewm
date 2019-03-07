@@ -75,14 +75,14 @@ namespace x_wrapper
         atom_list_t(Atom* atom_list, size_t list_length)
             : len(list_length)
         {
-            ::std::memcpy(val, atom_list, list_length);
+            ::std::memcpy(val, atom_list, sizeof(Atom) * list_length);
         }
 
         atom_list_t(void* raw_data, unsigned long data_len)
             : len(data_len)
         {
 
-            ::std::memcpy(val, (Atom*)raw_data, data_len);
+            ::std::memcpy(val, (Atom*)raw_data, sizeof(Atom) * data_len);
         }
 
         operator ::std::vector<Atom>() const { return ::std::vector<Atom>(val, val + len); }

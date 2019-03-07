@@ -24,7 +24,7 @@ namespace x_wrapper
             : val(x)
         {}
 
-        explicit cardinal_t(void* raw_data)
+        cardinal_t(void* raw_data, unsigned long _)
             : val(*(CARD32*)raw_data)
         {}
 
@@ -62,13 +62,13 @@ namespace x_wrapper
         cardinal_list_t(CARD32* card_list, size_t list_length)
             : len(list_length)
         {
-            ::std::memcpy(val, card_list, list_length);
+            ::std::memcpy(val, card_list, sizeof(CARD32) * list_length);
         }
 
         cardinal_list_t(void* raw_data, unsigned long data_len)
             : len(data_len)
         {
-            ::std::memcpy(val, (CARD32*)raw_data, data_len);
+            ::std::memcpy(val, (CARD32*)raw_data, sizeof(CARD32) * data_len);
         }
 
         operator ::std::vector<CARD32>() const { return ::std::vector<CARD32>(val, val + len); }

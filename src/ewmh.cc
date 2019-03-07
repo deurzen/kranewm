@@ -93,34 +93,19 @@ void
 EWMH::set_desktop_geometry_property()
 {
     auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
-
-    static const struct {
-        unsigned w;
-        unsigned h;
-    } desktop_geometry {
-        static_cast<unsigned>(root_attrs.get().width),
-        static_cast<unsigned>(root_attrs.get().height)
-    };
-
-    x_wrapper::replace_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_DESKTOP_GEOMETRY", desktop_geometry.w});
-    x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_DESKTOP_GEOMETRY", desktop_geometry.h});
+    x_wrapper::replace_property<x_wrapper::cardinal_t>(x_wrapper::g_root,
+        {"_NET_DESKTOP_GEOMETRY", (unsigned) root_attrs.get().width});
+    x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root,
+        {"_NET_DESKTOP_GEOMETRY", (unsigned) root_attrs.get().height});
 }
 
 void
 EWMH::set_desktop_viewport_property()
 {
-    static const struct {
-        unsigned x;
-        unsigned y;
-    } desktop_viewport {
-        0,
-        0
-    };
-
     x_wrapper::remove_property(x_wrapper::g_root, "_NET_DESKTOP_VIEWPORT");
     for (size_t i = 0; i < (USER_WORKSPACES.size() + SCRATCHPADS.size()); ++i) {
-        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_DESKTOP_VIEWPORT", desktop_viewport.x});
-        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_DESKTOP_VIEWPORT", desktop_viewport.y});
+        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_DESKTOP_VIEWPORT", 0});
+        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_DESKTOP_VIEWPORT", 0});
     }
 }
 
@@ -128,29 +113,16 @@ void
 EWMH::set_workarea_property()
 {
     auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
-
-    const struct {
-        unsigned x;
-        unsigned y;
-        unsigned w;
-        unsigned h;
-    } workarea {
-        (strut.left_window.get() != None)
-            ? strut.left_width
-            : SIDEBAR_WIDTH,
-        strut.top_height,
-        root_attrs.get().width - ((strut.left_window.get() != None)
-            ? strut.left_width
-            : SIDEBAR_WIDTH),
-        root_attrs.get().height - strut.top_height
-    };
-
     x_wrapper::remove_property(x_wrapper::g_root, "_NET_WORKAREA");
     for (size_t i = 0; i < (USER_WORKSPACES.size() + SCRATCHPADS.size()); ++i) {
-        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_WORKAREA", workarea.x});
-        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_WORKAREA", workarea.y});
-        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_WORKAREA", workarea.w});
-        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_WORKAREA", workarea.h});
+        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_WORKAREA",
+            (strut.left_window.get() != None) ? strut.left_width : SIDEBAR_WIDTH});
+        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_WORKAREA",
+            strut.top_height});
+        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_WORKAREA",
+            root_attrs.get().width - ((strut.left_window.get() != None) ? strut.left_width : SIDEBAR_WIDTH)});
+        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_WORKAREA",
+            root_attrs.get().height - strut.top_height});
     }
 }
 
