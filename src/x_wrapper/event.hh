@@ -19,6 +19,8 @@ namespace x_wrapper
     class event_t
     {
     public:
+        event_t() = default;
+
         event_t(XEvent event)
             : val(event)
         {}

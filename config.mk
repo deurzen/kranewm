@@ -6,7 +6,7 @@ SRCDIR = src
 X_WRAPPER_SRC_FILES := $(wildcard src/x_wrapper/*.cc)
 X_WRAPPER_OBJ_FILES := $(patsubst src/x_wrapper/%.cc,obj/%.o,${X_WRAPPER_SRC_FILES})
 
-BASE_SRC_FILES := src/main.cc src/kranewm.cc src/util.cc src/client.cc src/ewmh.cc
+BASE_SRC_FILES := src/main.cc src/kranewm.cc src/util.cc src/client.cc src/ewmh.cc src/x_events.cc
 BASE_OBJ_FILES := $(patsubst src/%.cc,obj/%.o,${BASE_SRC_FILES})
 
 H_FILES := $(shell find $(SRCDIR) -name '*.hh')

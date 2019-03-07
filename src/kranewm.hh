@@ -26,9 +26,8 @@ private:
 
     void check_otherwm();
 
-    EWMH m_ewmh;
+    ewmh m_ewmh;
 
 };
-
 
 #endif//__KRANEWM__KRANEWM__GUARD__

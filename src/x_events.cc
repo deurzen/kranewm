@@ -1,0 +1,844 @@
+#include "x_events.hh"
+
+bool
+x_events::step()
+{
+    x_wrapper::next_event(m_current_event);
+
+    switch (m_current_event.get().type) {
+    case ButtonPress:      on_button_press();      break;
+    case ButtonRelease:    on_button_release();    break;
+    case CirculateRequest: on_circulate_request(); break;
+    case ClientMessage:    on_client_message();    break;
+    case ConfigureNotify:  on_configure_notify();  break;
+    case ConfigureRequest: on_configure_request(); break;
+    case DestroyNotify:    on_destroy_notify();    break;
+    case Expose:           on_expose();            break;
+    case FocusIn:          on_focus_in();          break;
+    case KeyPress:         on_key_press();         break;
+    case MapNotify:        on_map_notify();        break;
+    case MapRequest:       on_map_request();       break;
+    case MotionNotify:     on_motion_notify();     break;
+    case PropertyNotify:   on_property_notify();   break;
+    case UnmapNotify:      on_unmap_notify();      break;
+    default: break;
+    }
+
+    return m_running;
+}
+
+void
+x_events::register_window(x_wrapper::window_t win)
+{
+
+}
+
+/* void */
+/* x_events::apply_rule(Window win, unsigned& workspace, bool& floating, */
+/*     bool& center, bool& iconify, bool& autoclose) */
+/* { */
+/*     floating  = false; */
+/*     center    = false; */
+/*     autoclose = false; */
+
+/*     ::std::string cls, inst, title; */
+/*     xh_.get_class(win, cls); */
+/*     xh_.get_instance(win, inst); */
+/*     xh_.get_window_name(win, title); */
+
+/*     for (auto&& [rule_id,rule] : rules_) { */
+/*         const ::std::string& rule_cls   = ::std::get<0>(rule_id); */
+/*         const ::std::string& rule_inst  = ::std::get<1>(rule_id); */
+/*         const ::std::string& rule_title = ::std::get<2>(rule_id); */
+
+/*         bool same_cls, same_inst, same_title; */
+/*         same_cls   = !rule_cls.compare(cls)     || rule_cls.empty(); */
+/*         same_inst  = !rule_inst.compare(inst)   || rule_inst.empty(); */
+/*         same_title = !rule_title.compare(title) || rule_title.empty(); */
+
+/*         if (same_cls && same_inst && same_title) { */
+/*             if (rule.workspace != 0) */
+/*                 workspace = rule.workspace; */
+/*             floating = rule.floating; */
+/*             center   = rule.center; */
+/*             iconify  = rule.iconify; */
+/*             if (rule.autoclose != OFF) { */
+/*                 autoclose = true; */
+/*                 if (rule.autoclose == ONCE) */
+/*                     rule.autoclose = OFF; */
+/*             } */
+/*             return; */
+/*         } */
+/*     } */
+/* } */
+
+/* void */
+/* x_events::on_button_press() */
+/* { */
+/*     Window win = m_current_event.xbutton.window; */
+
+/*     if ((m_current_event.xbutton.state & MODMASK)) { */
+/*         switch (m_current_event.xbutton.button) { */
+/*         case SCROLL_UP_BUTTON:   cm_.goto_next_workspace(); return; */
+/*         case SCROLL_DOWN_BUTTON: cm_.goto_prev_workspace(); return; */
+/*         default: break; */
+/*         } */
+/*     } */
+
+/*     if (xh_.is_root(win)) { */
+/*         if (m_current_event.xbutton.subwindow == None) { */
+/*             switch (m_current_event.xbutton.button) { */
+/*             case FORWARD_BUTTON:  cm_.goto_next_workspace(); return; */
+/*             case BACKWARD_BUTTON: cm_.goto_prev_workspace(); return; */
+/*             default: break; */
+/*             } */
+/*         } else */
+/*             win = m_current_event.xbutton.subwindow; */
+/*     } */
+
+/*     if (cm_.is_icon(win)) { */
+/*         Client_ptr iconified_client = cm_.get_iconified_client(win); */
+/*         cm_.toggle_iconify(iconified_client); */
+/*         return; */
+/*     } */
+
+/*     Client_ptr client = cm_.get_client(win); */
+/*     if (!client) */
+/*         return; */
+
+/*     cm_.focus(client); */
+
+/*     if ((m_current_event.xbutton.state & MODMASK)) { */
+/*         switch (m_current_event.xbutton.button) { */
+/*         case MOVE_BUTTON:     cm_.start_moving(client);             break; */
+/*         case RESIZE_BUTTON:   cm_.start_resizing(client);           break; */
+/*         case CENTER_BUTTON:   cm_.center_client(client);            break; */
+/*         case FORWARD_BUTTON:  cm_.client_to_next_workspace(client); break; */
+/*         case BACKWARD_BUTTON: cm_.client_to_prev_workspace(client); break; */
+/*         default: break; */
+/*         } */
+/*     } */
+/* } */
+
+/* void */
+/* x_events::on_button_release() */
+/* { */
+/*     Client_ptr client = xm_.get_move_resize_client(); */
+
+/*     if (!client || m_current_event.xbutton.window != client->mr_indicator) */
+/*         return; */
+
+/*     XWindowAttributes pwa; */
+/*     xh_.get_attributes(client->frame, pwa); */
+
+/*     switch (xm_.get_move_resize_state()) { */
+/*     case MR_MOVE: */
+/*         cm_.stop_moving(client, {pwa.x, pwa.y}); */
+/*         break; */
+/*     case MR_RESIZE: */
+/*         cm_.stop_resizing(client, {pwa.x, pwa.y}, {pwa.width, pwa.height}); */
+/*         break; */
+/*     default: break; */
+/*     } */
+/* } */
+
+/* void */
+/* x_events::on_circulate_request() */
+/* { */
+/*     xh_.propagate_circulate_request(m_current_event); */
+/* } */
+
+/* void */
+/* x_events::on_client_message() */
+/* { */
+/*     XClientMessageEvent event = m_current_event.xclient; */
+/*     Window win = event.window; */
+/*     Client_ptr client = cm_.get_client(win); */
+
+/*     if (!client) */
+/*         return; */
+
+/*     int netwm_index; */
+/*     for (netwm_index = 0; netwm_index < NetLast; ++netwm_index) */
+/*         if (event.message_type == ewmh_.get_netwm_atom(netwm_index)) */
+/*             break; */
+/*     if (netwm_index >= NetLast) */
+/*         return; */
+
+/*     switch (netwm_index) { */
+/*     case NetWmState: */
+/*         { */
+/*             for (int property = 1; property <= 2; ++property) { */
+/*                 if (event.data.l[property] == 0) */
+/*                     continue; */
+
+/*                 if ((Atom)event.data.l[property] */
+/*                     == ewmh_.get_netwm_atom(NetWmStateFullscreen)) */
+/*                 { */
+/*                     if (event.data.l[0] >= NOACTION) */
+/*                         return; */
+/*                     cm_.toggle_fullscreen(client, event.data.l[0]); */
+/*                 } else if ((Atom)event.data.l[property] */
+/*                     == ewmh_.get_netwm_atom(NetWmStateDemandsAttention)) */
+/*                 { */
+/*                     if (event.data.l[0] >= NOACTION) */
+/*                         return; */
+/*                     cm_.toggle_urgency(client, event.data.l[0]); */
+/*                 } */
+/*             } */
+/*         } */
+/*         break; */
+/*     case NetActiveWindow: */
+/*         {   // if pager or taskbar (source indicator = 2) */
+/*             if (ALLOW_FOCUSSTEAL && event.data.l[0] == 2) */
+/*                 cm_.focus(client); */
+/*         } */
+/*         break; */
+/*     default: break; */
+/*     } */
+/* } */
+
+/* void */
+/* x_events::on_configure_request() */
+/* { */
+/*     Window win = m_current_event.xconfigurerequest.window; */
+/*     Client_ptr client = cm_.get_client(win); */
+
+/*     if (!client) { */
+/*         int perm_flags = CWX | CWY | CWWidth | CWHeight; */
+/*         xh_.propagate_configure_request(m_current_event, perm_flags); */
+/*         return; */
+/*     } */
+
+/*     if (is_user_workspace(cm_.get_workspace_of(client))) { */
+/*         auto workspace = dynamic_cast<UserWorkspace_ptr>(cm_.get_workspace_of(client)); */
+/*         if (!(workspace->layout == LT_FLOAT || client->floating)) */
+/*             return; */
+/*     } */
+
+/*     m_current_event.xconfigurerequest.width = */
+/*         ::std::max(m_current_event.xconfigurerequest.width, MIN_WINDOW_SIZE); */
+
+/*     m_current_event.xconfigurerequest.height = */
+/*         ::std::max(m_current_event.xconfigurerequest.height, MIN_WINDOW_SIZE); */
+
+/*     XWindowAttributes before_wa; */
+/*     xh_.get_attributes(client->frame, before_wa); */
+
+/*     if (win == client->win) { */
+/*         if (xm_.get_move_resize_state() == MR_RESIZE) */
+/*             return; */
+
+/*         auto win_event = m_current_event; */
+/*         int conf_flags = win_event.xconfigurerequest.value_mask; */
+/*         int perm_flags = CWWidth | CWHeight; */
+
+/*         conf_flags &= perm_flags; */
+/*         if (conf_flags) */
+/*             xh_.propagate_configure_request(win_event, conf_flags); */
+
+/*         m_current_event.xconfigurerequest.window = client->frame; */
+/*         m_current_event.xconfigurerequest.height += BORDER_WIDTH; */
+/*     } */
+
+/*     int conf_flags = m_current_event.xconfigurerequest.value_mask; */
+/*     int perm_flags = CWX | CWY | CWWidth | CWHeight; */
+
+/*     conf_flags &= perm_flags; */
+/*     if (conf_flags) */
+/*         xh_.propagate_configure_request(m_current_event, conf_flags); */
+
+/*     XWindowAttributes after_wa; */
+/*     xh_.get_attributes(client->frame, after_wa); */
+
+/*     Pos pos; */
+/*     switch (xm_.get_move_resize_corner()) { */
+/*     case TOP_LEFT: */
+/*         pos = {before_wa.x + (before_wa.width - after_wa.width), */
+/*             before_wa.y + (before_wa.height - after_wa.height)}; */
+/*         break; */
+/*     case TOP_RIGHT: */
+/*         pos = {before_wa.x, */
+/*             before_wa.y + (before_wa.height - after_wa.height)}; */
+/*         break; */
+/*     case BOTTOM_LEFT: */
+/*         pos = {before_wa.x + (before_wa.width - after_wa.width), */
+/*             before_wa.y}; */
+/*         break; */
+/*     case BOTTOM_RIGHT: // fallthrough */
+/*     default: pos = {before_wa.x, before_wa.y}; break; */
+/*     } */
+
+/*     if (!(conf_flags & (CWX | CWY)) */
+/*         && !(Size{before_wa.width, before_wa.height} */
+/*             == Size{after_wa.width, after_wa.height})) */
+/*     { */
+/*         xh_.move_window(client->frame, pos); */
+/*     } */
+/* } */
+
+/* void */
+/* x_events::on_configure_notify() */
+/* { */
+/*     Window win = m_current_event.xconfigure.window; */
+/*     Client_ptr client = cm_.get_client(win); */
+
+/*     if (!client) */
+/*         return; */
+
+/*     cm_.change_size(client, */
+/*         {m_current_event.xconfigure.width, m_current_event.xconfigure.height}); */
+
+/*     XWindowAttributes rwa; */
+/*     xh_.get_root_attributes(rwa); */
+
+/*     XSizeHints sh; */
+/*     if (xh_.get_size_hints(client->win, sh)) */
+/*         sh.flags = PSize; */
+
+/*     if (xm_.update_hints(client, sh, {rwa.width, rwa.height})) { */
+/*         xm_.apply_hints(client->pos, client->size, client->size_hints, */
+/*             {rwa.width, rwa.height}); */
+/*         xh_.resize_window(client->win, {client->size.w, client->size.h - BORDER_WIDTH}); */
+/*         xh_.resize_window(client->frame, client->size); */
+/*     } */
+/* } */
+
+/* void */
+/* x_events::on_destroy_notify() */
+/* { */
+/*     Window win = m_current_event.xdestroywindow.window; */
+/*     Client_ptr client = cm_.get_client(win); */
+
+/*     if (!client) { */
+/*         cm_.remove_always_on_top_window(win); */
+/*         if (ewmh_.check_release_strut(win) */
+/*             && cm_.get_current_workspace()->layout != LT_FLOAT) */
+/*         { */
+/*             cm_.arrange_current_workspace(); */
+/*         } */
+/*         return; */
+/*     } */
+
+/*     xh_.select_input(client->win, 0); */
+/*     xh_.select_input(client->frame, 0); */
+
+/*     if (client->parent) { */
+/*         cm_.remove_child(client); */
+/*         return; */
+/*     } */
+
+/*     cm_.remove_client(client); */
+/* } */
+
+/* void */
+/* x_events::on_expose() */
+/* { */
+/*     Window win = m_current_event.xexpose.window; */
+/*     Client_ptr client = cm_.get_client(win); */
+
+/*     if (client && client->shaded) */
+/*         client->gch->redraw_all(); */
+
+/*     if (m_current_event.xexpose.count == 0 */
+/*         && cm_.is_icon(m_current_event.xexpose.window)) */
+/*     { */
+/*         cm_.rerender_icons(); */
+/*     } */
+
+/*     if (m_current_event.xexpose.count == 0 */
+/*         && xh_.is_root_draw_win(m_current_event.xexpose.window)) */
+/*     { */
+/*         xh_.redraw_root_draw_win(); */
+/*     } */
+
+/*     xh_.sync(False); */
+/* } */
+
+/* void */
+/* x_events::on_focus_in() */
+/* { */
+/*     Window win = m_current_event.xfocus.window; */
+/*     Client_ptr client = cm_.get_client(win); */
+
+/*     if (client && client == cm_.get_focused()) { */
+/*         if (client->floating */
+/*             || cm_.get_current_workspace()->layout == LT_FLOAT */
+/*             || cm_.get_current_workspace()->layout == LT_DECK */
+/*             || cm_.get_current_workspace()->layout == LT_DOUBLEDECK */
+/*             || cm_.get_current_workspace()->layout == LT_MONOCLE) */
+/*         { */
+/*             xh_.raise_window(client->frame); */
+/*             for (const auto& child_client : client->children) */
+/*                 xh_.raise_window(child_client->frame); */
+/*         } */
+
+/*         if (cm_.get_current_workspace()->layout == LT_DECK */
+/*             || cm_.get_current_workspace()->layout == LT_DOUBLEDECK */
+/*             || cm_.get_current_workspace()->layout == LT_MONOCLE) */
+/*         { */
+/*             for (const auto& floating_client : cm_.get_floating_clients()) */
+/*                 xh_.raise_window(floating_client->frame); */
+/*         } */
+
+/*         for (const auto& always_on_top_win : cm_.get_always_on_top_windows()) */
+/*             xh_.raise_window(always_on_top_win); */
+/*     } */
+/* } */
+
+/* void */
+/* x_events::on_key_press() */
+/* { */
+/*     Shortcut shortcut = { xh_.get_keysym(m_current_event.xkey.keycode), */
+/*         m_current_event.xkey.state }; */
+
+/*     switch (keybinds_[shortcut]) { */
+/*     case QUIT: running_ = false; return; */
+/*     case SPAWN_TERMINAL:      fork_external("/usr/bin/urxvt -geometry 80x22");                                break; */
+/*     case SPAWN_QUICKTERM:     fork_external("/usr/bin/term -name \"kranewm:float\" -geometry 80x22");         break; */
+/*     case SPAWN_QUICKTERMTMUX: fork_external("/usr/bin/term -geometry 80x22 -e tmux");                         break; */
+/*     case SPAWN_DMENU:         fork_external("/usr/local/bin/dmenu_run");                                      break; */
+/*     case SPAWN_DMENUPASS:     fork_external("/usr/bin/dmenupass");                                            break; */
+/*     case SPAWN_DMENUPASSCOPY: fork_external("/usr/bin/dmenupass --copy");                                     break; */
+/*     case SPAWN_BROWSER:       fork_external("/usr/bin/qutebrowser");                                          break; */
+/*     case SPAWN_SEC_BROWSER:   fork_external("/usr/bin/firefox");                                              break; */
+/*     case MPCTOGGLE:           fork_external("/usr/bin/mpc toggle");                                           break; */
+/*     case MPCNEXT:             fork_external("/usr/bin/mpc next");                                             break; */
+/*     case MPCPREV:             fork_external("/usr/bin/mpc prev");                                             break; */
+/*     case MPCSTOP:             fork_external("/usr/bin/mpc stop");                                             break; */
+/*     case RHYTHMBOXSHOW:       fork_external("/usr/bin/rhythmbox-client");                                     break; */
+/*     case RHYTHMBOXTOGGLE:     fork_external("/usr/bin/rhythmbox-client --play-pause");                        break; */
+/*     case RHYTHMBOXNEXT:       fork_external("/usr/bin/rhythmbox-client --next");                              break; */
+/*     case RHYTHMBOXPREV:       fork_external("/usr/bin/rhythmbox-client --previous");                          break; */
+/*     case RHYTHMBOXSTOP:       fork_external("/usr/bin/rhythmbox-client --stop");                              break; */
+/*     case MPCRANDOM:           fork_external("/usr/bin/mpc random");                                           break; */
+/*     case MPCSINGLE:           fork_external("/usr/bin/mpc single");                                           break; */
+/*     case VOLUMEUP:            fork_external("/usr/bin/pactl set-sink-volume 0 +10%");                         break; */
+/*     case VOLUMEDOWN:          fork_external("/usr/bin/pactl set-sink-volume 0 -10%");                         break; */
+/*     case VOLUMEMUTE:          fork_external("/usr/bin/pactl set-sink-mute 0 toggle");                         break; */
+/*     case BRIGHTNESSUP15:      fork_external("/usr/bin/light -A 15");                                          break; */
+/*     case BRIGHTNESSUP5:       fork_external("/usr/bin/light -A 5");                                           break; */
+/*     case BRIGHTNESSDOWN15:    fork_external("/usr/bin/light -U 15");                                          break; */
+/*     case TAKE_SCREENSHOT: */
+/*         fork_external("/usr/bin/maim $(date +/home/deurzen/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");    break; */
+/*     case TAKE_SCREENSHOT_SEL: */
+/*         fork_external("/usr/bin/maim -s $(date +/home/deurzen/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)"); break; */
+/*     case SPAWN_NEOMUTT:       fork_external("/usr/bin/term -geometry 140x42 -e zsh -i -c neomutt");           break; */
+/*     case SPAWN_RANGER:        fork_external("/usr/bin/term -geometry 140x42 -e zsh -i -c ranger");            break; */
+/*     case SPAWN_SNCLI:         fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c sncli");              break; */
+/*     case SPAWN_RTV:           fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c rtv");                break; */
+/*     case SPAWN_IRSSI:         fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c irssi");              break; */
+/*     case SPAWN_NEWSBOAT:      fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c newsboat");           break; */
+/*     case SPAWN_SAGE:          fork_external("/usr/bin/term -geometry 80x22 -e zsh -i -c sage");               break; */
+/*     case SPAWN_GPICK:         fork_external("gpick");                                                         break; */
+/*     case SPAWN_QALCULATE:     fork_external("qalculate-gtk");                                                 break; */
+/*     case SPAWN_7LOCK:         fork_external("systemctl suspend");                                             break; */
+
+
+/*     case POP_ICONIFIED:        cm_.deiconify(0);                 break; */
+/*     case DEICONIFY_1:          cm_.deiconify(1);                 break; */
+/*     case DEICONIFY_2:          cm_.deiconify(2);                 break; */
+/*     case DEICONIFY_3:          cm_.deiconify(3);                 break; */
+/*     case DEICONIFY_4:          cm_.deiconify(4);                 break; */
+/*     case DEICONIFY_5:          cm_.deiconify(5);                 break; */
+/*     case DEICONIFY_6:          cm_.deiconify(6);                 break; */
+/*     case DEICONIFY_7:          cm_.deiconify(7);                 break; */
+/*     case DEICONIFY_8:          cm_.deiconify(8);                 break; */
+/*     case DEICONIFY_9:          cm_.deiconify(9);                 break; */
+/*     case ACTIVATE_WORKSPACE_1: cm_.change_active_workspace(1);   break; */
+/*     case ACTIVATE_WORKSPACE_2: cm_.change_active_workspace(2);   break; */
+/*     case ACTIVATE_WORKSPACE_3: cm_.change_active_workspace(3);   break; */
+/*     case ACTIVATE_WORKSPACE_4: cm_.change_active_workspace(4);   break; */
+/*     case ACTIVATE_WORKSPACE_5: cm_.change_active_workspace(5);   break; */
+/*     case ACTIVATE_WORKSPACE_6: cm_.change_active_workspace(6);   break; */
+/*     case ACTIVATE_WORKSPACE_7: cm_.change_active_workspace(7);   break; */
+/*     case ACTIVATE_WORKSPACE_8: cm_.change_active_workspace(8);   break; */
+/*     case ACTIVATE_WORKSPACE_9: cm_.change_active_workspace(9);   break; */
+/*     case ACTIVATE_NEXT_WS:     cm_.goto_next_workspace();        break; */
+/*     case ACTIVATE_PREV_WS:     cm_.goto_prev_workspace();        break; */
+/*     case TOGGLE_SCRATCHPAD_1:  cm_.toggle_scratchpad(1);         break; */
+/*     case TOGGLE_SCRATCHPAD_2:  cm_.toggle_scratchpad(2);         break; */
+/*     case FLOAT:                cm_.change_layout(LT_FLOAT);      break; */
+/*     case TILE:                 cm_.change_layout(LT_TILE);       break; */
+/*     case DECK:                 cm_.change_layout(LT_DECK);       break; */
+/*     case DOUBLEDECK:           cm_.change_layout(LT_DOUBLEDECK); break; */
+/*     case GRID:                 cm_.change_layout(LT_GRID);       break; */
+/*     case MONOCLE:              cm_.change_layout(LT_MONOCLE);    break; */
+/*     case TOGGLE_LAYOUT:        cm_.change_layout(LT_TOGGLE);     break; */
+/*     case SWAP_ORIENTATION:     cm_.swap_orientation();           break; */
+/*     case FOCUS_BCK:            cm_.cycle_focus_backward();       break; */
+/*     case FOCUS_FWD:            cm_.cycle_focus_forward();        break; */
+/*     case ZOOM:                 cm_.zoom();                       break; */
+/*     case JUMP_MASTER:          cm_.focus_jump(0);                break; */
+/*     case JUMP_PANE:            cm_.pane_jump();                  break; */
+/*     case JUMP_CLIENT_1:        cm_.focus_jump(0);                break; */
+/*     case JUMP_CLIENT_2:        cm_.focus_jump(1);                break; */
+/*     case JUMP_CLIENT_3:        cm_.focus_jump(2);                break; */
+/*     case JUMP_CLIENT_4:        cm_.focus_jump(3);                break; */
+/*     case JUMP_CLIENT_5:        cm_.focus_jump(4);                break; */
+/*     case JUMP_CLIENT_6:        cm_.focus_jump(5);                break; */
+/*     case JUMP_CLIENT_7:        cm_.focus_jump(6);                break; */
+/*     case JUMP_CLIENT_8:        cm_.focus_jump(7);                break; */
+/*     case JUMP_CLIENT_9:        cm_.focus_jump(8);                break; */
+/*     case INC_NMASTER:          cm_.change_n_master(1);           break; */
+/*     case DEC_NMASTER:          cm_.change_n_master(-1);          break; */
+/*     case INC_MRATIO:           cm_.change_m_ratio(0.05f);        break; */
+/*     case DEC_MRATIO:           cm_.change_m_ratio(-0.05f);       break; */
+/*     case INC_MFACTOR:          cm_.change_m_factor(0.05f);       break; */
+/*     case DEC_MFACTOR:          cm_.change_m_factor(-0.05f);      break; */
+/*     case INC_GAPSIZE:          cm_.change_gap_size(5);           break; */
+/*     case DEC_GAPSIZE:          cm_.change_gap_size(-5);          break; */
+/*     case JUMP_TO_MARKED:       cm_.jump_to_marked();             break; */
+/*     case TOGGLE_WORKSPACE: */
+/*         { */
+/*             if (cm_.scratchpad_active()) */
+/*                 cm_.toggle_scratchpad(cm_.get_current_scratchpad()->number); */
+/*             else */
+/*                 cm_.change_active_workspace(0); */
+/*         } */
+/*         break; */
+/*     case JUMP_STACK: */
+/*         { */
+/*             if (!cm_.scratchpad_active()) */
+/*                 cm_.focus_jump(cm_.get_current_workspace()->n_master); */
+/*         } */
+/*         break; */
+/*     case JUMP_LAST: */
+/*         { */
+/*             if (!cm_.scratchpad_active()) */
+/*                 cm_.focus_jump(cm_.get_current_workspace()->clients.size()-1); */
+/*         } */
+/*         break; */
+/*     default: break; */
+/*     } */
+
+
+/*     Client_ptr client = cm_.get_focused(); */
+/*     if (!client) */
+/*         return; */
+
+/*     switch (keybinds_[shortcut]) { */
+/*     case KILL_CLIENT:               xh_.force_close_window(client->win);           break; */
+/*     case DOWN_STACK:                                                               break; */
+/*     case UP_STACK:                                                                 break; */
+/*     case DOWN_MASTER:                                                              break; */
+/*     case UP_MASTER:                                                                break; */
+/*     case MOVE_CLIENT_FWD:           cm_.move_focused_client_forward();             break; */
+/*     case MOVE_CLIENT_BCK:           cm_.move_focused_client_backward();            break; */
+/*     case TOGGLE_FLOAT:              cm_.toggle_float(client);                      break; */
+/*     case TOGGLE_FULLSCREEN:         cm_.toggle_fullscreen(client);                 break; */
+/*     case TOGGLE_SHADE:              cm_.toggle_shade(client);                      break; */
+/*     case TOGGLE_ICONIFY:            cm_.toggle_iconify(client);                    break; */
+/*     case CENTER_CLIENT:             cm_.center_client(client);                     break; */
+/*     case CLIENT_TO_WORKSPACE_1:     cm_.client_to_workspace(client, 0u);           break; */
+/*     case CLIENT_TO_WORKSPACE_2:     cm_.client_to_workspace(client, 1);            break; */
+/*     case CLIENT_TO_WORKSPACE_3:     cm_.client_to_workspace(client, 2);            break; */
+/*     case CLIENT_TO_WORKSPACE_4:     cm_.client_to_workspace(client, 3);            break; */
+/*     case CLIENT_TO_WORKSPACE_5:     cm_.client_to_workspace(client, 4);            break; */
+/*     case CLIENT_TO_WORKSPACE_6:     cm_.client_to_workspace(client, 5);            break; */
+/*     case CLIENT_TO_WORKSPACE_7:     cm_.client_to_workspace(client, 6);            break; */
+/*     case CLIENT_TO_WORKSPACE_8:     cm_.client_to_workspace(client, 7);            break; */
+/*     case CLIENT_TO_WORKSPACE_9:     cm_.client_to_workspace(client, 8);            break; */
+/*     case CLIENT_TO_SCRATCHPAD_1:    cm_.client_to_scratchpad(client, 0);           break; */
+/*     case CLIENT_TO_SCRATCHPAD_2:    cm_.client_to_scratchpad(client, 1);           break; */
+/*     case FLOAT_GROW_LEFT:           cm_.resize_floating_client(client, LEFT, 1);   break; */
+/*     case FLOAT_GROW_DOWN:           cm_.resize_floating_client(client, DOWN, 1);   break; */
+/*     case FLOAT_GROW_UP:             cm_.resize_floating_client(client, UP, 1);     break; */
+/*     case FLOAT_GROW_RIGHT:          cm_.resize_floating_client(client, RIGHT, 1);  break; */
+/*     case FLOAT_SHRINK_LEFT:         cm_.resize_floating_client(client, RIGHT, -1); break; */
+/*     case FLOAT_SHRINK_DOWN:         cm_.resize_floating_client(client, UP, -1);    break; */
+/*     case FLOAT_SHRINK_UP:           cm_.resize_floating_client(client, DOWN, -1);  break; */
+/*     case FLOAT_SHRINK_RIGHT:        cm_.resize_floating_client(client, LEFT, -1);  break; */
+/*     case MARK_CLIENT:               cm_.set_marked(client);                        break; */
+/*     case CLIENT_TO_NEXT_WORKSPACE:  cm_.client_to_next_workspace(client);          break; */
+/*     case CLIENT_TO_PREV_WORKSPACE:  cm_.client_to_prev_workspace(client);          break; */
+/*     case FLOAT_LEFT_OR_MASTER_FWD: */
+/*         { */
+/*             if (cm_.scratchpad_active() */
+/*                 || cm_.get_current_workspace()->layout == LT_FLOAT */
+/*                 || client->floating) */
+/*             { */
+/*                 cm_.move_floating_client(client, LEFT); */
+/*             } else */
+/*                 cm_.rotate_master_forward(); */
+/*         } */
+/*         break; */
+/*     case FLOAT_DOWN_OR_STACK_BCK: */
+/*         { */
+/*             if (cm_.scratchpad_active() */
+/*                 || cm_.get_current_workspace()->layout == LT_FLOAT */
+/*                 || client->floating) */
+/*             { */
+/*                 cm_.move_floating_client(client, DOWN); */
+/*             } else */
+/*                 cm_.rotate_stack_backward(); */
+/*         } */
+/*         break; */
+/*     case FLOAT_UP_OR_STACK_FWD: */
+/*         { */
+/*             if (cm_.scratchpad_active() */
+/*                 || cm_.get_current_workspace()->layout == LT_FLOAT */
+/*                 || client->floating) */
+/*             { */
+/*                 cm_.move_floating_client(client, UP); */
+/*             } else */
+/*                 cm_.rotate_stack_forward(); */
+/*         } */
+/*         break; */
+/*     case FLOAT_RIGHT_OR_MASTER_BCK: */
+/*         { */
+/*             if (cm_.scratchpad_active() */
+/*                 || cm_.get_current_workspace()->layout == LT_FLOAT */
+/*                 || client->floating) */
+/*             { */
+/*                 cm_.move_floating_client(client, RIGHT); */
+/*             } else */
+/*                 cm_.rotate_master_backward(); */
+/*         } */
+/*         break; */
+/*     default: break; */
+/*     } */
+/* } */
+
+/* void */
+/* x_events::on_map_request() */
+/* { */
+/*     Window win = m_current_event.xmaprequest.window; */
+/*     Client_ptr client = cm_.get_client(win); */
+
+/*     if (client && (client->effect == MAP)) { */
+/*         client->effect = NO_EFFECT; */
+/*         return; */
+/*     } */
+
+/*     register_window(win); */
+/*     xh_.map_window(win); */
+/* } */
+
+/* void */
+/* x_events::on_map_notify() */
+/* { */
+/*     Window win = m_current_event.xmap.window; */
+/*     Client_ptr client = cm_.get_client(win); */
+
+/*     if (client) { */
+/*         xh_.set_wm_state(client->win, NormalState); */
+
+/*         if (client->effect == MAP) { */
+/*             client->effect = NO_EFFECT; */
+/*             return; */
+/*         } */
+/*     } */
+
+/*     register_window(win); */
+/* } */
+
+/* void */
+/* x_events::on_motion_notify() */
+/* { */
+/*     if (xm_.get_move_resize_state() == MR_INVALID) */
+/*         return; */
+
+/*     Client_ptr client = xm_.get_move_resize_client(); */
+/*     if (!client || client->mr_indicator == None) */
+/*         return; */
+
+/*     XWindowAttributes pwa, rwa; */
+/*     xh_.get_attributes(client->frame, pwa); */
+/*     pwa.height -= BORDER_WIDTH; */
+/*     xh_.get_root_attributes(rwa); */
+/*     Size root_size = {rwa.width, rwa.height}; */
+
+/*     xh_.last_typed_event(m_current_event, MotionNotify); */
+
+/*     Pos pointer_pos; */
+/*     xh_.get_pointer_pos(pointer_pos); */
+/*     Pos delta_pos = xm_.update_pointer(pointer_pos); */
+
+/*     switch (xm_.get_move_resize_state()) { */
+/*         case MR_MOVE: */
+/*             { */
+/*                 Pos pos = {pwa.x + delta_pos.x, pwa.y + delta_pos.y}; */
+/*                 Size size = {pwa.width, pwa.height}; */
+/*                 xm_.apply_hints(pos, size, client->size_hints, root_size); */
+/*                 xh_.move_window(client->frame, pos); */
+/*             } */
+/*             break; */
+/*         case MR_RESIZE: */
+/*             { */
+/*                 switch (xm_.get_move_resize_corner()) { */
+/*                 case TOP_LEFT: */
+/*                     { */
+/*                         int resize_width  = ::std::max(pwa.width - delta_pos.x, MIN_WINDOW_SIZE); */
+/*                         int resize_height = ::std::max(pwa.height - delta_pos.y, MIN_WINDOW_SIZE); */
+
+/*                         Pos pos = {pwa.x + (pwa.width - resize_width), */
+/*                             pwa.y + (pwa.height - resize_height)}; */
+/*                         Size size = {resize_width, resize_height}; */
+
+/*                         xm_.apply_hints(pos, size, client->size_hints, root_size); */
+/*                         xh_.resize_window(client->win, size); */
+/*                         xh_.resize_window(client->frame, {size.w, size.h + BORDER_WIDTH}); */
+
+/*                         pos = {pwa.x + (pwa.width - size.w), pwa.y + (pwa.height - size.h)}; */
+/*                         if (!(size == Size{pwa.width, pwa.height})) */
+/*                             xh_.move_window(client->frame, pos); */
+/*                     } */
+/*                     break; */
+/*                 case TOP_RIGHT: */
+/*                     { */
+/*                         int resize_width  = ::std::max(pwa.width + delta_pos.x, MIN_WINDOW_SIZE); */
+/*                         int resize_height = ::std::max(pwa.height - delta_pos.y, MIN_WINDOW_SIZE); */
+
+/*                         Pos pos = {pwa.x, pwa.y + (pwa.height - resize_height)}; */
+/*                         Size size = {resize_width, resize_height}; */
+
+/*                         xm_.apply_hints(pos, size, client->size_hints, root_size); */
+/*                         xh_.resize_window(client->win, size); */
+/*                         xh_.resize_window(client->frame, {size.w, size.h + BORDER_WIDTH}); */
+
+/*                         pos = {pwa.x, pwa.y + (pwa.height - size.h)}; */
+/*                         if (!(size == Size{pwa.width, pwa.height})) */
+/*                             xh_.move_window(client->frame, pos); */
+/*                     } */
+/*                     break; */
+/*                 case BOTTOM_LEFT: */
+/*                     { */
+/*                         int resize_width  = ::std::max(pwa.width - delta_pos.x, MIN_WINDOW_SIZE); */
+/*                         int resize_height = ::std::max(pwa.height + delta_pos.y, MIN_WINDOW_SIZE); */
+
+/*                         Pos pos = {pwa.x + (pwa.width - resize_width), pwa.y}; */
+/*                         Size size = {resize_width, resize_height}; */
+
+/*                         xm_.apply_hints(pos, size, client->size_hints, root_size); */
+/*                         xh_.resize_window(client->win, size); */
+/*                         xh_.resize_window(client->frame, {size.w, size.h + BORDER_WIDTH}); */
+
+/*                         pos = {pwa.x + (pwa.width - size.w), pwa.y}; */
+/*                         if (!(size == Size{pwa.width, pwa.height})) */
+/*                             xh_.move_window(client->frame, pos); */
+/*                     } */
+/*                     break; */
+/*                 case BOTTOM_RIGHT: */
+/*                     { */
+/*                         int resize_width  = ::std::max(pwa.width + delta_pos.x, MIN_WINDOW_SIZE); */
+/*                         int resize_height = ::std::max(pwa.height + delta_pos.y, MIN_WINDOW_SIZE); */
+
+/*                         Pos _pos; */
+/*                         Size size = {resize_width, resize_height}; */
+
+/*                         xm_.apply_hints(_pos, size, client->size_hints, root_size); */
+/*                         xh_.resize_window(client->win, size); */
+/*                         xh_.resize_window(client->frame, {size.w, size.h + BORDER_WIDTH}); */
+/*                     } */
+/*                     break; */
+/*                 default: break; */
+/*                 } */
+/*             } */
+/*             break; */
+/*         default: break; */
+/*     } */
+/* } */
+
+/* void */
+/* x_events::on_property_notify() */
+/* { */
+/*     XPropertyEvent event = m_current_event.xproperty; */
+/*     Client_ptr client = cm_.get_client(event.window); */
+
+/*     if (client && event.state == PropertyNewValue) { */
+/*         if (event.atom == XA_WM_NORMAL_HINTS) { */
+/*             XWindowAttributes rwa; */
+/*             xh_.get_root_attributes(rwa); */
+/*             XSizeHints sh; */
+/*             if (xh_.get_size_hints(client->win, sh)) */
+/*                 sh.flags = PSize; */
+/*             xm_.update_hints(client, sh, {rwa.width, rwa.height}); */
+/*         } else if ((event.atom == XA_WM_NAME */
+/*             || event.atom == xh_.get_atom("_NET_WM_NAME"))) */
+/*         { */
+/*             if (client->iconified) */
+/*                 cm_.rerender_icons(); */
+/*             else if (client->shaded) { */
+/*                 XWindowAttributes wa; */
+/*                 xh_.get_attributes(client->frame, wa); */
+
+/*                 int font_width  = client->gch->get_font_width(); */
+/*                 int font_height = client->gch->get_font_height(); */
+/*                 unsigned max_chars = wa.width / font_width - 1; */
+
+/*                 ::std::string icon_name; */
+/*                 xh_.get_window_name(client->win, icon_name); */
+
+/*                 int icon_name_length = font_width * icon_name.size(); */
+/*                 if (icon_name_length + font_width > wa.width) { */
+/*                     if (icon_name.size() >= max_chars) { */
+/*                         icon_name[max_chars - 3] = icon_name[max_chars - 2] = */
+/*                             icon_name[max_chars - 1] = '.'; */
+/*                         icon_name = icon_name.substr(0, max_chars); */
+/*                     } */
+/*                 } */
+
+/*                 xh_.clear_window(client->frame); */
+/*                 client->gch->set_string(GC_Handler::TK_WM_NAME, */
+/*                     {font_width / 2, font_height + (SHADED_HEIGHT - font_height) / 2}, */
+/*                         icon_name); */
+/*             } */
+/*         } */
+/*     } */
+
+/*     if (event.atom == xh_.get_atom("_NET_WM_STRUT") */
+/*         || event.atom == xh_.get_atom("_NET_WM_STRUT_PARTIAL")) */
+/*     { */
+/*         ewmh_.check_release_strut(event.window); */
+/*         ewmh_.check_apply_strut(event.window); */
+/*         if (cm_.get_current_workspace()->layout != LT_FLOAT) */
+/*             cm_.arrange_current_workspace(); */
+/*     } */
+/* } */
+
+/* void */
+/* x_events::on_unmap_notify() */
+/* { */
+/*     Window win = m_current_event.xunmap.window; */
+/*     auto client = cm_.get_client(win); */
+
+/*     if (!client) */
+/*         return; */
+
+/*     if (client->effect == ICONIFY) { */
+/*         xh_.set_wm_state(client->win, IconicState); */
+/*         client->effect = NO_EFFECT; */
+/*         return; */
+/*     } */
+
+/*     if (client->effect == WITHDRAW) { */
+/*         xh_.set_wm_state(client->win, WithdrawnState); */
+/*         client->effect = NO_EFFECT; */
+/*         return; */
+/*     } */
+
+/*     if (client->iconified) */
+/*         cm_.toggle_iconify(client); */
+
+/*     Pos pos = client->pos; */
+/*     Window frame = client->frame; */
+
+/*     if (client->floating) { */
+/*         xh_.destroy_window(client->float_indicator); */
+/*         client->float_indicator = None; */
+/*     } */
+
+/*     cm_.unmap_client(client); */
+/*     xh_.reparent_window_root(win, pos); */
+/*     xh_.destroy_window(frame); */
+/* } */
+
+/* void */
+/* x_events::fork_external(::std::string&& command) */
+/* { */
+/*     if (!fork()) { */
+/*         execl("/bin/sh", "/bin/sh", "-c", ("exec " + command).c_str(), NULL); */
+/*         exit(1); */
+/*     } */
+/* } */

@@ -49,13 +49,11 @@ Kranewm::setup()
     m_ewmh.set_desktop_viewport_property();
     m_ewmh.set_workarea_property();
 
-    m_ewmh.set_number_of_desktops_property(USER_WORKSPACES.size() + SCRATCHPADS.size());
+    m_ewmh.set_number_of_desktops_property(USER_WORKSPACES.size());
     m_ewmh.set_current_desktop_property(0);
 
     ::std::vector<::std::string> desktop_names;
     for (auto&& [_,name] : USER_WORKSPACES)
-        desktop_names.push_back(name);
-    for (auto&& [_,name] : SCRATCHPADS)
         desktop_names.push_back(name);
     m_ewmh.set_desktop_names_property(desktop_names);
 
