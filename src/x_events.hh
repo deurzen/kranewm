@@ -15,13 +15,15 @@
 // Forward decls
 class ewmh;
 class client_model;
+class x_model;
 
 class x_events
 {
 public:
-    explicit x_events(ewmh& ewmh, client_model& clients)
+    explicit x_events(ewmh& ewmh, client_model& clients, x_model& x)
         : m_ewmh(ewmh),
           m_clients(clients),
+          m_x(x),
           m_running(true),
           m_rules({
               //  class            inst             title      float center icon close  workspace
@@ -208,6 +210,7 @@ private:
 
     ewmh& m_ewmh;
     client_model& m_clients;
+    x_model& m_x;
     bool m_running;
     x_wrapper::event_t m_current_event;
     Rules m_rules;

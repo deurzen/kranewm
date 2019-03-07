@@ -25,8 +25,14 @@ public:
         }
 
     client_ptr_t win_to_client(x_wrapper::window_t);
+    workspace_ptr_t client_workspace(client_ptr_t);
 
     void focus(client_ptr_t);
+
+    void start_moving(client_ptr_t);
+    void stop_moving(client_ptr_t, Pos);
+    void start_resizing(client_ptr_t);
+    void stop_resizing(client_ptr_t, Pos, Size);
 
 private:
     user_workspace_ptr_t m_current_workspace;

@@ -6,6 +6,7 @@
 
 #include "ewmh.hh"
 #include "client_model.hh"
+#include "x_model.hh"
 #include "x_events.hh"
 
 #include <memory>
@@ -17,7 +18,8 @@ public:
     kranewm()
         : m_ewmh(),
           m_clients(),
-          m_events(m_ewmh, m_clients)
+          m_x(),
+          m_events(m_ewmh, m_clients, m_x)
     {}
 
     void setup();
@@ -34,6 +36,7 @@ private:
 
     ewmh m_ewmh;
     client_model m_clients;
+    x_model m_x;
     x_events m_events;
 
 };

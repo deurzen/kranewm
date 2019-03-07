@@ -1,6 +1,9 @@
 #include "x_events.hh"
 #include "ewmh.hh"
 #include "client_model.hh"
+#include "x_model.hh"
+#include "x_wrapper/attributes.hh"
+#include "x_wrapper/request.hh"
 
 bool
 x_events::step()
@@ -88,8 +91,8 @@ x_events::on_button_press()
         if (subwin.get() == None) {
             if (m_mousebinds.count({button, mask, false})) {
                 switch (m_mousebinds[{button, mask, false}]) {
-                case GOTO_NEXT_WS:        break;
-                case GOTO_PREV_WS:        break;
+                case GOTO_NEXT_WS: break; // TODO check mask. mask == 0 (no MOD pressed)?
+                case GOTO_PREV_WS: break;
                 default: break;
                 }
             }
@@ -102,94 +105,90 @@ x_events::on_button_press()
         m_clients.focus(client);
         if (m_mousebinds.count({button, mask, true}))
             switch (m_mousebinds[{button, mask, true}]) {
-            case CLIENT_MOVE:         break;
-            case CLIENT_RESIZE:       break;
-            case CLIENT_CENTER:       break;
-            case CLIENT_NEXT_WS:      break;
-            case CLIENT_PREV_WS:      break;
+            case CLIENT_MOVE:    m_clients.start_moving(client);   break;
+            case CLIENT_RESIZE:  m_clients.start_resizing(client); break;
+            case CLIENT_CENTER:  client->center();                 break;
+            case CLIENT_NEXT_WS:                                   break;
+            case CLIENT_PREV_WS:                                   break;
             default: break;
             }
         return;
     }
 }
 
-/* void */
-/* x_events::on_button_release() */
-/* { */
-/*     Client_ptr client = xm_.get_move_resize_client(); */
+void
+x_events::on_button_release()
+{
+    x_wrapper::window_t win = m_current_event.get().xbutton.window;
+    client_ptr_t client = m_x.get_move_resize_client();
 
-/*     if (!client || m_current_event.xbutton.window != client->mr_indicator) */
-/*         return; */
+    if (!client || win.get() != client->mr_indicator.get())
+        return;
 
-/*     XWindowAttributes pwa; */
-/*     xh_.get_attributes(client->frame, pwa); */
+    auto attrs = x_wrapper::get_attributes(client->frame);
 
-/*     switch (xm_.get_move_resize_state()) { */
-/*     case MR_MOVE: */
-/*         cm_.stop_moving(client, {pwa.x, pwa.y}); */
-/*         break; */
-/*     case MR_RESIZE: */
-/*         cm_.stop_resizing(client, {pwa.x, pwa.y}, {pwa.width, pwa.height}); */
-/*         break; */
-/*     default: break; */
-/*     } */
-/* } */
+    switch (m_x.get_move_resize_state()) {
+    case MR_MOVE:   m_clients.stop_moving(client, attrs);          break;
+    case MR_RESIZE: m_clients.stop_resizing(client, attrs, attrs); break;
+    default: break;
+    }
+}
 
-/* void */
-/* x_events::on_circulate_request() */
-/* { */
-/*     xh_.propagate_circulate_request(m_current_event); */
-/* } */
+void
+x_events::on_circulate_request()
+{
+    x_wrapper::propagate_circulate_request(m_current_event);
+}
 
-/* void */
-/* x_events::on_client_message() */
-/* { */
-/*     XClientMessageEvent event = m_current_event.xclient; */
-/*     Window win = event.window; */
-/*     Client_ptr client = cm_.get_client(win); */
+void
+x_events::on_client_message()
+{
+    XClientMessageEvent event = m_current_event.get().xclient;
+    x_wrapper::window_t win = event.window;
+    client_ptr_t client = m_clients.win_to_client(win);
 
-/*     if (!client) */
-/*         return; */
+    if (!client)
+        return;
 
-/*     int netwm_index; */
-/*     for (netwm_index = 0; netwm_index < NetLast; ++netwm_index) */
-/*         if (event.message_type == ewmh_.get_netwm_atom(netwm_index)) */
-/*             break; */
-/*     if (netwm_index >= NetLast) */
-/*         return; */
+    int netwm_index;
+    for (netwm_index = 0; netwm_index < NetLast; ++netwm_index)
+        if (event.message_type == m_ewmh.get_netwm_atom(netwm_index))
+            break;
+    if (netwm_index >= NetLast)
+        return;
 
-/*     switch (netwm_index) { */
-/*     case NetWmState: */
-/*         { */
-/*             for (int property = 1; property <= 2; ++property) { */
-/*                 if (event.data.l[property] == 0) */
-/*                     continue; */
+    switch (netwm_index) {
+    case NetWmState:
+        {
+            for (int property = 1; property <= 2; ++property) {
+                if (event.data.l[property] == 0)
+                    continue;
 
-/*                 if ((Atom)event.data.l[property] */
-/*                     == ewmh_.get_netwm_atom(NetWmStateFullscreen)) */
-/*                 { */
-/*                     if (event.data.l[0] >= NOACTION) */
-/*                         return; */
-/*                     cm_.toggle_fullscreen(client, event.data.l[0]); */
-/*                 } else if ((Atom)event.data.l[property] */
-/*                     == ewmh_.get_netwm_atom(NetWmStateDemandsAttention)) */
-/*                 { */
-/*                     if (event.data.l[0] >= NOACTION) */
-/*                         return; */
-/*                     cm_.toggle_urgency(client, event.data.l[0]); */
-/*                 } */
-/*             } */
-/*         } */
-/*         break; */
-/*     case NetActiveWindow: */
-/*         {   // if pager or taskbar (source indicator = 2) */
-/*             if (ALLOW_FOCUSSTEAL && event.data.l[0] == 2) */
-/*                 cm_.focus(client); */
-/*         } */
-/*         break; */
-/*     default: break; */
-/*     } */
-/* } */
+                if ((Atom)event.data.l[property]
+                    == m_ewmh.get_netwm_atom(NetWmStateFullscreen))
+                {
+                    if (event.data.l[0] >= NetNoAction)
+                        return;
+                    /* m_clients.toggle_fullscreen(client, event.data.l[0]); */
+                } else if ((Atom)event.data.l[property]
+                    == m_ewmh.get_netwm_atom(NetWmStateDemandsAttention))
+                {
+                    if (event.data.l[0] >= NetNoAction)
+                        return;
+                    /* m_clients.toggle_urgency(client, event.data.l[0]); */
+                }
+            }
+        }
+        break;
+    case NetActiveWindow:
+        {   // if pager or taskbar (source indicator = 2)
+            /* if (ALLOW_FOCUSSTEAL && event.data.l[0] == 2) */
+            /*     m_clients.focus(client); */
+        }
+        break;
+    default: break;
+    }
+}
 
 /* void */
 /* x_events::on_configure_request() */

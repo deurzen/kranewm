@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 
-enum { // NetWM atom identifiers
+enum NetWmIdentifier { // NetWM atom identifiers
     NetSupported = 0, NetFirst = NetSupported,
     NetClientList,
     NetClientListStacking,
@@ -45,6 +45,13 @@ enum { // NetWM atom identifiers
     NetWmWindowTypeNotification,
     NetWmWindowTypeNormal, NetWmWindowTypeLast = NetWmWindowTypeNormal,
     NetLast
+};
+
+enum NetWmAction { // values used in XClientMessageEvent.data.l[{1,2}]
+    NetRemove   = 0,
+    NetAdd      = 1,
+    NetToggle   = 2,
+    NetNoAction
 };
 
 
