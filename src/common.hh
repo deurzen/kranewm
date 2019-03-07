@@ -9,6 +9,10 @@ extern "C" {
 #include <X11/X.h>
 }
 
+
+const ::std::string WMNAME = "kranewm";
+const ::std::string FONTNAME = "-*-terminus-*-*-*-*-*-*-*-*-*-*-*-*";
+
 const int LEFT_BUTTON        = 1;
 const int RIGHT_BUTTON       = 3;
 const int SCROLL_UP_BUTTON   = 4;
@@ -27,29 +31,7 @@ const int SECMASK = Mod4Mask;
 const int KB_RESIZE_INCREMENT = 5;
 const int KB_MOVE_INCREMENT   = 5;
 
-const ::std::map<unsigned, ::std::string> USER_WORKSPACES({
-    // nr   name
-    { 1,   "1:main" },
-    { 2,   "2:web"  },
-    { 3,   "3:term" },
-    { 4,   "4"      },
-    { 5,   "5"      },
-    { 6,   "6"      },
-    { 7,   "7"      },
-    { 8,   "8"      },
-    { 9,   "9"      },
-});
-
-const ::std::string WMNAME = "kranewm";
-const ::std::string FONTNAME = "-*-terminus-*-*-*-*-*-*-*-*-*-*-*-*";
-
 const int MIN_WINDOW_SIZE = 50;
-const int BORDER_WIDTH    = 2;
-const int SHADED_HEIGHT   = 14;
-const int ICON_WIDTH      = 250;
-const int ICON_HEIGHT     = 16;
-const int ICON_BORDER     = 1;
-const int ICON_ROW_LENGTH = 50;
 const int SIDEBAR_WIDTH   = 12;
 
 const unsigned long REG_BORDER_COLOR          = 0x404040;

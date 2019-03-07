@@ -1,7 +1,11 @@
 #ifndef __KRANEWM__UTIL__GUARD__
 #define __KRANEWM__UTIL__GUARD__
 
+#include <algorithm>
 #include <string>
+#include <map>
+#include <vector>
+#include <deque>
 
 
 void die(const ::std::string&);
@@ -28,5 +32,39 @@ struct Range
     T min;
     T max;
 };
+
+
+template <typename Keytype, typename Valtype>
+void
+erase_find(::std::map<Keytype, Valtype>& m, Keytype key)
+{
+    auto i = m.find(key);
+    if (i == m.end())
+        return;
+
+    m.erase(i);
+}
+
+template <typename Valtype>
+void
+erase_remove(::std::vector<Valtype>& v, Valtype val)
+{
+    auto i = ::std::remove(v.begin(), v.end(), val);
+    if (i == v.end())
+        return;
+
+    v.erase(i, v.end());
+}
+
+template <typename Valtype>
+void
+erase_remove(::std::deque<Valtype>& v, Valtype val)
+{
+    auto i = ::std::remove(v.begin(), v.end(), val);
+    if (i == v.end())
+        return;
+
+    v.erase(i, v.end());
+}
 
 #endif//__KRANEWM__UTIL__GUARD__

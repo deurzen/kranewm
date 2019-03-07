@@ -1,6 +1,8 @@
 #include "ewmh.hh"
 #include "common.hh"
+#include "decoration.hh"
 #include "util.hh"
+#include "workspace.hh"
 
 #include "x_wrapper/attributes.hh"
 
@@ -53,7 +55,7 @@ ewmh::set_frame_extents(x_wrapper::window_t win, bool overridden)
     static long frame_extents_normal[] = {
         0, // left
         0, // right
-        BORDER_WIDTH, // top
+        BORDER_HEIGHT, // top
         0  // bottom
     };
 

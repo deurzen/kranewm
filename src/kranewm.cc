@@ -4,6 +4,7 @@
 #include "x_wrapper/attributes.hh"
 #include "common.hh"
 #include "util.hh"
+#include "workspace.hh"
 
 #include <csignal>
 
