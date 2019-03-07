@@ -60,16 +60,12 @@ namespace x_wrapper
         cardinal_list_t() = default;
 
         cardinal_list_t(CARD32* card_list, size_t list_length)
-            : len(list_length)
-        {
-            ::std::memcpy(val, card_list, sizeof(CARD32) * list_length);
-        }
+            : val(card_list), len(list_length)
+        {}
 
         cardinal_list_t(void* raw_data, unsigned long data_len)
-            : len(data_len)
-        {
-            ::std::memcpy(val, (CARD32*)raw_data, sizeof(CARD32) * data_len);
-        }
+            : val((CARD32*) raw_data), len(data_len)
+        {}
 
         operator ::std::vector<CARD32>() const { return ::std::vector<CARD32>(val, val + len); }
         operator CARD32*() const { return val; }

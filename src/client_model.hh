@@ -4,4 +4,12 @@
 // TODO administration of clients/workspaces : general overview, combines everything higher-level
 
 
+class client_model
+{
+
+
+
+
+};
+
 #endif//__KRANEWM_CLIENT_MODEL_GUARD__

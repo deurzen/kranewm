@@ -2,7 +2,6 @@
 #define __KRANEWM__X_EVENTS__GUARD__
 
 #include "common.hh"
-#include "ewmh.hh"
 #include "rule.hh"
 #include "keybind.hh"
 #include "mousebind.hh"
@@ -12,6 +11,9 @@
 #define YES true
 #define NO  false
 #define CURRENT 0
+
+// Forward decls
+class ewmh;
 
 class x_events
 {

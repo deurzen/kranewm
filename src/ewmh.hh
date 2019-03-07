@@ -51,7 +51,7 @@ enum { // NetWM atom identifiers
 class ewmh
 {
 public:
-    explicit ewmh()
+    ewmh()
       : strut{None, None, None, None, 0, 0, 0, 0}
     {
         static const ::std::unordered_map<int, const char*> NETWM_ATOM_NAMES({

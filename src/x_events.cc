@@ -6,21 +6,21 @@ x_events::step()
     x_wrapper::next_event(m_current_event);
 
     switch (m_current_event.get().type) {
-    case ButtonPress:      on_button_press();      break;
-    case ButtonRelease:    on_button_release();    break;
-    case CirculateRequest: on_circulate_request(); break;
-    case ClientMessage:    on_client_message();    break;
-    case ConfigureNotify:  on_configure_notify();  break;
-    case ConfigureRequest: on_configure_request(); break;
-    case DestroyNotify:    on_destroy_notify();    break;
-    case Expose:           on_expose();            break;
-    case FocusIn:          on_focus_in();          break;
-    case KeyPress:         on_key_press();         break;
-    case MapNotify:        on_map_notify();        break;
-    case MapRequest:       on_map_request();       break;
-    case MotionNotify:     on_motion_notify();     break;
-    case PropertyNotify:   on_property_notify();   break;
-    case UnmapNotify:      on_unmap_notify();      break;
+    /* case ButtonPress:      on_button_press();      break; */
+    /* case ButtonRelease:    on_button_release();    break; */
+    /* case CirculateRequest: on_circulate_request(); break; */
+    /* case ClientMessage:    on_client_message();    break; */
+    /* case ConfigureNotify:  on_configure_notify();  break; */
+    /* case ConfigureRequest: on_configure_request(); break; */
+    /* case DestroyNotify:    on_destroy_notify();    break; */
+    /* case Expose:           on_expose();            break; */
+    /* case FocusIn:          on_focus_in();          break; */
+    /* case KeyPress:         on_key_press();         break; */
+    /* case MapNotify:        on_map_notify();        break; */
+    /* case MapRequest:       on_map_request();       break; */
+    /* case MotionNotify:     on_motion_notify();     break; */
+    /* case PropertyNotify:   on_property_notify();   break; */
+    /* case UnmapNotify:      on_unmap_notify();      break; */
     default: break;
     }
 
