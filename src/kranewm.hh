@@ -15,7 +15,9 @@ class Kranewm
 {
 public:
     Kranewm()
-        : m_events(m_ewmh, m_clients)
+        : m_ewmh(),
+          m_clients(),
+          m_events(m_ewmh, m_clients)
     {}
 
     void setup();

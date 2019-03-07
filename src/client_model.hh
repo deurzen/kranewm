@@ -1,8 +1,8 @@
 #ifndef __KRANEWM_CLIENT_MODEL_GUARD__
 #define __KRANEWM_CLIENT_MODEL_GUARD__
 
-#include "workspace.hh"
 #include "x_wrapper/window.hh"
+#include "workspace.hh"
 
 #include <map>
 #include <vector>
