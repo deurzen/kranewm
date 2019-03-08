@@ -36,7 +36,7 @@ namespace x_wrapper
         {}
 
         operator Window() const { return val; }
-        operator bool()   const { return val != 0; }
+        operator bool()   const { return val != None; }
 
         inline bool operator==(const window_t& win) const
         {
@@ -163,6 +163,8 @@ namespace x_wrapper
         void close();
         void force_close();
         void set_state(long);
+        bool is_of_type(::std::string&&);
+        bool is_of_state(::std::string&&);
 
     private:
         Window val;
@@ -176,6 +178,8 @@ namespace x_wrapper
     extern ::std::vector<window_t> get_top_level_windows();
 
     extern window_t get_transient_for(window_t&);
+
+    extern bool should_manage(window_t&);
 
     extern window_t get_input_focus();
     extern bool set_input_focus(window_t&);

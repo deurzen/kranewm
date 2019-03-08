@@ -2,6 +2,7 @@
 #include "event.hh"
 #include "error.hh"
 #include "property.hh"
+#include "attributes.hh"
 
 #include <cstring>
 
@@ -49,6 +50,14 @@ x_wrapper::get_transient_for(window_t& trans)
     Window win = None;
     XGetTransientForHint(g_dpy, trans.get(), &win);
     return win;
+}
+
+bool
+x_wrapper::should_manage(window_t& win)
+{
+    auto attrs = x_wrapper::get_attributes(win);
+    return !(attrs.get().override_redirect
+        || attrs.get().c_class == InputOnly);
 }
 
 window_t
@@ -126,4 +135,22 @@ x_wrapper::window_t::set_state(long state)
     long data[] = { state, None };
     XChangeProperty(g_dpy, val, get_atom("WM_STATE"), get_atom("WM_STATE"), 32,
         PropModeReplace, (unsigned char*) data, 2);
+}
+
+bool
+x_wrapper::window_t::is_of_type(::std::string&& type_name)
+{
+    const auto type_atom = get_property<atom_t>(val, "_NET_WM_WINDOW_TYPE");
+    const atom_t type_id = get_atom("_NET_WM_WINDOW_TYPE_" + type_name);
+
+    return type_atom.get_data().get() == type_id.get();
+}
+
+bool
+x_wrapper::window_t::is_of_state(::std::string&& type_name)
+{
+    const auto state_atom = get_property<atom_t>(val, "_NET_WM_WINDOW_STATE");
+    const atom_t state_id = get_atom("_NET_WM_WINDOW_STATE_" + type_name);
+
+    return state_atom.get_data().get() == state_id.get();
 }

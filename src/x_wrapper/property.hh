@@ -33,6 +33,11 @@ namespace x_wrapper
             return data == prop.data;
         }
 
+        inline T operator()() const
+        {
+            return data.get();
+        }
+
         inline int  length() const { return data_length; }
         inline Atom type()   const { return data_type; }
         inline int  size()   const { return type_size; }

@@ -94,5 +94,5 @@ x_model::exit_move_resize()
 bool
 x_model::is_valid() const
 {
-    return m_moveresize->state != MR_INVALID;
+    return m_moveresize && m_moveresize->state != MR_INVALID;
 }

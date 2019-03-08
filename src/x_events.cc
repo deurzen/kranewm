@@ -23,15 +23,15 @@ x_events::step()
     case ClientMessage:    on_client_message();    break;
     case ConfigureNotify:  on_configure_notify();  break;
     case ConfigureRequest: on_configure_request(); break;
-    /* case DestroyNotify:    on_destroy_notify();    break; */
-    /* case Expose:           on_expose();            break; */
-    /* case FocusIn:          on_focus_in();          break; */
+    case DestroyNotify:    on_destroy_notify();    break;
+    case Expose:           on_expose();            break;
+    case FocusIn:          on_focus_in();          break;
     case KeyPress:         on_key_press();         break;
     case MapNotify:        on_map_notify();        break;
     case MapRequest:       on_map_request();       break;
-    /* case MotionNotify:     on_motion_notify();     break; */
-    /* case PropertyNotify:   on_property_notify();   break; */
-    /* case UnmapNotify:      on_unmap_notify();      break; */
+    case MotionNotify:     on_motion_notify();     break;
+    case PropertyNotify:   on_property_notify();   break;
+    case UnmapNotify:      on_unmap_notify();      break;
     default: break;
     }
 
@@ -41,7 +41,47 @@ x_events::step()
 void
 x_events::register_window(x_wrapper::window_t win)
 {
+    if (m_ewmh.check_apply_strut(win))
+        m_clients.active_workspace()->arrange();
 
+    if (!x_wrapper::should_manage(win) || win.is_of_type("DOCK")) {
+        m_ewmh.set_frame_extents(win, true);
+        return;
+    }
+
+    Rule rule = retrieve_rule(win);
+    if (x_wrapper::has_property<x_wrapper::cardinal_t>(win, "_NET_WM_DESKTOP"))
+        rule.workspace = x_wrapper::get_property<x_wrapper::cardinal_t>(win, "_NET_WM_DESKTOP")();
+
+    if (x_wrapper::get_sizehints(win).get().flags & USPosition)
+        rule.center = false;
+
+    x_wrapper::window_t parent = x_wrapper::get_transient_for(win);
+    if (parent) {
+        if (!x_wrapper::should_manage(parent)) {
+            m_ewmh.set_frame_extents(parent, true);
+            return;
+        }
+
+        client_ptr_t client;
+        if ((client = m_clients.win_to_client(parent))) {
+            rule.floating = true;
+            client_ptr_t child_client = create_client(win, rule);
+            child_client->parent = client;
+            client->children.insert(child_client);
+            m_clients.manage_client(child_client, rule);
+        } else {
+            rule.floating = true;
+            client = create_client(win, rule);
+            m_clients.manage_client(client, rule);
+        }
+
+        m_ewmh.set_frame_extents(win);
+        return;
+    }
+
+    m_clients.manage_client(create_client(win, rule), rule);
+    m_ewmh.set_frame_extents(win);
 }
 
 Rule
@@ -78,11 +118,11 @@ x_events::retrieve_rule(x_wrapper::window_t win)
                 if (rule.autoclose == ONCE)
                     rule.autoclose = OFF;
             }
-            return {floating, center, iconify, autoclose, workspace};
+            return {floating, center, false, iconify, autoclose, workspace};
         }
     }
 
-    return {false, false ,false, false, 0};
+    return {false, false, false, false, false, 0};
 }
 
 void
@@ -126,9 +166,9 @@ void
 x_events::on_button_release()
 {
     x_wrapper::window_t win = m_current_event.window();
-    client_ptr_t client = m_x.moveresize()->client;
+    client_ptr_t client = m_clients.win_to_client(win);
 
-    if (!client || win.get() != client->mr_indicator.get())
+    if (!m_x.is_valid() || (client != m_x.moveresize()->client))
         return;
 
     auto attrs = x_wrapper::get_attributes(client->frame);
@@ -311,7 +351,7 @@ x_events::on_destroy_notify()
     if (client->parent)
         client->parent->disown_child(client);
 
-    m_clients.unregister_client(client);
+    m_clients.unmanage_client(client);
 }
 
 void

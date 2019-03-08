@@ -2,11 +2,64 @@
 #include "decoration.hh"
 #include "x_wrapper/event.hh"
 #include "x_wrapper/attributes.hh"
+#include "x_wrapper/hints.hh"
+#include "x_wrapper/input.hh"
 
 client_ptr_t
-create_client(x_wrapper::window_t win, bool)
+create_client(x_wrapper::window_t win, Rule& rule)
 {
+    auto sizehints = x_wrapper::get_sizehints(win);
+    if (!sizehints.get().flags)
+        sizehints.get().flags = PSize;
 
+    Size base{}, inc{}, max{}, min{};
+    Range<float> aspect{};
+
+    if (sizehints.get().flags & PBaseSize)
+        base = {sizehints.get().base_width, sizehints.get().base_height};
+    else if (sizehints.get().flags & PMinSize)
+        base = {sizehints.get().min_width, sizehints.get().min_height};
+
+    if (sizehints.get().flags & PResizeInc)
+        inc = {sizehints.get().width_inc, sizehints.get().height_inc};
+
+    if (sizehints.get().flags & PMaxSize)
+        max = {sizehints.get().max_width, sizehints.get().max_height};
+
+    if (sizehints.get().flags & PMinSize)
+        min = {sizehints.get().min_width, sizehints.get().min_height};
+    else if (sizehints.get().flags & PBaseSize)
+        min = {sizehints.get().base_width, sizehints.get().base_height};
+
+    if (sizehints.get().flags & PAspect)
+        aspect = {static_cast<float>(sizehints.get().min_aspect.y) / sizehints.get().min_aspect.x,
+            static_cast<float>(sizehints.get().max_aspect.y) / sizehints.get().max_aspect.x};
+
+    sizeconstraints_t sizeconstraints(base, inc, max, min, aspect);
+
+    auto win_attrs = x_wrapper::get_attributes(win);
+    Pos pos = win_attrs;
+    Size size = win_attrs;
+    sizeconstraints.apply(pos, size);
+
+    x_wrapper::window_t frame = x_wrapper::create_window(false);
+    x_wrapper::select_input(win, PropertyChangeMask);
+    x_wrapper::select_input(frame, FocusChangeMask
+        | SubstructureRedirectMask | SubstructureNotifyMask);
+    win.reparent({0, BORDER_HEIGHT}, frame);
+
+    rule.fullscreen = win.is_of_state("FULLSCREEN");
+    rule.floating = rule.floating || rule.fullscreen
+        || sizeconstraints.is_fixed()
+        || win.is_of_type("DIALOG")
+        || win.is_of_type("UTILITY")
+        || win.is_of_type("SPLASH");
+
+    client_ptr_t client = new client_t(win, frame, rule);
+    client->resize({size.w, size.h + BORDER_HEIGHT});
+    client->move({pos.x, pos.y - BORDER_HEIGHT});
+
+    return client;
 }
 
 void

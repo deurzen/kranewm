@@ -31,10 +31,11 @@ struct RuleSpec
 
 struct Rule
 {
-    Rule(bool _floating, bool _center, bool _iconify,
-        bool _autoclose, unsigned _workspace)
+    Rule(bool _floating, bool _center, bool _fullscreen,
+        bool _iconify, bool _autoclose, unsigned _workspace)
         : floating(_floating),
           center(_center),
+          fullscreen(_fullscreen),
           iconify(_iconify),
           autoclose(_autoclose),
           workspace(_workspace)
@@ -42,6 +43,7 @@ struct Rule
 
     bool floating;
     bool center;
+    bool fullscreen;
     bool iconify;
     bool autoclose;
     unsigned workspace;

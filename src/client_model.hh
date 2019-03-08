@@ -3,6 +3,7 @@
 
 #include "x_wrapper/window.hh"
 #include "workspace.hh"
+#include "rule.hh"
 
 #include <unordered_map>
 #include <vector>
@@ -22,6 +23,8 @@ public:
         {
             for (auto&& [nr,name] : USER_WORKSPACES)
                 m_user_workspaces.push_back(new user_workspace_t{nr, name.c_str()});
+
+            m_current_workspace = m_user_workspaces.front();
         }
 
     client_ptr_t win_to_client(x_wrapper::window_t);
@@ -30,8 +33,8 @@ public:
     workspace_ptr_t active_workspace() const;
     client_ptr_t focused_client() const;
 
-    void register_client(client_ptr_t);
-    void unregister_client(client_ptr_t);
+    void manage_client(client_ptr_t, Rule);
+    void unmanage_client(client_ptr_t);
 
     void focus(client_ptr_t);
 

@@ -32,7 +32,7 @@ client_model::focused_client() const
 
 
 void
-client_model::register_client(client_ptr_t)
+client_model::manage_client(client_ptr_t client, Rule rule)
 {
     /* auto &ptr = _object_cache[name]; */
     /* if (!ptr) ptr = new Object; */
@@ -40,7 +40,7 @@ client_model::register_client(client_ptr_t)
 }
 
 void
-client_model::unregister_client(client_ptr_t)
+client_model::unmanage_client(client_ptr_t)
 {
 
 }
