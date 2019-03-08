@@ -1,12 +1,12 @@
-#include "x_events.hh"
+#include "x-events.hh"
 #include "decoration.hh"
 #include "ewmh.hh"
-#include "client_model.hh"
-#include "x_model.hh"
-#include "x_wrapper/attributes.hh"
-#include "x_wrapper/request.hh"
-#include "x_wrapper/hints.hh"
-#include "x_wrapper/input.hh"
+#include "client-model.hh"
+#include "x-model.hh"
+#include "x-wrapper/attributes.hh"
+#include "x-wrapper/request.hh"
+#include "x-wrapper/hints.hh"
+#include "x-wrapper/input.hh"
 
 #include <unistd.h>
 
@@ -17,10 +17,10 @@ x_events::step()
     x_wrapper::next_event(m_current_event);
 
     switch (m_current_event.type()) {
-    case ButtonPress:      on_button_press();      break;
-    case ButtonRelease:    on_button_release();    break;
-    case CirculateRequest: on_circulate_request(); break;
-    case ClientMessage:    on_client_message();    break;
+    case ButtonPress:      on_button_press();       break;
+    case ButtonRelease:    on_button_release();     break;
+    case CirculateRequest: on_circulate_request();  break;
+    case ClientMessage:    on_client_message();     break;
     case ConfigureNotify:  on_configure_notify();  break;
     case ConfigureRequest: on_configure_request(); break;
     case DestroyNotify:    on_destroy_notify();    break;
@@ -53,7 +53,7 @@ x_events::register_window(x_wrapper::window_t win)
     if (x_wrapper::has_property<x_wrapper::cardinal_t>(win, "_NET_WM_DESKTOP"))
         rule.workspace = x_wrapper::get_property<x_wrapper::cardinal_t>(win, "_NET_WM_DESKTOP")();
 
-    if (x_wrapper::get_sizehints(win).get().flags & USPosition)
+    if (x_wrapper::get_sizehints(win).success() & USPosition)
         rule.center = false;
 
     x_wrapper::window_t parent = x_wrapper::get_transient_for(win);
@@ -128,7 +128,7 @@ x_events::retrieve_rule(x_wrapper::window_t win)
 void
 x_events::on_button_press()
 {
-    x_wrapper::window_t win = m_current_event.window();
+    x_wrapper::window_t win = m_current_event.get().xbutton.window;
     x_wrapper::window_t subwin = m_current_event.get().xbutton.subwindow;
     unsigned button = m_current_event.get().xbutton.button;
     unsigned mask = m_current_event.get().xbutton.state;
@@ -165,7 +165,7 @@ x_events::on_button_press()
 void
 x_events::on_button_release()
 {
-    x_wrapper::window_t win = m_current_event.window();
+    x_wrapper::window_t win = m_current_event.get().xbutton.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (!m_x.is_valid() || (client != m_x.moveresize()->client))
@@ -239,7 +239,7 @@ x_events::on_client_message()
 void
 x_events::on_configure_request()
 {
-    x_wrapper::window_t win = m_current_event.window();
+    x_wrapper::window_t win = m_current_event.get().xconfigurerequest.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (!client) {
@@ -248,8 +248,8 @@ x_events::on_configure_request()
         return;
     }
 
-    if (is_userworkspace(m_clients.client_workspace(client))) {
-        auto workspace = dynamic_cast<userworkspace_ptr_t>(m_clients.client_workspace(client));
+    if (is_user_workspace(m_clients.client_workspace(client))) {
+        auto workspace = dynamic_cast<user_workspace_ptr_t>(m_clients.client_workspace(client));
         if (!(workspace->in_float_layout() || client->floating))
             return;
     }
@@ -316,14 +316,14 @@ x_events::on_configure_request()
 void
 x_events::on_configure_notify()
 {
-    x_wrapper::window_t win = m_current_event.window();
+    x_wrapper::window_t win = m_current_event.get().xconfigure.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (!client)
         return;
 
-    auto sizehints = x_wrapper::get_sizehints(win);
-    if (!sizehints.get().flags)
+    auto sizehints = x_wrapper::get_sizehints(client->win);
+    if (sizehints.success())
         sizehints.get().flags = PSize;
 
     if (m_x.update_hints(client, sizehints)) {
@@ -335,7 +335,7 @@ x_events::on_configure_notify()
 void
 x_events::on_destroy_notify()
 {
-    x_wrapper::window_t win = m_current_event.window();
+    x_wrapper::window_t win = m_current_event.get().xdestroywindow.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (!client) {
@@ -357,7 +357,7 @@ x_events::on_destroy_notify()
 void
 x_events::on_expose()
 {
-    x_wrapper::window_t win = m_current_event.window();
+    x_wrapper::window_t win = m_current_event.get().xexpose.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (client && client->shaded)
@@ -380,7 +380,7 @@ x_events::on_expose()
 void
 x_events::on_focus_in()
 {
-    x_wrapper::window_t win = m_current_event.window();
+    x_wrapper::window_t win = m_current_event.get().xfocus.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (client && client == m_clients.focused_client()) {
@@ -624,7 +624,7 @@ x_events::on_key_press()
 void
 x_events::on_map_request()
 {
-    x_wrapper::window_t win = m_current_event.window();
+    x_wrapper::window_t win = m_current_event.get().xmaprequest.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (client) {
@@ -640,21 +640,30 @@ x_events::on_map_request()
         return;
     }
 
+    if (client && client->redeem_expect(MAP)) {
+        return;
+    }
+
     register_window(win);
-    win.map();
 }
 
 void
 x_events::on_map_notify()
 {
-    x_wrapper::window_t win = m_current_event.window();
+    x_wrapper::window_t win = m_current_event.get().xmap.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (client) {
-        if (client->redeem_expect(MAP))
-            return;
+        if (!client->redeem_expect(MAP)
+            && is_moveresize_workspace(m_clients.client_workspace(client)))
+        {
+            m_x.exit_move_resize();
+            auto attrs = x_wrapper::get_attributes(client->frame);
+            m_clients.stop_moving(client, attrs);
+            m_clients.stop_resizing(client, attrs, attrs);
+        }
 
-        // TODO make sure reg_win not on existing client win
+        return;
     }
 
     register_window(win);
@@ -719,7 +728,7 @@ x_events::on_property_notify()
 void
 x_events::on_unmap_notify()
 {
-    x_wrapper::window_t win = m_current_event.window();
+    x_wrapper::window_t win = m_current_event.get().xunmap.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (!client || client->redeem_expect(ICONIFY) || client->redeem_expect(WITHDRAW))

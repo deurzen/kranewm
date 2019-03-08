@@ -1,13 +1,13 @@
 #ifndef __KRANEWM__KRANEWM__GUARD__
 #define __KRANEWM__KRANEWM__GUARD__
 
-#include "x_wrapper/display.hh"
-#include "x_wrapper/error.hh"
+#include "x-wrapper/display.hh"
+#include "x-wrapper/error.hh"
 
 #include "ewmh.hh"
-#include "client_model.hh"
-#include "x_model.hh"
-#include "x_events.hh"
+#include "client-model.hh"
+#include "x-model.hh"
+#include "x-events.hh"
 
 #include <memory>
 

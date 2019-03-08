@@ -1,4 +1,4 @@
-#include "client_model.hh"
+#include "client-model.hh"
 
 client_ptr_t
 client_model::win_to_client(x_wrapper::window_t win)
@@ -18,11 +18,11 @@ client_model::client_workspace(client_ptr_t client)
     if (m_resize_workspace->get() == client)
         return m_resize_workspace;
 
-    return client_userworkspace(client);
+    return client_user_workspace(client);
 }
 
-userworkspace_ptr_t
-client_model::client_userworkspace(client_ptr_t client)
+user_workspace_ptr_t
+client_model::client_user_workspace(client_ptr_t client)
 {
     if (m_client_workspaces.find(client) != m_client_workspaces.end())
         return m_client_workspaces[client];
@@ -30,7 +30,7 @@ client_model::client_userworkspace(client_ptr_t client)
     return nullptr;
 }
 
-userworkspace_ptr_t
+user_workspace_ptr_t
 client_model::active_workspace() const
 {
     return m_current_workspace;
@@ -51,7 +51,23 @@ client_model::manage_client(client_ptr_t client, Rule rule)
     m_managed_windows.push_back(client->win);
 
     if (client->parent) {
-        // TODO get_client_userworkspace instead of generic_workspace
+        // deiconify parent
+        if (is_user_workspace(client_workspace(client->parent))
+            && client_workspace(client->parent) != client_workspace(client))
+        {
+            change_active_workspace(client_user_workspace(client->parent));
+        }
+    }
+
+    if (rule.center)
+        client->center();
+
+    if (rule.workspace) {
+
+    } else {
+        m_client_workspaces[client] = m_current_workspace;
+        m_current_workspace->add_client(client).arrange();
+        client->map();
     }
 
 }
@@ -104,5 +120,17 @@ void
 client_model::stop_resizing(client_ptr_t client, Pos pos, Size size)
 {
 // make sure in resize_ws (x_events::map_window)
+
+}
+
+void
+client_model::change_active_workspace(unsigned workspace_nr)
+{
+
+}
+
+void
+client_model::change_active_workspace(user_workspace_ptr_t workspace)
+{
 
 }

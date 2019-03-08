@@ -1,6 +1,6 @@
-#include "x_model.hh"
+#include "x-model.hh"
 #include "common.hh"
-#include "x_wrapper/attributes.hh"
+#include "x-wrapper/attributes.hh"
 
 
 bool

@@ -31,6 +31,6 @@ x_wrapper::get_sizehints(window_t& win)
 {
     long _l;
     XSizeHints hints;
-    XGetWMNormalHints(g_dpy, win.get(), &hints, &_l);
-    return hints;
+    int status = !XGetWMNormalHints(g_dpy, win.get(), &hints, &_l);
+    return {hints, status};
 }

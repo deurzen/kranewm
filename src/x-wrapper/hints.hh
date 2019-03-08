@@ -34,17 +34,20 @@ namespace x_wrapper
     public:
         sizehints_t() = default;
 
-        sizehints_t(XSizeHints sizehints)
-            : val(sizehints)
+        sizehints_t(XSizeHints sizehints, bool _status)
+            : val(sizehints), status(_status)
         {}
 
         operator XSizeHints() const { return val; }
 
-        inline XSizeHints& get() { return val; }
+        inline XSizeHints& get()     { return val; }
         inline XSizeHints* get_ptr() { return &val; }
+
+        inline bool success() { return status; }
 
     private:
         XSizeHints val;
+        bool status;
 
     };
 

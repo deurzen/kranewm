@@ -1,6 +1,8 @@
 #ifndef __KRANEWM__X_WRAPPER__DISPLAY__GUARD__
 #define __KRANEWM__X_WRAPPER__DISPLAY__GUARD__
 
+#include "cursor.hh"
+
 extern "C" {
 #include <X11/Xlib.h>
 #include <X11/cursorfont.h>

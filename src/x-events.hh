@@ -5,7 +5,7 @@
 #include "rule.hh"
 #include "keybind.hh"
 #include "mousebind.hh"
-#include "x_wrapper/event.hh"
+#include "x-wrapper/event.hh"
 
 #define ALL ""
 #define YES true

@@ -1,8 +1,8 @@
 #ifndef __KRANEWM__EWMH__GUARD__
 #define __KRANEWM__EWMH__GUARD__
 
-#include "x_wrapper/window.hh"
-#include "x_wrapper/property.hh"
+#include "x-wrapper/window.hh"
+#include "x-wrapper/property.hh"
 
 #include <unordered_map>
 

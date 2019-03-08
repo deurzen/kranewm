@@ -25,10 +25,11 @@ typedef struct ::std::set<client_ptr_t> client_ptr_set_t;
 
 typedef struct client_t
 {
-    client_t(x_wrapper::window_t _win, x_wrapper::window_t _frame, Rule& rule)
-        : win(_win), frame(_frame), expect(NO_EFFECT), focused(false),
-          floating(rule.floating), fullscreen(rule.fullscreen), shaded(false),
-          iconified(rule.iconify), urgent(false), parent(nullptr)
+    client_t(x_wrapper::window_t _win, x_wrapper::window_t _frame,
+        sizeconstraints_t _sizeconstraints, Rule& rule)
+        : win(_win), frame(_frame), sizeconstraints(_sizeconstraints), expect(NO_EFFECT),
+          focused(false), floating(rule.floating), fullscreen(rule.fullscreen),
+          shaded(false), iconified(rule.iconify), urgent(false), parent(nullptr)
     {}
 
     void disown_child(client_ptr_t);

@@ -1,7 +1,7 @@
 #ifndef __KRANEWM__KEYBIND__GUARD__
 #define __KRANEWM__KEYBIND__GUARD__
 
-#include "x_wrapper/key.hh"
+#include "x-wrapper/key.hh"
 
 #include <unordered_map>
 

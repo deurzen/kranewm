@@ -1,9 +1,9 @@
 #include "client.hh"
 #include "decoration.hh"
-#include "x_wrapper/event.hh"
-#include "x_wrapper/attributes.hh"
-#include "x_wrapper/hints.hh"
-#include "x_wrapper/input.hh"
+#include "x-wrapper/event.hh"
+#include "x-wrapper/attributes.hh"
+#include "x-wrapper/hints.hh"
+#include "x-wrapper/input.hh"
 
 client_ptr_t
 create_client(x_wrapper::window_t win, Rule& rule)
@@ -42,20 +42,22 @@ create_client(x_wrapper::window_t win, Rule& rule)
     Size size = win_attrs;
     sizeconstraints.apply(pos, size);
 
-    x_wrapper::window_t frame = x_wrapper::create_window(false);
+    x_wrapper::window_t frame = x_wrapper::create_window();
     x_wrapper::select_input(win, PropertyChangeMask);
     x_wrapper::select_input(frame, FocusChangeMask
         | SubstructureRedirectMask | SubstructureNotifyMask);
+
+    frame.set_background_color(REG_BORDER_COLOR);
     win.reparent({0, BORDER_HEIGHT}, frame);
 
     rule.fullscreen = win.is_of_state("FULLSCREEN");
-    rule.floating = rule.floating || rule.fullscreen
+    rule.floating |= rule.fullscreen
         || sizeconstraints.is_fixed()
         || win.is_of_type("DIALOG")
         || win.is_of_type("UTILITY")
         || win.is_of_type("SPLASH");
 
-    client_ptr_t client = new client_t(win, frame, rule);
+    client_ptr_t client = new client_t(win, frame, sizeconstraints, rule);
     client->resize({size.w, size.h + BORDER_HEIGHT});
     client->move({pos.x, pos.y - BORDER_HEIGHT});
 

@@ -1,8 +1,8 @@
 #include "kranewm.hh"
-#include "x_wrapper/input.hh"
-#include "x_wrapper/window.hh"
-#include "x_wrapper/event.hh"
-#include "x_wrapper/attributes.hh"
+#include "x-wrapper/input.hh"
+#include "x-wrapper/window.hh"
+#include "x-wrapper/event.hh"
+#include "x-wrapper/attributes.hh"
 #include "common.hh"
 #include "util.hh"
 #include "workspace.hh"
@@ -76,6 +76,7 @@ void
 kranewm::run()
 {
     while(m_events.step());
+    x_wrapper::sync(false);
 }
 
 void

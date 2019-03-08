@@ -1,6 +1,6 @@
 #include "constraints.hh"
 #include "common.hh"
-#include "x_wrapper/attributes.hh"
+#include "x-wrapper/attributes.hh"
 
 void
 sizeconstraints_t::apply(Pos& pos, Size& size) const
@@ -22,13 +22,7 @@ sizeconstraints_t::apply(Pos& pos, Size& size) const
     if (pos.y + size.h <= 0)
         pos.y = 0;
 
-    bool base_is_min = base == min;
-    if (!base_is_min) {
-        size.w -= base.w;
-        size.h -= base.h;
-    }
-
-    if (base_is_min) {
+    if (base == min) {
         size.w -= base.w;
         size.h -= base.h;
     }
@@ -41,5 +35,4 @@ sizeconstraints_t::apply(Pos& pos, Size& size) const
 
     if (max.h)
         size.h = ::std::min(size.h, max.h);
-
 }

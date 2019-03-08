@@ -31,7 +31,7 @@ bin:
 
 obj:
 	@[ -d obj ] || mkdir obj
-	@[ -d obj/x_wrapper ] || mkdir obj/x_wrapper
+	@[ -d obj/x-wrapper ] || mkdir obj/x-wrapper
 
 notify-build:
 	@echo building
@@ -50,7 +50,7 @@ obj/%.o: obj
 obj/%.o: src/%.cc
 	${CC} ${CXXFLAGS} -MMD -c $< -o $@
 
-obj/%.o: src/x_wrapper/%.cc
+obj/%.o: src/x-wrapper/%.cc
 	${CC} ${CXXFLAGS} -MMD -c $< -o $@
 
 run:

@@ -174,7 +174,7 @@ namespace x_wrapper
     extern window_t g_root;
     extern display_t g_dpy;
 
-    extern window_t create_window(bool do_not_manage);
+    extern window_t create_window(bool do_not_manage = false);
     extern ::std::vector<window_t> get_top_level_windows();
 
     extern window_t get_transient_for(window_t&);

@@ -1,4 +1,4 @@
-#include "focus_cycle.hh"
+#include "focus-cycle.hh"
 #include "util.hh"
 
 #include <algorithm>

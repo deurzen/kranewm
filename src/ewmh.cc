@@ -4,7 +4,7 @@
 #include "util.hh"
 #include "workspace.hh"
 
-#include "x_wrapper/attributes.hh"
+#include "x-wrapper/attributes.hh"
 
 #include <algorithm>
 #include <cstring>

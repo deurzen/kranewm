@@ -3,8 +3,8 @@
 
 #include "floating.hh"
 #include "constraints.hh"
-#include "x_wrapper/window.hh"
-#include "x_wrapper/hints.hh"
+#include "x-wrapper/window.hh"
+#include "x-wrapper/hints.hh"
 
 
 class x_model
