@@ -30,6 +30,8 @@ typedef struct client_t
           iconified(false), urgent(false), parent(nullptr)
     {}
 
+    void disown_child(client_ptr_t);
+
     void move(Pos);
     void resize(Size);
 
@@ -64,5 +66,8 @@ typedef struct client_t
 
 
 extern client_ptr_t create_client(x_wrapper::window_t, bool);
+
+extern void update_offset(client_ptr_t);
+
 
 #endif//__KRANEWM__CLIENT__GUARD__

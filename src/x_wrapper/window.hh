@@ -181,4 +181,16 @@ namespace x_wrapper
 
 }
 
+namespace std
+{
+    template <>
+    struct hash<x_wrapper::window_t>
+    {
+        std::size_t operator()(const x_wrapper::window_t& win) const
+        {
+            return win.get();
+        }
+    };
+}
+
 #endif//__KRANEWM__X_WRAPPER__WINDOW__GUARD__

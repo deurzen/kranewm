@@ -30,6 +30,8 @@ namespace x_wrapper
         inline XEvent& get() { return val; }
         inline XEvent* get_ptr() { return &val; }
 
+        inline window_t window() { return val.xany.window; }
+
         event_t& send(long mask, window_t win = None);
 
     private:
@@ -52,8 +54,6 @@ namespace x_wrapper
 
     extern void enable_substructure_events();
     extern void disable_substructure_events();
-
-    extern void send_event(event_t&);
 
     extern void next_event(event_t&);
     extern void last_typed_event(event_t&, int);

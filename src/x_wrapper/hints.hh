@@ -40,7 +40,7 @@ namespace x_wrapper
 
         operator XSizeHints() const { return val; }
 
-        inline XSizeHints get() const { return val; }
+        inline XSizeHints& get() { return val; }
         inline XSizeHints* get_ptr() { return &val; }
 
     private:

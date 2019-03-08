@@ -5,6 +5,8 @@
 #include "x_model.hh"
 #include "x_wrapper/attributes.hh"
 #include "x_wrapper/request.hh"
+#include "x_wrapper/hints.hh"
+#include "x_wrapper/input.hh"
 
 bool
 x_events::step()
@@ -83,7 +85,7 @@ x_events::retrieve_rule(x_wrapper::window_t win)
 void
 x_events::on_button_press()
 {
-    x_wrapper::window_t win = m_current_event.get().xbutton.window;
+    x_wrapper::window_t win = m_current_event.window();
     x_wrapper::window_t subwin = m_current_event.get().xbutton.subwindow;
     unsigned button = m_current_event.get().xbutton.button;
     unsigned mask = m_current_event.get().xbutton.state;
@@ -120,7 +122,7 @@ x_events::on_button_press()
 void
 x_events::on_button_release()
 {
-    x_wrapper::window_t win = m_current_event.get().xbutton.window;
+    x_wrapper::window_t win = m_current_event.window();
     client_ptr_t client = m_x.get_move_resize_client();
 
     if (!client || win.get() != client->mr_indicator.get())
@@ -194,7 +196,7 @@ x_events::on_client_message()
 void
 x_events::on_configure_request()
 {
-    x_wrapper::window_t win = m_current_event.get().xconfigurerequest.window;
+    x_wrapper::window_t win = m_current_event.window();
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (!client) {
@@ -268,59 +270,47 @@ x_events::on_configure_request()
     }
 }
 
-/* void */
-/* x_events::on_configure_notify() */
-/* { */
-/*     Window win = m_current_event.xconfigure.window; */
-/*     Client_ptr client = cm_.get_client(win); */
+void
+x_events::on_configure_notify()
+{
+    x_wrapper::window_t win = m_current_event.window();
+    client_ptr_t client = m_clients.win_to_client(win);
 
-/*     if (!client) */
-/*         return; */
+    if (!client)
+        return;
 
-/*     cm_.change_size(client, */
-/*         {m_current_event.xconfigure.width, m_current_event.xconfigure.height}); */
+    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
 
-/*     XWindowAttributes rwa; */
-/*     xh_.get_root_attributes(rwa); */
+    x_wrapper::sizehints_t size_hints = x_wrapper::get_sizehints(win);
+    size_hints.get().flags = PSize;
 
-/*     XSizeHints sh; */
-/*     if (xh_.get_size_hints(client->win, sh)) */
-/*         sh.flags = PSize; */
+    if (m_x.update_hints(client, size_hints, root_attrs)) {
+        m_x.apply_hints(client->pos, client->size, client->size_constraints, root_attrs);
+        client->resize(client->size);
+    }
+}
 
-/*     if (xm_.update_hints(client, sh, {rwa.width, rwa.height})) { */
-/*         xm_.apply_hints(client->pos, client->size, client->size_hints, */
-/*             {rwa.width, rwa.height}); */
-/*         xh_.resize_window(client->win, {client->size.w, client->size.h - BORDER_WIDTH}); */
-/*         xh_.resize_window(client->frame, client->size); */
-/*     } */
-/* } */
+void
+x_events::on_destroy_notify()
+{
+    x_wrapper::window_t win = m_current_event.window();
+    client_ptr_t client = m_clients.win_to_client(win);
 
-/* void */
-/* x_events::on_destroy_notify() */
-/* { */
-/*     Window win = m_current_event.xdestroywindow.window; */
-/*     Client_ptr client = cm_.get_client(win); */
+    if (!client) {
+        /* cm_.remove_always_on_top_window(win); */
+        if (m_ewmh.check_release_strut(win))
+            m_clients.active_workspace()->arrange();
+        return;
+    }
 
-/*     if (!client) { */
-/*         cm_.remove_always_on_top_window(win); */
-/*         if (ewmh_.check_release_strut(win) */
-/*             && cm_.get_current_workspace()->layout != LT_FLOAT) */
-/*         { */
-/*             cm_.arrange_current_workspace(); */
-/*         } */
-/*         return; */
-/*     } */
+    x_wrapper::select_input(client->win, 0);
+    x_wrapper::select_input(client->frame, 0);
 
-/*     xh_.select_input(client->win, 0); */
-/*     xh_.select_input(client->frame, 0); */
+    if (client->parent)
+        client->parent->disown_child(client);
 
-/*     if (client->parent) { */
-/*         cm_.remove_child(client); */
-/*         return; */
-/*     } */
-
-/*     cm_.remove_client(client); */
-/* } */
+    m_clients.unregister_client(client);
+}
 
 /* void */
 /* x_events::on_expose() */

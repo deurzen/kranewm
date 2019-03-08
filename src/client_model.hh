@@ -4,7 +4,7 @@
 #include "x_wrapper/window.hh"
 #include "workspace.hh"
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 // TODO administration of clients/workspaces : general overview, combines everything higher-level
@@ -27,6 +27,11 @@ public:
     client_ptr_t win_to_client(x_wrapper::window_t);
     workspace_ptr_t client_workspace(client_ptr_t);
 
+    workspace_ptr_t active_workspace() const;
+
+    void register_client(client_ptr_t);
+    void unregister_client(client_ptr_t);
+
     void focus(client_ptr_t);
 
     void start_moving(client_ptr_t);
@@ -43,8 +48,8 @@ private:
     ::std::vector<x_wrapper::window_t> m_registered_windows;
     ::std::vector<user_workspace_ptr_t> m_user_workspaces;
 
-    ::std::map<x_wrapper::window_t, client_ptr_t> m_client_windows;
-    ::std::map<client_ptr_t, workspace_ptr_t> m_client_workspaces;
+    ::std::unordered_map<x_wrapper::window_t, client_ptr_t> m_client_windows;
+    ::std::unordered_map<client_ptr_t, workspace_ptr_t> m_client_workspaces;
 
     client_ptr_t m_marked_client;
     client_ptr_t m_focused_client;

@@ -1,12 +1,10 @@
 #include "client_model.hh"
 
-
 client_ptr_t
 client_model::win_to_client(x_wrapper::window_t win)
 {
-    for (auto&& [_win,_client] : m_client_windows)
-        if (_win.get() == win.get())
-            return _client;
+    if (m_client_windows.find(win) != m_client_windows.end())
+        return m_client_windows[win];
 
     return nullptr;
 }
@@ -14,10 +12,31 @@ client_model::win_to_client(x_wrapper::window_t win)
 workspace_ptr_t
 client_model::client_workspace(client_ptr_t client)
 {
-    if (m_client_workspaces.count(client))
+    if (m_client_workspaces.find(client) != m_client_workspaces.end())
         return m_client_workspaces[client];
 
     return nullptr;
+}
+
+workspace_ptr_t
+client_model::active_workspace() const
+{
+    return m_current_workspace;
+}
+
+
+void
+client_model::register_client(client_ptr_t)
+{
+    /* auto &ptr = _object_cache[name]; */
+    /* if (!ptr) ptr = new Object; */
+    /* return ptr; */
+}
+
+void
+client_model::unregister_client(client_ptr_t)
+{
+
 }
 
 void

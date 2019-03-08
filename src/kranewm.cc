@@ -70,7 +70,7 @@ kranewm::setup()
 void
 kranewm::run()
 {
-    while(true);
+    while(m_events.step());
 }
 
 void
