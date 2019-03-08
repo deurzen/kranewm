@@ -6,7 +6,7 @@
 #include "x-wrapper/input.hh"
 
 client_ptr_t
-create_client(x_wrapper::window_t win, rule& rule)
+create_client(x_wrapper::window_t win, rule_t& rule)
 {
     auto sizehints = x_wrapper::get_sizehints(win);
     if (!sizehints.get().flags)

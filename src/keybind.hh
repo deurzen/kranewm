@@ -63,15 +63,15 @@ enum keyop
     CLIENT_TO_SCRATCHPAD_2
 };
 
-struct keyshortcut
+struct keyshortcut_t
 {
-    keyshortcut(KeySym _keysym, unsigned _mask)
+    keyshortcut_t(KeySym _keysym, unsigned _mask)
         : keysym(_keysym), mask(_mask) {}
 
-    keyshortcut(XKeyEvent event)
+    keyshortcut_t(XKeyEvent event)
         : keysym(x_wrapper::get_keysym(event.keycode)), mask(event.state) {}
 
-    inline bool operator==(const keyshortcut& ks) const
+    inline bool operator==(const keyshortcut_t& ks) const
     {
         return ks.keysym == keysym && ks.mask == mask;
     }
@@ -83,15 +83,15 @@ struct keyshortcut
 namespace std
 {
     template <>
-    struct hash<keyshortcut>
+    struct hash<keyshortcut_t>
     {
-        std::size_t operator()(const keyshortcut& ks) const
+        std::size_t operator()(const keyshortcut_t& ks) const
         {
             return ks.keysym + 10000 * ks.mask;
         }
     };
 }
 
-typedef ::std::unordered_map<keyshortcut, keyop> keybinds;
+typedef ::std::unordered_map<keyshortcut_t, keyop> keybinds_t;
 
 #endif//__KRANEWM__KEYBIND__GUARD__

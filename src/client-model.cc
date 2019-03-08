@@ -1,7 +1,7 @@
 #include "client-model.hh"
 
 client_ptr_t
-client_model::win_to_client(x_wrapper::window_t win)
+client_model_t::win_to_client(x_wrapper::window_t win)
 {
     if (m_client_windows.find(win) != m_client_windows.end())
         return m_client_windows[win];
@@ -10,7 +10,7 @@ client_model::win_to_client(x_wrapper::window_t win)
 }
 
 workspace_ptr_t
-client_model::client_workspace(client_ptr_t client)
+client_model_t::client_workspace(client_ptr_t client)
 {
     if (m_move_workspace->get() == client)
         return m_move_workspace;
@@ -22,7 +22,7 @@ client_model::client_workspace(client_ptr_t client)
 }
 
 user_workspace_ptr_t
-client_model::client_user_workspace(client_ptr_t client)
+client_model_t::client_user_workspace(client_ptr_t client)
 {
     if (m_client_workspaces.find(client) != m_client_workspaces.end())
         return m_client_workspaces[client];
@@ -31,20 +31,20 @@ client_model::client_user_workspace(client_ptr_t client)
 }
 
 user_workspace_ptr_t
-client_model::active_workspace() const
+client_model_t::active_workspace() const
 {
     return m_current_workspace;
 }
 
 client_ptr_t
-client_model::focused_client() const
+client_model_t::focused_client() const
 {
     return m_focused_client;
 }
 
 
 void
-client_model::manage_client(client_ptr_t client, rule rule)
+client_model_t::manage_client(client_ptr_t client, rule_t rule)
 {
     m_client_windows[client->frame] = client;
     m_client_windows[client->win]   = client;
@@ -73,19 +73,19 @@ client_model::manage_client(client_ptr_t client, rule rule)
 }
 
 void
-client_model::unmanage_client(client_ptr_t)
+client_model_t::unmanage_client(client_ptr_t)
 {
 
 }
 
 void
-client_model::focus(client_ptr_t client)
+client_model_t::focus(client_ptr_t client)
 {
 
 }
 
 void
-client_model::start_moving(client_ptr_t client)
+client_model_t::start_moving(client_ptr_t client)
 {
     /* if (!(client->floating */
     /*     || )) */
@@ -104,33 +104,33 @@ client_model::start_moving(client_ptr_t client)
 }
 
 void
-client_model::stop_moving(client_ptr_t client, pos_t pos)
+client_model_t::stop_moving(client_ptr_t client, pos_t pos)
 {
 // make sure in move_ws (x_events::map_window)
 
 }
 
 void
-client_model::start_resizing(client_ptr_t client)
+client_model_t::start_resizing(client_ptr_t client)
 {
 
 }
 
 void
-client_model::stop_resizing(client_ptr_t client, pos_t pos, dim_t size)
+client_model_t::stop_resizing(client_ptr_t client, pos_t pos, dim_t size)
 {
 // make sure in resize_ws (x_events::map_window)
 
 }
 
 void
-client_model::change_active_workspace(unsigned workspace_nr)
+client_model_t::change_active_workspace(unsigned workspace_nr)
 {
 
 }
 
 void
-client_model::change_active_workspace(user_workspace_ptr_t workspace)
+client_model_t::change_active_workspace(user_workspace_ptr_t workspace)
 {
 
 }

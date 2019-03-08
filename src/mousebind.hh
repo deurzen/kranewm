@@ -18,15 +18,15 @@ enum mouseop
     GOTO_PREV_WS,
 };
 
-struct mouseshortcut
+struct mouseshortcut_t
 {
-    mouseshortcut(unsigned _button , unsigned _mask, bool _on_client)
+    mouseshortcut_t(unsigned _button , unsigned _mask, bool _on_client)
         : button(_button),
           mask(_mask),
           on_client(_on_client)
     {}
 
-    inline bool operator==(const mouseshortcut& ms) const
+    inline bool operator==(const mouseshortcut_t& ms) const
     {
         return ms.button == button && ms.mask == mask;
     }
@@ -39,15 +39,15 @@ struct mouseshortcut
 namespace std
 {
     template <>
-    struct hash<mouseshortcut>
+    struct hash<mouseshortcut_t>
     {
-        std::size_t operator()(const mouseshortcut& ms) const
+        std::size_t operator()(const mouseshortcut_t& ms) const
         {
             return ms.button + 10000 * ms.mask;
         }
     };
 }
 
-typedef ::std::unordered_map<mouseshortcut, mouseop> mousebinds;
+typedef ::std::unordered_map<mouseshortcut_t, mouseop> mousebinds_t;
 
 #endif//__KRANEWM__MOUSEBIND__GUARD__

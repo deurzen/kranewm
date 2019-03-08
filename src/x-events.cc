@@ -12,7 +12,7 @@
 
 
 bool
-x_events::step()
+x_events_t::step()
 {
     x_wrapper::next_event(m_current_event);
 
@@ -39,7 +39,7 @@ x_events::step()
 }
 
 void
-x_events::register_window(x_wrapper::window_t win)
+x_events_t::register_window(x_wrapper::window_t win)
 {
     if (m_ewmh.check_apply_strut(win))
         m_clients.active_workspace()->arrange();
@@ -49,7 +49,7 @@ x_events::register_window(x_wrapper::window_t win)
         return;
     }
 
-    rule rule = retrieve_rule(win);
+    rule_t rule = retrieve_rule(win);
     if (x_wrapper::has_property<x_wrapper::cardinal_t>(win, "_NET_WM_DESKTOP"))
         rule.workspace = x_wrapper::get_property<x_wrapper::cardinal_t>(win, "_NET_WM_DESKTOP")();
 
@@ -84,8 +84,8 @@ x_events::register_window(x_wrapper::window_t win)
     m_ewmh.set_frame_extents(win);
 }
 
-rule
-x_events::retrieve_rule(x_wrapper::window_t win)
+rule_t
+x_events_t::retrieve_rule(x_wrapper::window_t win)
 {
     bool floating  = false;
     bool center    = false;
@@ -126,7 +126,7 @@ x_events::retrieve_rule(x_wrapper::window_t win)
 }
 
 void
-x_events::on_button_press()
+x_events_t::on_button_press()
 {
     x_wrapper::window_t win = m_current_event.get().xbutton.window;
     x_wrapper::window_t subwin = m_current_event.get().xbutton.subwindow;
@@ -163,7 +163,7 @@ x_events::on_button_press()
 }
 
 void
-x_events::on_button_release()
+x_events_t::on_button_release()
 {
     x_wrapper::window_t win = m_current_event.get().xbutton.window;
     client_ptr_t client = m_clients.win_to_client(win);
@@ -181,13 +181,13 @@ x_events::on_button_release()
 }
 
 void
-x_events::on_circulate_request()
+x_events_t::on_circulate_request()
 {
     x_wrapper::propagate_circulate_request(m_current_event);
 }
 
 void
-x_events::on_client_message()
+x_events_t::on_client_message()
 {
     XClientMessageEvent event = m_current_event.get().xclient;
     x_wrapper::window_t win = event.window;
@@ -237,7 +237,7 @@ x_events::on_client_message()
 }
 
 void
-x_events::on_configure_request()
+x_events_t::on_configure_request()
 {
     x_wrapper::window_t win = m_current_event.get().xconfigurerequest.window;
     client_ptr_t client = m_clients.win_to_client(win);
@@ -314,7 +314,7 @@ x_events::on_configure_request()
 }
 
 void
-x_events::on_configure_notify()
+x_events_t::on_configure_notify()
 {
     x_wrapper::window_t win = m_current_event.get().xconfigure.window;
     client_ptr_t client = m_clients.win_to_client(win);
@@ -333,7 +333,7 @@ x_events::on_configure_notify()
 }
 
 void
-x_events::on_destroy_notify()
+x_events_t::on_destroy_notify()
 {
     x_wrapper::window_t win = m_current_event.get().xdestroywindow.window;
     client_ptr_t client = m_clients.win_to_client(win);
@@ -355,7 +355,7 @@ x_events::on_destroy_notify()
 }
 
 void
-x_events::on_expose()
+x_events_t::on_expose()
 {
     x_wrapper::window_t win = m_current_event.get().xexpose.window;
     client_ptr_t client = m_clients.win_to_client(win);
@@ -378,7 +378,7 @@ x_events::on_expose()
 }
 
 void
-x_events::on_focus_in()
+x_events_t::on_focus_in()
 {
     x_wrapper::window_t win = m_current_event.get().xfocus.window;
     client_ptr_t client = m_clients.win_to_client(win);
@@ -409,9 +409,9 @@ x_events::on_focus_in()
 }
 
 void
-x_events::on_key_press()
+x_events_t::on_key_press()
 {
-    keyshortcut shortcut{m_current_event.get().xkey};
+    keyshortcut_t shortcut{m_current_event.get().xkey};
 
     switch (m_keybinds[shortcut]) {
     case QUIT: m_running = false; return;
@@ -622,7 +622,7 @@ x_events::on_key_press()
 }
 
 void
-x_events::on_map_request()
+x_events_t::on_map_request()
 {
     x_wrapper::window_t win = m_current_event.get().xmaprequest.window;
     client_ptr_t client = m_clients.win_to_client(win);
@@ -648,7 +648,7 @@ x_events::on_map_request()
 }
 
 void
-x_events::on_map_notify()
+x_events_t::on_map_notify()
 {
     x_wrapper::window_t win = m_current_event.get().xmap.window;
     client_ptr_t client = m_clients.win_to_client(win);
@@ -670,7 +670,7 @@ x_events::on_map_notify()
 }
 
 void
-x_events::on_motion_notify()
+x_events_t::on_motion_notify()
 {
     client_ptr_t client;
     if (!m_x.is_valid() || !(client = m_x.moveresize()->client))
@@ -692,7 +692,7 @@ x_events::on_motion_notify()
 }
 
 void
-x_events::on_property_notify()
+x_events_t::on_property_notify()
 {
     auto event = m_current_event.get().xproperty;
     x_wrapper::window_t win = event.window;
@@ -726,7 +726,7 @@ x_events::on_property_notify()
 }
 
 void
-x_events::on_unmap_notify()
+x_events_t::on_unmap_notify()
 {
     x_wrapper::window_t win = m_current_event.get().xunmap.window;
     client_ptr_t client = m_clients.win_to_client(win);
@@ -751,7 +751,7 @@ x_events::on_unmap_notify()
 }
 
 void
-x_events::fork_external(::std::string&& command)
+x_events_t::fork_external(::std::string&& command)
 {
     if (!fork()) {
         execl("/bin/sh", "/bin/sh", "-c", ("exec " + command).c_str(), NULL);

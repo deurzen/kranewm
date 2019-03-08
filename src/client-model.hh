@@ -11,10 +11,10 @@
 // TODO administration of clients/workspaces : general overview, combines everything higher-level
 
 
-class client_model
+class client_model_t
 {
 public:
-    client_model()
+    client_model_t()
         : m_current_workspace(nullptr),
           m_move_workspace(new moveresize_workspace_t{MOVE_WORKSPACE}),
           m_resize_workspace(new moveresize_workspace_t{RESIZE_WORKSPACE}),
@@ -34,7 +34,7 @@ public:
     user_workspace_ptr_t active_workspace() const;
     client_ptr_t focused_client() const;
 
-    void manage_client(client_ptr_t, rule);
+    void manage_client(client_ptr_t, rule_t);
     void unmanage_client(client_ptr_t);
 
     void focus(client_ptr_t);

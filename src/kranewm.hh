@@ -12,10 +12,10 @@
 #include <memory>
 
 
-class kranewm
+class kranewm_t
 {
 public:
-    kranewm()
+    kranewm_t()
         : m_ewmh(),
           m_clients(),
           m_x(),
@@ -25,7 +25,7 @@ public:
     void setup();
     void run();
 
-    static ::std::unique_ptr<kranewm> init();
+    static ::std::unique_ptr<kranewm_t> init();
 
 
 private:
@@ -34,10 +34,10 @@ private:
 
     void check_otherwm();
 
-    ewmh m_ewmh;
-    client_model m_clients;
-    x_model m_x;
-    x_events m_events;
+    ewmh_t m_ewmh;
+    client_model_t m_clients;
+    x_model_t m_x;
+    x_events_t m_events;
 
 };
 

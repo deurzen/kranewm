@@ -7,10 +7,10 @@
 #include "x-wrapper/hints.hh"
 
 
-class x_model
+class x_model_t
 {
 public:
-    x_model()
+    x_model_t()
         : m_moveresize(nullptr)
     {};
 

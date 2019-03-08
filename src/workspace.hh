@@ -32,7 +32,8 @@ enum workspacetype
     SCRATCHPAD
 };
 
-enum layouttype {
+enum layouttype
+{
     LT_TOGGLE = 0,
     LT_FLOAT,
     LT_TILE,

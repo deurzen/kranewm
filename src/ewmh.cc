@@ -11,7 +11,7 @@
 
 
 Atom
-ewmh::get_netwm_atom(int index)
+ewmh_t::get_netwm_atom(int index)
 {
     if (netwm_atoms_.count(index) > 0)
     return netwm_atoms_[index];
@@ -19,38 +19,38 @@ ewmh::get_netwm_atom(int index)
 }
 
 void
-ewmh::set_wm_name_property(x_wrapper::window_t win, ::std::string name)
+ewmh_t::set_wm_name_property(x_wrapper::window_t win, ::std::string name)
 {
     x_wrapper::replace_property<x_wrapper::string_t>(win, {"_NET_WM_NAME", name});
 }
 
 void
-ewmh::set_supporting_wm_check_property(x_wrapper::window_t win, x_wrapper::window_t check_win)
+ewmh_t::set_supporting_wm_check_property(x_wrapper::window_t win, x_wrapper::window_t check_win)
 {
     x_wrapper::replace_property<x_wrapper::window_t>(win, {"_NET_SUPPORTING_WM_CHECK", check_win});
 }
 
 void
-ewmh::set_number_of_desktops_property(unsigned&& n)
+ewmh_t::set_number_of_desktops_property(unsigned&& n)
 {
     x_wrapper::replace_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_NUMBER_OF_DESKTOPS", n});
 }
 
 void
-ewmh::set_current_desktop_property(unsigned&& i)
+ewmh_t::set_current_desktop_property(unsigned&& i)
 {
     x_wrapper::replace_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_CURRENT_DESKTOP", i});
 }
 
 void
-ewmh::set_desktop_names_property(::std::vector<::std::string>& names)
+ewmh_t::set_desktop_names_property(::std::vector<::std::string>& names)
 {
     x_wrapper::string_list_t names_list(names);
     x_wrapper::set_text_property(x_wrapper::g_root, {"_NET_DESKTOP_NAMES", names_list});
 }
 
 void
-ewmh::set_frame_extents(x_wrapper::window_t win, bool overridden)
+ewmh_t::set_frame_extents(x_wrapper::window_t win, bool overridden)
 {
     static long frame_extents_normal[] = {
         0, // left
@@ -71,13 +71,13 @@ ewmh::set_frame_extents(x_wrapper::window_t win, bool overridden)
 }
 
 void
-ewmh::set_active_window_property(x_wrapper::window_t win)
+ewmh_t::set_active_window_property(x_wrapper::window_t win)
 {
     x_wrapper::replace_property<x_wrapper::window_t>(x_wrapper::g_root, {"_NET_ACTIVE_WINDOW", win});
 }
 
 void
-ewmh::set_window_state_property(x_wrapper::window_t win, int i)
+ewmh_t::set_window_state_property(x_wrapper::window_t win, int i)
 {
     if (range_t<int>::contains(NetWmStateFirst, NetWmStateLast, i))
         x_wrapper::replace_property<x_wrapper::atom_t>(win, {"_NET_WM_STATE", netwm_atoms_[i]});
@@ -86,13 +86,13 @@ ewmh::set_window_state_property(x_wrapper::window_t win, int i)
 }
 
 void
-ewmh::set_wm_desktop_property(x_wrapper::window_t win, unsigned workspace_nr)
+ewmh_t::set_wm_desktop_property(x_wrapper::window_t win, unsigned workspace_nr)
 {
     x_wrapper::replace_property<x_wrapper::cardinal_t>(win, {"_NET_WM_DESKTOP", workspace_nr});
 }
 
 void
-ewmh::set_desktop_geometry_property()
+ewmh_t::set_desktop_geometry_property()
 {
     auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
     x_wrapper::replace_property<x_wrapper::cardinal_t>(x_wrapper::g_root,
@@ -102,7 +102,7 @@ ewmh::set_desktop_geometry_property()
 }
 
 void
-ewmh::set_desktop_viewport_property()
+ewmh_t::set_desktop_viewport_property()
 {
     x_wrapper::remove_property(x_wrapper::g_root, "_NET_DESKTOP_VIEWPORT");
     for (size_t i = 0; i < USER_WORKSPACES.size(); ++i) {
@@ -112,7 +112,7 @@ ewmh::set_desktop_viewport_property()
 }
 
 void
-ewmh::set_workarea_property()
+ewmh_t::set_workarea_property()
 {
     auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
     x_wrapper::remove_property(x_wrapper::g_root, "_NET_WORKAREA");
@@ -129,25 +129,25 @@ ewmh::set_workarea_property()
 }
 
 void
-ewmh::clear_client_list_property()
+ewmh_t::clear_client_list_property()
 {
     x_wrapper::remove_property(x_wrapper::g_root, "_NET_CLIENT_LIST");
 }
 
 void
-ewmh::clear_workarea_property()
+ewmh_t::clear_workarea_property()
 {
     x_wrapper::remove_property(x_wrapper::g_root, "_NET_WORKAREA");
 }
 
 void
-ewmh::clear_active_window_property()
+ewmh_t::clear_active_window_property()
 {
     x_wrapper::remove_property(x_wrapper::g_root, "_NET_ACTIVE_WINDOW");
 }
 
 void
-ewmh::set_strut_property(x_wrapper::window_t win, unsigned left, unsigned right,
+ewmh_t::set_strut_property(x_wrapper::window_t win, unsigned left, unsigned right,
     unsigned top, unsigned bottom)
 {
     x_wrapper::remove_property(win, "_NET_WM_STRUT");
@@ -168,7 +168,7 @@ ewmh::set_strut_property(x_wrapper::window_t win, unsigned left, unsigned right,
 }
 
 bool
-ewmh::check_apply_strut(x_wrapper::window_t win)
+ewmh_t::check_apply_strut(x_wrapper::window_t win)
 {
     ::std::vector<unsigned> partial_strut_vals;
     ::std::vector<unsigned> strut_vals;
@@ -227,7 +227,7 @@ ewmh::check_apply_strut(x_wrapper::window_t win)
 }
 
 bool
-ewmh::check_release_strut(x_wrapper::window_t win)
+ewmh_t::check_release_strut(x_wrapper::window_t win)
 {
     bool is_strut_win = false;
     if (strut.left_window == win) {

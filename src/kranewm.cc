@@ -10,20 +10,20 @@
 #include <csignal>
 
 
-int (*kranewm::m_xerrorxlib)(Display*, XErrorEvent*);
+int (*kranewm_t::m_xerrorxlib)(Display*, XErrorEvent*);
 
 
-::std::unique_ptr<kranewm>
-kranewm::init()
+::std::unique_ptr<kranewm_t>
+kranewm_t::init()
 {
     if (!x_wrapper::g_dpy || (x_wrapper::g_root.get() == None))
         die("unable to open display");
 
-    return ::std::make_unique<kranewm>();
+    return ::std::make_unique<kranewm_t>();
 }
 
 void
-kranewm::setup()
+kranewm_t::setup()
 {
     signal(SIGCHLD, SIG_IGN); // prevent zombies
     check_otherwm(); // make sure another wm is not already running
@@ -73,14 +73,14 @@ kranewm::setup()
 }
 
 void
-kranewm::run()
+kranewm_t::run()
 {
     while(m_events.step());
     x_wrapper::sync(false);
 }
 
 void
-kranewm::check_otherwm()
+kranewm_t::check_otherwm()
 {
     m_xerrorxlib = x_wrapper::set_error_handler(otherwmerror);
     x_wrapper::select_input(x_wrapper::g_root, SubstructureRedirectMask);
@@ -90,7 +90,7 @@ kranewm::check_otherwm()
 }
 
 int
-kranewm::otherwmerror(Display*, XErrorEvent*)
+kranewm_t::otherwmerror(Display*, XErrorEvent*)
 {
     die("another window manager is already running");
     return -1;

@@ -2,7 +2,7 @@
 #define __KRANEWM__CLIENT_EVENTS__GUARD__
 
 
-class client_events
+class client_events_t
 {
 public:
 

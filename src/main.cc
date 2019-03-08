@@ -4,7 +4,7 @@
 int
 main(int argc, char **argv)
 {
-    auto wm = kranewm::init();
+    auto wm = kranewm_t::init();
 
     wm->setup();
     wm->run();

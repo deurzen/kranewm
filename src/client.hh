@@ -26,7 +26,7 @@ typedef struct ::std::set<client_ptr_t> client_ptr_set_t;
 typedef struct client_t
 {
     client_t(x_wrapper::window_t _win, x_wrapper::window_t _frame,
-        sizeconstraints_t _sizeconstraints, rule& rule)
+        sizeconstraints_t _sizeconstraints, rule_t& rule)
         : win(_win), frame(_frame), sizeconstraints(_sizeconstraints), expect(NO_EFFECT),
           focused(false), floating(rule.floating), fullscreen(rule.fullscreen),
           shaded(false), iconified(rule.iconify), urgent(false), parent(nullptr)
@@ -69,7 +69,7 @@ typedef struct client_t
 }* client_ptr_t;
 
 
-extern client_ptr_t create_client(x_wrapper::window_t, rule&);
+extern client_ptr_t create_client(x_wrapper::window_t, rule_t&);
 
 extern void update_offset(client_ptr_t);
 

@@ -4,7 +4,7 @@
 
 
 bool
-x_model::update_hints(client_ptr_t client, x_wrapper::sizehints_t sh)
+x_model_t::update_hints(client_ptr_t client, x_wrapper::sizehints_t sh)
 {
     dim_t base{}, inc{}, max{}, min{};
     range_t<float> aspect{};
@@ -36,7 +36,7 @@ x_model::update_hints(client_ptr_t client, x_wrapper::sizehints_t sh)
 }
 
 void
-x_model::enter_move(client_ptr_t client, pos_t pos)
+x_model_t::enter_move(client_ptr_t client, pos_t pos)
 {
     if (m_moveresize)
         return;
@@ -46,7 +46,7 @@ x_model::enter_move(client_ptr_t client, pos_t pos)
 }
 
 void
-x_model::enter_resize(client_ptr_t client, pos_t pos)
+x_model_t::enter_resize(client_ptr_t client, pos_t pos)
 {
     if (m_moveresize)
         return;
@@ -68,7 +68,7 @@ x_model::enter_resize(client_ptr_t client, pos_t pos)
 }
 
 pos_t
-x_model::update_pointer(pos_t pos)
+x_model_t::update_pointer(pos_t pos)
 {
     if (!m_moveresize)
         return m_pointer;
@@ -82,7 +82,7 @@ x_model::update_pointer(pos_t pos)
 }
 
 void
-x_model::exit_move_resize()
+x_model_t::exit_move_resize()
 {
     if (!m_moveresize)
         return;
@@ -92,7 +92,7 @@ x_model::exit_move_resize()
 }
 
 bool
-x_model::is_valid() const
+x_model_t::is_valid() const
 {
     return m_moveresize && m_moveresize->state != MR_INVALID;
 }

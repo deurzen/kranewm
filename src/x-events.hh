@@ -13,14 +13,14 @@
 #define CURRENT 0
 
 // Forward decls
-class ewmh;
-class client_model;
-class x_model;
+class ewmh_t;
+class client_model_t;
+class x_model_t;
 
-class x_events
+class x_events_t
 {
 public:
-    explicit x_events(ewmh& ewmh, client_model& clients, x_model& x)
+    explicit x_events_t(ewmh_t& ewmh, client_model_t& clients, x_model_t& x)
         : m_ewmh(ewmh),
           m_clients(clients),
           m_x(x),
@@ -188,7 +188,7 @@ public:
     void register_window(x_wrapper::window_t);
 
 private:
-    rule retrieve_rule(x_wrapper::window_t);
+    rule_t retrieve_rule(x_wrapper::window_t);
 
     void on_button_press();
     void on_button_release();
@@ -208,14 +208,14 @@ private:
 
     void fork_external(::std::string&&);
 
-    ewmh& m_ewmh;
-    client_model& m_clients;
-    x_model& m_x;
+    ewmh_t& m_ewmh;
+    client_model_t& m_clients;
+    x_model_t& m_x;
     bool m_running;
     x_wrapper::event_t m_current_event;
-    rules m_rules;
-    keybinds m_keybinds;
-    mousebinds m_mousebinds;
+    rules_t m_rules;
+    keybinds_t m_keybinds;
+    mousebinds_t m_mousebinds;
 
 };
 

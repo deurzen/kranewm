@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 
-enum NetWmIdentifier { // NetWM atom identifiers
+enum netwmid { // NetWM atom identifiers
     NetSupported = 0, NetFirst = NetSupported,
     NetClientList,
     NetClientListStacking,
@@ -47,7 +47,7 @@ enum NetWmIdentifier { // NetWM atom identifiers
     NetLast
 };
 
-enum NetWmAction { // values used in XClientMessageEvent.data.l[{1,2}]
+enum netwmaction { // values used in XClientMessageEvent.data.l[{1,2}]
     NetRemove   = 0,
     NetAdd      = 1,
     NetToggle   = 2,
@@ -55,10 +55,10 @@ enum NetWmAction { // values used in XClientMessageEvent.data.l[{1,2}]
 };
 
 
-class ewmh
+class ewmh_t
 {
 public:
-    ewmh()
+    ewmh_t()
       : strut{None, None, None, None, 0, 0, 0, 0}
     {
         static const ::std::unordered_map<int, const char*> NETWM_ATOM_NAMES({
