@@ -12,19 +12,19 @@ void die(const ::std::string&);
 
 
 template <typename T>
-struct Range
+struct range_t
 {
     static bool contains(T min, T max, T i)
     {
         return min <= i  && i <= max;
     }
 
-    Range(T _min = 0, T _max = 0)
+    range_t(T _min = 0, T _max = 0)
       : min(_min),
         max(_max)
     {}
 
-    inline bool operator==(const Range<T>& range) const
+    inline bool operator==(const range_t<T>& range) const
     {
         return min == range.min && max == range.max;
     }

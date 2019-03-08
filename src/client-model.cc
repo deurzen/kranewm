@@ -44,7 +44,7 @@ client_model::focused_client() const
 
 
 void
-client_model::manage_client(client_ptr_t client, Rule rule)
+client_model::manage_client(client_ptr_t client, rule rule)
 {
     m_client_windows[client->frame] = client;
     m_client_windows[client->win]   = client;
@@ -104,7 +104,7 @@ client_model::start_moving(client_ptr_t client)
 }
 
 void
-client_model::stop_moving(client_ptr_t client, Pos pos)
+client_model::stop_moving(client_ptr_t client, pos_t pos)
 {
 // make sure in move_ws (x_events::map_window)
 
@@ -117,7 +117,7 @@ client_model::start_resizing(client_ptr_t client)
 }
 
 void
-client_model::stop_resizing(client_ptr_t client, Pos pos, Size size)
+client_model::stop_resizing(client_ptr_t client, pos_t pos, dim_t size)
 {
 // make sure in resize_ws (x_events::map_window)
 

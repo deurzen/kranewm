@@ -43,14 +43,14 @@ x_wrapper::release_pointer()
     l_confined = None;
 }
 
-Pos
+pos_t
 x_wrapper::pointer_position()
 {
     Window _w;
     int _i;
     unsigned _u;
 
-    Pos pos;
+    pos_t pos;
     XQueryPointer(g_dpy, g_root, &_w, &_w, &pos.x, &pos.y, &_i, &_i, &_u);
 
     return pos;

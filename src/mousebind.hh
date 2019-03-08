@@ -6,7 +6,7 @@
 #include <unordered_map>
 
 
-enum MouseOperation
+enum mouseop
 {
     MOUSE_NOOP = 0,
     CLIENT_MOVE,
@@ -18,15 +18,15 @@ enum MouseOperation
     GOTO_PREV_WS,
 };
 
-struct MouseShortcut
+struct mouseshortcut
 {
-    MouseShortcut(unsigned _button , unsigned _mask, bool _on_client)
+    mouseshortcut(unsigned _button , unsigned _mask, bool _on_client)
         : button(_button),
           mask(_mask),
           on_client(_on_client)
     {}
 
-    inline bool operator==(const MouseShortcut& ms) const
+    inline bool operator==(const mouseshortcut& ms) const
     {
         return ms.button == button && ms.mask == mask;
     }
@@ -39,15 +39,15 @@ struct MouseShortcut
 namespace std
 {
     template <>
-    struct hash<MouseShortcut>
+    struct hash<mouseshortcut>
     {
-        std::size_t operator()(const MouseShortcut& ms) const
+        std::size_t operator()(const mouseshortcut& ms) const
         {
             return ms.button + 10000 * ms.mask;
         }
     };
 }
 
-typedef ::std::unordered_map<MouseShortcut, MouseOperation> MouseBinds;
+typedef ::std::unordered_map<mouseshortcut, mouseop> mousebinds;
 
 #endif//__KRANEWM__MOUSEBIND__GUARD__

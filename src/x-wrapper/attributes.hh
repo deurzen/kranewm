@@ -18,8 +18,8 @@ namespace x_wrapper
 
         operator XWindowAttributes() const { return val; }
 
-        operator Size() const { return Size{val.width, val.height}; }
-        operator Pos()  const { return Pos{val.x, val.y}; }
+        operator dim_t() const { return dim_t{val.width, val.height}; }
+        operator pos_t()  const { return pos_t{val.x, val.y}; }
 
         inline XWindowAttributes get() const { return val; }
 

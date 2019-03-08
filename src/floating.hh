@@ -6,13 +6,13 @@
 #include "common.hh"
 #include "decoration.hh"
 
-enum MoveResizeState {
+enum moveresizestate {
     MR_INVALID,
     MR_MOVE,
     MR_RESIZE
 };
 
-enum Corner {
+enum corner {
     NO_CORNER,
     TOP_LEFT,
     TOP_RIGHT,
@@ -22,7 +22,7 @@ enum Corner {
 
 typedef struct moveresize_t
 {
-    moveresize_t(client_ptr_t _client, MoveResizeState _state, Corner _grabbed_at)
+    moveresize_t(client_ptr_t _client, moveresizestate _state, corner _grabbed_at)
       : client(_client),
         state(_state),
         grabbed_at(_grabbed_at),
@@ -38,12 +38,12 @@ typedef struct moveresize_t
         //TODO
     }
 
-    void process_move_increment(Pos, Size, Pos);
-    void process_resize_increment(Pos, Size, Pos);
+    void process_move_increment(pos_t, dim_t, pos_t);
+    void process_resize_increment(pos_t, dim_t, pos_t);
 
     client_ptr_t client;
-    MoveResizeState state;
-    Corner grabbed_at;
+    moveresizestate state;
+    corner grabbed_at;
     x_wrapper::window_t indicator;
 
 }* moveresize_ptr_t;

@@ -12,7 +12,7 @@
 #include <set>
 
 
-enum ClientExpect {
+enum clientexpect {
     NO_EFFECT = 0,
     MAP       = 1 << 0,
     WITHDRAW  = 1 << 1,
@@ -26,7 +26,7 @@ typedef struct ::std::set<client_ptr_t> client_ptr_set_t;
 typedef struct client_t
 {
     client_t(x_wrapper::window_t _win, x_wrapper::window_t _frame,
-        sizeconstraints_t _sizeconstraints, Rule& rule)
+        sizeconstraints_t _sizeconstraints, rule& rule)
         : win(_win), frame(_frame), sizeconstraints(_sizeconstraints), expect(NO_EFFECT),
           focused(false), floating(rule.floating), fullscreen(rule.fullscreen),
           shaded(false), iconified(rule.iconify), urgent(false), parent(nullptr)
@@ -34,10 +34,10 @@ typedef struct client_t
 
     void disown_child(client_ptr_t);
 
-    bool redeem_expect(ClientExpect);
+    bool redeem_expect(clientexpect);
 
-    void move(Pos);
-    void resize(Size);
+    void move(pos_t);
+    void resize(dim_t);
 
     void map();
     void unmap();
@@ -51,12 +51,12 @@ typedef struct client_t
     x_wrapper::window_t frame;
     x_wrapper::window_t mr_indicator;
     x_wrapper::window_t float_indicator;
-    Pos                 pos;
-    Pos                 float_pos;
-    Size                size;
-    Size                float_size;
+    pos_t                 pos;
+    pos_t                 float_pos;
+    dim_t                size;
+    dim_t                float_size;
     sizeconstraints_t   sizeconstraints;
-    ClientExpect        expect;
+    clientexpect        expect;
     bool                focused;
     bool                floating;
     bool                fullscreen;
@@ -69,7 +69,7 @@ typedef struct client_t
 }* client_ptr_t;
 
 
-extern client_ptr_t create_client(x_wrapper::window_t, Rule&);
+extern client_ptr_t create_client(x_wrapper::window_t, rule&);
 
 extern void update_offset(client_ptr_t);
 

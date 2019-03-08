@@ -4,14 +4,14 @@
 #include <iostream>
 
 
-struct Pos
+struct pos_t
 {
-    Pos(int _x = 0, int _y = 0)
+    pos_t(int _x = 0, int _y = 0)
       : x(_x),
         y(_y)
     {}
 
-    inline bool operator==(const Pos& pos) const
+    inline bool operator==(const pos_t& pos) const
     {
         return pos.x == x && pos.y == y;
     }
@@ -20,14 +20,14 @@ struct Pos
     int y;
 };
 
-struct Size
+struct dim_t
 {
-    Size(int _w = 0, int _h = 0)
+    dim_t(int _w = 0, int _h = 0)
       : w(_w),
         h(_h)
     {}
 
-    inline bool operator==(const Size& size) const
+    inline bool operator==(const dim_t& size) const
     {
         return size.w == w && size.h == h;
     }

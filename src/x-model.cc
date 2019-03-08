@@ -6,8 +6,8 @@
 bool
 x_model::update_hints(client_ptr_t client, x_wrapper::sizehints_t sh)
 {
-    Size base{}, inc{}, max{}, min{};
-    Range<float> aspect{};
+    dim_t base{}, inc{}, max{}, min{};
+    range_t<float> aspect{};
 
     if (sh.get().flags & PBaseSize)
         base = {sh.get().base_width, sh.get().base_height};
@@ -36,7 +36,7 @@ x_model::update_hints(client_ptr_t client, x_wrapper::sizehints_t sh)
 }
 
 void
-x_model::enter_move(client_ptr_t client, Pos pos)
+x_model::enter_move(client_ptr_t client, pos_t pos)
 {
     if (m_moveresize)
         return;
@@ -46,7 +46,7 @@ x_model::enter_move(client_ptr_t client, Pos pos)
 }
 
 void
-x_model::enter_resize(client_ptr_t client, Pos pos)
+x_model::enter_resize(client_ptr_t client, pos_t pos)
 {
     if (m_moveresize)
         return;
@@ -55,7 +55,7 @@ x_model::enter_resize(client_ptr_t client, Pos pos)
     auto center_x = root_attrs.x() + root_attrs.w() / 2;
     auto center_y = root_attrs.y() + root_attrs.h() / 2;
 
-    Corner corner = TOP_LEFT;
+    corner corner = TOP_LEFT;
     if (pos.x > center_x && pos.y > center_y)
         corner = BOTTOM_RIGHT;
     else if (pos.x < center_x && pos.y > center_y)
@@ -67,13 +67,13 @@ x_model::enter_resize(client_ptr_t client, Pos pos)
     m_pointer = pos;
 }
 
-Pos
-x_model::update_pointer(Pos pos)
+pos_t
+x_model::update_pointer(pos_t pos)
 {
     if (!m_moveresize)
         return m_pointer;
 
-    Pos diff = {pos.x - m_pointer.x, pos.y - m_pointer.y};
+    pos_t diff = {pos.x - m_pointer.x, pos.y - m_pointer.y};
 
     m_pointer.x = pos.x;
     m_pointer.y = pos.y;

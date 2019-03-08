@@ -68,7 +68,7 @@ namespace x_wrapper
             return *this;
         }
 
-        window_t& move(Pos pos)
+        window_t& move(pos_t pos)
         {
             disable_substructure_events();
             XMoveWindow(g_dpy, val, pos.x, pos.y);
@@ -76,7 +76,7 @@ namespace x_wrapper
             return *this;
         }
 
-        window_t& resize(Size size)
+        window_t& resize(dim_t size)
         {
             disable_substructure_events();
             XResizeWindow(g_dpy, val, size.w, size.h);
@@ -92,7 +92,7 @@ namespace x_wrapper
             return *this;
         }
 
-        window_t& reparent(Pos pos, window_t parent = g_root)
+        window_t& reparent(pos_t pos, window_t parent = g_root)
         {
             disable_substructure_events();
             XReparentWindow(g_dpy, val, parent.get(), pos.x, pos.y);

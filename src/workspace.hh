@@ -22,7 +22,7 @@ const ::std::map<unsigned, ::std::string> USER_WORKSPACES({
 });
 
 
-enum WorkspaceType
+enum workspacetype
 {
     WORKSPACE = 0,
     MOVE_WORKSPACE,
@@ -32,7 +32,7 @@ enum WorkspaceType
     SCRATCHPAD
 };
 
-enum LayoutType {
+enum layouttype {
     LT_TOGGLE = 0,
     LT_FLOAT,
     LT_TILE,
@@ -46,24 +46,24 @@ enum LayoutType {
 typedef class workspace_t
 {
 public:
-    explicit workspace_t(WorkspaceType _type = WORKSPACE)
+    explicit workspace_t(workspacetype _type = WORKSPACE)
         : type(_type) {}
 
     virtual ~workspace_t() {}
 
-    virtual WorkspaceType get_type() const { return type; }
+    virtual workspacetype get_type() const { return type; }
 
     virtual void arrange() const {}
 
 private:
-    WorkspaceType type;
+    workspacetype type;
 
 }* workspace_ptr_t;
 
 typedef class moveresize_workspace_t : public workspace_t
 {
 public:
-    explicit moveresize_workspace_t(WorkspaceType _type)
+    explicit moveresize_workspace_t(workspacetype _type)
         : workspace_t(_type),
           client(nullptr)
     {}
@@ -119,7 +119,7 @@ public:
     user_workspace_t& set_gap_size(unsigned);
     user_workspace_t& set_m_factor(float);
     user_workspace_t& set_m1_weight(unsigned);
-    user_workspace_t& set_layout(LayoutType);
+    user_workspace_t& set_layout(layouttype);
 
     void map_clients();
     void unmap_clients();
@@ -135,8 +135,8 @@ private:
     unsigned      m1_weight;
     float         m_factor;
     bool          mirrored;
-    LayoutType    layout;
-    LayoutType    previous_layout;
+    layouttype    layout;
+    layouttype    previous_layout;
     focus_cycle   clients;
 
 }* user_workspace_ptr_t;

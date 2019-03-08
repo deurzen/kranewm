@@ -49,7 +49,7 @@ x_events::register_window(x_wrapper::window_t win)
         return;
     }
 
-    Rule rule = retrieve_rule(win);
+    rule rule = retrieve_rule(win);
     if (x_wrapper::has_property<x_wrapper::cardinal_t>(win, "_NET_WM_DESKTOP"))
         rule.workspace = x_wrapper::get_property<x_wrapper::cardinal_t>(win, "_NET_WM_DESKTOP")();
 
@@ -84,7 +84,7 @@ x_events::register_window(x_wrapper::window_t win)
     m_ewmh.set_frame_extents(win);
 }
 
-Rule
+rule
 x_events::retrieve_rule(x_wrapper::window_t win)
 {
     bool floating  = false;
@@ -287,7 +287,7 @@ x_events::on_configure_request()
 
     auto after_attrs = x_wrapper::get_attributes(client->frame);
 
-    Pos pos;
+    pos_t pos;
     switch (m_x.moveresize()->grabbed_at) {
     case TOP_LEFT:
         pos = {before_attrs.x() + (before_attrs.w() - after_attrs.w()),
@@ -306,8 +306,8 @@ x_events::on_configure_request()
     }
 
     if (!(conf_flags & (CWX | CWY))
-        && !(Size{before_attrs.w(), before_attrs.h()}
-            == Size{after_attrs.w(), after_attrs.h()}))
+        && !(dim_t{before_attrs.w(), before_attrs.h()}
+            == dim_t{after_attrs.w(), after_attrs.h()}))
     {
         client->move(pos);
     }
@@ -411,7 +411,7 @@ x_events::on_focus_in()
 void
 x_events::on_key_press()
 {
-    KeyShortcut shortcut{m_current_event.get().xkey};
+    keyshortcut shortcut{m_current_event.get().xkey};
 
     switch (m_keybinds[shortcut]) {
     case QUIT: m_running = false; return;
@@ -680,9 +680,9 @@ x_events::on_motion_notify()
 
     auto client_attrs = x_wrapper::get_attributes(client->frame);
 
-    Pos pos = client_attrs;
-    Size size = client_attrs;
-    Pos delta = m_x.update_pointer(x_wrapper::pointer_position());
+    pos_t pos = client_attrs;
+    dim_t size = client_attrs;
+    pos_t delta = m_x.update_pointer(x_wrapper::pointer_position());
 
     switch (m_x.moveresize()->state) {
     case MR_MOVE:   m_x.moveresize()->process_move_increment(pos, size, delta);   break;
@@ -737,7 +737,7 @@ x_events::on_unmap_notify()
     /* if (client->iconified) */
     /*     cm_.toggle_iconify(client); */
 
-    Pos pos = client->pos;
+    pos_t pos = client->pos;
     x_wrapper::window_t frame = client->frame;
 
     /* if (client->floating) { */

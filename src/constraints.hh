@@ -9,7 +9,7 @@ struct sizeconstraints_t
 {
     sizeconstraints_t() = default;
 
-    sizeconstraints_t(Size _base, Size _inc, Size _max, Size _min, Range<float> _aspect)
+    sizeconstraints_t(dim_t _base, dim_t _inc, dim_t _max, dim_t _min, range_t<float> _aspect)
         : base(_base), inc(_inc), max(_max), min(_min), aspect(_aspect) {}
 
     inline bool operator==(const sizeconstraints_t& size_constraints) const
@@ -19,15 +19,15 @@ struct sizeconstraints_t
             && size_constraints.aspect == aspect;
     }
 
-    inline bool is_fixed() const { return !(max == Size{0, 0}) && max == min; }
+    inline bool is_fixed() const { return !(max == dim_t{0, 0}) && max == min; }
 
-    void apply(Pos&, Size&) const;
+    void apply(pos_t&, dim_t&) const;
 
-    Size base;
-    Size inc;
-    Size max;
-    Size min;
-    Range<float> aspect;
+    dim_t base;
+    dim_t inc;
+    dim_t max;
+    dim_t min;
+    range_t<float> aspect;
 };
 
 #endif//__KRANEWM_CONSTRAINTS_GUARD__

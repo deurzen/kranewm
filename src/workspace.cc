@@ -50,9 +50,9 @@ user_workspace_t::set_m1_weight(unsigned)
 }
 
 user_workspace_t&
-user_workspace_t::set_layout(LayoutType _layout)
+user_workspace_t::set_layout(layouttype _layout)
 {
-    LayoutType current_layout = layout;
+    layouttype current_layout = layout;
     if (_layout == LT_TOGGLE)
         layout = previous_layout;
     else

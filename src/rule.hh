@@ -5,16 +5,16 @@
 #include <tuple>
 
 
-enum AutocloseMethod {
+enum autoclosemethod {
     OFF,
     ONCE,
     PERSIST
 };
 
-struct RuleSpec
+struct rulespec
 {
-    RuleSpec(bool _floating, bool _center, bool _iconify,
-        AutocloseMethod _autoclose, unsigned _workspace)
+    rulespec(bool _floating, bool _center, bool _iconify,
+        autoclosemethod _autoclose, unsigned _workspace)
         : floating(_floating),
           center(_center),
           iconify(_iconify),
@@ -25,13 +25,13 @@ struct RuleSpec
     bool floating;
     bool center;
     bool iconify;
-    AutocloseMethod autoclose;
+    autoclosemethod autoclose;
     unsigned workspace;
 };
 
-struct Rule
+struct rule
 {
-    Rule(bool _floating, bool _center, bool _fullscreen,
+    rule(bool _floating, bool _center, bool _fullscreen,
         bool _iconify, bool _autoclose, unsigned _workspace)
         : floating(_floating),
           center(_center),
@@ -50,17 +50,17 @@ struct Rule
 };
 
 inline bool
-operator<(const RuleSpec& r1, const RuleSpec& r2)
+operator<(const rulespec& r1, const rulespec& r2)
 {
     return (r1.autoclose + r1.center + r1.floating + r1.iconify + r1.workspace)
         == (r2.autoclose + r2.center + r2.floating + r2.iconify + r2.workspace);
 }
 
-typedef ::std::tuple<::std::string, ::std::string, ::std::string> RuleId;
+typedef ::std::tuple<::std::string, ::std::string, ::std::string> ruleid;
 
-struct CompareRule {
+struct rulecomp {
     bool
-    operator()(const RuleId& rid1, const RuleId& rid2) const
+    operator()(const ruleid& rid1, const ruleid& rid2) const
     {
         ::std::string rid1_cls, rid1_inst, rid1_title;
         ::std::string rid2_cls, rid2_inst, rid2_title;
@@ -81,7 +81,7 @@ struct CompareRule {
     }
 };
 
-typedef ::std::map<RuleId, RuleSpec, CompareRule> Rules;
+typedef ::std::map<ruleid, rulespec, rulecomp> rules;
 
 
 #endif//__KRANEWM__X_EVENTS__GUARD__

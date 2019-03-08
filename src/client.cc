@@ -6,14 +6,14 @@
 #include "x-wrapper/input.hh"
 
 client_ptr_t
-create_client(x_wrapper::window_t win, Rule& rule)
+create_client(x_wrapper::window_t win, rule& rule)
 {
     auto sizehints = x_wrapper::get_sizehints(win);
     if (!sizehints.get().flags)
         sizehints.get().flags = PSize;
 
-    Size base{}, inc{}, max{}, min{};
-    Range<float> aspect{};
+    dim_t base{}, inc{}, max{}, min{};
+    range_t<float> aspect{};
 
     if (sizehints.get().flags & PBaseSize)
         base = {sizehints.get().base_width, sizehints.get().base_height};
@@ -38,8 +38,8 @@ create_client(x_wrapper::window_t win, Rule& rule)
     sizeconstraints_t sizeconstraints(base, inc, max, min, aspect);
 
     auto win_attrs = x_wrapper::get_attributes(win);
-    Pos pos = win_attrs;
-    Size size = win_attrs;
+    pos_t pos = win_attrs;
+    dim_t size = win_attrs;
     sizeconstraints.apply(pos, size);
 
     x_wrapper::window_t frame = x_wrapper::create_window();
@@ -94,7 +94,7 @@ client_t::disown_child(client_ptr_t)
 }
 
 bool
-client_t::redeem_expect(ClientExpect occurred)
+client_t::redeem_expect(clientexpect occurred)
 {
     if (occurred == expect) {
         switch (expect) {
@@ -112,7 +112,7 @@ client_t::redeem_expect(ClientExpect occurred)
 }
 
 void
-client_t::move(Pos new_pos)
+client_t::move(pos_t new_pos)
 {
     frame.move(new_pos);
     pos = new_pos;
@@ -120,7 +120,7 @@ client_t::move(Pos new_pos)
 }
 
 void
-client_t::resize(Size new_size)
+client_t::resize(dim_t new_size)
 {
     if (new_size.h > BORDER_HEIGHT)
         win.resize({new_size.w, new_size.h - BORDER_HEIGHT});

@@ -16,10 +16,10 @@ public:
 
     static bool update_hints(client_ptr_t, x_wrapper::sizehints_t);
 
-    void enter_move(client_ptr_t, Pos);
-    void enter_resize(client_ptr_t, Pos);
+    void enter_move(client_ptr_t, pos_t);
+    void enter_resize(client_ptr_t, pos_t);
 
-    Pos update_pointer(Pos);
+    pos_t update_pointer(pos_t);
 
     inline moveresize_ptr_t moveresize() const { return m_moveresize; }
 
@@ -29,7 +29,7 @@ public:
 
 private:
     moveresize_ptr_t m_moveresize;
-    Pos m_pointer;
+    pos_t m_pointer;
 
 };
 

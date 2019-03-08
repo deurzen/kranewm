@@ -34,15 +34,15 @@ public:
     user_workspace_ptr_t active_workspace() const;
     client_ptr_t focused_client() const;
 
-    void manage_client(client_ptr_t, Rule);
+    void manage_client(client_ptr_t, rule);
     void unmanage_client(client_ptr_t);
 
     void focus(client_ptr_t);
 
     void start_moving(client_ptr_t);
-    void stop_moving(client_ptr_t, Pos);
+    void stop_moving(client_ptr_t, pos_t);
     void start_resizing(client_ptr_t);
-    void stop_resizing(client_ptr_t, Pos, Size);
+    void stop_resizing(client_ptr_t, pos_t, dim_t);
 
     void change_active_workspace(unsigned);
     void change_active_workspace(user_workspace_ptr_t);

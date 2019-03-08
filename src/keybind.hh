@@ -6,7 +6,7 @@
 #include <unordered_map>
 
 // TODO group
-enum KeyOperation
+enum keyop
 {
     KEY_NOOP = 0,
     QUIT, ZOOM, TOGGLE_FLOAT, TOGGLE_FULLSCREEN,
@@ -63,15 +63,15 @@ enum KeyOperation
     CLIENT_TO_SCRATCHPAD_2
 };
 
-struct KeyShortcut
+struct keyshortcut
 {
-    KeyShortcut(KeySym _keysym, unsigned _mask)
+    keyshortcut(KeySym _keysym, unsigned _mask)
         : keysym(_keysym), mask(_mask) {}
 
-    KeyShortcut(XKeyEvent event)
+    keyshortcut(XKeyEvent event)
         : keysym(x_wrapper::get_keysym(event.keycode)), mask(event.state) {}
 
-    inline bool operator==(const KeyShortcut& ks) const
+    inline bool operator==(const keyshortcut& ks) const
     {
         return ks.keysym == keysym && ks.mask == mask;
     }
@@ -83,15 +83,15 @@ struct KeyShortcut
 namespace std
 {
     template <>
-    struct hash<KeyShortcut>
+    struct hash<keyshortcut>
     {
-        std::size_t operator()(const KeyShortcut& ks) const
+        std::size_t operator()(const keyshortcut& ks) const
         {
             return ks.keysym + 10000 * ks.mask;
         }
     };
 }
 
-typedef ::std::unordered_map<KeyShortcut, KeyOperation> KeyBinds;
+typedef ::std::unordered_map<keyshortcut, keyop> keybinds;
 
 #endif//__KRANEWM__KEYBIND__GUARD__

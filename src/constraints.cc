@@ -3,7 +3,7 @@
 #include "x-wrapper/attributes.hh"
 
 void
-sizeconstraints_t::apply(Pos& pos, Size& size) const
+sizeconstraints_t::apply(pos_t& pos, dim_t& size) const
 {
     size.w = ::std::max(size.w, MIN_WINDOW_SIZE);
     size.h = ::std::max(size.h, MIN_WINDOW_SIZE);

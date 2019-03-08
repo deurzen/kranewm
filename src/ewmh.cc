@@ -79,7 +79,7 @@ ewmh::set_active_window_property(x_wrapper::window_t win)
 void
 ewmh::set_window_state_property(x_wrapper::window_t win, int i)
 {
-    if (Range<int>::contains(NetWmStateFirst, NetWmStateLast, i))
+    if (range_t<int>::contains(NetWmStateFirst, NetWmStateLast, i))
         x_wrapper::replace_property<x_wrapper::atom_t>(win, {"_NET_WM_STATE", netwm_atoms_[i]});
     else
         x_wrapper::unset_property<x_wrapper::atom_t>(win, {"_NET_WM_STATE"});

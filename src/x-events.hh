@@ -188,7 +188,7 @@ public:
     void register_window(x_wrapper::window_t);
 
 private:
-    Rule retrieve_rule(x_wrapper::window_t);
+    rule retrieve_rule(x_wrapper::window_t);
 
     void on_button_press();
     void on_button_release();
@@ -213,9 +213,9 @@ private:
     x_model& m_x;
     bool m_running;
     x_wrapper::event_t m_current_event;
-    Rules m_rules;
-    KeyBinds m_keybinds;
-    MouseBinds m_mousebinds;
+    rules m_rules;
+    keybinds m_keybinds;
+    mousebinds m_mousebinds;
 
 };
 
