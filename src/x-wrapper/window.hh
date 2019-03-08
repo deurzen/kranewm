@@ -76,10 +76,10 @@ namespace x_wrapper
             return *this;
         }
 
-        window_t& resize(dim_t size)
+        window_t& resize(dim_t dim)
         {
             disable_substructure_events();
-            XResizeWindow(g_dpy, val, size.w, size.h);
+            XResizeWindow(g_dpy, val, dim.w, dim.h);
             enable_substructure_events();
             return *this;
         }

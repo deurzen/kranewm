@@ -3,36 +3,36 @@
 #include "x-wrapper/attributes.hh"
 
 void
-sizeconstraints_t::apply(pos_t& pos, dim_t& size) const
+sizeconstraints_t::apply(pos_t& pos, dim_t& dim) const
 {
-    size.w = ::std::max(size.w, MIN_WINDOW_SIZE);
-    size.h = ::std::max(size.h, MIN_WINDOW_SIZE);
+    dim.w = ::std::max(dim.w, MIN_WINDOW_SIZE);
+    dim.h = ::std::max(dim.h, MIN_WINDOW_SIZE);
 
     auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
 
     if (pos.x >= root_attrs.w())
-        pos.x = root_attrs.w() - size.w;
+        pos.x = root_attrs.w() - dim.w;
 
     if (pos.y >= root_attrs.h())
-        pos.y = root_attrs.h() - size.h;
+        pos.y = root_attrs.h() - dim.h;
 
-    if (pos.x + size.w <= 0)
+    if (pos.x + dim.w <= 0)
         pos.x = 0;
 
-    if (pos.y + size.h <= 0)
+    if (pos.y + dim.h <= 0)
         pos.y = 0;
 
     if (base == min) {
-        size.w -= base.w;
-        size.h -= base.h;
+        dim.w -= base.w;
+        dim.h -= base.h;
     }
 
-    size.w = ::std::max(size.w + base.w, min.w);
-    size.h = ::std::max(size.h + base.h, min.h);
+    dim.w = ::std::max(dim.w + base.w, min.w);
+    dim.h = ::std::max(dim.h + base.h, min.h);
 
     if (max.w)
-        size.w = ::std::min(size.w, max.w);
+        dim.w = ::std::min(dim.w, max.w);
 
     if (max.h)
-        size.h = ::std::min(size.h, max.h);
+        dim.h = ::std::min(dim.h, max.h);
 }

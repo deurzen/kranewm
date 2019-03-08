@@ -327,8 +327,8 @@ x_events_t::on_configure_notify()
         sizehints.get().flags = PSize;
 
     if (m_x.update_hints(client, sizehints)) {
-        client->sizeconstraints.apply(client->pos, client->size);
-        client->resize(client->size);
+        client->sizeconstraints.apply(client->pos, client->dim);
+        client->resize(client->dim);
     }
 }
 
@@ -681,12 +681,12 @@ x_events_t::on_motion_notify()
     auto client_attrs = x_wrapper::get_attributes(client->frame);
 
     pos_t pos = client_attrs;
-    dim_t size = client_attrs;
+    dim_t dim = client_attrs;
     pos_t delta = m_x.update_pointer(x_wrapper::pointer_position());
 
     switch (m_x.moveresize()->state) {
-    case MR_MOVE:   m_x.moveresize()->process_move_increment(pos, size, delta);   break;
-    case MR_RESIZE: m_x.moveresize()->process_resize_increment(pos, size, delta); break;
+    case MR_MOVE:   m_x.moveresize()->process_move_increment(pos, dim, delta);   break;
+    case MR_RESIZE: m_x.moveresize()->process_resize_increment(pos, dim, delta); break;
     default: break;
     }
 }

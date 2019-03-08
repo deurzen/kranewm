@@ -51,10 +51,10 @@ typedef struct client_t
     x_wrapper::window_t frame;
     x_wrapper::window_t mr_indicator;
     x_wrapper::window_t float_indicator;
-    pos_t                 pos;
-    pos_t                 float_pos;
-    dim_t                size;
-    dim_t                float_size;
+    pos_t               pos;
+    pos_t               float_pos;
+    dim_t               dim;
+    dim_t               float_dim;
     sizeconstraints_t   sizeconstraints;
     clientexpect        expect;
     bool                focused;

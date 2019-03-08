@@ -27,9 +27,9 @@ struct dim_t
         h(_h)
     {}
 
-    inline bool operator==(const dim_t& size) const
+    inline bool operator==(const dim_t& dim) const
     {
-        return size.w == w && size.h == h;
+        return dim.w == w && dim.h == h;
     }
 
     int w;

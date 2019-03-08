@@ -117,7 +117,7 @@ client_model_t::start_resizing(client_ptr_t client)
 }
 
 void
-client_model_t::stop_resizing(client_ptr_t client, pos_t pos, dim_t size)
+client_model_t::stop_resizing(client_ptr_t client, pos_t pos, dim_t dim)
 {
 // make sure in resize_ws (x_events::map_window)
 

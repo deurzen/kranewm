@@ -39,8 +39,8 @@ create_client(x_wrapper::window_t win, rule_t& rule)
 
     auto win_attrs = x_wrapper::get_attributes(win);
     pos_t pos = win_attrs;
-    dim_t size = win_attrs;
-    sizeconstraints.apply(pos, size);
+    dim_t dim = win_attrs;
+    sizeconstraints.apply(pos, dim);
 
     x_wrapper::window_t frame = x_wrapper::create_window();
     x_wrapper::select_input(win, PropertyChangeMask);
@@ -58,7 +58,7 @@ create_client(x_wrapper::window_t win, rule_t& rule)
         || win.is_of_type("SPLASH");
 
     client_ptr_t client = new client_t(win, frame, sizeconstraints, rule);
-    client->resize({size.w, size.h + BORDER_HEIGHT});
+    client->resize({dim.w, dim.h + BORDER_HEIGHT});
     client->move({pos.x, pos.y - BORDER_HEIGHT});
 
     return client;
@@ -120,12 +120,12 @@ client_t::move(pos_t new_pos)
 }
 
 void
-client_t::resize(dim_t new_size)
+client_t::resize(dim_t new_dim)
 {
-    if (new_size.h > BORDER_HEIGHT)
-        win.resize({new_size.w, new_size.h - BORDER_HEIGHT});
-    frame.resize(new_size);
-    size = new_size;
+    if (new_dim.h > BORDER_HEIGHT)
+        win.resize({new_dim.w, new_dim.h - BORDER_HEIGHT});
+    frame.resize(new_dim);
+    dim = new_dim;
     update_offset(this);
 }
 
