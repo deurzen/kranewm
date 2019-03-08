@@ -42,6 +42,13 @@ bool
 client_t::redeem_expect(ClientExpect occurred)
 {
     if (occurred == expect) {
+        switch (expect) {
+        case MAP:      win.set_state(NormalState);
+        case ICONIFY:  win.set_state(IconicState);
+        case WITHDRAW: win.set_state(WithdrawnState);
+        default: break;
+        }
+
         expect = NO_EFFECT;
         return true;
     }

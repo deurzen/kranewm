@@ -611,8 +611,6 @@ x_events::on_map_notify()
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (client) {
-        client->win.set_state(NormalState);
-
         if (client->redeem_expect(MAP))
             return;
 
@@ -678,42 +676,30 @@ x_events::on_property_notify()
     }
 }
 
-/* void */
-/* x_events::on_unmap_notify() */
-/* { */
-/*     Window win = m_current_event.xunmap.window; */
-/*     auto client = cm_.get_client(win); */
+void
+x_events::on_unmap_notify()
+{
+    x_wrapper::window_t win = m_current_event.window();
+    client_ptr_t client = m_clients.win_to_client(win);
 
-/*     if (!client) */
-/*         return; */
+    if (!client || client->redeem_expect(ICONIFY) || client->redeem_expect(WITHDRAW))
+        return;
 
-/*     if (client->effect == ICONIFY) { */
-/*         xh_.set_wm_state(client->win, IconicState); */
-/*         client->effect = NO_EFFECT; */
-/*         return; */
-/*     } */
+    /* if (client->iconified) */
+    /*     cm_.toggle_iconify(client); */
 
-/*     if (client->effect == WITHDRAW) { */
-/*         xh_.set_wm_state(client->win, WithdrawnState); */
-/*         client->effect = NO_EFFECT; */
-/*         return; */
-/*     } */
+    Pos pos = client->pos;
+    x_wrapper::window_t frame = client->frame;
 
-/*     if (client->iconified) */
-/*         cm_.toggle_iconify(client); */
+    /* if (client->floating) { */
+    /*     xh_.destroy_window(client->float_indicator); */
+    /*     client->float_indicator = None; */
+    /* } */
 
-/*     Pos pos = client->pos; */
-/*     Window frame = client->frame; */
-
-/*     if (client->floating) { */
-/*         xh_.destroy_window(client->float_indicator); */
-/*         client->float_indicator = None; */
-/*     } */
-
-/*     cm_.unmap_client(client); */
-/*     xh_.reparent_window_root(win, pos); */
-/*     xh_.destroy_window(frame); */
-/* } */
+    client->unmap();
+    win.reparent(pos);
+    frame.destroy();
+}
 
 void
 x_events::fork_external(::std::string&& command)
