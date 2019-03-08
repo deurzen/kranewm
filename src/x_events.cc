@@ -17,18 +17,18 @@ x_events::step()
     x_wrapper::next_event(m_current_event);
 
     switch (m_current_event.type()) {
-    case ButtonPress:      ::std::cout << "1" << ::std::endl;on_button_press();      break;
-    case ButtonRelease:    ::std::cout << "2" << ::std::endl;on_button_release();    break;
-    case CirculateRequest: ::std::cout << "3" << ::std::endl;on_circulate_request(); break;
-    case ClientMessage:    ::std::cout << "4" << ::std::endl;on_client_message();    break;
-    case ConfigureNotify:  ::std::cout << "5" << ::std::endl;on_configure_notify();  break;
-    case ConfigureRequest: ::std::cout << "6" << ::std::endl;on_configure_request(); break;
+    case ButtonPress:      on_button_press();      break;
+    case ButtonRelease:    on_button_release();    break;
+    case CirculateRequest: on_circulate_request(); break;
+    case ClientMessage:    on_client_message();    break;
+    case ConfigureNotify:  on_configure_notify();  break;
+    case ConfigureRequest: on_configure_request(); break;
     /* case DestroyNotify:    on_destroy_notify();    break; */
     /* case Expose:           on_expose();            break; */
     /* case FocusIn:          on_focus_in();          break; */
-    case KeyPress:         ::std::cout << "7" << ::std::endl;on_key_press();         break;
-    case MapNotify:        ::std::cout << "8" << ::std::endl;on_map_notify();        break;
-    case MapRequest:       ::std::cout << "9" << ::std::endl;on_map_request();       break;
+    case KeyPress:         on_key_press();         break;
+    case MapNotify:        on_map_notify();        break;
+    case MapRequest:       on_map_request();       break;
     /* case MotionNotify:     on_motion_notify();     break; */
     /* case PropertyNotify:   on_property_notify();   break; */
     /* case UnmapNotify:      on_unmap_notify();      break; */
@@ -126,14 +126,14 @@ void
 x_events::on_button_release()
 {
     x_wrapper::window_t win = m_current_event.window();
-    client_ptr_t client = m_x.get_move_resize_client();
+    client_ptr_t client = m_x.moveresize()->client;
 
     if (!client || win.get() != client->mr_indicator.get())
         return;
 
     auto attrs = x_wrapper::get_attributes(client->frame);
 
-    switch (m_x.get_move_resize_state()) {
+    switch (m_x.moveresize()->state) {
     case MR_MOVE:   m_clients.stop_moving(client, attrs);          break;
     case MR_RESIZE: m_clients.stop_resizing(client, attrs, attrs); break;
     default: break;
@@ -223,7 +223,7 @@ x_events::on_configure_request()
     auto before_attrs = x_wrapper::get_attributes(client->frame);
 
     if (win.get() == client->win.get()) {
-        if (m_x.get_move_resize_state() == MR_RESIZE)
+        if (m_x.moveresize()->state == MR_RESIZE)
             return;
 
         auto win_event = m_current_event;
@@ -248,7 +248,7 @@ x_events::on_configure_request()
     auto after_attrs = x_wrapper::get_attributes(client->frame);
 
     Pos pos;
-    switch (m_x.get_move_resize_corner()) {
+    switch (m_x.moveresize()->grabbed_at) {
     case TOP_LEFT:
         pos = {before_attrs.x() + (before_attrs.w() - after_attrs.w()),
             before_attrs.y() + (before_attrs.h() - after_attrs.h())};
@@ -286,7 +286,7 @@ x_events::on_configure_notify()
     size_hints.get().flags = PSize;
 
     if (m_x.update_hints(client, size_hints)) {
-        m_x.apply_hints(client->pos, client->size, client->size_constraints);
+        client->sizeconstraints.apply(client->pos, client->size);
         client->resize(client->size);
     }
 }
@@ -625,25 +625,24 @@ void
 x_events::on_motion_notify()
 {
     client_ptr_t client;
-    if (!m_x.is_valid() || !(client = m_x.get_move_resize_client()))
+    if (!m_x.is_valid() || !(client = m_x.moveresize()->client))
         return;
 
-    /* if (client->mr_indicator == None) */
-    /*     return; */
+    x_wrapper::last_typed_event(m_current_event, MotionNotify);
 
-    /* XWindowAttributes pwa, rwa; */
-    /* xh_.get_attributes(client->frame, pwa); */
-    /* pwa.height -= BORDER_WIDTH; */
-    /* xh_.get_root_attributes(rwa); */
-    /* Size root_size = {rwa.width, rwa.height}; */
+    auto client_attrs = x_wrapper::get_attributes(client->frame);
 
-    /* xh_.last_typed_event(m_current_event, MotionNotify); */
+    Pos pos = client_attrs;
+    Size size = client_attrs;
+    Pos delta = m_x.update_pointer(x_wrapper::pointer_position());
 
-    /* Pos pointer_pos; */
-    /* xh_.get_pointer_pos(pointer_pos); */
-    /* Pos delta_pos = xm_.update_pointer(pointer_pos); */
+    switch (m_x.moveresize()->state) {
+    case MR_MOVE:   m_x.moveresize()->process_move_increment(pos, size, delta);   break;
+    case MR_RESIZE: m_x.moveresize()->process_resize_increment(pos, size, delta); break;
+    default: break;
+    }
 
-    /* switch (xm_.get_move_resize_state()) { */
+    /* switch (xm_.get_moveresize_state()) { */
     /*     case MR_MOVE: */
     /*         { */
     /*             Pos pos = {pwa.x + delta_pos.x, pwa.y + delta_pos.y}; */
@@ -654,7 +653,7 @@ x_events::on_motion_notify()
     /*         break; */
     /*     case MR_RESIZE: */
     /*         { */
-    /*             switch (xm_.get_move_resize_corner()) { */
+    /*             switch (xm_.get_moveresize_corner()) { */
     /*             case TOP_LEFT: */
     /*                 { */
     /*                     int resize_width  = ::std::max(pwa.width - delta_pos.x, MIN_WINDOW_SIZE); */

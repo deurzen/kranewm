@@ -42,3 +42,16 @@ x_wrapper::release_pointer()
     XUngrabButton(g_dpy, AnyButton, AnyModifier, l_confined);
     l_confined = None;
 }
+
+Pos
+x_wrapper::pointer_position()
+{
+    Window _w;
+    int _i;
+    unsigned _u;
+
+    Pos pos;
+    XQueryPointer(g_dpy, g_root, &_w, &_w, &pos.x, &pos.y, &_i, &_i, &_u);
+
+    return pos;
+}

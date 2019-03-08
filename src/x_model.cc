@@ -4,90 +4,35 @@
 
 
 bool
-x_model::update_hints(client_ptr_t client, XSizeHints sh)
+x_model::update_hints(client_ptr_t client, x_wrapper::sizehints_t sh)
 {
     Size base{}, inc{}, max{}, min{};
     Range<float> aspect{};
 
-    if (sh.flags & PBaseSize)
-        base = {sh.base_width, sh.base_height};
-    else if (sh.flags & PMinSize)
-        base = {sh.min_width, sh.min_height};
+    if (sh.get().flags & PBaseSize)
+        base = {sh.get().base_width, sh.get().base_height};
+    else if (sh.get().flags & PMinSize)
+        base = {sh.get().min_width, sh.get().min_height};
 
-    if (sh.flags & PResizeInc)
-        inc = {sh.width_inc, sh.height_inc};
+    if (sh.get().flags & PResizeInc)
+        inc = {sh.get().width_inc, sh.get().height_inc};
 
-    if (sh.flags & PMaxSize)
-        max = {sh.max_width, sh.max_height};
+    if (sh.get().flags & PMaxSize)
+        max = {sh.get().max_width, sh.get().max_height};
 
-    if (sh.flags & PMinSize)
-        min = {sh.min_width, sh.min_height};
-    else if (sh.flags & PBaseSize)
-        min = {sh.base_width, sh.base_height};
+    if (sh.get().flags & PMinSize)
+        min = {sh.get().min_width, sh.get().min_height};
+    else if (sh.get().flags & PBaseSize)
+        min = {sh.get().base_width, sh.get().base_height};
 
-    if (sh.flags & PAspect)
-        aspect = {static_cast<float>(sh.min_aspect.y) / sh.min_aspect.x,
-            static_cast<float>(sh.max_aspect.y) / sh.max_aspect.x};
+    if (sh.get().flags & PAspect)
+        aspect = {static_cast<float>(sh.get().min_aspect.y) / sh.get().min_aspect.x,
+            static_cast<float>(sh.get().max_aspect.y) / sh.get().max_aspect.x};
 
-    bool changed = !(client->size_constraints == SizeConstraints{base, inc, max, min, aspect});
-    client->size_constraints = {base, inc, max, min, aspect};
+    bool changed = !(client->sizeconstraints == sizeconstraints_t{base, inc, max, min, aspect});
+    client->sizeconstraints = {base, inc, max, min, aspect};
 
     return changed;
-}
-
-void
-x_model::apply_hints(Pos& pos, Size& size, SizeConstraints size_constraints) const
-{
-    size.w = ::std::max(size.w, MIN_WINDOW_SIZE);
-    size.h = ::std::max(size.h, MIN_WINDOW_SIZE);
-
-    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
-
-    if (m_moveresize) {
-        if (pos.x > root_attrs.w())
-            pos.x = root_attrs.w() - size.w;
-
-        if (pos.y > root_attrs.h())
-            pos.y = root_attrs.h() - size.h;
-
-        if (pos.x + size.w < 0)
-            pos.x = 0;
-
-        if (pos.y + size.h < 0)
-            pos.y = 0;
-    } else {
-        if (pos.x >= root_attrs.w())
-            pos.x = root_attrs.w() - size.w;
-
-        if (pos.y >= root_attrs.h())
-            pos.y = root_attrs.h() - size.h;
-
-        if (pos.x + size.w <= 0)
-            pos.x = 0;
-
-        if (pos.y + size.h <= 0)
-            pos.y = 0;
-    }
-
-    bool base_is_min = size_constraints.base == size_constraints.min;
-    if (!base_is_min) {
-        size.w -= size_constraints.base.w;
-        size.h -= size_constraints.base.h;
-    }
-
-    if (base_is_min) {
-        size.w -= size_constraints.base.w;
-        size.h -= size_constraints.base.h;
-    }
-
-    size.w = ::std::max(size.w + size_constraints.base.w, size_constraints.min.w);
-    size.h = ::std::max(size.h + size_constraints.base.h, size_constraints.min.h);
-
-    if (size_constraints.max.w)
-        size.w = ::std::min(size.w, size_constraints.max.w);
-
-    if (size_constraints.max.h)
-        size.h = ::std::min(size.h, size_constraints.max.h);
 }
 
 void
@@ -134,33 +79,6 @@ x_model::update_pointer(Pos pos)
     m_pointer.y = pos.y;
 
     return diff;
-}
-
-client_ptr_t
-x_model::get_move_resize_client() const
-{
-    if (!m_moveresize)
-        return nullptr;
-
-    return m_moveresize->client;
-}
-
-MoveResizeState
-x_model::get_move_resize_state() const
-{
-    if (!m_moveresize)
-        return MR_INVALID;
-
-    return m_moveresize->state;
-}
-
-Corner
-x_model::get_move_resize_corner() const
-{
-    if (!m_moveresize)
-        return NO_CORNER;
-
-    return m_moveresize->grabbed;
 }
 
 void

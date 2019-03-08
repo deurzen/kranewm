@@ -5,11 +5,11 @@
 #include "x_wrapper/window.hh"
 
 
-struct SizeConstraints
+struct sizeconstraints_t
 {
-    SizeConstraints() = default;
+    sizeconstraints_t() = default;
 
-    SizeConstraints(Size _base, Size _inc, Size _max, Size _min, Range<float> _aspect)
+    sizeconstraints_t(Size _base, Size _inc, Size _max, Size _min, Range<float> _aspect)
         : base(_base),
           inc(_inc),
           max(_max),
@@ -17,7 +17,7 @@ struct SizeConstraints
           aspect(_aspect)
     {}
 
-    inline bool operator==(const SizeConstraints& size_constraints) const
+    inline bool operator==(const sizeconstraints_t& size_constraints) const
     {
         return size_constraints.base == base
             && size_constraints.inc == inc
@@ -25,6 +25,8 @@ struct SizeConstraints
             && size_constraints.min == min
             && size_constraints.aspect == aspect;
     }
+
+    void apply(Pos&, Size&) const;
 
     Size base;
     Size inc;

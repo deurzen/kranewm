@@ -4,6 +4,7 @@
 #include "floating.hh"
 #include "constraints.hh"
 #include "x_wrapper/window.hh"
+#include "x_wrapper/hints.hh"
 
 
 class x_model
@@ -13,17 +14,14 @@ public:
         : m_moveresize(nullptr)
     {};
 
-    static bool update_hints(client_ptr_t, XSizeHints);
-    void apply_hints(Pos&, Size&, SizeConstraints) const;
+    static bool update_hints(client_ptr_t, x_wrapper::sizehints_t);
 
     void enter_move(client_ptr_t, Pos);
     void enter_resize(client_ptr_t, Pos);
 
     Pos update_pointer(Pos);
 
-    client_ptr_t get_move_resize_client() const;
-    MoveResizeState get_move_resize_state() const;
-    Corner get_move_resize_corner() const;
+    inline moveresize_ptr_t moveresize() const { return m_moveresize; }
 
     void exit_move_resize();
 

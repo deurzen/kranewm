@@ -53,7 +53,7 @@ typedef struct client_t
     Pos                 float_pos;
     Size                size;
     Size                float_size;
-    SizeConstraints     size_constraints;
+    sizeconstraints_t   sizeconstraints;
     ClientExpect        expect;
     bool                focused;
     bool                floating;
