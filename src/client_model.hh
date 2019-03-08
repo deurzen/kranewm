@@ -22,15 +22,16 @@ public:
           m_focused_client(nullptr)
         {
             for (auto&& [nr,name] : USER_WORKSPACES)
-                m_user_workspaces.push_back(new user_workspace_t{nr, name.c_str()});
+                m_userworkspaces.push_back(new userworkspace_t{nr, name.c_str()});
 
-            m_current_workspace = m_user_workspaces.front();
+            m_current_workspace = m_userworkspaces.front();
         }
 
     client_ptr_t win_to_client(x_wrapper::window_t);
     workspace_ptr_t client_workspace(client_ptr_t);
+    userworkspace_ptr_t client_userworkspace(client_ptr_t);
 
-    workspace_ptr_t active_workspace() const;
+    userworkspace_ptr_t active_workspace() const;
     client_ptr_t focused_client() const;
 
     void manage_client(client_ptr_t, Rule);
@@ -44,16 +45,16 @@ public:
     void stop_resizing(client_ptr_t, Pos, Size);
 
 private:
-    user_workspace_ptr_t m_current_workspace;
+    userworkspace_ptr_t m_current_workspace;
 
     moveresize_workspace_ptr_t m_move_workspace;
     moveresize_workspace_ptr_t m_resize_workspace;
 
-    ::std::vector<x_wrapper::window_t> m_registered_windows;
-    ::std::vector<user_workspace_ptr_t> m_user_workspaces;
+    ::std::vector<x_wrapper::window_t> m_managed_windows;
+    ::std::vector<userworkspace_ptr_t> m_userworkspaces;
 
     ::std::unordered_map<x_wrapper::window_t, client_ptr_t> m_client_windows;
-    ::std::unordered_map<client_ptr_t, workspace_ptr_t> m_client_workspaces;
+    ::std::unordered_map<client_ptr_t, userworkspace_ptr_t> m_client_workspaces;
 
     client_ptr_t m_marked_client;
     client_ptr_t m_focused_client;

@@ -74,6 +74,7 @@ public:
     inline void set(client_ptr_t _client) { client = _client; }
     inline void unset() { client = nullptr; }
 
+    inline client_ptr_t get() const { return client; }
     inline bool is_set() const { return client != nullptr; }
 
 private:
@@ -99,10 +100,10 @@ inline bool is_moveresize_workspace(workspace_ptr_t workspace)
 }
 
 
-typedef class user_workspace_t : public workspace_t
+typedef class userworkspace_t : public workspace_t
 {
 public:
-    user_workspace_t(unsigned _number, ::std::string&& _name)
+    userworkspace_t(unsigned _number, ::std::string&& _name)
         : workspace_t(USER_WORKSPACE), number(_number), name(_name),
           n_master(1), gap_size(5), m1_weight(1), m_factor(.6f),
           mirrored(false), layout(LT_FLOAT), previous_layout(layout)
@@ -112,14 +113,14 @@ public:
 
     void arrange() const override;
 
-    user_workspace_t& register_client(client_ptr_t);
-    user_workspace_t& unregister_client(client_ptr_t);
+    userworkspace_t& register_client(client_ptr_t);
+    userworkspace_t& unregister_client(client_ptr_t);
 
-    user_workspace_t& set_n_master(unsigned);
-    user_workspace_t& set_gap_size(unsigned);
-    user_workspace_t& set_m_factor(float);
-    user_workspace_t& set_m1_weight(unsigned);
-    user_workspace_t& set_layout(LayoutType);
+    userworkspace_t& set_n_master(unsigned);
+    userworkspace_t& set_gap_size(unsigned);
+    userworkspace_t& set_m_factor(float);
+    userworkspace_t& set_m1_weight(unsigned);
+    userworkspace_t& set_layout(LayoutType);
 
     void map_clients();
     void unmap_clients();
@@ -139,10 +140,10 @@ private:
     LayoutType    previous_layout;
     focus_cycle   clients;
 
-}* user_workspace_ptr_t;
+}* userworkspace_ptr_t;
 
 
-inline bool is_user_workspace(workspace_ptr_t workspace)
+inline bool is_userworkspace(workspace_ptr_t workspace)
 {
     return workspace->get_type() == USER_WORKSPACE;
 }

@@ -1,8 +1,8 @@
 #include "workspace.hh"
 
 
-user_workspace_t&
-user_workspace_t::set_layout(LayoutType _layout)
+userworkspace_t&
+userworkspace_t::set_layout(LayoutType _layout)
 {
     LayoutType current_layout = layout;
     if (_layout == LT_TOGGLE)
@@ -15,7 +15,7 @@ user_workspace_t::set_layout(LayoutType _layout)
 }
 
 void
-user_workspace_t::arrange() const
+userworkspace_t::arrange() const
 {
 
 }

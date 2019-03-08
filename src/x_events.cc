@@ -248,8 +248,8 @@ x_events::on_configure_request()
         return;
     }
 
-    if (is_user_workspace(m_clients.client_workspace(client))) {
-        auto workspace = dynamic_cast<user_workspace_ptr_t>(m_clients.client_workspace(client));
+    if (is_userworkspace(m_clients.client_workspace(client))) {
+        auto workspace = dynamic_cast<userworkspace_ptr_t>(m_clients.client_workspace(client));
         if (!(workspace->in_float_layout() || client->floating))
             return;
     }
