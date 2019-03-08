@@ -23,8 +23,8 @@ x_wrapper::create_window(bool do_not_manage)
     return win;
 }
 
-void
-x_wrapper::get_top_level_windows(::std::vector<window_t>& wins)
+::std::vector<window_t>
+x_wrapper::get_top_level_windows()
 {
     Window _w;
     Window *children;
@@ -32,13 +32,15 @@ x_wrapper::get_top_level_windows(::std::vector<window_t>& wins)
 
     XQueryTree(g_dpy, g_root, &_w, &_w, &children, &nchildren);
 
-    wins.clear();
+    ::std::vector<window_t> wins;
     for (unsigned i = 0; i < nchildren; ++i)
         if (children[i] != g_root.get())
             wins.push_back(children[i]);
 
     if (children)
         XFree(children);
+
+    return wins;
 }
 
 window_t
@@ -68,6 +70,21 @@ x_wrapper::set_input_focus(window_t& win)
     return get_input_focus().get() == win.get();
 }
 
+
+::std::string
+x_wrapper::window_t::get_name()
+{
+    ::std::string name;
+    char name_arr[512];
+    if (!get_text_property(val, get_atom("_NET_WM_NAME"), name_arr, sizeof name_arr))
+        get_text_property(val, XA_WM_NAME, name_arr, sizeof name_arr);
+
+    if (name_arr[0] == '\0')
+        strcpy(name_arr, "No name");
+
+    name.assign(name_arr);
+    return name;
+}
 
 void
 x_wrapper::window_t::close()
@@ -103,17 +120,10 @@ x_wrapper::window_t::force_close()
     }
 }
 
-::std::string
-x_wrapper::window_t::get_name()
+void
+x_wrapper::window_t::set_state(long state)
 {
-    ::std::string name;
-    char name_arr[512];
-    if (!get_text_property(val, get_atom("_NET_WM_NAME"), name_arr, sizeof name_arr))
-        get_text_property(val, XA_WM_NAME, name_arr, sizeof name_arr);
-
-    if (name_arr[0] == '\0')
-        strcpy(name_arr, "No name");
-
-    name.assign(name_arr);
-    return name;
+    long data[] = { state, None };
+    XChangeProperty(g_dpy, val, get_atom("WM_STATE"), get_atom("WM_STATE"), 32,
+        PropModeReplace, (unsigned char*) data, 2);
 }

@@ -3,7 +3,7 @@
 
 #include "x_wrapper/mouse.hh"
 
-#include <map>
+#include <unordered_map>
 
 
 enum MouseOperation
@@ -26,19 +26,28 @@ struct MouseShortcut
           on_client(_on_client)
     {}
 
+    inline bool operator==(const MouseShortcut& ms) const
+    {
+        return ms.button == button && ms.mask == mask;
+    }
+
     unsigned button;
     unsigned mask;
     bool on_client;
 };
 
-inline bool
-operator<(const MouseShortcut& ms1, const MouseShortcut& ms2)
+namespace std
 {
-    auto cmp1 = ms1.button + 10000 * ms1.mask + ms1.on_client;
-    auto cmp2 = ms2.button + 10000 * ms2.mask + ms2.on_client;
-    return cmp1 < cmp2;
+    template <>
+    struct hash<MouseShortcut>
+    {
+        std::size_t operator()(const MouseShortcut& ms) const
+        {
+            return ms.button + 10000 * ms.mask;
+        }
+    };
 }
 
-typedef ::std::map<MouseShortcut, MouseOperation> MouseBinds;
+typedef ::std::unordered_map<MouseShortcut, MouseOperation> MouseBinds;
 
 #endif//__KRANEWM__MOUSEBIND__GUARD__

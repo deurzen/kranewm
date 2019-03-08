@@ -28,6 +28,7 @@ public:
     workspace_ptr_t client_workspace(client_ptr_t);
 
     workspace_ptr_t active_workspace() const;
+    client_ptr_t focused_client() const;
 
     void register_client(client_ptr_t);
     void unregister_client(client_ptr_t);

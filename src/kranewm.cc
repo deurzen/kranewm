@@ -1,5 +1,6 @@
 #include "kranewm.hh"
 #include "x_wrapper/input.hh"
+#include "x_wrapper/window.hh"
 #include "x_wrapper/event.hh"
 #include "x_wrapper/attributes.hh"
 #include "common.hh"
@@ -32,19 +33,19 @@ kranewm::setup()
 
     auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
 
-    auto root_draw_win = x_wrapper::create_window(true);
-    root_draw_win.resize({SIDEBAR_WIDTH, root_attrs.get().height}).move({0, 0});
-    m_ewmh.set_strut_property(root_draw_win, SIDEBAR_WIDTH, 0, 0, 0);
-    root_draw_win.set_background_color(REG_ROOT_BG_COLOR);
-    root_draw_win.map();
+    auto sidebar = x_wrapper::create_window(true);
+    sidebar.resize({SIDEBAR_WIDTH, root_attrs.get().height}).move({0, 0});
+    m_ewmh.set_strut_property(sidebar, SIDEBAR_WIDTH, 0, 0, 0);
+    sidebar.set_background_color(SIDEBAR_BG_COLOR);
+    sidebar.map();
 
     m_ewmh.clear_client_list_property();
 
     m_ewmh.set_wm_name_property(x_wrapper::g_root, WMNAME);
-    m_ewmh.set_wm_name_property(root_draw_win, WMNAME);
+    m_ewmh.set_wm_name_property(sidebar, WMNAME);
 
-    m_ewmh.set_supporting_wm_check_property(x_wrapper::g_root, root_draw_win);
-    m_ewmh.set_supporting_wm_check_property(root_draw_win, root_draw_win);
+    m_ewmh.set_supporting_wm_check_property(x_wrapper::g_root, sidebar);
+    m_ewmh.set_supporting_wm_check_property(sidebar, sidebar);
 
     m_ewmh.set_desktop_geometry_property();
     m_ewmh.set_desktop_viewport_property();
@@ -58,7 +59,11 @@ kranewm::setup()
         desktop_names.push_back(name);
     m_ewmh.set_desktop_names_property(desktop_names);
 
+    auto existing_wins = x_wrapper::get_top_level_windows();
+    ::std::for_each(existing_wins.begin(), existing_wins.end(),
+        [=](x_wrapper::window_t win) { m_events.register_window(win); });
 
+    // TODO process_client_events?
     x_wrapper::sync(true);
 
 #ifndef DEBUG

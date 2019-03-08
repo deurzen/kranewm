@@ -13,11 +13,11 @@ public:
         : m_moveresize(nullptr)
     {};
 
-    static bool update_hints(client_ptr_t, XSizeHints,  Size);
-    void apply_hints(Pos&, Size&, SizeConstraints, Size) const;
+    static bool update_hints(client_ptr_t, XSizeHints);
+    void apply_hints(Pos&, Size&, SizeConstraints) const;
 
     void enter_move(client_ptr_t, Pos);
-    void enter_resize(client_ptr_t, Pos, XWindowAttributes&);
+    void enter_resize(client_ptr_t, Pos);
 
     Pos update_pointer(Pos);
 
@@ -26,6 +26,8 @@ public:
     Corner get_move_resize_corner() const;
 
     void exit_move_resize();
+
+    bool is_valid() const;
 
 private:
     moveresize_ptr_t m_moveresize;

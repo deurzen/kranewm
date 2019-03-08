@@ -24,6 +24,12 @@ client_model::active_workspace() const
     return m_current_workspace;
 }
 
+client_ptr_t
+client_model::focused_client() const
+{
+    return m_focused_client;
+}
+
 
 void
 client_model::register_client(client_ptr_t)
@@ -67,6 +73,7 @@ client_model::start_moving(client_ptr_t client)
 void
 client_model::stop_moving(client_ptr_t client, Pos pos)
 {
+// make sure in move_ws (x_events::map_window)
 
 }
 
@@ -79,5 +86,6 @@ client_model::start_resizing(client_ptr_t client)
 void
 client_model::stop_resizing(client_ptr_t client, Pos pos, Size size)
 {
+// make sure in resize_ws (x_events::map_window)
 
 }

@@ -35,8 +35,7 @@ x_wrapper::disable_substructure_events()
 void
 x_wrapper::next_event(event_t& event)
 {
-    XEvent x_event = event.get();
-    XNextEvent(g_dpy, &x_event);
+    XNextEvent(g_dpy, event.get_ptr());
 }
 
 void

@@ -31,6 +31,7 @@ namespace x_wrapper
         inline XEvent* get_ptr() { return &val; }
 
         inline window_t window() { return val.xany.window; }
+        inline int type() const  { return val.type; }
 
         event_t& send(long mask, window_t win = None);
 

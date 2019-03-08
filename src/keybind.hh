@@ -3,7 +3,7 @@
 
 #include "x_wrapper/key.hh"
 
-#include <map>
+#include <unordered_map>
 
 // TODO group
 enum KeyOperation
@@ -66,22 +66,32 @@ enum KeyOperation
 struct KeyShortcut
 {
     KeyShortcut(KeySym _keysym, unsigned _mask)
-        : keysym(_keysym),
-          mask(_mask)
-    {}
+        : keysym(_keysym), mask(_mask) {}
+
+    KeyShortcut(XKeyEvent event)
+        : keysym(x_wrapper::get_keysym(event.keycode)), mask(event.state) {}
+
+    inline bool operator==(const KeyShortcut& ks) const
+    {
+        return ks.keysym == keysym && ks.mask == mask;
+    }
 
     KeySym keysym;
     unsigned mask;
 };
 
-inline bool
-operator<(const KeyShortcut& ks1, const KeyShortcut& ks2)
+namespace std
 {
-    auto cmp1 = ks1.keysym + 10000 * ks1.mask;
-    auto cmp2 = ks2.keysym + 10000 * ks2.mask;
-    return cmp1 < cmp2;
+    template <>
+    struct hash<KeyShortcut>
+    {
+        std::size_t operator()(const KeyShortcut& ks) const
+        {
+            return ks.keysym + 10000 * ks.mask;
+        }
+    };
 }
 
-typedef ::std::map<KeyShortcut, KeyOperation> KeyBinds;
+typedef ::std::unordered_map<KeyShortcut, KeyOperation> KeyBinds;
 
 #endif//__KRANEWM__KEYBIND__GUARD__

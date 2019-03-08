@@ -92,6 +92,12 @@ inline bool is_resize_workspace(workspace_ptr_t workspace)
     return workspace->get_type() == RESIZE_WORKSPACE;
 }
 
+inline bool is_moveresize_workspace(workspace_ptr_t workspace)
+{
+    return workspace->get_type() == MOVE_WORKSPACE
+        || workspace->get_type() == RESIZE_WORKSPACE;
+}
+
 
 typedef class user_workspace_t : public workspace_t
 {

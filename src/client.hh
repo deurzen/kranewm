@@ -11,7 +11,7 @@
 #include <set>
 
 
-enum ClientEffect {
+enum ClientExpect {
     NO_EFFECT = 0,
     MAP       = 1 << 0,
     WITHDRAW  = 1 << 1,
@@ -25,12 +25,14 @@ typedef struct ::std::set<client_ptr_t> client_ptr_set_t;
 typedef struct client_t
 {
     client_t(x_wrapper::window_t _win, x_wrapper::window_t _frame)
-        : win(_win), frame(_frame), effect(NO_EFFECT), focused(false),
+        : win(_win), frame(_frame), expect(NO_EFFECT), focused(false),
           floating(false), fullscreen(false), shaded(false),
           iconified(false), urgent(false), parent(nullptr)
     {}
 
     void disown_child(client_ptr_t);
+
+    bool redeem_expect(ClientExpect);
 
     void move(Pos);
     void resize(Size);
@@ -52,7 +54,7 @@ typedef struct client_t
     Size                size;
     Size                float_size;
     SizeConstraints     size_constraints;
-    ClientEffect        effect;
+    ClientExpect        expect;
     bool                focused;
     bool                floating;
     bool                fullscreen;

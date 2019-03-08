@@ -162,6 +162,7 @@ namespace x_wrapper
         ::std::string get_name();
         void close();
         void force_close();
+        void set_state(long);
 
     private:
         Window val;
@@ -172,7 +173,7 @@ namespace x_wrapper
     extern display_t g_dpy;
 
     extern window_t create_window(bool do_not_manage);
-    extern void get_top_level_windows(::std::vector<window_t>&);
+    extern ::std::vector<window_t> get_top_level_windows();
 
     extern window_t get_transient_for(window_t&);
 

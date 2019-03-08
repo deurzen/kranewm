@@ -34,16 +34,4 @@ const int KB_MOVE_INCREMENT   = 5;
 const int MIN_WINDOW_SIZE = 50;
 const int SIDEBAR_WIDTH   = 12;
 
-const unsigned long REG_BORDER_COLOR          = 0x404040;
-const unsigned long SEL_BORDER_COLOR          = 0xC0C0C0;
-const unsigned long URGENT_BORDER_COLOR       = 0xA52A2A;
-const unsigned long MRIND_BG_COLOR            = 0x000000;
-const unsigned long MRIND_BORDER_COLOR        = 0xffffff;
-const unsigned long REG_ROOT_BG_COLOR         = 0x080808;
-const unsigned long SCRATCHPAD_ROOT_BG_COLOR  = 0x121212;
-const unsigned long REG_MRIND_BG_COLOR        = 0x080808;
-const unsigned long SCRATCHPAD_MRIND_BG_COLOR = 0x121212;
-const unsigned long REG_SHADED_BG_COLOR       = 0x404040;
-const unsigned long SEL_SHADED_BG_COLOR       = 0x808080;
-
 #endif//__KRANEWM__COMMON__GUARD__

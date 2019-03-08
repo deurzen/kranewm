@@ -38,6 +38,17 @@ client_t::disown_child(client_ptr_t)
 
 }
 
+bool
+client_t::redeem_expect(ClientExpect occurred)
+{
+    if (occurred == expect) {
+        expect = NO_EFFECT;
+        return true;
+    }
+
+    return false;
+}
+
 void
 client_t::move(Pos new_pos)
 {

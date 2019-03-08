@@ -1,9 +1,10 @@
 #include "x_model.hh"
 #include "common.hh"
+#include "x_wrapper/attributes.hh"
 
 
 bool
-x_model::update_hints(client_ptr_t client, XSizeHints sh, Size rootsize)
+x_model::update_hints(client_ptr_t client, XSizeHints sh)
 {
     Size base{}, inc{}, max{}, min{};
     Range<float> aspect{};
@@ -35,17 +36,19 @@ x_model::update_hints(client_ptr_t client, XSizeHints sh, Size rootsize)
 }
 
 void
-x_model::apply_hints(Pos& pos, Size& size, SizeConstraints size_constraints, Size screensize) const
+x_model::apply_hints(Pos& pos, Size& size, SizeConstraints size_constraints) const
 {
     size.w = ::std::max(size.w, MIN_WINDOW_SIZE);
     size.h = ::std::max(size.h, MIN_WINDOW_SIZE);
 
-    if (m_moveresize) {
-        if (pos.x > screensize.w)
-            pos.x = screensize.w - size.w;
+    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
 
-        if (pos.y > screensize.h)
-            pos.y = screensize.h - size.h;
+    if (m_moveresize) {
+        if (pos.x > root_attrs.w())
+            pos.x = root_attrs.w() - size.w;
+
+        if (pos.y > root_attrs.h())
+            pos.y = root_attrs.h() - size.h;
 
         if (pos.x + size.w < 0)
             pos.x = 0;
@@ -53,11 +56,11 @@ x_model::apply_hints(Pos& pos, Size& size, SizeConstraints size_constraints, Siz
         if (pos.y + size.h < 0)
             pos.y = 0;
     } else {
-        if (pos.x >= screensize.w)
-            pos.x = screensize.w - size.w;
+        if (pos.x >= root_attrs.w())
+            pos.x = root_attrs.w() - size.w;
 
-        if (pos.y >= screensize.h)
-            pos.y = screensize.h - size.h;
+        if (pos.y >= root_attrs.h())
+            pos.y = root_attrs.h() - size.h;
 
         if (pos.x + size.w <= 0)
             pos.x = 0;
@@ -98,13 +101,14 @@ x_model::enter_move(client_ptr_t client, Pos pos)
 }
 
 void
-x_model::enter_resize(client_ptr_t client, Pos pos, XWindowAttributes& wa)
+x_model::enter_resize(client_ptr_t client, Pos pos)
 {
     if (m_moveresize)
         return;
 
-    auto center_x = wa.x + wa.width/2;
-    auto center_y = wa.y + wa.height/2;
+    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+    auto center_x = root_attrs.x() + root_attrs.w() / 2;
+    auto center_y = root_attrs.y() + root_attrs.h() / 2;
 
     Corner corner = TOP_LEFT;
     if (pos.x > center_x && pos.y > center_y)
@@ -167,4 +171,10 @@ x_model::exit_move_resize()
 
     delete m_moveresize;
     m_moveresize = nullptr;
+}
+
+bool
+x_model::is_valid() const
+{
+    return m_moveresize->state != MR_INVALID;
 }
