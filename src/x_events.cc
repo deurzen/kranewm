@@ -282,10 +282,11 @@ x_events::on_configure_notify()
     if (!client)
         return;
 
-    x_wrapper::sizehints_t size_hints = x_wrapper::get_sizehints(win);
-    size_hints.get().flags = PSize;
+    auto sizehints = x_wrapper::get_sizehints(win);
+    if (!sizehints.get().flags)
+        sizehints.get().flags = PSize;
 
-    if (m_x.update_hints(client, size_hints)) {
+    if (m_x.update_hints(client, sizehints)) {
         client->sizeconstraints.apply(client->pos, client->size);
         client->resize(client->size);
     }
@@ -641,148 +642,41 @@ x_events::on_motion_notify()
     case MR_RESIZE: m_x.moveresize()->process_resize_increment(pos, size, delta); break;
     default: break;
     }
-
-    /* switch (xm_.get_moveresize_state()) { */
-    /*     case MR_MOVE: */
-    /*         { */
-    /*             Pos pos = {pwa.x + delta_pos.x, pwa.y + delta_pos.y}; */
-    /*             Size size = {pwa.width, pwa.height}; */
-    /*             xm_.apply_hints(pos, size, client->size_hints, root_size); */
-    /*             xh_.move_window(client->frame, pos); */
-    /*         } */
-    /*         break; */
-    /*     case MR_RESIZE: */
-    /*         { */
-    /*             switch (xm_.get_moveresize_corner()) { */
-    /*             case TOP_LEFT: */
-    /*                 { */
-    /*                     int resize_width  = ::std::max(pwa.width - delta_pos.x, MIN_WINDOW_SIZE); */
-    /*                     int resize_height = ::std::max(pwa.height - delta_pos.y, MIN_WINDOW_SIZE); */
-
-    /*                     Pos pos = {pwa.x + (pwa.width - resize_width), */
-    /*                         pwa.y + (pwa.height - resize_height)}; */
-    /*                     Size size = {resize_width, resize_height}; */
-
-    /*                     xm_.apply_hints(pos, size, client->size_hints, root_size); */
-    /*                     xh_.resize_window(client->win, size); */
-    /*                     xh_.resize_window(client->frame, {size.w, size.h + BORDER_WIDTH}); */
-
-    /*                     pos = {pwa.x + (pwa.width - size.w), pwa.y + (pwa.height - size.h)}; */
-    /*                     if (!(size == Size{pwa.width, pwa.height})) */
-    /*                         xh_.move_window(client->frame, pos); */
-    /*                 } */
-    /*                 break; */
-    /*             case TOP_RIGHT: */
-    /*                 { */
-    /*                     int resize_width  = ::std::max(pwa.width + delta_pos.x, MIN_WINDOW_SIZE); */
-    /*                     int resize_height = ::std::max(pwa.height - delta_pos.y, MIN_WINDOW_SIZE); */
-
-    /*                     Pos pos = {pwa.x, pwa.y + (pwa.height - resize_height)}; */
-    /*                     Size size = {resize_width, resize_height}; */
-
-    /*                     xm_.apply_hints(pos, size, client->size_hints, root_size); */
-    /*                     xh_.resize_window(client->win, size); */
-    /*                     xh_.resize_window(client->frame, {size.w, size.h + BORDER_WIDTH}); */
-
-    /*                     pos = {pwa.x, pwa.y + (pwa.height - size.h)}; */
-    /*                     if (!(size == Size{pwa.width, pwa.height})) */
-    /*                         xh_.move_window(client->frame, pos); */
-    /*                 } */
-    /*                 break; */
-    /*             case BOTTOM_LEFT: */
-    /*                 { */
-    /*                     int resize_width  = ::std::max(pwa.width - delta_pos.x, MIN_WINDOW_SIZE); */
-    /*                     int resize_height = ::std::max(pwa.height + delta_pos.y, MIN_WINDOW_SIZE); */
-
-    /*                     Pos pos = {pwa.x + (pwa.width - resize_width), pwa.y}; */
-    /*                     Size size = {resize_width, resize_height}; */
-
-    /*                     xm_.apply_hints(pos, size, client->size_hints, root_size); */
-    /*                     xh_.resize_window(client->win, size); */
-    /*                     xh_.resize_window(client->frame, {size.w, size.h + BORDER_WIDTH}); */
-
-    /*                     pos = {pwa.x + (pwa.width - size.w), pwa.y}; */
-    /*                     if (!(size == Size{pwa.width, pwa.height})) */
-    /*                         xh_.move_window(client->frame, pos); */
-    /*                 } */
-    /*                 break; */
-    /*             case BOTTOM_RIGHT: */
-    /*                 { */
-    /*                     int resize_width  = ::std::max(pwa.width + delta_pos.x, MIN_WINDOW_SIZE); */
-    /*                     int resize_height = ::std::max(pwa.height + delta_pos.y, MIN_WINDOW_SIZE); */
-
-    /*                     Pos _pos; */
-    /*                     Size size = {resize_width, resize_height}; */
-
-    /*                     xm_.apply_hints(_pos, size, client->size_hints, root_size); */
-    /*                     xh_.resize_window(client->win, size); */
-    /*                     xh_.resize_window(client->frame, {size.w, size.h + BORDER_WIDTH}); */
-    /*                 } */
-    /*                 break; */
-    /*             default: break; */
-    /*             } */
-    /*         } */
-    /*         break; */
-    /*     default: break; */
-    /* } */
 }
 
-/* void */
-/* x_events::on_property_notify() */
-/* { */
-/*     XPropertyEvent event = m_current_event.xproperty; */
-/*     Client_ptr client = cm_.get_client(event.window); */
+void
+x_events::on_property_notify()
+{
+    auto event = m_current_event.get().xproperty;
+    x_wrapper::window_t win = event.window;
+    client_ptr_t client = m_clients.win_to_client(win);
 
-/*     if (client && event.state == PropertyNewValue) { */
-/*         if (event.atom == XA_WM_NORMAL_HINTS) { */
-/*             XWindowAttributes rwa; */
-/*             xh_.get_root_attributes(rwa); */
-/*             XSizeHints sh; */
-/*             if (xh_.get_size_hints(client->win, sh)) */
-/*                 sh.flags = PSize; */
-/*             xm_.update_hints(client, sh, {rwa.width, rwa.height}); */
-/*         } else if ((event.atom == XA_WM_NAME */
-/*             || event.atom == xh_.get_atom("_NET_WM_NAME"))) */
-/*         { */
-/*             if (client->iconified) */
-/*                 cm_.rerender_icons(); */
-/*             else if (client->shaded) { */
-/*                 XWindowAttributes wa; */
-/*                 xh_.get_attributes(client->frame, wa); */
+    if (client && event.state == PropertyNewValue) {
+        if (event.atom == XA_WM_NORMAL_HINTS) {
+            auto sizehints = x_wrapper::get_sizehints(win);
 
-/*                 int font_width  = client->gch->get_font_width(); */
-/*                 int font_height = client->gch->get_font_height(); */
-/*                 unsigned max_chars = wa.width / font_width - 1; */
+            if (!sizehints.get().flags)
+                sizehints.get().flags = PSize;
 
-/*                 ::std::string icon_name; */
-/*                 xh_.get_window_name(client->win, icon_name); */
+            m_x.update_hints(client, sizehints);
+        } else if ((event.atom == XA_WM_NAME || event.atom
+            == x_wrapper::get_atom("_NET_WM_NAME").get()))
+        {
+            if (client->iconified)
+                ; // handle iconified
+            else if (client->shaded)
+                ; // handle shaded
+        }
+    }
 
-/*                 int icon_name_length = font_width * icon_name.size(); */
-/*                 if (icon_name_length + font_width > wa.width) { */
-/*                     if (icon_name.size() >= max_chars) { */
-/*                         icon_name[max_chars - 3] = icon_name[max_chars - 2] = */
-/*                             icon_name[max_chars - 1] = '.'; */
-/*                         icon_name = icon_name.substr(0, max_chars); */
-/*                     } */
-/*                 } */
-
-/*                 xh_.clear_window(client->frame); */
-/*                 client->gch->set_string(GC_Handler::TK_WM_NAME, */
-/*                     {font_width / 2, font_height + (SHADED_HEIGHT - font_height) / 2}, */
-/*                         icon_name); */
-/*             } */
-/*         } */
-/*     } */
-
-/*     if (event.atom == xh_.get_atom("_NET_WM_STRUT") */
-/*         || event.atom == xh_.get_atom("_NET_WM_STRUT_PARTIAL")) */
-/*     { */
-/*         ewmh_.check_release_strut(event.window); */
-/*         ewmh_.check_apply_strut(event.window); */
-/*         if (cm_.get_current_workspace()->layout != LT_FLOAT) */
-/*             cm_.arrange_current_workspace(); */
-/*     } */
-/* } */
+    if (event.atom == x_wrapper::get_atom("_NET_WM_STRUT").get()
+        || event.atom == x_wrapper::get_atom("_NET_WM_STRUT_PARTIAL").get())
+    {
+        m_ewmh.check_release_strut(event.window);
+        m_ewmh.check_apply_strut(event.window);
+        m_clients.active_workspace()->arrange();
+    }
+}
 
 /* void */
 /* x_events::on_unmap_notify() */
