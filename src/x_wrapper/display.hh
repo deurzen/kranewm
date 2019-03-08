@@ -3,6 +3,7 @@
 
 extern "C" {
 #include <X11/Xlib.h>
+#include <X11/cursorfont.h>
 }
 
 
@@ -12,9 +13,13 @@ namespace x_wrapper
     class display_t
     {
     public:
-        explicit display_t(const char* dpy)
-            : dpy(XOpenDisplay(dpy))
-        {}
+        explicit display_t(const char* _dpy)
+            : dpy(XOpenDisplay(_dpy))
+        {
+            XSetWindowAttributes wa;
+            wa.cursor = XCreateFontCursor(dpy, XC_left_ptr);
+            XChangeWindowAttributes(dpy, (XDefaultRootWindow(dpy)), CWCursor, &wa);
+        }
 
         operator Display*() const;
 
