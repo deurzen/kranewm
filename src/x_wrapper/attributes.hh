@@ -23,6 +23,11 @@ namespace x_wrapper
 
         inline XWindowAttributes get() const { return val; }
 
+        inline int x() const { return val.x; }
+        inline int y() const { return val.y; }
+        inline int w() const { return val.width; }
+        inline int h() const { return val.height; }
+
     private:
         XWindowAttributes val;
 

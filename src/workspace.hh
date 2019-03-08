@@ -102,6 +102,8 @@ public:
           mirrored(false), layout(LT_FLOAT), previous_layout(layout)
     {}
 
+    inline bool in_float_layout() const { return layout == LT_FLOAT; }
+
     void arrange() const override;
 
     user_workspace_t& register_client(client_ptr_t);

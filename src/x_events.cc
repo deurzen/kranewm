@@ -1,4 +1,5 @@
 #include "x_events.hh"
+#include "decoration.hh"
 #include "ewmh.hh"
 #include "client_model.hh"
 #include "x_model.hh"
@@ -182,92 +183,90 @@ x_events::on_client_message()
         break;
     case NetActiveWindow:
         {   // if pager or taskbar (source indicator = 2)
-            /* if (ALLOW_FOCUSSTEAL && event.data.l[0] == 2) */
-            /*     m_clients.focus(client); */
+            if (event.data.l[0] == 2)
+                m_clients.focus(client);
         }
         break;
     default: break;
     }
 }
 
-/* void */
-/* x_events::on_configure_request() */
-/* { */
-/*     Window win = m_current_event.xconfigurerequest.window; */
-/*     Client_ptr client = cm_.get_client(win); */
+void
+x_events::on_configure_request()
+{
+    x_wrapper::window_t win = m_current_event.get().xconfigurerequest.window;
+    client_ptr_t client = m_clients.win_to_client(win);
 
-/*     if (!client) { */
-/*         int perm_flags = CWX | CWY | CWWidth | CWHeight; */
-/*         xh_.propagate_configure_request(m_current_event, perm_flags); */
-/*         return; */
-/*     } */
+    if (!client) {
+        int perm_flags = CWX | CWY | CWWidth | CWHeight;
+        x_wrapper::propagate_configure_request(m_current_event, perm_flags);
+        return;
+    }
 
-/*     if (is_user_workspace(cm_.get_workspace_of(client))) { */
-/*         auto workspace = dynamic_cast<UserWorkspace_ptr>(cm_.get_workspace_of(client)); */
-/*         if (!(workspace->layout == LT_FLOAT || client->floating)) */
-/*             return; */
-/*     } */
+    if (is_user_workspace(m_clients.client_workspace(client))) {
+        auto workspace = dynamic_cast<user_workspace_ptr_t>(m_clients.client_workspace(client));
+        if (!(workspace->in_float_layout() || client->floating))
+            return;
+    }
 
-/*     m_current_event.xconfigurerequest.width = */
-/*         ::std::max(m_current_event.xconfigurerequest.width, MIN_WINDOW_SIZE); */
+    m_current_event.get().xconfigurerequest.width =
+        ::std::max(m_current_event.get().xconfigurerequest.width, MIN_WINDOW_SIZE);
 
-/*     m_current_event.xconfigurerequest.height = */
-/*         ::std::max(m_current_event.xconfigurerequest.height, MIN_WINDOW_SIZE); */
+    m_current_event.get().xconfigurerequest.height =
+        ::std::max(m_current_event.get().xconfigurerequest.height, MIN_WINDOW_SIZE);
 
-/*     XWindowAttributes before_wa; */
-/*     xh_.get_attributes(client->frame, before_wa); */
+    auto before_attrs = x_wrapper::get_attributes(client->frame);
 
-/*     if (win == client->win) { */
-/*         if (xm_.get_move_resize_state() == MR_RESIZE) */
-/*             return; */
+    if (win.get() == client->win.get()) {
+        if (m_x.get_move_resize_state() == MR_RESIZE)
+            return;
 
-/*         auto win_event = m_current_event; */
-/*         int conf_flags = win_event.xconfigurerequest.value_mask; */
-/*         int perm_flags = CWWidth | CWHeight; */
+        auto win_event = m_current_event;
+        int conf_flags = win_event.get().xconfigurerequest.value_mask;
+        int perm_flags = CWWidth | CWHeight;
 
-/*         conf_flags &= perm_flags; */
-/*         if (conf_flags) */
-/*             xh_.propagate_configure_request(win_event, conf_flags); */
+        conf_flags &= perm_flags;
+        if (conf_flags)
+            x_wrapper::propagate_configure_request(win_event, conf_flags);
 
-/*         m_current_event.xconfigurerequest.window = client->frame; */
-/*         m_current_event.xconfigurerequest.height += BORDER_WIDTH; */
-/*     } */
+        m_current_event.get().xconfigurerequest.window = client->frame;
+        m_current_event.get().xconfigurerequest.height += BORDER_HEIGHT;
+    }
 
-/*     int conf_flags = m_current_event.xconfigurerequest.value_mask; */
-/*     int perm_flags = CWX | CWY | CWWidth | CWHeight; */
+    int conf_flags = m_current_event.get().xconfigurerequest.value_mask;
+    int perm_flags = CWX | CWY | CWWidth | CWHeight;
 
-/*     conf_flags &= perm_flags; */
-/*     if (conf_flags) */
-/*         xh_.propagate_configure_request(m_current_event, conf_flags); */
+    conf_flags &= perm_flags;
+    if (conf_flags)
+        x_wrapper::propagate_configure_request(m_current_event, conf_flags);
 
-/*     XWindowAttributes after_wa; */
-/*     xh_.get_attributes(client->frame, after_wa); */
+    auto after_attrs = x_wrapper::get_attributes(client->frame);
 
-/*     Pos pos; */
-/*     switch (xm_.get_move_resize_corner()) { */
-/*     case TOP_LEFT: */
-/*         pos = {before_wa.x + (before_wa.width - after_wa.width), */
-/*             before_wa.y + (before_wa.height - after_wa.height)}; */
-/*         break; */
-/*     case TOP_RIGHT: */
-/*         pos = {before_wa.x, */
-/*             before_wa.y + (before_wa.height - after_wa.height)}; */
-/*         break; */
-/*     case BOTTOM_LEFT: */
-/*         pos = {before_wa.x + (before_wa.width - after_wa.width), */
-/*             before_wa.y}; */
-/*         break; */
-/*     case BOTTOM_RIGHT: // fallthrough */
-/*     default: pos = {before_wa.x, before_wa.y}; break; */
-/*     } */
+    Pos pos;
+    switch (m_x.get_move_resize_corner()) {
+    case TOP_LEFT:
+        pos = {before_attrs.x() + (before_attrs.w() - after_attrs.w()),
+            before_attrs.y() + (before_attrs.h() - after_attrs.h())};
+        break;
+    case TOP_RIGHT:
+        pos = {before_attrs.x(),
+            before_attrs.y() + (before_attrs.h() - after_attrs.h())};
+        break;
+    case BOTTOM_LEFT:
+        pos = {before_attrs.x() + (before_attrs.w() - after_attrs.w()),
+            before_attrs.y()};
+        break;
+    case BOTTOM_RIGHT: // fallthrough
+    default: pos = before_attrs; break;
+    }
 
-/*     if (!(conf_flags & (CWX | CWY)) */
-/*         && !(Size{before_wa.width, before_wa.height} */
-/*             == Size{after_wa.width, after_wa.height})) */
-/*     { */
-/*         xh_.move_window(client->frame, pos); */
-/*     } */
-/* } */
+    if (!(conf_flags & (CWX | CWY))
+        && !(Size{before_attrs.w(), before_attrs.h()}
+            == Size{after_attrs.w(), after_attrs.h()}))
+    {
+        client->move(pos);
+    }
+}
 
 /* void */
 /* x_events::on_configure_notify() */

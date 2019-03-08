@@ -27,7 +27,7 @@ namespace x_wrapper
 
         operator XEvent() const { return val; }
 
-        inline XEvent get() const { return val; }
+        inline XEvent& get() { return val; }
         inline XEvent* get_ptr() { return &val; }
 
         event_t& send(long mask, window_t win = None);
