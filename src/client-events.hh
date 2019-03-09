@@ -22,11 +22,11 @@ private:
 
     void from_move_workspace(client_ptr_t, workspace_ptr_t);
     void from_resize_workspace(client_ptr_t, workspace_ptr_t);
-    void from_user_workspace(client_ptr_t, workspace_ptr_t);
+    void from_user_workspace(client_ptr_t, workspace_ptr_t, workspace_ptr_t);
 
     void to_move_workspace(client_ptr_t, workspace_ptr_t);
     void to_resize_workspace(client_ptr_t, workspace_ptr_t);
-    void to_user_workspace(client_ptr_t, workspace_ptr_t);
+    void to_user_workspace(client_ptr_t, workspace_ptr_t, workspace_ptr_t);
 
     clientchange_ptr_t m_current_change;
 

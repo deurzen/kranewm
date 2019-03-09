@@ -110,15 +110,16 @@ client_t::redeem_expect(clientexpect occurred)
     return false;
 }
 
-void
+client_t&
 client_t::move(pos_t new_pos)
 {
     frame.move(new_pos);
     pos = new_pos;
     update_offset(this);
+    return *this;
 }
 
-void
+client_t&
 client_t::resize(dim_t new_dim)
 {
     if (new_dim.h > BORDER_HEIGHT)
@@ -126,36 +127,44 @@ client_t::resize(dim_t new_dim)
     frame.resize(new_dim);
     dim = new_dim;
     update_offset(this);
+    return *this;
 }
 
-void
+client_t&
 client_t::map()
 {
     win.map();
     frame.map();
+    return *this;
 }
 
-void
+client_t&
 client_t::unmap()
 {
     frame.unmap();
     win.unmap();
+    return *this;
 }
 
-void
-client_t::focus()
+client_t&
+client_t::map_children()
 {
-
+    for (auto& child : children)
+        child->map();
+    return *this;
 }
 
-void
-client_t::unfocus(bool)
+
+client_t&
+client_t::unmap_children()
 {
-
+    for (auto& child : children)
+        child->unmap();
+    return *this;
 }
 
-void
+client_t&
 client_t::center()
 {
-
+    return *this;
 }

@@ -73,24 +73,24 @@ client_events_t::on_change_client_workspace()
     auto from   = change->from;
     auto to     = change->to;
 
+    if (to)
+        switch (to->get_type()) {
+        case MOVE_WORKSPACE:   to_move_workspace(client, to);       break;
+        case RESIZE_WORKSPACE: to_resize_workspace(client, to);     break;
+        case USER_WORKSPACE:   to_user_workspace(client, from, to);       break;
+        default: break;
+        }
+
     if (from)
         switch (from->get_type()) {
         case MOVE_WORKSPACE:   from_move_workspace(client, from);   break;
         case RESIZE_WORKSPACE: from_resize_workspace(client, from); break;
-        case USER_WORKSPACE:   from_user_workspace(client, from);   break;
+        case USER_WORKSPACE:   from_user_workspace(client, from, to);   break;
         default: break;
         }
 
-    if (to) {
-        switch (to->get_type()) {
-        case MOVE_WORKSPACE:   to_move_workspace(client, to);       break;
-        case RESIZE_WORKSPACE: to_resize_workspace(client, to);     break;
-        case USER_WORKSPACE:   to_user_workspace(client, to);       break;
-        default: break;
-        }
-
+    if (to)
         to->arrange();
-    }
 }
 
 
@@ -113,8 +113,18 @@ client_events_t::from_resize_workspace(client_ptr_t client, workspace_ptr_t work
 }
 
 void
-client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t workspace)
+client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t from, workspace_ptr_t to)
 {
+    auto current = m_clients.active_workspace();
+
+    if (from == current && to != current) {
+        client->expect = WITHDRAW;
+        m_clients.unfocus_if_focused(client);
+        client->unmap_children().unmap();
+    }
+
+    m_ewmh.set_wm_desktop_property(client->win,
+        user_workspace(to)->get_number() - 1);
 }
 
 void
@@ -136,12 +146,17 @@ client_events_t::to_resize_workspace(client_ptr_t client, workspace_ptr_t worksp
 }
 
 void
-client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t _workspace)
+client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, workspace_ptr_t to)
 {
-    auto workspace = user_workspace(_workspace);
+    auto current = m_clients.active_workspace();
 
-    client->map();
-    m_ewmh.set_window_state_property(client->win);
+    if (from != current && to == current) {
+        client->expect = MAP;
+        client->map_children().map();
+        m_clients.focus(client);
+        m_ewmh.set_window_state_property(client->win);
+    }
+
     m_ewmh.set_wm_desktop_property(client->win,
-        USER_WORKSPACES.size() + workspace->get_number() - 1);
+        USER_WORKSPACES.size() + user_workspace(to)->get_number() - 1);
 }

@@ -36,16 +36,15 @@ typedef struct client_t
 
     bool redeem_expect(clientexpect);
 
-    void move(pos_t);
-    void resize(dim_t);
+    client_t& move(pos_t);
+    client_t& resize(dim_t);
 
-    void map();
-    void unmap();
+    client_t& map();
+    client_t& unmap();
+    client_t& map_children();
+    client_t& unmap_children();
 
-    void focus();
-    void unfocus(bool);
-
-    void center();
+    client_t& center();
 
     x_wrapper::window_t win;
     x_wrapper::window_t frame;
