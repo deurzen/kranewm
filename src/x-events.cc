@@ -166,11 +166,11 @@ void
 x_events_t::on_button_release()
 {
     x_wrapper::window_t win = m_current_event.get().xbutton.window;
-    client_ptr_t client = m_clients.win_to_client(win);
 
-    if (!m_x.is_valid() || (client != m_x.moveresize()->client))
+    if (!m_x.is_valid() || (win.get() != m_x.moveresize()->indicator.get()))
         return;
 
+    auto client = m_x.moveresize()->client;
     auto attrs = x_wrapper::get_attributes(client->frame);
 
     switch (m_x.moveresize()->state) {
@@ -679,6 +679,7 @@ x_events_t::on_motion_notify()
     x_wrapper::last_typed_event(m_current_event, MotionNotify);
 
     auto client_attrs = x_wrapper::get_attributes(client->frame);
+    client_attrs.get().height -= BORDER_HEIGHT;
 
     pos_t pos = client_attrs;
     dim_t dim = client_attrs;

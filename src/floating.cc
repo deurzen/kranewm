@@ -15,6 +15,7 @@ moveresize_t::process_resize_increment(pos_t pos, dim_t dim, pos_t delta)
     switch (grabbed_at) {
     case TOP_LEFT:
         {
+
             int resize_width  = ::std::max(dim.w - delta.x, MIN_WINDOW_SIZE);
             int resize_height = ::std::max(dim.h - delta.y, MIN_WINDOW_SIZE);
 
@@ -25,7 +26,7 @@ moveresize_t::process_resize_increment(pos_t pos, dim_t dim, pos_t delta)
             client->resize({new_dim.w, new_dim.h + BORDER_HEIGHT});
 
             if (!(new_dim == dim_t{dim.w, dim.h})) {
-                new_pos = {pos.x + (dim.w - dim.w), pos.y + (dim.h - dim.h)};
+                new_pos = {pos.x + (dim.w - new_dim.w), pos.y + (dim.h - new_dim.h)};
                 client->move(new_pos);
             }
         }

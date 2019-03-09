@@ -21,7 +21,7 @@ namespace x_wrapper
         operator dim_t() const { return dim_t{val.width, val.height}; }
         operator pos_t()  const { return pos_t{val.x, val.y}; }
 
-        inline XWindowAttributes get() const { return val; }
+        inline XWindowAttributes& get() { return val; }
 
         inline int x() const { return val.x; }
         inline int y() const { return val.y; }

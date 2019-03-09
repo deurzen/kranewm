@@ -8,7 +8,8 @@ client_events_t::process_queued_changes()
 {
     while ((m_current_change = m_changes.next())) {
         switch (m_current_change->type) {
-        case CLIENT_FOCUS_CHANGE:     on_change_client_focus(); break;
+        case CLIENT_FOCUS_CHANGE:     on_change_client_focus();     break;
+        case CLIENT_DESTROY_CHANGE:   on_change_client_destroy();   break;
         case CLIENT_WORKSPACE_CHANGE: on_change_client_workspace(); break;
         default: break;
         }
@@ -42,7 +43,7 @@ client_events_t::on_change_client_focus()
     }
 
     if (to) {
-        if (x_wrapper::set_input_focus(to->frame)) {
+        if (x_wrapper::set_input_focus(to->win)) {
             m_ewmh.set_active_window_property(to->win);
             to->frame.set_background_color(SEL_COLOR);
             to->frame.ungrab();
@@ -56,6 +57,12 @@ client_events_t::on_change_client_focus()
         if (to->shaded) to->frame.set_background_color(SEL_SHADE_COLOR);
     } else
         x_wrapper::set_input_focus();
+}
+
+void
+client_events_t::on_change_client_destroy()
+{
+
 }
 
 void
@@ -90,6 +97,8 @@ client_events_t::on_change_client_workspace()
 void
 client_events_t::from_move_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
+    for (auto& child : client->children)
+        child->map();
     x_wrapper::release_pointer();
     m_x.exit_move_resize();
 }
@@ -97,13 +106,15 @@ client_events_t::from_move_workspace(client_ptr_t client, workspace_ptr_t worksp
 void
 client_events_t::from_resize_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
-
+    for (auto& child : client->children)
+        child->map();
+    x_wrapper::release_pointer();
+    m_x.exit_move_resize();
 }
 
 void
 client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
-
 }
 
 void
@@ -111,8 +122,8 @@ client_events_t::to_move_workspace(client_ptr_t client, workspace_ptr_t workspac
 {
     for (auto& child : client->children)
         child->unmap();
-    x_wrapper::confine_pointer(client->frame);
     m_x.enter_move(client, x_wrapper::pointer_position());
+    x_wrapper::confine_pointer(m_x.moveresize()->indicator);
 }
 
 void
@@ -120,8 +131,8 @@ client_events_t::to_resize_workspace(client_ptr_t client, workspace_ptr_t worksp
 {
     for (auto& child : client->children)
         child->unmap();
-    x_wrapper::confine_pointer(client->frame);
     m_x.enter_resize(client, x_wrapper::pointer_position());
+    x_wrapper::confine_pointer(m_x.moveresize()->indicator);
 }
 
 void

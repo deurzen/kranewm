@@ -1,4 +1,5 @@
 #include "client-model.hh"
+#include "util.hh"
 
 client_ptr_t
 client_model_t::win_to_client(x_wrapper::window_t win)
@@ -70,12 +71,31 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
         m_changequeue.add(change_client_workspace(client, nullptr, m_current_workspace));
     }
 
+    focus(client);
 }
 
 void
-client_model_t::unmanage_client(client_ptr_t)
+client_model_t::unmanage_client(client_ptr_t client)
 {
+    auto workspace = client_workspace(client);
 
+    if (client == m_marked_client)
+        m_marked_client = nullptr;
+
+    if (client->parent) {
+        focus(client->parent);
+        client->parent->children.erase(client);
+    }
+
+    workspace->remove_client(client);
+    sync_workspace_focus();
+
+    erase_find(m_client_windows, client->win);
+    erase_find(m_client_windows, client->frame);
+    erase_find(m_client_workspaces, client);
+    erase_remove(m_managed_windows, client->win);
+
+    m_changequeue.add(change_client_destroy(client, workspace));
 }
 
 void
@@ -99,6 +119,9 @@ client_model_t::focus(client_ptr_t client)
 void
 client_model_t::unfocus()
 {
+    if (!m_focused_client)
+        return;
+
     m_current_workspace->unset();
     m_changequeue.add(change_client_focus(m_focused_client, nullptr));
     m_focused_client = nullptr;
@@ -114,7 +137,6 @@ client_model_t::unfocus_if_focused(client_ptr_t client)
 void
 client_model_t::start_moving(client_ptr_t client)
 {
-    ::std::cout << "ok,.2" << ::std::endl;
     client_to_workspace(client, m_move_workspace);
 }
 
@@ -125,7 +147,6 @@ client_model_t::stop_moving(client_ptr_t client, pos_t pos)
         return;
 
     client_to_workspace(client, m_current_workspace);
-    focus(client);
 }
 
 void
@@ -141,7 +162,6 @@ client_model_t::stop_resizing(client_ptr_t client, pos_t pos, dim_t dim)
         return;
 
     client_to_workspace(client, m_current_workspace);
-    focus(client);
 }
 
 void
@@ -157,16 +177,23 @@ void
 client_model_t::client_to_workspace(client_ptr_t client, workspace_ptr_t to)
 {
     auto from = client_workspace(client);
+
     if (from == to)
         return;
 
     to->add_client(client);
-    from->remove_client(client);
 
-    if (is_user_workspace(to))
+    auto _from = from;
+    if (is_user_workspace(to)) {
+        from->remove_client(client);
         m_client_workspaces[client] = user_workspace(to);
+    } else
+        _from = nullptr;
 
-    m_changequeue.add(change_client_workspace(client, from, to));
+    if (is_moveresize_workspace(from))
+        to = nullptr;
+
+    m_changequeue.add(change_client_workspace(client, _from, to));
     sync_workspace_focus();
 }
 
@@ -180,10 +207,9 @@ client_model_t::change_active_workspace(user_workspace_ptr_t workspace)
 void
 client_model_t::sync_workspace_focus()
 {
-    if (m_current_workspace->empty()) {
+    if (!m_current_workspace->empty()) {
         if (m_current_workspace->get_focused() != m_focused_client)
             focus(m_current_workspace->get_focused());
     } else
         unfocus();
-
 }

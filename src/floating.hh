@@ -30,7 +30,7 @@ typedef struct moveresize_t
     {
         indicator.set_background_color(MRIND_BG_COLOR);
         indicator.set_border_color(MRIND_BORDER_COLOR);
-        indicator.resize({1, 1}).move({SIDEBAR_WIDTH - 3, 1}).map();
+        indicator.resize({1, 1}).move({1, 1}).map();
     };
 
     ~moveresize_t()

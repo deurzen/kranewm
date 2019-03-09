@@ -22,10 +22,8 @@ sizeconstraints_t::apply(pos_t& pos, dim_t& dim) const
     if (pos.y + dim.h <= 0)
         pos.y = 0;
 
-    if (base == min) {
-        dim.w -= base.w;
-        dim.h -= base.h;
-    }
+    dim.w -= base.w;
+    dim.h -= base.h;
 
     dim.w = ::std::max(dim.w + base.w, min.w);
     dim.h = ::std::max(dim.h + base.h, min.h);

@@ -101,6 +101,11 @@ private:
 }* moveresize_workspace_ptr_t;
 
 
+inline moveresize_workspace_ptr_t moveresize_workspace(workspace_ptr_t workspace)
+{
+    return dynamic_cast<moveresize_workspace_ptr_t>(workspace);
+}
+
 inline bool is_move_workspace(workspace_ptr_t workspace)
 {
     return workspace->get_type() == MOVE_WORKSPACE;

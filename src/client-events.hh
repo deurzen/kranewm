@@ -17,6 +17,7 @@ public:
 
 private:
     void on_change_client_focus();
+    void on_change_client_destroy();
     void on_change_client_workspace();
 
     void from_move_workspace(client_ptr_t, workspace_ptr_t);

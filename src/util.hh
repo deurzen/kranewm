@@ -3,7 +3,7 @@
 
 #include <algorithm>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <deque>
 
@@ -36,7 +36,7 @@ struct range_t
 
 template <typename Keytype, typename Valtype>
 void
-erase_find(::std::map<Keytype, Valtype>& m, Keytype key)
+erase_find(::std::unordered_map<Keytype, Valtype>& m, Keytype key)
 {
     auto i = m.find(key);
     if (i == m.end())
