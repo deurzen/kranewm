@@ -5,9 +5,11 @@
 #include "x-wrapper/error.hh"
 
 #include "ewmh.hh"
-#include "client-model.hh"
 #include "x-model.hh"
+#include "changes.hh"
+#include "client-model.hh"
 #include "x-events.hh"
+#include "client-events.hh"
 
 #include <memory>
 
@@ -17,16 +19,17 @@ class kranewm_t
 public:
     kranewm_t()
         : m_ewmh(),
-          m_clients(),
           m_x(),
-          m_events(m_ewmh, m_clients, m_x)
+          m_changequeue(),
+          m_clients(m_changequeue),
+          m_events(m_ewmh, m_clients, m_x),
+          m_changes(m_changequeue, m_ewmh, m_x, m_clients)
     {}
 
     void setup();
     void run();
 
     static ::std::unique_ptr<kranewm_t> init();
-
 
 private:
     static int otherwmerror(Display*, XErrorEvent*);
@@ -35,9 +38,11 @@ private:
     void check_otherwm();
 
     ewmh_t m_ewmh;
-    client_model_t m_clients;
     x_model_t m_x;
+    changequeue_t m_changequeue;
+    client_model_t m_clients;
     x_events_t m_events;
+    client_events_t m_changes;
 
 };
 

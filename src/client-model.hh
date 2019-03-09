@@ -1,6 +1,7 @@
 #ifndef __KRANEWM_CLIENT_MODEL_GUARD__
 #define __KRANEWM_CLIENT_MODEL_GUARD__
 
+#include "changes.hh"
 #include "x-wrapper/window.hh"
 #include "workspace.hh"
 #include "rule.hh"
@@ -8,14 +9,13 @@
 #include <unordered_map>
 #include <vector>
 
-// TODO administration of clients/workspaces : general overview, combines everything higher-level
-
 
 class client_model_t
 {
 public:
-    client_model_t()
-        : m_current_workspace(nullptr),
+    explicit client_model_t(changequeue_t& changequeue)
+        : m_changequeue(changequeue),
+          m_current_workspace(nullptr),
           m_move_workspace(new moveresize_workspace_t{MOVE_WORKSPACE}),
           m_resize_workspace(new moveresize_workspace_t{RESIZE_WORKSPACE}),
           m_marked_client(nullptr),
@@ -48,6 +48,8 @@ public:
     void change_active_workspace(user_workspace_ptr_t);
 
 private:
+    changequeue_t& m_changequeue;
+
     user_workspace_ptr_t m_current_workspace;
 
     moveresize_workspace_ptr_t m_move_workspace;
