@@ -67,7 +67,7 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
     } else {
         m_client_workspaces[client] = m_current_workspace;
         m_current_workspace->add_client(client).arrange();
-        client->map();
+        m_changequeue.add(change_client_workspace(client, nullptr, m_current_workspace));
     }
 
 }
@@ -81,56 +81,109 @@ client_model_t::unmanage_client(client_ptr_t)
 void
 client_model_t::focus(client_ptr_t client)
 {
+    if (!client)
+        return;
 
+    auto parent = client;
+    if (client->parent)
+        parent = client->parent;
+
+    if (parent && !m_current_workspace->contains(parent))
+        return;
+
+    m_current_workspace->set(client);
+    m_changequeue.add(change_client_focus(m_focused_client, client));
+    m_focused_client = client;
+}
+
+void
+client_model_t::unfocus()
+{
+    m_current_workspace->unset();
+    m_changequeue.add(change_client_focus(m_focused_client, nullptr));
+    m_focused_client = nullptr;
+}
+
+void
+client_model_t::unfocus_if_focused(client_ptr_t client)
+{
+    if (m_focused_client == client)
+        unfocus();
 }
 
 void
 client_model_t::start_moving(client_ptr_t client)
 {
-    /* if (!(client->floating */
-    /*     || )) */
-    /*     return; */
-
-    /* if (client->fullscreen) */
-    /*     return; */
-
-    /* if (!is_visible(client)) */
-    /*     return; */
-
-    /* if (move_workspace_->occupied() || resize_workspace_->occupied()) */
-    /*     return; */
-
-    /* client_to_workspace(client, move_workspace_); */
+    ::std::cout << "ok,.2" << ::std::endl;
+    client_to_workspace(client, m_move_workspace);
 }
 
 void
 client_model_t::stop_moving(client_ptr_t client, pos_t pos)
 {
-// make sure in move_ws (x_events::map_window)
+    if (!is_move_workspace(client_workspace(client)))
+        return;
 
+    client_to_workspace(client, m_current_workspace);
+    focus(client);
 }
 
 void
 client_model_t::start_resizing(client_ptr_t client)
 {
-
+    client_to_workspace(client, m_resize_workspace);
 }
 
 void
 client_model_t::stop_resizing(client_ptr_t client, pos_t pos, dim_t dim)
 {
-// make sure in resize_ws (x_events::map_window)
+    if (!is_resize_workspace(client_workspace(client)))
+        return;
 
+    client_to_workspace(client, m_current_workspace);
+    focus(client);
 }
 
 void
-client_model_t::change_active_workspace(unsigned workspace_nr)
+client_model_t::client_to_workspace(client_ptr_t client, unsigned workspace_nr)
 {
+    if (workspace_nr >= m_user_workspaces.size())
+        return;
 
+    client_to_workspace(client, m_user_workspaces[workspace_nr]);
+}
+
+void
+client_model_t::client_to_workspace(client_ptr_t client, workspace_ptr_t to)
+{
+    auto from = client_workspace(client);
+    if (from == to)
+        return;
+
+    to->add_client(client);
+    from->remove_client(client);
+
+    if (is_user_workspace(to))
+        m_client_workspaces[client] = user_workspace(to);
+
+    m_changequeue.add(change_client_workspace(client, from, to));
+    sync_workspace_focus();
 }
 
 void
 client_model_t::change_active_workspace(user_workspace_ptr_t workspace)
 {
+
+}
+
+
+void
+client_model_t::sync_workspace_focus()
+{
+    if (m_current_workspace->empty()) {
+        if (m_current_workspace->get_focused() != m_focused_client)
+            focus(m_current_workspace->get_focused());
+    } else
+        unfocus();
 
 }

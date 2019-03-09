@@ -11,13 +11,23 @@ class client_events_t
 {
 public:
     client_events_t(changequeue_t& changes, ewmh_t& ewmh, x_model_t& x, client_model_t& clients)
-        : m_changes(changes), m_ewmh(ewmh), m_x(x), m_clients(clients) {}
+        : m_current_change(nullptr), m_changes(changes), m_ewmh(ewmh), m_x(x), m_clients(clients) {}
 
     void process_queued_changes();
 
 private:
-    void start_moving(client_ptr_t);
-    void start_resizing(client_ptr_t);
+    void on_change_client_focus();
+    void on_change_client_workspace();
+
+    void from_move_workspace(client_ptr_t, workspace_ptr_t);
+    void from_resize_workspace(client_ptr_t, workspace_ptr_t);
+    void from_user_workspace(client_ptr_t, workspace_ptr_t);
+
+    void to_move_workspace(client_ptr_t, workspace_ptr_t);
+    void to_resize_workspace(client_ptr_t, workspace_ptr_t);
+    void to_user_workspace(client_ptr_t, workspace_ptr_t);
+
+    clientchange_ptr_t m_current_change;
 
     changequeue_t& m_changes;
     ewmh_t& m_ewmh;

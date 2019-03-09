@@ -51,9 +51,9 @@ x_model_t::enter_resize(client_ptr_t client, pos_t pos)
     if (m_moveresize)
         return;
 
-    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
-    auto center_x = root_attrs.x() + root_attrs.w() / 2;
-    auto center_y = root_attrs.y() + root_attrs.h() / 2;
+    auto attrs = x_wrapper::get_attributes(client->frame);
+    auto center_x = attrs.x() + attrs.w() / 2;
+    auto center_y = attrs.y() + attrs.h() / 2;
 
     corner corner = TOP_LEFT;
     if (pos.x > center_x && pos.y > center_y)

@@ -8,20 +8,6 @@ user_workspace_t::arrange() const
 }
 
 user_workspace_t&
-user_workspace_t::add_client(client_ptr_t)
-{
-
-    return *this;
-}
-
-user_workspace_t&
-user_workspace_t::remove_client(client_ptr_t)
-{
-
-    return *this;
-}
-
-user_workspace_t&
 user_workspace_t::set_n_master(unsigned)
 {
 

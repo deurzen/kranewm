@@ -53,8 +53,8 @@ focus_cycle::contains(client_ptr_t c) const
         != clients_.end();
 }
 
-client_ptr_t
-focus_cycle::get()
+const client_ptr_t
+focus_cycle::get() const
 {
     if (!has_focus_)
         return nullptr;
@@ -62,7 +62,7 @@ focus_cycle::get()
     return *focus_;
 }
 
-::std::deque<client_ptr_t>
+const ::std::deque<client_ptr_t>&
 focus_cycle::get_all() const
 {
     return clients_;

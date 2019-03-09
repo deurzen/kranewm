@@ -10,6 +10,7 @@
 enum change
 {
     CHANGE_NOOP = 0,
+    CLIENT_FOCUS_CHANGE,
     CLIENT_WORKSPACE_CHANGE,
 };
 
@@ -43,6 +44,30 @@ typedef struct clientchange_t
 
 }* clientchange_ptr_t;
 
+
+
+typedef struct clientfocuschange_t : clientchange_t
+{
+    explicit clientfocuschange_t(client_ptr_t _from, client_ptr_t _to)
+      : clientchange_t(CLIENT_FOCUS_CHANGE), from(_from), to(_to) {}
+
+    client_ptr_t from;
+    client_ptr_t to;
+
+}* clientchangefocus_ptr_t;
+
+inline clientchangefocus_ptr_t change_client_focus(client_ptr_t from, client_ptr_t to)
+{
+    return new clientfocuschange_t(from, to);
+}
+
+inline clientchangefocus_ptr_t change_client_focus(clientchange_ptr_t change)
+{
+    return dynamic_cast<clientchangefocus_ptr_t>(change);
+}
+
+
+
 typedef struct clientworkspacechange_t : clientchange_t
 {
     explicit clientworkspacechange_t(client_ptr_t _client, workspace_ptr_t _from, workspace_ptr_t _to)
@@ -53,6 +78,18 @@ typedef struct clientworkspacechange_t : clientchange_t
     workspace_ptr_t to;
 
 }* clientchangeworkspace_ptr_t;
+
+inline clientchangeworkspace_ptr_t change_client_workspace(client_ptr_t client,
+    workspace_ptr_t from, workspace_ptr_t to)
+{
+    return new clientworkspacechange_t(client, from, to);
+}
+
+inline clientchangeworkspace_ptr_t change_client_workspace(clientchange_ptr_t change)
+{
+    return dynamic_cast<clientchangeworkspace_ptr_t>(change);
+}
+
 
 
 #endif//__KRANEWM_CHANGES_GUARD__

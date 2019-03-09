@@ -38,16 +38,21 @@ public:
     void unmanage_client(client_ptr_t);
 
     void focus(client_ptr_t);
+    void unfocus();
+    void unfocus_if_focused(client_ptr_t);
 
     void start_moving(client_ptr_t);
     void stop_moving(client_ptr_t, pos_t);
     void start_resizing(client_ptr_t);
     void stop_resizing(client_ptr_t, pos_t, dim_t);
 
-    void change_active_workspace(unsigned);
+    void client_to_workspace(client_ptr_t, unsigned);
+    void client_to_workspace(client_ptr_t, workspace_ptr_t);
     void change_active_workspace(user_workspace_ptr_t);
 
 private:
+    void sync_workspace_focus();
+
     changequeue_t& m_changequeue;
 
     user_workspace_ptr_t m_current_workspace;

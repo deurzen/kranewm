@@ -27,9 +27,7 @@ enum workspacetype
     WORKSPACE = 0,
     MOVE_WORKSPACE,
     RESIZE_WORKSPACE,
-    ICON_WORKSPACE,
     USER_WORKSPACE,
-    SCRATCHPAD
 };
 
 enum layouttype
@@ -56,6 +54,9 @@ public:
 
     virtual void arrange() const {}
 
+    virtual workspace_t& add_client(client_ptr_t)    { return *this; }
+    virtual workspace_t& remove_client(client_ptr_t) { return *this; }
+
 private:
     workspacetype type;
 
@@ -76,6 +77,23 @@ public:
 
     inline client_ptr_t get() const { return client; }
     inline bool is_set() const { return client != nullptr; }
+
+    inline moveresize_workspace_t& add_client(client_ptr_t client) override
+    {
+        if (!is_set())
+            set(client);
+
+        return *this;
+    }
+
+    inline moveresize_workspace_t& remove_client(client_ptr_t client) override
+    {
+        if (is_set() && client == get()) {
+            unset();
+        }
+
+        return *this;
+    }
 
 private:
     client_ptr_t client;
@@ -109,12 +127,29 @@ public:
           mirrored(false), layout(LT_FLOAT), previous_layout(layout)
     {}
 
+    inline unsigned get_number() const { return number; }
+
     inline bool in_float_layout() const { return layout == LT_FLOAT; }
 
     void arrange() const override;
 
-    user_workspace_t& add_client(client_ptr_t);
-    user_workspace_t& remove_client(client_ptr_t);
+    inline user_workspace_t& add_client(client_ptr_t client) override
+    {
+        clients.add(client);
+        ::std::for_each(client->children.begin(), client->children.end(),
+            [=](client_ptr_t child) { clients.add(child); });
+
+        return *this;
+    }
+
+    inline user_workspace_t& remove_client(client_ptr_t client) override
+    {
+        ::std::for_each(client->children.begin(), client->children.end(),
+            [=](client_ptr_t child) { clients.remove(child); });
+        clients.remove(client);
+
+        return *this;
+    }
 
     user_workspace_t& set_n_master(unsigned);
     user_workspace_t& set_gap_size(unsigned);
@@ -127,6 +162,12 @@ public:
 
     void activate();
     void deactivate();
+
+    inline bool empty() const { return clients.get_all().empty(); }
+    inline const client_ptr_t get_focused() const { return clients.get(); }
+    inline void set(client_ptr_t client) { clients.set(client); }
+    inline void unset() { clients.unset(); }
+    inline bool contains(client_ptr_t client) const { return clients.contains(client); }
 
 private:
     unsigned      number;
@@ -141,6 +182,12 @@ private:
     focus_cycle   clients;
 
 }* user_workspace_ptr_t;
+
+
+inline user_workspace_ptr_t user_workspace(workspace_ptr_t workspace)
+{
+    return dynamic_cast<user_workspace_ptr_t>(workspace);
+}
 
 
 inline bool is_user_workspace(workspace_ptr_t workspace)

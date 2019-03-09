@@ -70,7 +70,7 @@ x_wrapper::get_input_focus()
 }
 
 bool
-x_wrapper::set_input_focus(window_t& win)
+x_wrapper::set_input_focus(window_t win)
 {
     if (win.get() == None)
         win = g_root;

@@ -35,7 +35,7 @@ typedef struct moveresize_t
 
     ~moveresize_t()
     {
-        //TODO
+        indicator.unmap().destroy();
     }
 
     void process_move_increment(pos_t, dim_t, pos_t);

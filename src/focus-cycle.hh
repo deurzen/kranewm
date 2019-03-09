@@ -22,8 +22,8 @@ public:
     ::std::deque<client_ptr_t>::size_type size() const;
     bool contains(client_ptr_t) const;
 
-    client_ptr_t get();
-    ::std::deque<client_ptr_t> get_all() const;
+    const client_ptr_t get() const;
+    const ::std::deque<client_ptr_t>& get_all() const;
 
     bool set(client_ptr_t);
     bool set(fg_sz);

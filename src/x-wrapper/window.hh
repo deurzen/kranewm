@@ -182,7 +182,7 @@ namespace x_wrapper
     extern bool should_manage(window_t&);
 
     extern window_t get_input_focus();
-    extern bool set_input_focus(window_t&);
+    extern bool set_input_focus(window_t = None);
 
 }
 

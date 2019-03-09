@@ -75,7 +75,8 @@ kranewm_t::setup()
 void
 kranewm_t::run()
 {
-    while(m_events.step());
+    while(m_events.step())
+        m_changes.process_queued_changes();
     x_wrapper::sync(false);
 }
 

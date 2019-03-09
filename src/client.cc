@@ -43,11 +43,10 @@ create_client(x_wrapper::window_t win, rule_t& rule)
     sizeconstraints.apply(pos, dim);
 
     x_wrapper::window_t frame = x_wrapper::create_window();
-    x_wrapper::select_input(win, PropertyChangeMask);
-    x_wrapper::select_input(frame, FocusChangeMask
-        | SubstructureRedirectMask | SubstructureNotifyMask);
+    x_wrapper::select_input(win, REG_WIN_SELECTION);
+    x_wrapper::select_input(frame, REG_FRAME_SELECTION);
 
-    frame.set_background_color(REG_BORDER_COLOR);
+    frame.set_background_color(REG_COLOR);
     win.reparent({0, BORDER_HEIGHT}, frame);
 
     rule.fullscreen = win.is_of_state("FULLSCREEN");
