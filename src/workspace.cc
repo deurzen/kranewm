@@ -51,13 +51,19 @@ user_workspace_t::set_layout(layouttype _layout)
 void
 user_workspace_t::map_clients()
 {
-
+    for (auto& client : clients.get_all()) {
+        client->expect = MAP;
+        client->map_children().map();
+    }
 }
 
 void
 user_workspace_t::unmap_clients()
 {
-
+    for (auto& client : clients.get_all()) {
+        client->expect = WITHDRAW;
+        client->unmap_children().unmap();
+    }
 }
 
 void

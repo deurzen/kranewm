@@ -48,6 +48,7 @@ public:
 
     void client_to_workspace(client_ptr_t, unsigned);
     void client_to_workspace(client_ptr_t, workspace_ptr_t);
+    void change_active_workspace(unsigned);
     void change_active_workspace(user_workspace_ptr_t);
 
 private:

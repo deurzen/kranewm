@@ -142,15 +142,16 @@ client_t&
 client_t::unmap()
 {
     frame.unmap();
-    win.unmap();
     return *this;
 }
 
 client_t&
 client_t::map_children()
 {
-    for (auto& child : children)
+    for (auto& child : children) {
+        child->expect = MAP;
         child->map();
+    }
     return *this;
 }
 
@@ -158,13 +159,17 @@ client_t::map_children()
 client_t&
 client_t::unmap_children()
 {
-    for (auto& child : children)
+    for (auto& child : children) {
+        child->expect = WITHDRAW;
         child->unmap();
+    }
     return *this;
 }
 
 client_t&
 client_t::center()
 {
+    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+    move({root_attrs.w() / 2 - dim.w / 2, root_attrs.h() / 2 - dim.h / 2});
     return *this;
 }

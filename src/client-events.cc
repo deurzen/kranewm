@@ -11,6 +11,7 @@ client_events_t::process_queued_changes()
         case CLIENT_FOCUS_CHANGE:     on_change_client_focus();     break;
         case CLIENT_DESTROY_CHANGE:   on_change_client_destroy();   break;
         case CLIENT_WORKSPACE_CHANGE: on_change_client_workspace(); break;
+        case WORKSPACE_ACTIVE_CHANGE: on_change_workspace_active(); break;
         default: break;
         }
 
@@ -77,15 +78,15 @@ client_events_t::on_change_client_workspace()
         switch (to->get_type()) {
         case MOVE_WORKSPACE:   to_move_workspace(client, to);       break;
         case RESIZE_WORKSPACE: to_resize_workspace(client, to);     break;
-        case USER_WORKSPACE:   to_user_workspace(client, from, to);       break;
+        case USER_WORKSPACE:   to_user_workspace(client, from, to); break;
         default: break;
         }
 
     if (from)
         switch (from->get_type()) {
-        case MOVE_WORKSPACE:   from_move_workspace(client, from);   break;
-        case RESIZE_WORKSPACE: from_resize_workspace(client, from); break;
-        case USER_WORKSPACE:   from_user_workspace(client, from, to);   break;
+        case MOVE_WORKSPACE:   from_move_workspace(client, from);     break;
+        case RESIZE_WORKSPACE: from_resize_workspace(client, from);   break;
+        case USER_WORKSPACE:   from_user_workspace(client, from, to); break;
         default: break;
         }
 
@@ -93,12 +94,27 @@ client_events_t::on_change_client_workspace()
         to->arrange();
 }
 
+void
+client_events_t::on_change_workspace_active()
+{
+    auto change = change_workspace_active(m_current_change);
+    auto from   = change->from;
+    auto to     = change->to;
+
+    m_ewmh.set_current_desktop_property(to->get_number() - 1);
+
+    to->map_clients();
+    from->unmap_clients();
+    to->arrange();
+
+    // TODO iconified clients
+}
+
 
 void
 client_events_t::from_move_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
-    for (auto& child : client->children)
-        child->map();
+    map_all(client->children);
     x_wrapper::release_pointer();
     m_x.exit_move_resize();
 }
@@ -106,8 +122,7 @@ client_events_t::from_move_workspace(client_ptr_t client, workspace_ptr_t worksp
 void
 client_events_t::from_resize_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
-    for (auto& child : client->children)
-        child->map();
+    map_all(client->children);
     x_wrapper::release_pointer();
     m_x.exit_move_resize();
 }
@@ -120,7 +135,7 @@ client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t from, 
     if (from == current && to != current) {
         client->expect = WITHDRAW;
         m_clients.unfocus_if_focused(client);
-        client->unmap_children().unmap();
+        unmap_all(client->children);
     }
 
     m_ewmh.set_wm_desktop_property(client->win,
@@ -130,8 +145,7 @@ client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t from, 
 void
 client_events_t::to_move_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
-    for (auto& child : client->children)
-        child->unmap();
+    unmap_all(client->children);
     m_x.enter_move(client, x_wrapper::pointer_position());
     x_wrapper::confine_pointer(m_x.moveresize()->indicator);
 }
@@ -139,8 +153,7 @@ client_events_t::to_move_workspace(client_ptr_t client, workspace_ptr_t workspac
 void
 client_events_t::to_resize_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
-    for (auto& child : client->children)
-        child->unmap();
+    unmap_all(client->children);
     m_x.enter_resize(client, x_wrapper::pointer_position());
     x_wrapper::confine_pointer(m_x.moveresize()->indicator);
 }
@@ -152,7 +165,8 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
 
     if (from != current && to == current) {
         client->expect = MAP;
-        client->map_children().map();
+        client->map();
+        map_all(client->children);
         m_clients.focus(client);
         m_ewmh.set_window_state_property(client->win);
     }
@@ -160,3 +174,23 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
     m_ewmh.set_wm_desktop_property(client->win,
         USER_WORKSPACES.size() + user_workspace(to)->get_number() - 1);
 }
+
+void
+client_events_t::map_all(const ::std::set<client_ptr_t>& clients)
+{
+    for (auto& client : clients) {
+        client->expect = MAP;
+        client->map();
+    }
+}
+
+void
+client_events_t::unmap_all(const ::std::set<client_ptr_t>& clients)
+{
+    for (auto& client : clients) {
+        client->expect = WITHDRAW;
+        m_clients.unfocus_if_focused(client);
+        client->unmap();
+    }
+}
+

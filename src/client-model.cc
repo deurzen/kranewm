@@ -64,7 +64,10 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
         client->center();
 
     if (rule.workspace) {
-
+        auto workspace = m_user_workspaces[rule.workspace - 1];
+        m_client_workspaces[client] = workspace;
+        workspace->add_client(client);
+        m_changequeue.add(change_client_workspace(client, nullptr, workspace));
     } else {
         m_client_workspaces[client] = m_current_workspace;
         m_current_workspace->add_client(client).arrange();
@@ -167,10 +170,8 @@ client_model_t::stop_resizing(client_ptr_t client, pos_t pos, dim_t dim)
 void
 client_model_t::client_to_workspace(client_ptr_t client, unsigned workspace_nr)
 {
-    if (workspace_nr >= m_user_workspaces.size())
-        return;
-
-    client_to_workspace(client, m_user_workspaces[workspace_nr]);
+    if (range_t<unsigned>::contains(1, USER_WORKSPACES.size(), workspace_nr))
+        client_to_workspace(client, m_user_workspaces[workspace_nr - 1]);
 }
 
 void
@@ -198,9 +199,21 @@ client_model_t::client_to_workspace(client_ptr_t client, workspace_ptr_t to)
 }
 
 void
+client_model_t::change_active_workspace(unsigned workspace_nr)
+{
+    if (range_t<unsigned>::contains(1, USER_WORKSPACES.size(), workspace_nr))
+        change_active_workspace(m_user_workspaces[workspace_nr - 1]);
+}
+
+void
 client_model_t::change_active_workspace(user_workspace_ptr_t workspace)
 {
+    if (m_current_workspace == workspace)
+        return;
 
+    m_changequeue.add(change_workspace_active(m_current_workspace, workspace));
+    m_current_workspace = workspace;
+    sync_workspace_focus();
 }
 
 

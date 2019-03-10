@@ -20,6 +20,8 @@ private:
     void on_change_client_destroy();
     void on_change_client_workspace();
 
+    void on_change_workspace_active();
+
     void from_move_workspace(client_ptr_t, workspace_ptr_t);
     void from_resize_workspace(client_ptr_t, workspace_ptr_t);
     void from_user_workspace(client_ptr_t, workspace_ptr_t, workspace_ptr_t);
@@ -27,6 +29,9 @@ private:
     void to_move_workspace(client_ptr_t, workspace_ptr_t);
     void to_resize_workspace(client_ptr_t, workspace_ptr_t);
     void to_user_workspace(client_ptr_t, workspace_ptr_t, workspace_ptr_t);
+
+    void map_all(const ::std::set<client_ptr_t>&);
+    void unmap_all(const ::std::set<client_ptr_t>&);
 
     clientchange_ptr_t m_current_change;
 

@@ -249,7 +249,7 @@ x_events_t::on_configure_request()
     }
 
     if (is_user_workspace(m_clients.client_workspace(client))) {
-        auto workspace = dynamic_cast<user_workspace_ptr_t>(m_clients.client_workspace(client));
+        auto workspace = user_workspace(m_clients.client_workspace(client));
         if (!(workspace->in_float_layout() || client->floating))
             return;
     }
@@ -263,7 +263,7 @@ x_events_t::on_configure_request()
     auto before_attrs = x_wrapper::get_attributes(client->frame);
 
     if (win.get() == client->win.get()) {
-        if (m_x.moveresize()->state == MR_RESIZE)
+        if (m_x.is_valid() && m_x.moveresize()->state == MR_RESIZE)
             return;
 
         auto win_event = m_current_event;
@@ -285,31 +285,33 @@ x_events_t::on_configure_request()
     if (conf_flags)
         x_wrapper::propagate_configure_request(m_current_event, conf_flags);
 
-    auto after_attrs = x_wrapper::get_attributes(client->frame);
+    if (m_x.is_valid()) {
+        auto after_attrs = x_wrapper::get_attributes(client->frame);
 
-    pos_t pos;
-    switch (m_x.moveresize()->grabbed_at) {
-    case TOP_LEFT:
-        pos = {before_attrs.x() + (before_attrs.w() - after_attrs.w()),
-            before_attrs.y() + (before_attrs.h() - after_attrs.h())};
-        break;
-    case TOP_RIGHT:
-        pos = {before_attrs.x(),
-            before_attrs.y() + (before_attrs.h() - after_attrs.h())};
-        break;
-    case BOTTOM_LEFT:
-        pos = {before_attrs.x() + (before_attrs.w() - after_attrs.w()),
-            before_attrs.y()};
-        break;
-    case BOTTOM_RIGHT: // fallthrough
-    default: pos = before_attrs; break;
-    }
+        pos_t pos;
+        switch (m_x.moveresize()->grabbed_at) {
+        case TOP_LEFT:
+            pos = {before_attrs.x() + (before_attrs.w() - after_attrs.w()),
+                before_attrs.y() + (before_attrs.h() - after_attrs.h())};
+            break;
+        case TOP_RIGHT:
+            pos = {before_attrs.x(),
+                before_attrs.y() + (before_attrs.h() - after_attrs.h())};
+            break;
+        case BOTTOM_LEFT:
+            pos = {before_attrs.x() + (before_attrs.w() - after_attrs.w()),
+                before_attrs.y()};
+            break;
+        case BOTTOM_RIGHT: // fallthrough
+        default: pos = before_attrs; break;
+        }
 
-    if (!(conf_flags & (CWX | CWY))
-        && !(dim_t{before_attrs.w(), before_attrs.h()}
-            == dim_t{after_attrs.w(), after_attrs.h()}))
-    {
-        client->move(pos);
+        if (!(conf_flags & (CWX | CWY))
+            && !(dim_t{before_attrs.w(), before_attrs.h()}
+                == dim_t{after_attrs.w(), after_attrs.h()}))
+        {
+            client->move(pos);
+        }
     }
 }
 
@@ -466,15 +468,15 @@ x_events_t::on_key_press()
     /* case DEICONIFY_7:          cm_.deiconify(7);                 break; */
     /* case DEICONIFY_8:          cm_.deiconify(8);                 break; */
     /* case DEICONIFY_9:          cm_.deiconify(9);                 break; */
-    /* case ACTIVATE_WORKSPACE_1: cm_.change_active_workspace(1);   break; */
-    /* case ACTIVATE_WORKSPACE_2: cm_.change_active_workspace(2);   break; */
-    /* case ACTIVATE_WORKSPACE_3: cm_.change_active_workspace(3);   break; */
-    /* case ACTIVATE_WORKSPACE_4: cm_.change_active_workspace(4);   break; */
-    /* case ACTIVATE_WORKSPACE_5: cm_.change_active_workspace(5);   break; */
-    /* case ACTIVATE_WORKSPACE_6: cm_.change_active_workspace(6);   break; */
-    /* case ACTIVATE_WORKSPACE_7: cm_.change_active_workspace(7);   break; */
-    /* case ACTIVATE_WORKSPACE_8: cm_.change_active_workspace(8);   break; */
-    /* case ACTIVATE_WORKSPACE_9: cm_.change_active_workspace(9);   break; */
+    case ACTIVATE_WORKSPACE_1: m_clients.change_active_workspace(1); break;
+    case ACTIVATE_WORKSPACE_2: m_clients.change_active_workspace(2); break;
+    case ACTIVATE_WORKSPACE_3: m_clients.change_active_workspace(3); break;
+    case ACTIVATE_WORKSPACE_4: m_clients.change_active_workspace(4); break;
+    case ACTIVATE_WORKSPACE_5: m_clients.change_active_workspace(5); break;
+    case ACTIVATE_WORKSPACE_6: m_clients.change_active_workspace(6); break;
+    case ACTIVATE_WORKSPACE_7: m_clients.change_active_workspace(7); break;
+    case ACTIVATE_WORKSPACE_8: m_clients.change_active_workspace(8); break;
+    case ACTIVATE_WORKSPACE_9: m_clients.change_active_workspace(9); break;
     /* case ACTIVATE_NEXT_WS:     cm_.goto_next_workspace();        break; */
     /* case ACTIVATE_PREV_WS:     cm_.goto_prev_workspace();        break; */
     /* case TOGGLE_SCRATCHPAD_1:  cm_.toggle_scratchpad(1);         break; */
@@ -550,16 +552,16 @@ x_events_t::on_key_press()
     /* case TOGGLE_FULLSCREEN:         cm_.toggle_fullscreen(client);                 break; */
     /* case TOGGLE_SHADE:              cm_.toggle_shade(client);                      break; */
     /* case TOGGLE_ICONIFY:            cm_.toggle_iconify(client);                    break; */
-    /* case CENTER_CLIENT:             cm_.center_client(client);                     break; */
-    /* case CLIENT_TO_WORKSPACE_1:     cm_.client_to_workspace(client, 0u);           break; */
-    /* case CLIENT_TO_WORKSPACE_2:     cm_.client_to_workspace(client, 1);            break; */
-    /* case CLIENT_TO_WORKSPACE_3:     cm_.client_to_workspace(client, 2);            break; */
-    /* case CLIENT_TO_WORKSPACE_4:     cm_.client_to_workspace(client, 3);            break; */
-    /* case CLIENT_TO_WORKSPACE_5:     cm_.client_to_workspace(client, 4);            break; */
-    /* case CLIENT_TO_WORKSPACE_6:     cm_.client_to_workspace(client, 5);            break; */
-    /* case CLIENT_TO_WORKSPACE_7:     cm_.client_to_workspace(client, 6);            break; */
-    /* case CLIENT_TO_WORKSPACE_8:     cm_.client_to_workspace(client, 7);            break; */
-    /* case CLIENT_TO_WORKSPACE_9:     cm_.client_to_workspace(client, 8);            break; */
+    case CENTER_CLIENT:         client->center();                         break;
+    case CLIENT_TO_WORKSPACE_1: m_clients.client_to_workspace(client, 1); break;
+    case CLIENT_TO_WORKSPACE_2: m_clients.client_to_workspace(client, 2); break;
+    case CLIENT_TO_WORKSPACE_3: m_clients.client_to_workspace(client, 3); break;
+    case CLIENT_TO_WORKSPACE_4: m_clients.client_to_workspace(client, 4); break;
+    case CLIENT_TO_WORKSPACE_5: m_clients.client_to_workspace(client, 5); break;
+    case CLIENT_TO_WORKSPACE_6: m_clients.client_to_workspace(client, 6); break;
+    case CLIENT_TO_WORKSPACE_7: m_clients.client_to_workspace(client, 7); break;
+    case CLIENT_TO_WORKSPACE_8: m_clients.client_to_workspace(client, 8); break;
+    case CLIENT_TO_WORKSPACE_9: m_clients.client_to_workspace(client, 9); break;
     /* case CLIENT_TO_SCRATCHPAD_1:    cm_.client_to_scratchpad(client, 0);           break; */
     /* case CLIENT_TO_SCRATCHPAD_2:    cm_.client_to_scratchpad(client, 1);           break; */
     /* case FLOAT_GROW_LEFT:           cm_.resize_floating_client(client, LEFT, 1);   break; */

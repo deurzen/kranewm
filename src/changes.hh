@@ -13,6 +13,7 @@ enum change
     CLIENT_FOCUS_CHANGE,
     CLIENT_DESTROY_CHANGE,
     CLIENT_WORKSPACE_CHANGE,
+    WORKSPACE_ACTIVE_CHANGE,
 };
 
 
@@ -111,6 +112,28 @@ inline clientworkspacechange_ptr_t change_client_workspace(client_ptr_t client,
 inline clientworkspacechange_ptr_t change_client_workspace(clientchange_ptr_t change)
 {
     return dynamic_cast<clientworkspacechange_ptr_t>(change);
+}
+
+
+
+typedef struct workspaceactivechange_t : clientchange_t
+{
+    explicit workspaceactivechange_t(user_workspace_ptr_t _from, user_workspace_ptr_t _to)
+      : clientchange_t(WORKSPACE_ACTIVE_CHANGE), from(_from), to(_to) {}
+
+    user_workspace_ptr_t from;
+    user_workspace_ptr_t to;
+
+}* workspaceactivechange_ptr_t;
+
+inline workspaceactivechange_ptr_t change_workspace_active(user_workspace_ptr_t from, user_workspace_ptr_t to)
+{
+    return new workspaceactivechange_t(from, to);
+}
+
+inline workspaceactivechange_ptr_t change_workspace_active(clientchange_ptr_t change)
+{
+    return dynamic_cast<workspaceactivechange_ptr_t>(change);
 }
 
 
