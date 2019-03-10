@@ -7,13 +7,13 @@
 #include <queue>
 
 
-enum change
+enum class change_t
 {
-    CHANGE_NOOP = 0,
-    CLIENT_FOCUS_CHANGE,
-    CLIENT_DESTROY_CHANGE,
-    CLIENT_WORKSPACE_CHANGE,
-    WORKSPACE_ACTIVE_CHANGE,
+    noop,
+    client_focus,
+    client_destroy,
+    client_workspace,
+    workspace_active,
 };
 
 
@@ -37,12 +37,12 @@ private:
 
 typedef struct clientchange_t
 {
-    explicit clientchange_t(change _type = CHANGE_NOOP)
+    explicit clientchange_t(change_t _type = change_t::noop)
       : type(_type) {}
 
     virtual ~clientchange_t() = default;
 
-    change type;
+    change_t type;
 
 }* clientchange_ptr_t;
 
@@ -51,7 +51,7 @@ typedef struct clientchange_t
 typedef struct clientfocuschange_t : clientchange_t
 {
     explicit clientfocuschange_t(client_ptr_t _from, client_ptr_t _to)
-      : clientchange_t(CLIENT_FOCUS_CHANGE), from(_from), to(_to) {}
+      : clientchange_t(change_t::client_focus), from(_from), to(_to) {}
 
     client_ptr_t from;
     client_ptr_t to;
@@ -73,7 +73,7 @@ inline clientfocuschange_ptr_t change_client_focus(clientchange_ptr_t change)
 typedef struct clientdestroychange_t : clientchange_t
 {
     explicit clientdestroychange_t(client_ptr_t _client, workspace_ptr_t _workspace)
-      : clientchange_t(CLIENT_DESTROY_CHANGE), client(_client), workspace(_workspace) {}
+      : clientchange_t(change_t::client_destroy), client(_client), workspace(_workspace) {}
 
     client_ptr_t client;
     workspace_ptr_t workspace;
@@ -95,7 +95,7 @@ inline clientdestroychange_ptr_t change_client_destroy(clientchange_ptr_t change
 typedef struct clientworkspacechange_t : clientchange_t
 {
     explicit clientworkspacechange_t(client_ptr_t _client, workspace_ptr_t _from, workspace_ptr_t _to)
-      : clientchange_t(CLIENT_WORKSPACE_CHANGE), client(_client), from(_from), to(_to) {}
+      : clientchange_t(change_t::client_workspace), client(_client), from(_from), to(_to) {}
 
     client_ptr_t client;
     workspace_ptr_t from;
@@ -119,7 +119,7 @@ inline clientworkspacechange_ptr_t change_client_workspace(clientchange_ptr_t ch
 typedef struct workspaceactivechange_t : clientchange_t
 {
     explicit workspaceactivechange_t(user_workspace_ptr_t _from, user_workspace_ptr_t _to)
-      : clientchange_t(WORKSPACE_ACTIVE_CHANGE), from(_from), to(_to) {}
+      : clientchange_t(change_t::workspace_active), from(_from), to(_to) {}
 
     user_workspace_ptr_t from;
     user_workspace_ptr_t to;

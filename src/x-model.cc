@@ -41,7 +41,7 @@ x_model_t::enter_move(client_ptr_t client, pos_t pos)
     if (m_moveresize)
         return;
 
-    m_moveresize = new moveresize_t(client, MR_MOVE, TOP_LEFT);
+    m_moveresize = new moveresize_t(client, moveresizestate_t::move, corner_t::top_left);
     m_pointer = pos;
 }
 
@@ -55,15 +55,15 @@ x_model_t::enter_resize(client_ptr_t client, pos_t pos)
     auto center_x = attrs.x() + attrs.w() / 2;
     auto center_y = attrs.y() + attrs.h() / 2;
 
-    corner corner = TOP_LEFT;
+    corner_t corner = corner_t::top_left;
     if (pos.x > center_x && pos.y > center_y)
-        corner = BOTTOM_RIGHT;
+        corner = corner_t::bottom_right;
     else if (pos.x < center_x && pos.y > center_y)
-        corner = BOTTOM_LEFT;
+        corner = corner_t::bottom_left;
     else if (pos.x > center_x && pos.y < center_y)
-        corner = TOP_RIGHT;
+        corner = corner_t::top_right;
 
-    m_moveresize = new moveresize_t(client, MR_RESIZE, corner);
+    m_moveresize = new moveresize_t(client, moveresizestate_t::resize, corner);
     m_pointer = pos;
 }
 
@@ -94,5 +94,5 @@ x_model_t::exit_move_resize()
 bool
 x_model_t::is_valid() const
 {
-    return m_moveresize && m_moveresize->state != MR_INVALID;
+    return m_moveresize && m_moveresize->state != moveresizestate_t::invalid;
 }

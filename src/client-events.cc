@@ -8,10 +8,10 @@ client_events_t::process_queued_changes()
 {
     while ((m_current_change = m_changes.next())) {
         switch (m_current_change->type) {
-        case CLIENT_FOCUS_CHANGE:     on_change_client_focus();     break;
-        case CLIENT_DESTROY_CHANGE:   on_change_client_destroy();   break;
-        case CLIENT_WORKSPACE_CHANGE: on_change_client_workspace(); break;
-        case WORKSPACE_ACTIVE_CHANGE: on_change_workspace_active(); break;
+        case change_t::client_focus:     on_change_client_focus();     break;
+        case change_t::client_destroy:   on_change_client_destroy();   break;
+        case change_t::client_workspace: on_change_client_workspace(); break;
+        case change_t::workspace_active: on_change_workspace_active(); break;
         default: break;
         }
 
@@ -76,17 +76,17 @@ client_events_t::on_change_client_workspace()
 
     if (to)
         switch (to->get_type()) {
-        case MOVE_WORKSPACE:   to_move_workspace(client, to);       break;
-        case RESIZE_WORKSPACE: to_resize_workspace(client, to);     break;
-        case USER_WORKSPACE:   to_user_workspace(client, from, to); break;
+        case workspacetype_t::move:   to_move_workspace(client, to);       break;
+        case workspacetype_t::resize: to_resize_workspace(client, to);     break;
+        case workspacetype_t::user:   to_user_workspace(client, from, to); break;
         default: break;
         }
 
     if (from)
         switch (from->get_type()) {
-        case MOVE_WORKSPACE:   from_move_workspace(client, from);     break;
-        case RESIZE_WORKSPACE: from_resize_workspace(client, from);   break;
-        case USER_WORKSPACE:   from_user_workspace(client, from, to); break;
+        case workspacetype_t::move:   from_move_workspace(client, from);     break;
+        case workspacetype_t::resize: from_resize_workspace(client, from);   break;
+        case workspacetype_t::user:   from_user_workspace(client, from, to); break;
         default: break;
         }
 
@@ -133,7 +133,7 @@ client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t from, 
 {
     auto current = m_clients.active_workspace();
     if (from == current && to != current) {
-        client->expect = WITHDRAW;
+        client->expect = clientexpect_t::withdraw;
         client->unmap();
         m_clients.unfocus_if_focused(client);
         unmap_all(client->children);
@@ -164,7 +164,7 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
 {
     auto current = m_clients.active_workspace();
     if (from != current && to == current) {
-        client->expect = MAP;
+        client->expect = clientexpect_t::map;
         client->map();
         map_all(client->children);
         m_clients.focus(client);
@@ -181,7 +181,7 @@ void
 client_events_t::map_all(const container_t container)
 {
     for (auto& c : container) {
-        c->expect = MAP;
+        c->expect = clientexpect_t::map;
         c->map();
         map_all(c->children);
     }
@@ -192,7 +192,7 @@ void
 client_events_t::unmap_all(const container_t container)
 {
     for (auto& c : container) {
-        c->expect = WITHDRAW;
+        c->expect = clientexpect_t::withdraw;
         m_clients.unfocus_if_focused(c);
         c->unmap();
         unmap_all(c->children);

@@ -12,11 +12,12 @@
 #include <set>
 
 
-enum clientexpect {
-    NO_EFFECT = 0,
-    MAP       = 1 << 0,
-    WITHDRAW  = 1 << 1,
-    ICONIFY   = 1 << 2
+enum class clientexpect_t
+{
+    noeffect = 0,
+    map       = 1 << 0,
+    withdraw  = 1 << 1,
+    iconify   = 1 << 2
 };
 
 
@@ -27,14 +28,15 @@ typedef struct client_t
 {
     client_t(x_wrapper::window_t _win, x_wrapper::window_t _frame,
         sizeconstraints_t _sizeconstraints, rule_t& rule)
-        : win(_win), frame(_frame), sizeconstraints(_sizeconstraints), expect(NO_EFFECT),
-          focused(false), floating(rule.floating), fullscreen(rule.fullscreen),
+        : win(_win), frame(_frame), sizeconstraints(_sizeconstraints),
+          expect(clientexpect_t::noeffect), focused(false),
+          floating(rule.floating), fullscreen(rule.fullscreen),
           shaded(false), iconified(rule.iconify), urgent(false), parent(nullptr)
     {}
 
     void disown_child(client_ptr_t);
-
-    bool redeem_expect(clientexpect);
+    bool redeem_expect(clientexpect_t);
+    void must_expect(clientexpect_t);
 
     client_t& move(pos_t);
     client_t& resize(dim_t);
@@ -48,14 +50,12 @@ typedef struct client_t
 
     x_wrapper::window_t win;
     x_wrapper::window_t frame;
-    x_wrapper::window_t mr_indicator;
-    x_wrapper::window_t float_indicator;
     pos_t               pos;
     pos_t               float_pos;
     dim_t               dim;
     dim_t               float_dim;
     sizeconstraints_t   sizeconstraints;
-    clientexpect        expect;
+    clientexpect_t      expect;
     bool                focused;
     bool                floating;
     bool                fullscreen;

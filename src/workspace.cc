@@ -34,7 +34,7 @@ user_workspace_t::contains(client_ptr_t client) const
 bool
 user_workspace_t::in_float_layout() const
 {
-    return layout == LT_FLOAT;
+    return layout == layout_t::floating;
 }
 
 const
@@ -119,10 +119,10 @@ user_workspace_t::set_m1_weight(unsigned)
 }
 
 user_workspace_t&
-user_workspace_t::set_layout(layouttype _layout)
+user_workspace_t::set_layout(layout_t _layout)
 {
-    layouttype current_layout = layout;
-    if (_layout == LT_TOGGLE)
+    layout_t current_layout = layout;
+    if (_layout == layout_t::toggle)
         layout = previous_layout;
     else
         layout = _layout;

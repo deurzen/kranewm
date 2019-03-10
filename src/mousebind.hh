@@ -6,16 +6,16 @@
 #include <unordered_map>
 
 
-enum mouseop
+enum class mouseop_t
 {
-    MOUSE_NOOP = 0,
-    CLIENT_MOVE,
-    CLIENT_RESIZE,
-    CLIENT_CENTER,
-    CLIENT_NEXT_WS,
-    CLIENT_PREV_WS,
-    GOTO_NEXT_WS,
-    GOTO_PREV_WS,
+    noop,
+    client_move,
+    client_resize,
+    client_center,
+    client_next_ws,
+    client_prev_ws,
+    goto_next_ws,
+    goto_prev_ws,
 };
 
 struct mouseshortcut_t
@@ -48,6 +48,6 @@ namespace std
     };
 }
 
-typedef ::std::unordered_map<mouseshortcut_t, mouseop> mousebinds_t;
+typedef ::std::unordered_map<mouseshortcut_t, mouseop_t> mousebinds_t;
 
 #endif//__KRANEWM__MOUSEBIND__GUARD__

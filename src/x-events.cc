@@ -137,14 +137,14 @@ x_events_t::on_button_press()
         if (subwin.get() == None) {
             if (m_mousebinds.count({button, mask, false}))
                 switch (m_mousebinds[{button, mask, false}]) {
-                case GOTO_NEXT_WS:
+                case mouseop_t::goto_next_ws:
                 {
                     unsigned workspace = m_clients.active_workspace()->get_number();
                     workspace %= USER_WORKSPACES.size();
                     m_clients.change_active_workspace(workspace + 1);
                 }
                     return;
-                case GOTO_PREV_WS:
+                case mouseop_t::goto_prev_ws:
                 {
                     unsigned workspace = m_clients.active_workspace()->get_number() - 1;
                     workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
@@ -162,19 +162,19 @@ x_events_t::on_button_press()
         m_clients.focus(client);
         if (m_mousebinds.count({button, mask, true}))
             switch (m_mousebinds[{button, mask, true}]) {
-            case CLIENT_MOVE:    m_clients.start_moving(client);   break;
-            case CLIENT_RESIZE:  m_clients.start_resizing(client); break;
-            case CLIENT_CENTER:  client->center();                 break;
-            case CLIENT_NEXT_WS: // fallthrough
-            case GOTO_NEXT_WS:
+            case mouseop_t::client_move:    m_clients.start_moving(client);   break;
+            case mouseop_t::client_resize:  m_clients.start_resizing(client); break;
+            case mouseop_t::client_center:  client->center();                 break;
+            case mouseop_t::client_next_ws: // fallthrough
+            case mouseop_t::goto_next_ws:
                 {
                     unsigned workspace = m_clients.active_workspace()->get_number();
                     workspace %= USER_WORKSPACES.size();
                     m_clients.change_active_workspace(workspace + 1);
                 }
                 return;
-            case CLIENT_PREV_WS: // fallthrough
-            case GOTO_PREV_WS:
+            case mouseop_t::client_prev_ws: // fallthrough
+            case mouseop_t::goto_prev_ws:
                 {
                     unsigned workspace = m_clients.active_workspace()->get_number() - 1;
                     workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
@@ -199,8 +199,8 @@ x_events_t::on_button_release()
     auto attrs = x_wrapper::get_attributes(client->frame);
 
     switch (m_x.moveresize()->state) {
-    case MR_MOVE:   m_clients.stop_moving(client, attrs);          break;
-    case MR_RESIZE: m_clients.stop_resizing(client, attrs, attrs); break;
+    case moveresizestate_t::move:   m_clients.stop_moving(client, attrs);          break;
+    case moveresizestate_t::resize: m_clients.stop_resizing(client, attrs, attrs); break;
     default: break;
     }
 }
@@ -288,7 +288,7 @@ x_events_t::on_configure_request()
     auto before_attrs = x_wrapper::get_attributes(client->frame);
 
     if (win.get() == client->win.get()) {
-        if (m_x.is_valid() && m_x.moveresize()->state == MR_RESIZE)
+        if (m_x.is_valid() && m_x.moveresize()->state == moveresizestate_t::resize)
             return;
 
         auto win_event = m_current_event;
@@ -315,19 +315,19 @@ x_events_t::on_configure_request()
 
         pos_t pos;
         switch (m_x.moveresize()->grabbed_at) {
-        case TOP_LEFT:
+        case corner_t::top_left:
             pos = {before_attrs.x() + (before_attrs.w() - after_attrs.w()),
                 before_attrs.y() + (before_attrs.h() - after_attrs.h())};
             break;
-        case TOP_RIGHT:
+        case corner_t::top_right:
             pos = {before_attrs.x(),
                 before_attrs.y() + (before_attrs.h() - after_attrs.h())};
             break;
-        case BOTTOM_LEFT:
+        case corner_t::bottom_left:
             pos = {before_attrs.x() + (before_attrs.w() - after_attrs.w()),
                 before_attrs.y()};
             break;
-        case BOTTOM_RIGHT: // fallthrough
+        case corner_t::bottom_right: // fallthrough
         default: pos = before_attrs; break;
         }
 
@@ -441,46 +441,46 @@ x_events_t::on_key_press()
     keyshortcut_t shortcut{m_current_event.get().xkey};
 
     switch (m_keybinds[shortcut]) {
-    case QUIT: m_running = false; return;
-    case SPAWN_TERMINAL:      fork_external("/usr/bin/urxvt -geometry 80x22");                                break;
-    case SPAWN_QUICKTERM:     fork_external("/usr/bin/term -name \"kranewm:float\" -geometry 80x22");         break;
-    case SPAWN_QUICKTERMTMUX: fork_external("/usr/bin/term -geometry 80x22 -e tmux");                         break;
-    case SPAWN_DMENU:         fork_external("/usr/local/bin/dmenu_run");                                      break;
-    case SPAWN_DMENUPASS:     fork_external("/usr/bin/dmenupass");                                            break;
-    case SPAWN_DMENUPASSCOPY: fork_external("/usr/bin/dmenupass --copy");                                     break;
-    case SPAWN_BROWSER:       fork_external("/usr/bin/qutebrowser");                                          break;
-    case SPAWN_SEC_BROWSER:   fork_external("/usr/bin/firefox");                                              break;
-    case MPCTOGGLE:           fork_external("/usr/bin/mpc toggle");                                           break;
-    case MPCNEXT:             fork_external("/usr/bin/mpc next");                                             break;
-    case MPCPREV:             fork_external("/usr/bin/mpc prev");                                             break;
-    case MPCSTOP:             fork_external("/usr/bin/mpc stop");                                             break;
-    case RHYTHMBOXSHOW:       fork_external("/usr/bin/rhythmbox-client");                                     break;
-    case RHYTHMBOXTOGGLE:     fork_external("/usr/bin/rhythmbox-client --play-pause");                        break;
-    case RHYTHMBOXNEXT:       fork_external("/usr/bin/rhythmbox-client --next");                              break;
-    case RHYTHMBOXPREV:       fork_external("/usr/bin/rhythmbox-client --previous");                          break;
-    case RHYTHMBOXSTOP:       fork_external("/usr/bin/rhythmbox-client --stop");                              break;
-    case MPCRANDOM:           fork_external("/usr/bin/mpc random");                                           break;
-    case MPCSINGLE:           fork_external("/usr/bin/mpc single");                                           break;
-    case VOLUMEUP:            fork_external("/usr/bin/pactl set-sink-volume 0 +10%");                         break;
-    case VOLUMEDOWN:          fork_external("/usr/bin/pactl set-sink-volume 0 -10%");                         break;
-    case VOLUMEMUTE:          fork_external("/usr/bin/pactl set-sink-mute 0 toggle");                         break;
-    case BRIGHTNESSUP15:      fork_external("/usr/bin/light -A 15");                                          break;
-    case BRIGHTNESSUP5:       fork_external("/usr/bin/light -A 5");                                           break;
-    case BRIGHTNESSDOWN15:    fork_external("/usr/bin/light -U 15");                                          break;
-    case TAKE_SCREENSHOT:
+    case keyop_t::quit: m_running = false; return;
+    case keyop_t::spawn_terminal:      fork_external("/usr/bin/urxvt -geometry 80x22");                       break;
+    case keyop_t::spawn_quickterm:     fork_external("/usr/bin/term -name \"kranewm:float\" -geometry 80x22");break;
+    case keyop_t::spawn_quicktermtmux: fork_external("/usr/bin/term -geometry 80x22 -e tmux");                break;
+    case keyop_t::spawn_dmenu:         fork_external("/usr/local/bin/dmenu_run");                             break;
+    case keyop_t::spawn_dmenupass:     fork_external("/usr/bin/dmenupass");                                   break;
+    case keyop_t::spawn_dmenupasscopy: fork_external("/usr/bin/dmenupass --copy");                            break;
+    case keyop_t::spawn_browser:       fork_external("/usr/bin/qutebrowser");                                 break;
+    case keyop_t::spawn_sec_browser:   fork_external("/usr/bin/firefox");                                     break;
+    case keyop_t::mpctoggle:           fork_external("/usr/bin/mpc toggle");                                  break;
+    case keyop_t::mpcnext:             fork_external("/usr/bin/mpc next");                                    break;
+    case keyop_t::mpcprev:             fork_external("/usr/bin/mpc prev");                                    break;
+    case keyop_t::mpcstop:             fork_external("/usr/bin/mpc stop");                                    break;
+    case keyop_t::rhythmboxshow:       fork_external("/usr/bin/rhythmbox-client");                            break;
+    case keyop_t::rhythmboxtoggle:     fork_external("/usr/bin/rhythmbox-client --play-pause");               break;
+    case keyop_t::rhythmboxnext:       fork_external("/usr/bin/rhythmbox-client --next");                     break;
+    case keyop_t::rhythmboxprev:       fork_external("/usr/bin/rhythmbox-client --previous");                 break;
+    case keyop_t::rhythmboxstop:       fork_external("/usr/bin/rhythmbox-client --stop");                     break;
+    case keyop_t::mpcrandom:           fork_external("/usr/bin/mpc random");                                  break;
+    case keyop_t::mpcsingle:           fork_external("/usr/bin/mpc single");                                  break;
+    case keyop_t::volumeup:            fork_external("/usr/bin/pactl set-sink-volume 0 +10%");                break;
+    case keyop_t::volumedown:          fork_external("/usr/bin/pactl set-sink-volume 0 -10%");                break;
+    case keyop_t::volumemute:          fork_external("/usr/bin/pactl set-sink-mute 0 toggle");                break;
+    case keyop_t::brightnessup15:      fork_external("/usr/bin/light -A 15");                                 break;
+    case keyop_t::brightnessup5:       fork_external("/usr/bin/light -A 5");                                  break;
+    case keyop_t::brightnessdown15:    fork_external("/usr/bin/light -U 15");                                 break;
+    case keyop_t::take_screenshot:
         fork_external("/usr/bin/maim $(date +/home/deurzen/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");    break;
-    case TAKE_SCREENSHOT_SEL:
+    case keyop_t::take_screenshot_sel:
         fork_external("/usr/bin/maim -s $(date +/home/deurzen/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)"); break;
-    case SPAWN_NEOMUTT:       fork_external("/usr/bin/term -geometry 140x42 -e zsh -i -c neomutt");           break;
-    case SPAWN_RANGER:        fork_external("/usr/bin/term -geometry 140x42 -e zsh -i -c ranger");            break;
-    case SPAWN_SNCLI:         fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c sncli");              break;
-    case SPAWN_RTV:           fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c rtv");                break;
-    case SPAWN_IRSSI:         fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c irssi");              break;
-    case SPAWN_NEWSBOAT:      fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c newsboat");           break;
-    case SPAWN_SAGE:          fork_external("/usr/bin/term -geometry 80x22 -e zsh -i -c sage");               break;
-    case SPAWN_GPICK:         fork_external("gpick");                                                         break;
-    case SPAWN_QALCULATE:     fork_external("qalculate-gtk");                                                 break;
-    case SPAWN_7LOCK:         fork_external("systemctl suspend");                                             break;
+    case keyop_t::spawn_neomutt:       fork_external("/usr/bin/term -geometry 140x42 -e zsh -i -c neomutt");  break;
+    case keyop_t::spawn_ranger:        fork_external("/usr/bin/term -geometry 140x42 -e zsh -i -c ranger");   break;
+    case keyop_t::spawn_sncli:         fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c sncli");     break;
+    case keyop_t::spawn_rtv:           fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c rtv");       break;
+    case keyop_t::spawn_irssi:         fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c irssi");     break;
+    case keyop_t::spawn_newsboat:      fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c newsboat");  break;
+    case keyop_t::spawn_sage:          fork_external("/usr/bin/term -geometry 80x22 -e zsh -i -c sage");      break;
+    case keyop_t::spawn_gpick:         fork_external("gpick");                                                break;
+    case keyop_t::spawn_qalculate:     fork_external("qalculate-gtk");                                        break;
+    case keyop_t::spawn_7lock:         fork_external("systemctl suspend");                                    break;
 
 
     /* case POP_ICONIFIED:        cm_.deiconify(0);                 break; */
@@ -493,15 +493,15 @@ x_events_t::on_key_press()
     /* case DEICONIFY_7:          cm_.deiconify(7);                 break; */
     /* case DEICONIFY_8:          cm_.deiconify(8);                 break; */
     /* case DEICONIFY_9:          cm_.deiconify(9);                 break; */
-    case ACTIVATE_WORKSPACE_1: m_clients.change_active_workspace(1); break;
-    case ACTIVATE_WORKSPACE_2: m_clients.change_active_workspace(2); break;
-    case ACTIVATE_WORKSPACE_3: m_clients.change_active_workspace(3); break;
-    case ACTIVATE_WORKSPACE_4: m_clients.change_active_workspace(4); break;
-    case ACTIVATE_WORKSPACE_5: m_clients.change_active_workspace(5); break;
-    case ACTIVATE_WORKSPACE_6: m_clients.change_active_workspace(6); break;
-    case ACTIVATE_WORKSPACE_7: m_clients.change_active_workspace(7); break;
-    case ACTIVATE_WORKSPACE_8: m_clients.change_active_workspace(8); break;
-    case ACTIVATE_WORKSPACE_9: m_clients.change_active_workspace(9); break;
+    case keyop_t::activate_workspace_1: m_clients.change_active_workspace(1); break;
+    case keyop_t::activate_workspace_2: m_clients.change_active_workspace(2); break;
+    case keyop_t::activate_workspace_3: m_clients.change_active_workspace(3); break;
+    case keyop_t::activate_workspace_4: m_clients.change_active_workspace(4); break;
+    case keyop_t::activate_workspace_5: m_clients.change_active_workspace(5); break;
+    case keyop_t::activate_workspace_6: m_clients.change_active_workspace(6); break;
+    case keyop_t::activate_workspace_7: m_clients.change_active_workspace(7); break;
+    case keyop_t::activate_workspace_8: m_clients.change_active_workspace(8); break;
+    case keyop_t::activate_workspace_9: m_clients.change_active_workspace(9); break;
     /* case ACTIVATE_NEXT_WS:     cm_.goto_next_workspace();        break; */
     /* case ACTIVATE_PREV_WS:     cm_.goto_prev_workspace();        break; */
     /* case TOGGLE_SCRATCHPAD_1:  cm_.toggle_scratchpad(1);         break; */
@@ -514,8 +514,8 @@ x_events_t::on_key_press()
     /* case MONOCLE:              cm_.change_layout(LT_MONOCLE);    break; */
     /* case TOGGLE_LAYOUT:        cm_.change_layout(LT_TOGGLE);     break; */
     /* case SWAP_ORIENTATION:     cm_.swap_orientation();           break; */
-    case FOCUS_BCK:            m_clients.cycle_focus_backward();     break;
-    case FOCUS_FWD:            m_clients.cycle_focus_forward();      break;
+    case keyop_t::focus_bck:            m_clients.cycle_focus_backward();     break;
+    case keyop_t::focus_fwd:            m_clients.cycle_focus_forward();      break;
     /* case ZOOM:                 cm_.zoom();                       break; */
     /* case JUMP_MASTER:          cm_.focus_jump(0);                break; */
     /* case JUMP_PANE:            cm_.pane_jump();                  break; */
@@ -566,27 +566,27 @@ x_events_t::on_key_press()
         return;
 
     switch (m_keybinds[shortcut]) {
-    case KILL_CLIENT:               client->win.force_close();                     break;
-    case DOWN_STACK:                                                               break;
-    case UP_STACK:                                                                 break;
-    case DOWN_MASTER:                                                              break;
-    case UP_MASTER:                                                                break;
+    case keyop_t::kill_client:         client->win.force_close();                     break;
+    case keyop_t::down_stack:                                                         break;
+    case keyop_t::up_stack:                                                           break;
+    case keyop_t::down_master:                                                        break;
+    case keyop_t::up_master:                                                          break;
     /* case MOVE_CLIENT_FWD:           cm_.move_focused_client_forward();             break; */
     /* case MOVE_CLIENT_BCK:           cm_.move_focused_client_backward();            break; */
     /* case TOGGLE_FLOAT:              cm_.toggle_float(client);                      break; */
     /* case TOGGLE_FULLSCREEN:         cm_.toggle_fullscreen(client);                 break; */
     /* case TOGGLE_SHADE:              cm_.toggle_shade(client);                      break; */
     /* case TOGGLE_ICONIFY:            cm_.toggle_iconify(client);                    break; */
-    case CENTER_CLIENT:         client->center();                         break;
-    case CLIENT_TO_WORKSPACE_1: m_clients.client_to_workspace(client, 1); break;
-    case CLIENT_TO_WORKSPACE_2: m_clients.client_to_workspace(client, 2); break;
-    case CLIENT_TO_WORKSPACE_3: m_clients.client_to_workspace(client, 3); break;
-    case CLIENT_TO_WORKSPACE_4: m_clients.client_to_workspace(client, 4); break;
-    case CLIENT_TO_WORKSPACE_5: m_clients.client_to_workspace(client, 5); break;
-    case CLIENT_TO_WORKSPACE_6: m_clients.client_to_workspace(client, 6); break;
-    case CLIENT_TO_WORKSPACE_7: m_clients.client_to_workspace(client, 7); break;
-    case CLIENT_TO_WORKSPACE_8: m_clients.client_to_workspace(client, 8); break;
-    case CLIENT_TO_WORKSPACE_9: m_clients.client_to_workspace(client, 9); break;
+    case keyop_t::center_client:         client->center();                         break;
+    case keyop_t::client_to_workspace_1: m_clients.client_to_workspace(client, 1); break;
+    case keyop_t::client_to_workspace_2: m_clients.client_to_workspace(client, 2); break;
+    case keyop_t::client_to_workspace_3: m_clients.client_to_workspace(client, 3); break;
+    case keyop_t::client_to_workspace_4: m_clients.client_to_workspace(client, 4); break;
+    case keyop_t::client_to_workspace_5: m_clients.client_to_workspace(client, 5); break;
+    case keyop_t::client_to_workspace_6: m_clients.client_to_workspace(client, 6); break;
+    case keyop_t::client_to_workspace_7: m_clients.client_to_workspace(client, 7); break;
+    case keyop_t::client_to_workspace_8: m_clients.client_to_workspace(client, 8); break;
+    case keyop_t::client_to_workspace_9: m_clients.client_to_workspace(client, 9); break;
     /* case CLIENT_TO_SCRATCHPAD_1:    cm_.client_to_scratchpad(client, 0);           break; */
     /* case CLIENT_TO_SCRATCHPAD_2:    cm_.client_to_scratchpad(client, 1);           break; */
     /* case FLOAT_GROW_LEFT:           cm_.resize_floating_client(client, LEFT, 1);   break; */
@@ -655,7 +655,7 @@ x_events_t::on_map_request()
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (client) {
-        if (!client->redeem_expect(MAP)
+        if (!client->redeem_expect(clientexpect_t::map)
             && is_moveresize_workspace(m_clients.client_workspace(client)))
         {
             m_x.exit_move_resize();
@@ -667,7 +667,7 @@ x_events_t::on_map_request()
         return;
     }
 
-    if (client && client->redeem_expect(MAP)) {
+    if (client && client->redeem_expect(clientexpect_t::map)) {
         return;
     }
 
@@ -681,7 +681,7 @@ x_events_t::on_map_notify()
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (client) {
-        if (!client->redeem_expect(MAP)
+        if (!client->redeem_expect(clientexpect_t::map)
             && is_moveresize_workspace(m_clients.client_workspace(client)))
         {
             m_x.exit_move_resize();
@@ -713,8 +713,8 @@ x_events_t::on_motion_notify()
     pos_t delta = m_x.update_pointer(x_wrapper::pointer_position());
 
     switch (m_x.moveresize()->state) {
-    case MR_MOVE:   m_x.moveresize()->process_move_increment(pos, dim, delta);   break;
-    case MR_RESIZE: m_x.moveresize()->process_resize_increment(pos, dim, delta); break;
+    case moveresizestate_t::move:   m_x.moveresize()->process_move_increment(pos, dim, delta);   break;
+    case moveresizestate_t::resize: m_x.moveresize()->process_resize_increment(pos, dim, delta); break;
     default: break;
     }
 }
@@ -759,8 +759,11 @@ x_events_t::on_unmap_notify()
     x_wrapper::window_t win = m_current_event.get().xunmap.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
-    if (!client || client->redeem_expect(ICONIFY) || client->redeem_expect(WITHDRAW))
+    if (!client || client->redeem_expect(clientexpect_t::iconify)
+        || client->redeem_expect(clientexpect_t::withdraw))
+    {
         return;
+    }
 
     /* if (client->iconified) */
     /*     cm_.toggle_iconify(client); */

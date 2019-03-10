@@ -16,8 +16,8 @@ public:
     explicit client_model_t(changequeue_t& changequeue)
         : m_changequeue(changequeue),
           m_current_workspace(nullptr),
-          m_move_workspace(new moveresize_workspace_t{MOVE_WORKSPACE}),
-          m_resize_workspace(new moveresize_workspace_t{RESIZE_WORKSPACE}),
+          m_move_workspace(new moveresize_workspace_t{workspacetype_t::move}),
+          m_resize_workspace(new moveresize_workspace_t{workspacetype_t::resize}),
           m_marked_client(nullptr),
           m_focused_client(nullptr)
         {

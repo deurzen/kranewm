@@ -9,7 +9,7 @@
 
 
 const ::std::map<unsigned, ::std::string> USER_WORKSPACES({
-    // nr   name
+//    nr   name
     { 1,   "1:main" },
     { 2,   "2:web"  },
     { 3,   "3:term" },
@@ -22,35 +22,35 @@ const ::std::map<unsigned, ::std::string> USER_WORKSPACES({
 });
 
 
-enum workspacetype
+enum class workspacetype_t
 {
-    WORKSPACE = 0,
-    MOVE_WORKSPACE,
-    RESIZE_WORKSPACE,
-    USER_WORKSPACE,
+    generic,
+    move,
+    resize,
+    user,
 };
 
-enum layouttype
+enum class layout_t
 {
-    LT_TOGGLE = 0,
-    LT_FLOAT,
-    LT_TILE,
-    LT_DECK,
-    LT_DOUBLEDECK,
-    LT_GRID,
-    LT_MONOCLE
+    toggle,
+    floating,
+    tile,
+    deck,
+    doubledeck,
+    grid,
+    monocle
 };
 
 
 typedef class workspace_t
 {
 public:
-    explicit workspace_t(workspacetype _type = WORKSPACE)
+    explicit workspace_t(workspacetype_t _type = workspacetype_t::generic)
         : type(_type) {}
 
     virtual ~workspace_t() {}
 
-    virtual workspacetype get_type() const { return type; }
+    virtual workspacetype_t get_type() const { return type; }
 
     virtual void arrange() const {}
 
@@ -58,14 +58,14 @@ public:
     virtual workspace_t& remove_client(client_ptr_t) { return *this; }
 
 private:
-    workspacetype type;
+    workspacetype_t type;
 
 }* workspace_ptr_t;
 
 typedef class moveresize_workspace_t : public workspace_t
 {
 public:
-    explicit moveresize_workspace_t(workspacetype _type)
+    explicit moveresize_workspace_t(workspacetype_t _type)
         : workspace_t(_type),
           client(nullptr)
     {}
@@ -108,18 +108,18 @@ inline moveresize_workspace_ptr_t moveresize_workspace(workspace_ptr_t workspace
 
 inline bool is_move_workspace(workspace_ptr_t workspace)
 {
-    return workspace->get_type() == MOVE_WORKSPACE;
+    return workspace->get_type() == workspacetype_t::move;
 }
 
 inline bool is_resize_workspace(workspace_ptr_t workspace)
 {
-    return workspace->get_type() == RESIZE_WORKSPACE;
+    return workspace->get_type() == workspacetype_t::resize;
 }
 
 inline bool is_moveresize_workspace(workspace_ptr_t workspace)
 {
-    return workspace->get_type() == MOVE_WORKSPACE
-        || workspace->get_type() == RESIZE_WORKSPACE;
+    return workspace->get_type() == workspacetype_t::move
+        || workspace->get_type() == workspacetype_t::resize;
 }
 
 
@@ -127,12 +127,14 @@ typedef class user_workspace_t : public workspace_t
 {
 public:
     user_workspace_t(unsigned _number, ::std::string&& _name)
-        : workspace_t(USER_WORKSPACE), number(_number), name(_name),
+        : workspace_t(workspacetype_t::user), number(_number), name(_name),
           n_master(1), gap_size(5), m1_weight(1), m_factor(.6f),
-          mirrored(false), layout(LT_FLOAT), previous_layout(layout)
+          mirrored(false), layout(layout_t::floating), previous_layout(layout)
     {}
 
     void arrange() const override;
+
+    void restack() const;
 
     unsigned get_number() const;
     const ::std::deque<client_ptr_t>& get_all() const;
@@ -155,7 +157,7 @@ public:
     user_workspace_t& set_gap_size(unsigned);
     user_workspace_t& set_m_factor(float);
     user_workspace_t& set_m1_weight(unsigned);
-    user_workspace_t& set_layout(layouttype);
+    user_workspace_t& set_layout(layout_t);
 
 private:
     unsigned      number;
@@ -165,8 +167,8 @@ private:
     unsigned      m1_weight;
     float         m_factor;
     bool          mirrored;
-    layouttype    layout;
-    layouttype    previous_layout;
+    layout_t      layout;
+    layout_t      previous_layout;
     focus_cycle   clients;
 
 }* user_workspace_ptr_t;
@@ -180,7 +182,7 @@ inline user_workspace_ptr_t user_workspace(workspace_ptr_t workspace)
 
 inline bool is_user_workspace(workspace_ptr_t workspace)
 {
-    return workspace->get_type() == USER_WORKSPACE;
+    return workspace->get_type() == workspacetype_t::user;
 }
 
 #endif//__KRANEWM_WORKSPACE_GUARD__

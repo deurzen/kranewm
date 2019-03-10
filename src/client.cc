@@ -87,27 +87,33 @@ update_offset(client_ptr_t client)
 }
 
 void
-client_t::disown_child(client_ptr_t)
+client_t::disown_child(client_ptr_t child)
 {
-
+    children.erase(child);
 }
 
 bool
-client_t::redeem_expect(clientexpect occurred)
+client_t::redeem_expect(clientexpect_t occurred)
 {
     if (occurred == expect) {
         switch (expect) {
-        case MAP:      win.set_state(NormalState);
-        case ICONIFY:  win.set_state(IconicState);
-        case WITHDRAW: win.set_state(WithdrawnState);
+        case clientexpect_t::map:      win.set_state(NormalState);
+        case clientexpect_t::iconify:  win.set_state(IconicState);
+        case clientexpect_t::withdraw: win.set_state(WithdrawnState);
         default: break;
         }
 
-        expect = NO_EFFECT;
+        expect = clientexpect_t::noeffect;
         return true;
     }
 
     return false;
+}
+
+void
+client_t::must_expect(clientexpect_t to_expect)
+{
+    expect = to_expect;
 }
 
 client_t&
@@ -149,7 +155,7 @@ client_t&
 client_t::map_children()
 {
     for (auto& child : children) {
-        child->expect = MAP;
+        child->expect = clientexpect_t::map;
         child->map();
     }
     return *this;
@@ -160,7 +166,7 @@ client_t&
 client_t::unmap_children()
 {
     for (auto& child : children) {
-        child->expect = WITHDRAW;
+        child->expect = clientexpect_t::withdraw;
         child->unmap();
     }
     return *this;

@@ -13,7 +13,7 @@ void
 moveresize_t::process_resize_increment(pos_t pos, dim_t dim, pos_t delta)
 {
     switch (grabbed_at) {
-    case TOP_LEFT:
+    case corner_t::top_left:
         {
 
             int resize_width  = ::std::max(dim.w - delta.x, MIN_WINDOW_SIZE);
@@ -31,7 +31,7 @@ moveresize_t::process_resize_increment(pos_t pos, dim_t dim, pos_t delta)
             }
         }
         break;
-    case TOP_RIGHT:
+    case corner_t::top_right:
         {
             int resize_width  = ::std::max(dim.w + delta.x, MIN_WINDOW_SIZE);
             int resize_height = ::std::max(dim.h - delta.y, MIN_WINDOW_SIZE);
@@ -48,7 +48,7 @@ moveresize_t::process_resize_increment(pos_t pos, dim_t dim, pos_t delta)
             }
         }
         break;
-    case BOTTOM_LEFT:
+    case corner_t::bottom_left:
         {
             int resize_width  = ::std::max(dim.w - delta.x, MIN_WINDOW_SIZE);
             int resize_height = ::std::max(dim.h + delta.y, MIN_WINDOW_SIZE);
@@ -65,7 +65,7 @@ moveresize_t::process_resize_increment(pos_t pos, dim_t dim, pos_t delta)
             }
         }
         break;
-    case BOTTOM_RIGHT:
+    case corner_t::bottom_right:
         {
             int resize_width  = ::std::max(dim.w + delta.x, MIN_WINDOW_SIZE);
             int resize_height = ::std::max(dim.h + delta.y, MIN_WINDOW_SIZE);

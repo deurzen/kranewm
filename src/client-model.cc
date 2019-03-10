@@ -87,7 +87,7 @@ client_model_t::unmanage_client(client_ptr_t client)
 
     if (client->parent) {
         focus(client->parent);
-        client->parent->children.erase(client);
+        client->parent->disown_child(client);
     }
 
     workspace->remove_client(client);
