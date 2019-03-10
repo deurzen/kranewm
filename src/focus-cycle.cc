@@ -103,7 +103,7 @@ focus_cycle::index_of(client_ptr_t client)
 }
 
 bool // moves down towards first (mod+k)
-focus_cycle::change_focus_forward()
+focus_cycle::next_focus()
 {
     if (clients_.size() <= 1)
         return false;
@@ -117,7 +117,7 @@ focus_cycle::change_focus_forward()
 }
 
 bool // moves up towards last (mod+j)
-focus_cycle::change_focus_backward()
+focus_cycle::prev_focus()
 {
     if (clients_.size() <= 1)
         return false;

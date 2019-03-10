@@ -514,8 +514,8 @@ x_events_t::on_key_press()
     /* case MONOCLE:              cm_.change_layout(LT_MONOCLE);    break; */
     /* case TOGGLE_LAYOUT:        cm_.change_layout(LT_TOGGLE);     break; */
     /* case SWAP_ORIENTATION:     cm_.swap_orientation();           break; */
-    /* case FOCUS_BCK:            cm_.cycle_focus_backward();       break; */
-    /* case FOCUS_FWD:            cm_.cycle_focus_forward();        break; */
+    case FOCUS_BCK:            m_clients.cycle_focus_backward();     break;
+    case FOCUS_FWD:            m_clients.cycle_focus_forward();      break;
     /* case ZOOM:                 cm_.zoom();                       break; */
     /* case JUMP_MASTER:          cm_.focus_jump(0);                break; */
     /* case JUMP_PANE:            cm_.pane_jump();                  break; */

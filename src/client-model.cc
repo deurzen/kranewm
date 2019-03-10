@@ -114,7 +114,7 @@ client_model_t::focus(client_ptr_t client)
     if (parent && !m_current_workspace->contains(parent))
         return;
 
-    m_current_workspace->set(client);
+    m_current_workspace->set_focused(client);
     m_changequeue.add(change_client_focus(m_focused_client, client));
     m_focused_client = client;
 }
@@ -125,7 +125,7 @@ client_model_t::unfocus()
     if (!m_focused_client)
         return;
 
-    m_current_workspace->unset();
+    m_current_workspace->unset_focused();
     m_changequeue.add(change_client_focus(m_focused_client, nullptr));
     m_focused_client = nullptr;
 }
@@ -135,6 +135,20 @@ client_model_t::unfocus_if_focused(client_ptr_t client)
 {
     if (m_focused_client == client)
         unfocus();
+}
+
+void
+client_model_t::cycle_focus_forward()
+{
+    m_current_workspace->forward();
+    sync_workspace_focus();
+}
+
+void
+client_model_t::cycle_focus_backward()
+{
+    m_current_workspace->backward();
+    sync_workspace_focus();
 }
 
 void
@@ -182,19 +196,18 @@ client_model_t::client_to_workspace(client_ptr_t client, workspace_ptr_t to)
     if (from == to)
         return;
 
-    to->add_client(client);
+    if (is_user_workspace(from))
+        to->add_client(client);
 
-    auto _from = from;
     if (is_user_workspace(to)) {
         from->remove_client(client);
         m_client_workspaces[client] = user_workspace(to);
-    } else
-        _from = nullptr;
+    }
 
-    if (is_moveresize_workspace(from))
-        to = nullptr;
+    m_changequeue.add(change_client_workspace(client,
+        (is_user_workspace(to) ? from : nullptr),
+        (is_user_workspace(from) ? to : nullptr)));
 
-    m_changequeue.add(change_client_workspace(client, _from, to));
     sync_workspace_focus();
 }
 
@@ -210,6 +223,12 @@ client_model_t::change_active_workspace(user_workspace_ptr_t workspace)
 {
     if (m_current_workspace == workspace)
         return;
+
+    if (m_move_workspace->is_set())
+        stop_moving(m_move_workspace->get());
+
+    if (m_resize_workspace->is_set())
+        stop_resizing(m_resize_workspace->get());
 
     m_changequeue.add(change_workspace_active(m_current_workspace, workspace));
     m_current_workspace = workspace;

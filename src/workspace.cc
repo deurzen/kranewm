@@ -7,6 +7,55 @@ user_workspace_t::arrange() const
 
 }
 
+unsigned
+user_workspace_t::get_number() const
+{
+    return number;
+}
+
+const ::std::deque<client_ptr_t>&
+user_workspace_t::get_all() const
+{
+    return clients.get_all();
+}
+
+bool
+user_workspace_t::empty() const
+{
+    return clients.get_all().empty();
+}
+
+bool
+user_workspace_t::contains(client_ptr_t client) const
+{
+    return clients.contains(client);
+}
+
+bool
+user_workspace_t::in_float_layout() const
+{
+    return layout == LT_FLOAT;
+}
+
+const
+client_ptr_t
+user_workspace_t::get_focused() const
+{
+    return clients.get();
+}
+
+void
+user_workspace_t::set_focused(client_ptr_t client)
+{
+    clients.set(client);
+}
+
+void
+user_workspace_t::unset_focused()
+{
+    clients.unset();
+}
+
 user_workspace_t&
 user_workspace_t::add_client(client_ptr_t client)
 {
@@ -27,6 +76,19 @@ user_workspace_t::remove_client(client_ptr_t client)
     return *this;
 }
 
+user_workspace_t&
+user_workspace_t::forward()
+{
+    clients.next_focus();
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::backward()
+{
+    clients.prev_focus();
+    return *this;
+}
 
 user_workspace_t&
 user_workspace_t::set_n_master(unsigned)

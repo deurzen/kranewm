@@ -31,8 +31,8 @@ public:
 
     unsigned index_of(client_ptr_t);
 
-    bool change_focus_forward();
-    bool change_focus_backward();
+    bool next_focus();
+    bool prev_focus();
 
     void rotate_group_forward(unsigned, unsigned);
     void rotate_group_backward(unsigned, unsigned);

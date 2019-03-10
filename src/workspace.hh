@@ -132,27 +132,30 @@ public:
           mirrored(false), layout(LT_FLOAT), previous_layout(layout)
     {}
 
-    inline unsigned get_number() const { return number; }
-    inline const ::std::deque<client_ptr_t>& get_all() const { return clients.get_all(); }
-
-    inline bool in_float_layout() const { return layout == LT_FLOAT; }
-
     void arrange() const override;
+
+    unsigned get_number() const;
+    const ::std::deque<client_ptr_t>& get_all() const;
+
+    bool empty() const;
+    bool contains(client_ptr_t client) const;
+    bool in_float_layout() const;
+
+    const client_ptr_t get_focused() const;
+    void set_focused(client_ptr_t client);
+    void unset_focused();
 
     user_workspace_t& add_client(client_ptr_t) override;
     user_workspace_t& remove_client(client_ptr_t) override;
+
+    user_workspace_t& forward();
+    user_workspace_t& backward();
 
     user_workspace_t& set_n_master(unsigned);
     user_workspace_t& set_gap_size(unsigned);
     user_workspace_t& set_m_factor(float);
     user_workspace_t& set_m1_weight(unsigned);
     user_workspace_t& set_layout(layouttype);
-
-    inline bool empty() const { return clients.get_all().empty(); }
-    inline const client_ptr_t get_focused() const { return clients.get(); }
-    inline void set(client_ptr_t client) { clients.set(client); }
-    inline void unset() { clients.unset(); }
-    inline bool contains(client_ptr_t client) const { return clients.contains(client); }
 
 private:
     unsigned      number;
