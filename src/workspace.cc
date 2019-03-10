@@ -8,6 +8,27 @@ user_workspace_t::arrange() const
 }
 
 user_workspace_t&
+user_workspace_t::add_client(client_ptr_t client)
+{
+    clients.add(client);
+    ::std::for_each(client->children.begin(), client->children.end(),
+        [=](client_ptr_t child) { clients.add(child); });
+
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::remove_client(client_ptr_t client)
+{
+    ::std::for_each(client->children.begin(), client->children.end(),
+        [=](client_ptr_t child) { clients.remove(child); });
+    clients.remove(client);
+
+    return *this;
+}
+
+
+user_workspace_t&
 user_workspace_t::set_n_master(unsigned)
 {
 
@@ -46,34 +67,4 @@ user_workspace_t::set_layout(layouttype _layout)
 
     previous_layout = current_layout;
     return *this;
-}
-
-void
-user_workspace_t::map_clients()
-{
-    for (auto& client : clients.get_all()) {
-        client->expect = MAP;
-        client->map_children().map();
-    }
-}
-
-void
-user_workspace_t::unmap_clients()
-{
-    for (auto& client : clients.get_all()) {
-        client->expect = WITHDRAW;
-        client->unmap_children().unmap();
-    }
-}
-
-void
-user_workspace_t::activate()
-{
-
-}
-
-void
-user_workspace_t::deactivate()
-{
-
 }

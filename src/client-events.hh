@@ -30,8 +30,8 @@ private:
     void to_resize_workspace(client_ptr_t, workspace_ptr_t);
     void to_user_workspace(client_ptr_t, workspace_ptr_t, workspace_ptr_t);
 
-    void map_all(const ::std::set<client_ptr_t>&);
-    void unmap_all(const ::std::set<client_ptr_t>&);
+    template <typename container_t> void map_all(container_t);
+    template <typename container_t> void unmap_all(container_t);
 
     clientchange_ptr_t m_current_change;
 

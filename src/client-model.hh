@@ -42,8 +42,8 @@ public:
     void unfocus_if_focused(client_ptr_t);
 
     void start_moving(client_ptr_t);
-    void stop_moving(client_ptr_t, pos_t);
     void start_resizing(client_ptr_t);
+    void stop_moving(client_ptr_t, pos_t);
     void stop_resizing(client_ptr_t, pos_t, dim_t);
 
     void client_to_workspace(client_ptr_t, unsigned);

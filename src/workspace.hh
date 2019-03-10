@@ -133,40 +133,20 @@ public:
     {}
 
     inline unsigned get_number() const { return number; }
+    inline const ::std::deque<client_ptr_t>& get_all() const { return clients.get_all(); }
 
     inline bool in_float_layout() const { return layout == LT_FLOAT; }
 
     void arrange() const override;
 
-    inline user_workspace_t& add_client(client_ptr_t client) override
-    {
-        clients.add(client);
-        ::std::for_each(client->children.begin(), client->children.end(),
-            [=](client_ptr_t child) { clients.add(child); });
-
-        return *this;
-    }
-
-    inline user_workspace_t& remove_client(client_ptr_t client) override
-    {
-        ::std::for_each(client->children.begin(), client->children.end(),
-            [=](client_ptr_t child) { clients.remove(child); });
-        clients.remove(client);
-
-        return *this;
-    }
+    user_workspace_t& add_client(client_ptr_t) override;
+    user_workspace_t& remove_client(client_ptr_t) override;
 
     user_workspace_t& set_n_master(unsigned);
     user_workspace_t& set_gap_size(unsigned);
     user_workspace_t& set_m_factor(float);
     user_workspace_t& set_m1_weight(unsigned);
     user_workspace_t& set_layout(layouttype);
-
-    void map_clients();
-    void unmap_clients();
-
-    void activate();
-    void deactivate();
 
     inline bool empty() const { return clients.get_all().empty(); }
     inline const client_ptr_t get_focused() const { return clients.get(); }

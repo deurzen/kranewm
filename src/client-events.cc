@@ -103,8 +103,9 @@ client_events_t::on_change_workspace_active()
 
     m_ewmh.set_current_desktop_property(to->get_number() - 1);
 
-    to->map_clients();
-    from->unmap_clients();
+    map_all(to->get_all());
+    unmap_all(from->get_all());
+
     to->arrange();
 
     // TODO iconified clients
@@ -131,9 +132,9 @@ void
 client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t from, workspace_ptr_t to)
 {
     auto current = m_clients.active_workspace();
-
     if (from == current && to != current) {
         client->expect = WITHDRAW;
+        client->unmap();
         m_clients.unfocus_if_focused(client);
         unmap_all(client->children);
     }
@@ -162,7 +163,6 @@ void
 client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, workspace_ptr_t to)
 {
     auto current = m_clients.active_workspace();
-
     if (from != current && to == current) {
         client->expect = MAP;
         client->map();
@@ -175,22 +175,26 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
         USER_WORKSPACES.size() + user_workspace(to)->get_number() - 1);
 }
 
+
+template <typename container_t>
 void
-client_events_t::map_all(const ::std::set<client_ptr_t>& clients)
+client_events_t::map_all(const container_t container)
 {
-    for (auto& client : clients) {
-        client->expect = MAP;
-        client->map();
+    for (auto& c : container) {
+        c->expect = MAP;
+        c->map();
+        map_all(c->children);
     }
 }
 
+template <typename container_t>
 void
-client_events_t::unmap_all(const ::std::set<client_ptr_t>& clients)
+client_events_t::unmap_all(const container_t container)
 {
-    for (auto& client : clients) {
-        client->expect = WITHDRAW;
-        m_clients.unfocus_if_focused(client);
-        client->unmap();
+    for (auto& c : container) {
+        c->expect = WITHDRAW;
+        m_clients.unfocus_if_focused(c);
+        c->unmap();
+        unmap_all(c->children);
     }
 }
-

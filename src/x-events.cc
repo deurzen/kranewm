@@ -135,13 +135,24 @@ x_events_t::on_button_press()
 
     if (win.get() == x_wrapper::g_root.get()) {
         if (subwin.get() == None) {
-            if (m_mousebinds.count({button, mask, false})) {
+            if (m_mousebinds.count({button, mask, false}))
                 switch (m_mousebinds[{button, mask, false}]) {
-                case GOTO_NEXT_WS: break; // TODO check mask. mask == 0 (no MOD pressed)?
-                case GOTO_PREV_WS: break;
+                case GOTO_NEXT_WS:
+                {
+                    unsigned workspace = m_clients.active_workspace()->get_number();
+                    workspace %= USER_WORKSPACES.size();
+                    m_clients.change_active_workspace(workspace + 1);
+                }
+                    return;
+                case GOTO_PREV_WS:
+                {
+                    unsigned workspace = m_clients.active_workspace()->get_number() - 1;
+                    workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
+                    m_clients.change_active_workspace(workspace);
+                }
+                    return;
                 default: break;
                 }
-            }
         } else
             win = subwin;
     }
@@ -154,8 +165,22 @@ x_events_t::on_button_press()
             case CLIENT_MOVE:    m_clients.start_moving(client);   break;
             case CLIENT_RESIZE:  m_clients.start_resizing(client); break;
             case CLIENT_CENTER:  client->center();                 break;
-            case CLIENT_NEXT_WS:                                   break;
-            case CLIENT_PREV_WS:                                   break;
+            case CLIENT_NEXT_WS: // fallthrough
+            case GOTO_NEXT_WS:
+                {
+                    unsigned workspace = m_clients.active_workspace()->get_number();
+                    workspace %= USER_WORKSPACES.size();
+                    m_clients.change_active_workspace(workspace + 1);
+                }
+                return;
+            case CLIENT_PREV_WS: // fallthrough
+            case GOTO_PREV_WS:
+                {
+                    unsigned workspace = m_clients.active_workspace()->get_number() - 1;
+                    workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
+                    m_clients.change_active_workspace(workspace);
+                }
+                return;
             default: break;
             }
         return;

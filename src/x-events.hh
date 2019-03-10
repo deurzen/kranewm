@@ -11,6 +11,7 @@
 #define YES true
 #define NO  false
 #define CURRENT 0
+#define NOMASK 0
 
 // Forward decls
 class ewmh_t;
@@ -166,15 +167,17 @@ public:
           }),
           m_mousebinds({
               //  keysym              mask     client  operation
+              { { FORWARD_BUTTON,     NOMASK,   NO },  GOTO_NEXT_WS   },
+              { { BACKWARD_BUTTON,    NOMASK,   NO },  GOTO_PREV_WS   },
               { { SCROLL_UP_BUTTON,   MODMASK,  NO },  GOTO_NEXT_WS   },
               { { SCROLL_DOWN_BUTTON, MODMASK,  NO },  GOTO_PREV_WS   },
-              { { FORWARD_BUTTON,     MODMASK,  NO },  GOTO_NEXT_WS   },
-              { { BACKWARD_BUTTON,    MODMASK,  NO },  GOTO_PREV_WS   },
               { { LEFT_BUTTON,        MODMASK, YES },  CLIENT_MOVE    },
               { { RIGHT_BUTTON,       MODMASK, YES },  CLIENT_RESIZE  },
               { { MIDDLE_BUTTON,      MODMASK, YES },  CLIENT_CENTER  },
               { { FORWARD_BUTTON,     MODMASK, YES },  CLIENT_NEXT_WS },
               { { BACKWARD_BUTTON,    MODMASK, YES },  CLIENT_PREV_WS },
+              { { SCROLL_UP_BUTTON,   MODMASK, YES },  GOTO_NEXT_WS   },
+              { { SCROLL_DOWN_BUTTON, MODMASK, YES },  GOTO_PREV_WS   },
           })
     {
         for (auto&& [shortcut,_] : m_keybinds)
@@ -223,5 +226,6 @@ private:
 #undef YES
 #undef NO
 #undef CURRENT
+#undef NOMASK
 
 #endif//__KRANEWM__X_EVENTS__GUARD__

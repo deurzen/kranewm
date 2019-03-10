@@ -144,18 +144,18 @@ client_model_t::start_moving(client_ptr_t client)
 }
 
 void
+client_model_t::start_resizing(client_ptr_t client)
+{
+    client_to_workspace(client, m_resize_workspace);
+}
+
+void
 client_model_t::stop_moving(client_ptr_t client, pos_t pos)
 {
     if (!is_move_workspace(client_workspace(client)))
         return;
 
     client_to_workspace(client, m_current_workspace);
-}
-
-void
-client_model_t::start_resizing(client_ptr_t client)
-{
-    client_to_workspace(client, m_resize_workspace);
 }
 
 void
