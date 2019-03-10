@@ -221,37 +221,37 @@ x_events_t::on_client_message()
     if (!client)
         return;
 
-    int netwm_index;
-    for (netwm_index = 0; netwm_index < NetLast; ++netwm_index)
+    netwmid_t netwm_index;
+    for (netwm_index = netwmid_t::netfirst; netwm_index < netwmid_t::netlast; ++netwm_index)
         if (event.message_type == m_ewmh.get_netwm_atom(netwm_index))
             break;
-    if (netwm_index >= NetLast)
+    if (netwm_index >= netwmid_t::netlast)
         return;
 
     switch (netwm_index) {
-    case NetWmState:
+    case netwmid_t::netwmstate:
         {
             for (int property = 1; property <= 2; ++property) {
                 if (event.data.l[property] == 0)
                     continue;
 
                 if ((Atom)event.data.l[property]
-                    == m_ewmh.get_netwm_atom(NetWmStateFullscreen))
+                    == m_ewmh.get_netwm_atom(netwmid_t::netwmstatefullscreen))
                 {
-                    if (event.data.l[0] >= NetNoAction)
+                    if (event.data.l[0] >= static_cast<int>(netwmaction_t::netnoaction))
                         return;
                     /* m_clients.toggle_fullscreen(client, event.data.l[0]); */
                 } else if ((Atom)event.data.l[property]
-                    == m_ewmh.get_netwm_atom(NetWmStateDemandsAttention))
+                    == m_ewmh.get_netwm_atom(netwmid_t::netwmstatedemandsattention))
                 {
-                    if (event.data.l[0] >= NetNoAction)
+                    if (event.data.l[0] >= static_cast<int>(netwmaction_t::netnoaction))
                         return;
                     /* m_clients.toggle_urgency(client, event.data.l[0]); */
                 }
             }
         }
         break;
-    case NetActiveWindow:
+    case netwmid_t::netactivewindow:
         {   // if pager or taskbar (source indicator = 2)
             if (event.data.l[0] == 2)
                 m_clients.focus(client);

@@ -7,51 +7,58 @@
 #include <unordered_map>
 
 
-enum netwmid { // NetWM atom identifiers
-    NetSupported = 0, NetFirst = NetSupported,
-    NetClientList,
-    NetClientListStacking,
-    NetNumberOfDesktops,
-    NetCurrentDesktop,
-    NetDesktopNames,
-    NetDesktopGeometry,
-    NetDesktopViewport,
-    NetWorkarea,
-    NetActiveWindow,
-    NetWmName,
-    NetWmDesktop,
-    NetWmStrut,
-    NetWmStrutPartial,
-    NetWmFrameExtents,
-    NetSupportingWmCheck,
-    NetWmState,
-    NetWmWindowType,
+enum netwmid_t : int
+{ // NetWM atom identifiers
+    netsupported = 0, netfirst = netsupported,
+    netclientlist,
+    netclientliststacking,
+    netnumberofdesktops,
+    netcurrentdesktop,
+    netdesktopnames,
+    netdesktopgeometry,
+    netdesktopviewport,
+    networkarea,
+    netactivewindow,
+    netwmname,
+    netwmdesktop,
+    netwmstrut,
+    netwmstrutpartial,
+    netwmframeextents,
+    netsupportingwmcheck,
+    netwmstate,
+    netwmwindowtype,
     // window states
-    NetWmStateFullscreen, NetWmStateFirst = NetWmStateFullscreen,
-    NetWmStateDemandsAttention,
-    NetWmStateShaded,
-    NetWmStateHidden, NetWmStateLast = NetWmStateHidden,
+    netwmstatefullscreen, netwmstatefirst = netwmstatefullscreen,
+    netwmstatedemandsattention,
+    netwmstateshaded,
+    netwmstatehidden, netwmstatelast = netwmstatehidden,
     // window types
-    NetWmWindowTypeDesktop, NetWmWindowTypeFirst = NetWmWindowTypeDesktop,
-    NetWmWindowTypeDock,
-    NetWmWindowTypeToolbar,
-    NetWmWindowTypeMenu,
-    NetWmWindowTypeUtility,
-    NetWmWindowTypeSplash,
-    NetWmWindowTypeDialog,
-    NetWmWindowTypeDropdownMenu,
-    NetWmWindowTypePopupMenu,
-    NetWmWindowTypeTooltip,
-    NetWmWindowTypeNotification,
-    NetWmWindowTypeNormal, NetWmWindowTypeLast = NetWmWindowTypeNormal,
-    NetLast
+    netwmwindowtypedesktop, netwmwindowtypefirst = netwmwindowtypedesktop,
+    netwmwindowtypedock,
+    netwmwindowtypetoolbar,
+    netwmwindowtypemenu,
+    netwmwindowtypeutility,
+    netwmwindowtypesplash,
+    netwmwindowtypedialog,
+    netwmwindowtypedropdownmenu,
+    netwmwindowtypepopupmenu,
+    netwmwindowtypetooltip,
+    netwmwindowtypenotification,
+    netwmwindowtypenormal, netwmwindowtypelast = netwmwindowtypenormal,
+    netlast
 };
 
-enum netwmaction { // values used in XClientMessageEvent.data.l[{1,2}]
-    NetRemove   = 0,
-    NetAdd      = 1,
-    NetToggle   = 2,
-    NetNoAction
+inline netwmid_t& operator++(netwmid_t& id)
+{
+    return id = static_cast<netwmid_t>(static_cast<int>(id) + 1);
+}
+
+enum class netwmaction_t
+{ // values used in XClientMessageEvent.data.l[{1,2}]
+    netremove   = 0,
+    netadd      = 1,
+    nettoggle   = 2,
+    netnoaction
 };
 
 
@@ -61,54 +68,54 @@ public:
     ewmh_t()
       : strut{None, None, None, None, 0, 0, 0, 0}
     {
-        static const ::std::unordered_map<int, const char*> NETWM_ATOM_NAMES({
-            { NetSupported,                "_NET_SUPPORTED"                    },
-            { NetClientList,               "_NET_CLIENT_LIST"                  },
-            { NetClientListStacking,       "_NET_CLIENT_LIST_STACKING"         },
-            { NetNumberOfDesktops,         "_NET_NUMBER_OF_DESKTOPS"           },
-            { NetCurrentDesktop,           "_NET_CURRENT_DESKTOP"              },
-            { NetDesktopNames,             "_NET_DESKTOP_NAMES"                },
-            { NetDesktopGeometry,          "_NET_DESKTOP_GEOMETRY"             },
-            { NetDesktopViewport,          "_NET_DESKTOP_VIEWPORT"             },
-            { NetWorkarea,                 "_NET_WORKAREA"                     },
-            { NetActiveWindow,             "_NET_ACTIVE_WINDOW"                },
-            { NetWmName,                   "_NET_WM_NAME"                      },
-            { NetWmDesktop,                "_NET_WM_DESKTOP"                   },
-            { NetWmStrut,                  "_NET_WM_STRUT"                     },
-            { NetWmStrutPartial,           "_NET_WM_STRUT_PARTIAL"             },
-            { NetWmFrameExtents,           "_NET_WM_FRAME_EXTENTS"             },
-            { NetSupportingWmCheck,        "_NET_SUPPORTING_WM_CHECK"          },
-            { NetWmState,                  "_NET_WM_STATE"                     },
-            { NetWmWindowType,             "_NET_WM_WINDOW_TYPE"               },
+        static const ::std::unordered_map<netwmid_t, const char*> NETWM_ATOM_NAMES({
+            { netwmid_t::netsupported,                "_NET_SUPPORTED"                    },
+            { netwmid_t::netclientlist,               "_NET_CLIENT_LIST"                  },
+            { netwmid_t::netclientliststacking,       "_NET_CLIENT_LIST_STACKING"         },
+            { netwmid_t::netnumberofdesktops,         "_NET_NUMBER_OF_DESKTOPS"           },
+            { netwmid_t::netcurrentdesktop,           "_NET_CURRENT_DESKTOP"              },
+            { netwmid_t::netdesktopnames,             "_NET_DESKTOP_NAMES"                },
+            { netwmid_t::netdesktopgeometry,          "_NET_DESKTOP_GEOMETRY"             },
+            { netwmid_t::netdesktopviewport,          "_NET_DESKTOP_VIEWPORT"             },
+            { netwmid_t::networkarea,                 "_NET_WORKAREA"                     },
+            { netwmid_t::netactivewindow,             "_NET_ACTIVE_WINDOW"                },
+            { netwmid_t::netwmname,                   "_NET_WM_NAME"                      },
+            { netwmid_t::netwmdesktop,                "_NET_WM_DESKTOP"                   },
+            { netwmid_t::netwmstrut,                  "_NET_WM_STRUT"                     },
+            { netwmid_t::netwmstrutpartial,           "_NET_WM_STRUT_PARTIAL"             },
+            { netwmid_t::netwmframeextents,           "_NET_WM_FRAME_EXTENTS"             },
+            { netwmid_t::netsupportingwmcheck,        "_NET_SUPPORTING_WM_CHECK"          },
+            { netwmid_t::netwmstate,                  "_NET_WM_STATE"                     },
+            { netwmid_t::netwmwindowtype,             "_NET_WM_WINDOW_TYPE"               },
             // window states
-            { NetWmStateFullscreen,        "_NET_WM_STATE_FULLSCREEN"          },
-            { NetWmStateDemandsAttention,  "_NET_WM_STATE_DEMANDS_ATTENTION"   },
-            { NetWmStateShaded,            "_NET_WM_STATE_SHADED"              },
-            { NetWmStateHidden,            "_NET_WM_STATE_HIDDEN"              },
+            { netwmid_t::netwmstatefullscreen,        "_NET_WM_STATE_FULLSCREEN"          },
+            { netwmid_t::netwmstatedemandsattention,  "_NET_WM_STATE_DEMANDS_ATTENTION"   },
+            { netwmid_t::netwmstateshaded,            "_NET_WM_STATE_SHADED"              },
+            { netwmid_t::netwmstatehidden,            "_NET_WM_STATE_HIDDEN"              },
             // window types
-            { NetWmWindowTypeDesktop,      "_NET_WM_WINDOW_TYPE_DESKTOP"       },
-            { NetWmWindowTypeDock,         "_NET_WM_WINDOW_TYPE_DOCK"          },
-            { NetWmWindowTypeToolbar,      "_NET_WM_WINDOW_TYPE_TOOLBAR"       },
-            { NetWmWindowTypeMenu,         "_NET_WM_WINDOW_TYPE_MENU"          },
-            { NetWmWindowTypeUtility,      "_NET_WM_WINDOW_TYPE_UTILITY"       },
-            { NetWmWindowTypeSplash,       "_NET_WM_WINDOW_TYPE_SPLASH"        },
-            { NetWmWindowTypeDialog,       "_NET_WM_WINDOW_TYPE_DIALOG"        },
-            { NetWmWindowTypeDropdownMenu, "_NET_WM_WINDOW_TYPE_DROPDOWN_MENU" },
-            { NetWmWindowTypePopupMenu,    "_NET_WM_WINDOW_TYPE_POPUP_MENU"    },
-            { NetWmWindowTypeTooltip,      "_NET_WM_WINDOW_TYPE_TOOLTIP"       },
-            { NetWmWindowTypeNotification, "_NET_WM_WINDOW_TYPE_NOTIFICATION"  },
-            { NetWmWindowTypeNormal,       "_NET_WM_WINDOW_TYPE_NORMAL"        },
+            { netwmid_t::netwmwindowtypedesktop,      "_NET_WM_WINDOW_TYPE_DESKTOP"       },
+            { netwmid_t::netwmwindowtypedock,         "_NET_WM_WINDOW_TYPE_DOCK"          },
+            { netwmid_t::netwmwindowtypetoolbar,      "_NET_WM_WINDOW_TYPE_TOOLBAR"       },
+            { netwmid_t::netwmwindowtypemenu,         "_NET_WM_WINDOW_TYPE_MENU"          },
+            { netwmid_t::netwmwindowtypeutility,      "_NET_WM_WINDOW_TYPE_UTILITY"       },
+            { netwmid_t::netwmwindowtypesplash,       "_NET_WM_WINDOW_TYPE_SPLASH"        },
+            { netwmid_t::netwmwindowtypedialog,       "_NET_WM_WINDOW_TYPE_DIALOG"        },
+            { netwmid_t::netwmwindowtypedropdownmenu, "_NET_WM_WINDOW_TYPE_DROPDOWN_MENU" },
+            { netwmid_t::netwmwindowtypepopupmenu,    "_NET_WM_WINDOW_TYPE_POPUP_MENU"    },
+            { netwmid_t::netwmwindowtypetooltip,      "_NET_WM_WINDOW_TYPE_TOOLTIP"       },
+            { netwmid_t::netwmwindowtypenotification, "_NET_WM_WINDOW_TYPE_NOTIFICATION"  },
+            { netwmid_t::netwmwindowtypenormal,       "_NET_WM_WINDOW_TYPE_NORMAL"        },
         });
 
-        for (auto&& [index,atom_name] : NETWM_ATOM_NAMES)
-            netwm_atoms_[index] = x_wrapper::get_atom(atom_name);
+        for (auto&& [id,atom_name] : NETWM_ATOM_NAMES)
+            m_netwm_atoms[id] = x_wrapper::get_atom(atom_name);
 
-        Atom supported_atoms[NetLast];
-        for (int i = 0; i < NetLast; ++i)
+        Atom supported_atoms[netwmid_t::netlast];
+        for (netwmid_t i = netwmid_t::netfirst; i < netwmid_t::netlast; ++i)
             supported_atoms[i] = get_netwm_atom(i);
 
         x_wrapper::replace_property<x_wrapper::atom_list_t>(x_wrapper::g_root,
-            {"_NET_SUPPORTED", {supported_atoms, NetLast}});
+            {"_NET_SUPPORTED", {supported_atoms, netwmid_t::netlast}});
     }
 
 
@@ -164,7 +171,7 @@ public:
     bool check_apply_strut(x_wrapper::window_t);
     bool check_release_strut(x_wrapper::window_t);
 
-    Atom get_netwm_atom(int);
+    Atom get_netwm_atom(netwmid_t);
 
     void set_wm_name_property(x_wrapper::window_t, ::std::string);
     void set_supporting_wm_check_property(x_wrapper::window_t, x_wrapper::window_t);
@@ -174,7 +181,7 @@ public:
     void set_frame_extents(x_wrapper::window_t, bool = false);
 
     void set_active_window_property(x_wrapper::window_t);
-    void set_window_state_property(x_wrapper::window_t, int = NetLast);
+    void set_window_state_property(x_wrapper::window_t, netwmid_t = netwmid_t::netlast);
 
     void set_wm_desktop_property(x_wrapper::window_t, unsigned);
 
@@ -188,7 +195,7 @@ public:
 
 
 private:
-    ::std::map<int, Atom> netwm_atoms_;
+    ::std::map<netwmid_t, Atom> m_netwm_atoms;
 
     struct {
         x_wrapper::window_t top_window;

@@ -11,11 +11,11 @@
 
 
 Atom
-ewmh_t::get_netwm_atom(int index)
+ewmh_t::get_netwm_atom(netwmid_t index)
 {
-    if (netwm_atoms_.count(index) > 0)
-    return netwm_atoms_[index];
-    return NetLast;
+    if (m_netwm_atoms.count(index) > 0)
+        return m_netwm_atoms[index];
+    return netwmid_t::netlast;
 }
 
 void
@@ -52,22 +52,24 @@ ewmh_t::set_desktop_names_property(::std::vector<::std::string>& names)
 void
 ewmh_t::set_frame_extents(x_wrapper::window_t win, bool overridden)
 {
-    static long frame_extents_normal[] = {
+    static CARD32 frame_extents_normal[] = {
         0, // left
         0, // right
         BORDER_HEIGHT, // top
         0  // bottom
     };
 
-    static long frame_extents_overridden[] = {
+    static CARD32 frame_extents_overridden[] = {
         0, // left
         0, // right
         0, // top
         0  // bottom
     };
 
-    x_wrapper::replace_property<x_wrapper::cardinal_list_t>(win, {"_NET_WM_FRAME_EXTENTS",
-        {&(overridden ? frame_extents_overridden : frame_extents_normal), 4}});
+    x_wrapper::remove_property(win, "_NET_WM_FRAME_EXTENTS");
+    for (size_t i = 0; i < 4; ++i)
+        x_wrapper::append_property<x_wrapper::cardinal_t>(win, {"_NET_WM_FRAME_EXTENTS",
+            overridden ? frame_extents_overridden[i] : frame_extents_normal[i]});
 }
 
 void
@@ -77,10 +79,10 @@ ewmh_t::set_active_window_property(x_wrapper::window_t win)
 }
 
 void
-ewmh_t::set_window_state_property(x_wrapper::window_t win, int i)
+ewmh_t::set_window_state_property(x_wrapper::window_t win, netwmid_t i)
 {
-    if (range_t<int>::contains(NetWmStateFirst, NetWmStateLast, i))
-        x_wrapper::replace_property<x_wrapper::atom_t>(win, {"_NET_WM_STATE", netwm_atoms_[i]});
+    if (range_t<int>::contains(netwmid_t::netwmstatefirst, netwmid_t::netwmstatelast, i))
+        x_wrapper::replace_property<x_wrapper::atom_t>(win, {"_NET_WM_STATE", m_netwm_atoms[i]});
     else
         x_wrapper::unset_property<x_wrapper::atom_t>(win, {"_NET_WM_STATE"});
 }
@@ -170,8 +172,8 @@ ewmh_t::set_strut_property(x_wrapper::window_t win, unsigned left, unsigned righ
 bool
 ewmh_t::check_apply_strut(x_wrapper::window_t win)
 {
-    ::std::vector<unsigned> partial_strut_vals;
-    ::std::vector<unsigned> strut_vals;
+    ::std::vector<CARD32> partial_strut_vals;
+    ::std::vector<CARD32> strut_vals;
 
     if (x_wrapper::has_property<x_wrapper::cardinal_t>(win, "_NET_WM_STRUT_PARTIAL"))
         partial_strut_vals = x_wrapper::get_property<x_wrapper::cardinal_list_t>(win,
@@ -188,11 +190,11 @@ ewmh_t::check_apply_strut(x_wrapper::window_t win)
         if (strut_vals[0] == 0)
             strut_vals[0] = partial_strut_vals[0];
         if (strut_vals[1] == 0)
-            strut_vals[1] = partial_strut_vals[0];
+            strut_vals[1] = partial_strut_vals[1];
         if (strut_vals[2] == 0)
-            strut_vals[2] = partial_strut_vals[0];
+            strut_vals[2] = partial_strut_vals[2];
         if (strut_vals[3] == 0)
-            strut_vals[3] = partial_strut_vals[0];
+            strut_vals[3] = partial_strut_vals[3];
     }
 
     if (strut.left_window.get() == None

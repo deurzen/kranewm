@@ -97,9 +97,9 @@ client_t::redeem_expect(clientexpect_t occurred)
 {
     if (occurred == expect) {
         switch (expect) {
-        case clientexpect_t::map:      win.set_state(NormalState);
-        case clientexpect_t::iconify:  win.set_state(IconicState);
-        case clientexpect_t::withdraw: win.set_state(WithdrawnState);
+        case clientexpect_t::map:      win.set_state(NormalState);    break;
+        case clientexpect_t::iconify:  win.set_state(IconicState);    break;
+        case clientexpect_t::withdraw: win.set_state(WithdrawnState); break;
         default: break;
         }
 

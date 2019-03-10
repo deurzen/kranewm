@@ -72,17 +72,24 @@ namespace x_wrapper
     public:
         atom_list_t() = default;
 
-        atom_list_t(Atom* atom_list, size_t list_length)
-            : val(atom_list), len(list_length)
-        {}
+        atom_list_t(Atom* atom_list, size_t list_len)
+            : len(list_len)
+        {
+            for (size_t i = 0; i < list_len; ++i)
+                val.push_back(atom_list[i]);
+        }
 
         atom_list_t(void* raw_data, unsigned long data_len)
-            : val((Atom*) raw_data), len(data_len)
-        {}
+            : len(data_len)
+        {
+            Atom* atom_list = (Atom*) raw_data;
+            for (size_t i = 0; i < data_len; ++i)
+                val.push_back(atom_list[i]);
+        }
 
-        operator ::std::vector<Atom>() const { return ::std::vector<Atom>(val, val + len); }
-        operator Atom*() const { return val; }
-        operator bool() const { return val != nullptr; }
+        operator ::std::vector<Atom>() const { return val; }
+        operator Atom*() { return val.data(); }
+        operator bool() const { return !val.empty(); }
 
         inline bool operator==(const atom_list_t& atom_list) const
         {
@@ -101,11 +108,11 @@ namespace x_wrapper
         inline Atom type()   const { return XA_ATOM; }
         inline int  size()   const { return 32; }
 
-        inline Atom* get() const { return val; }
-        inline Atom* get_ptr() const { return val; }
+        inline Atom* get() { return &val[0]; }
+        inline Atom* get_ptr() { return val.data(); }
 
     private:
-        Atom* val;
+        ::std::vector<Atom> val;
         size_t len;
 
     };

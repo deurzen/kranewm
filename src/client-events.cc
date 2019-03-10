@@ -138,9 +138,6 @@ client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t from, 
         m_clients.unfocus_if_focused(client);
         unmap_all(client->children);
     }
-
-    m_ewmh.set_wm_desktop_property(client->win,
-        user_workspace(to)->get_number() - 1);
 }
 
 void
@@ -171,8 +168,7 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
         m_ewmh.set_window_state_property(client->win);
     }
 
-    m_ewmh.set_wm_desktop_property(client->win,
-        USER_WORKSPACES.size() + user_workspace(to)->get_number() - 1);
+    m_ewmh.set_wm_desktop_property(client->win, user_workspace(to)->get_number() - 1);
 }
 
 
