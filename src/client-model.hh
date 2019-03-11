@@ -54,13 +54,12 @@ public:
     void change_active_workspace(unsigned);
     void change_active_workspace(user_workspace_ptr_t);
 
-    void zoom();
     void set_marked(client_ptr_t);
     void jump_marked();
 
-private:
     void sync_workspace_focus();
 
+private:
     changequeue_t& m_changequeue;
 
     user_workspace_ptr_t m_current_workspace;

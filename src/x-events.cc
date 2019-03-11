@@ -484,16 +484,6 @@ x_events_t::on_key_press()
     case keyop_t::spawn_7lock:         fork_external("systemctl suspend");                                    break;
 
 
-    /* case POP_ICONIFIED:        cm_.deiconify(0);                 break; */
-    /* case DEICONIFY_1:          cm_.deiconify(1);                 break; */
-    /* case DEICONIFY_2:          cm_.deiconify(2);                 break; */
-    /* case DEICONIFY_3:          cm_.deiconify(3);                 break; */
-    /* case DEICONIFY_4:          cm_.deiconify(4);                 break; */
-    /* case DEICONIFY_5:          cm_.deiconify(5);                 break; */
-    /* case DEICONIFY_6:          cm_.deiconify(6);                 break; */
-    /* case DEICONIFY_7:          cm_.deiconify(7);                 break; */
-    /* case DEICONIFY_8:          cm_.deiconify(8);                 break; */
-    /* case DEICONIFY_9:          cm_.deiconify(9);                 break; */
     case keyop_t::activate_workspace_1: m_clients.change_active_workspace(1); break;
     case keyop_t::activate_workspace_2: m_clients.change_active_workspace(2); break;
     case keyop_t::activate_workspace_3: m_clients.change_active_workspace(3); break;
@@ -503,8 +493,20 @@ x_events_t::on_key_press()
     case keyop_t::activate_workspace_7: m_clients.change_active_workspace(7); break;
     case keyop_t::activate_workspace_8: m_clients.change_active_workspace(8); break;
     case keyop_t::activate_workspace_9: m_clients.change_active_workspace(9); break;
-    /* case ACTIVATE_NEXT_WS:     cm_.goto_next_workspace();        break; */
-    /* case ACTIVATE_PREV_WS:     cm_.goto_prev_workspace();        break; */
+    case keyop_t::activate_next_ws:
+        {
+            unsigned workspace = m_clients.active_workspace()->get_number();
+            workspace %= USER_WORKSPACES.size();
+            m_clients.change_active_workspace(workspace + 1);
+        }
+        break;
+    case keyop_t::activate_prev_ws:
+        {
+            unsigned workspace = m_clients.active_workspace()->get_number() - 1;
+            workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
+            m_clients.change_active_workspace(workspace);
+        }
+        break;
     /* case TOGGLE_SCRATCHPAD_1:  cm_.toggle_scratchpad(1);         break; */
     /* case TOGGLE_SCRATCHPAD_2:  cm_.toggle_scratchpad(2);         break; */
     case keyop_t::floating:   m_clients.active_workspace()->set_layout(layout_t::floating).arrange();   break;
@@ -517,7 +519,12 @@ x_events_t::on_key_press()
     /* case SWAP_ORIENTATION:     cm_.swap_orientation();           break; */
     case keyop_t::focus_bck:            m_clients.cycle_focus_backward();     break;
     case keyop_t::focus_fwd:            m_clients.cycle_focus_forward();      break;
-    case keyop_t::zoom: m_clients.zoom(); break;
+    case keyop_t::zoom:
+        {
+            m_clients.active_workspace()->zoom().arrange();
+            m_clients.sync_workspace_focus();
+        }
+        break;
     /* case JUMP_MASTER:          cm_.focus_jump(0);                break; */
     /* case JUMP_PANE:            cm_.pane_jump();                  break; */
     /* case JUMP_CLIENT_1:        cm_.focus_jump(0);                break; */
@@ -622,63 +629,149 @@ x_events_t::on_key_press()
     case keyop_t::client_to_workspace_7: m_clients.client_to_workspace(client, 7); break;
     case keyop_t::client_to_workspace_8: m_clients.client_to_workspace(client, 8); break;
     case keyop_t::client_to_workspace_9: m_clients.client_to_workspace(client, 9); break;
-    /* case CLIENT_TO_SCRATCHPAD_1:    cm_.client_to_scratchpad(client, 0);           break; */
-    /* case CLIENT_TO_SCRATCHPAD_2:    cm_.client_to_scratchpad(client, 1);           break; */
-    /* case FLOAT_GROW_LEFT:           cm_.resize_floating_client(client, LEFT, 1);   break; */
-    /* case FLOAT_GROW_DOWN:           cm_.resize_floating_client(client, DOWN, 1);   break; */
-    /* case FLOAT_GROW_UP:             cm_.resize_floating_client(client, UP, 1);     break; */
-    /* case FLOAT_GROW_RIGHT:          cm_.resize_floating_client(client, RIGHT, 1);  break; */
-    /* case FLOAT_SHRINK_LEFT:         cm_.resize_floating_client(client, RIGHT, -1); break; */
-    /* case FLOAT_SHRINK_DOWN:         cm_.resize_floating_client(client, UP, -1);    break; */
-    /* case FLOAT_SHRINK_UP:           cm_.resize_floating_client(client, DOWN, -1);  break; */
-    /* case FLOAT_SHRINK_RIGHT:        cm_.resize_floating_client(client, LEFT, -1);  break; */
+    case keyop_t::float_grow_left:
+        {
+            if (!(client->floating || m_clients.active_workspace()->in_float_layout()))
+                return;
+
+            dim_t dim = client->float_dim;
+            pos_t pos = client->float_pos;
+            pos.x -= KB_RESIZE_INCREMENT;
+            dim.w += KB_RESIZE_INCREMENT;
+            client->resize(dim).move(pos);
+        }
+        break;
+    case keyop_t::float_grow_down:
+        {
+            if (!(client->floating || m_clients.active_workspace()->in_float_layout()))
+                return;
+
+            dim_t dim = client->float_dim;
+            dim.h += KB_RESIZE_INCREMENT;
+            client->resize(dim);
+        }
+        break;
+    case keyop_t::float_grow_up:
+        {
+            if (!(client->floating || m_clients.active_workspace()->in_float_layout()))
+                return;
+
+            dim_t dim = client->float_dim;
+            pos_t pos = client->float_pos;
+            pos.y -= KB_RESIZE_INCREMENT;
+            dim.h += KB_RESIZE_INCREMENT;
+            client->resize(dim).move(pos);
+        }
+        break;
+    case keyop_t::float_grow_right:
+        {
+            if (!(client->floating || m_clients.active_workspace()->in_float_layout()))
+                return;
+
+            dim_t dim = client->float_dim;
+            dim.w += KB_RESIZE_INCREMENT;
+            client->resize(dim);
+        }
+        break;
+    case keyop_t::float_shrink_left:
+        {
+            if (!(client->floating || m_clients.active_workspace()->in_float_layout()))
+                return;
+
+            dim_t dim = client->float_dim;
+            pos_t pos = client->float_pos;
+            pos.x += KB_RESIZE_INCREMENT;
+            dim.w -= KB_RESIZE_INCREMENT;
+
+            if (dim.w >= MIN_WINDOW_SIZE)
+                client->resize(dim).move(pos);
+        }
+        break;
+    case keyop_t::float_shrink_down:
+        {
+            if (!(client->floating || m_clients.active_workspace()->in_float_layout()))
+                return;
+
+            dim_t dim = client->float_dim;
+            dim.h -= KB_RESIZE_INCREMENT;
+
+            if (dim.h >= MIN_WINDOW_SIZE)
+                client->resize(dim);
+        }
+        break;
+    case keyop_t::float_shrink_up:
+        {
+            if (!(client->floating || m_clients.active_workspace()->in_float_layout()))
+                return;
+
+            dim_t dim = client->float_dim;
+            pos_t pos = client->float_pos;
+            pos.y += KB_RESIZE_INCREMENT;
+            dim.h -= KB_RESIZE_INCREMENT;
+
+            if (dim.h >= MIN_WINDOW_SIZE)
+                client->resize(dim).move(pos);
+        }
+        break;
+    case keyop_t::float_shrink_right:
+        {
+            if (!(client->floating || m_clients.active_workspace()->in_float_layout()))
+                return;
+
+            dim_t dim = client->float_dim;
+            dim.w -= KB_RESIZE_INCREMENT;
+
+            if (dim.w >= MIN_WINDOW_SIZE)
+                client->resize(dim);
+        }
+        break;
+    case keyop_t::float_left_or_master_fwd:
+        {
+            if (client->floating || m_clients.active_workspace()->in_float_layout()) {
+                pos_t pos = client->float_pos;
+                pos.x -= KB_MOVE_INCREMENT;
+                client->move(pos);
+            } else {
+                // TODO master fwd
+            }
+        }
+        break;
+    case keyop_t::float_down_or_stack_bck:
+        {
+            if (client->floating || m_clients.active_workspace()->in_float_layout()) {
+                pos_t pos = client->float_pos;
+                pos.y += KB_MOVE_INCREMENT;
+                client->move(pos);
+            } else {
+                // TODO stack bck
+            }
+        }
+        break;
+    case keyop_t::float_up_or_stack_fwd:
+        {
+            if (client->floating || m_clients.active_workspace()->in_float_layout()) {
+                pos_t pos = client->float_pos;
+                pos.y -= KB_MOVE_INCREMENT;
+                client->move(pos);
+            } else {
+                // TODO stack fwd
+            }
+        }
+        break;
+    case keyop_t::float_right_or_master_bck:
+        {
+            if (client->floating || m_clients.active_workspace()->in_float_layout()) {
+                pos_t pos = client->float_pos;
+                pos.x += KB_MOVE_INCREMENT;
+                client->move(pos);
+            } else {
+                // TODO master bck
+            }
+        }
+        break;
     case keyop_t::mark_client: m_clients.set_marked(client); break;
     /* case CLIENT_TO_NEXT_WORKSPACE:  cm_.client_to_next_workspace(client);          break; */
     /* case CLIENT_TO_PREV_WORKSPACE:  cm_.client_to_prev_workspace(client);          break; */
-    /* case FLOAT_LEFT_OR_MASTER_FWD: */
-    /*     { */
-    /*         if (cm_.scratchpad_active() */
-    /*             || cm_.get_current_workspace()->layout == LT_FLOAT */
-    /*             || client->floating) */
-    /*         { */
-    /*             cm_.move_floating_client(client, LEFT); */
-    /*         } else */
-    /*             cm_.rotate_master_forward(); */
-    /*     } */
-    /*     break; */
-    /* case FLOAT_DOWN_OR_STACK_BCK: */
-    /*     { */
-    /*         if (cm_.scratchpad_active() */
-    /*             || cm_.get_current_workspace()->layout == LT_FLOAT */
-    /*             || client->floating) */
-    /*         { */
-    /*             cm_.move_floating_client(client, DOWN); */
-    /*         } else */
-    /*             cm_.rotate_stack_backward(); */
-    /*     } */
-    /*     break; */
-    /* case FLOAT_UP_OR_STACK_FWD: */
-    /*     { */
-    /*         if (cm_.scratchpad_active() */
-    /*             || cm_.get_current_workspace()->layout == LT_FLOAT */
-    /*             || client->floating) */
-    /*         { */
-    /*             cm_.move_floating_client(client, UP); */
-    /*         } else */
-    /*             cm_.rotate_stack_forward(); */
-    /*     } */
-    /*     break; */
-    /* case FLOAT_RIGHT_OR_MASTER_BCK: */
-    /*     { */
-    /*         if (cm_.scratchpad_active() */
-    /*             || cm_.get_current_workspace()->layout == LT_FLOAT */
-    /*             || client->floating) */
-    /*         { */
-    /*             cm_.move_floating_client(client, RIGHT); */
-    /*         } else */
-    /*             cm_.rotate_master_backward(); */
-    /*     } */
-    /*     break; */
     default: break;
     }
 }
