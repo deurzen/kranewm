@@ -2,6 +2,7 @@
 #define __KRANEWM_WORKSPACE_GUARD__
 
 #include "client.hh"
+#include "layout.hh"
 #include "focus-cycle.hh"
 
 #include <map>
@@ -29,18 +30,6 @@ enum class workspacetype_t
     resize,
     user,
 };
-
-enum class layout_t
-{
-    toggle,
-    floating,
-    tile,
-    deck,
-    doubledeck,
-    grid,
-    monocle
-};
-
 
 typedef class workspace_t
 {
@@ -126,10 +115,11 @@ inline bool is_moveresize_workspace(workspace_ptr_t workspace)
 typedef class user_workspace_t : public workspace_t
 {
 public:
-    user_workspace_t(unsigned _number, ::std::string&& _name)
+    user_workspace_t(unsigned _number, ::std::string&& _name, ewmh_t& ewmh)
         : workspace_t(workspacetype_t::user), number(_number), name(_name),
-          n_master(1), gap_size(5), m1_weight(1), m_factor(.6f),
-          mirrored(false), layout(layout_t::floating), previous_layout(layout)
+          n_master(1), gap_size(5), m1_weight(1), m_factor(.6f), mirrored(false),
+          layout(layout_t::floating), previous_layout(layout),
+          layouthandler(layouthandler_t{ewmh})
     {}
 
     void arrange() const override;
@@ -160,16 +150,17 @@ public:
     user_workspace_t& set_layout(layout_t);
 
 private:
-    unsigned      number;
-    ::std::string name;
-    unsigned      n_master;
-    unsigned      gap_size;
-    unsigned      m1_weight;
-    float         m_factor;
-    bool          mirrored;
-    layout_t      layout;
-    layout_t      previous_layout;
-    focus_cycle   clients;
+    unsigned        number;
+    ::std::string   name;
+    unsigned        n_master;
+    unsigned        gap_size;
+    unsigned        m1_weight;
+    float           m_factor;
+    bool            mirrored;
+    focus_cycle     clients;
+    layout_t        layout;
+    layout_t        previous_layout;
+    layouthandler_t layouthandler;
 
 }* user_workspace_ptr_t;
 

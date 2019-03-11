@@ -4,7 +4,15 @@
 void
 user_workspace_t::arrange() const
 {
-
+    switch (layout) {
+    case layout_t::floating:   layouthandler.layout_floating(*this);   break;
+    case layout_t::tile:       layouthandler.layout_tile(*this);       break;
+    case layout_t::deck:       layouthandler.layout_deck(*this);       break;
+    case layout_t::doubledeck: layouthandler.layout_doubledeck(*this); break;
+    case layout_t::grid:       layouthandler.layout_grid(*this);       break;
+    case layout_t::monocle:    layouthandler.layout_monocle(*this);    break;
+    default: break;
+    }
 }
 
 unsigned

@@ -506,11 +506,11 @@ x_events_t::on_key_press()
     /* case ACTIVATE_PREV_WS:     cm_.goto_prev_workspace();        break; */
     /* case TOGGLE_SCRATCHPAD_1:  cm_.toggle_scratchpad(1);         break; */
     /* case TOGGLE_SCRATCHPAD_2:  cm_.toggle_scratchpad(2);         break; */
-    /* case FLOAT:                cm_.change_layout(LT_FLOAT);      break; */
+    case keyop_t::floating: m_clients.active_workspace()->set_layout(layout_t::floating).arrange(); break;
     /* case TILE:                 cm_.change_layout(LT_TILE);       break; */
     /* case DECK:                 cm_.change_layout(LT_DECK);       break; */
     /* case DOUBLEDECK:           cm_.change_layout(LT_DOUBLEDECK); break; */
-    /* case GRID:                 cm_.change_layout(LT_GRID);       break; */
+    case keyop_t::grid: m_clients.active_workspace()->set_layout(layout_t::grid).arrange(); break;
     /* case MONOCLE:              cm_.change_layout(LT_MONOCLE);    break; */
     /* case TOGGLE_LAYOUT:        cm_.change_layout(LT_TOGGLE);     break; */
     /* case SWAP_ORIENTATION:     cm_.swap_orientation();           break; */

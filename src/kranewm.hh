@@ -21,7 +21,7 @@ public:
         : m_ewmh(),
           m_x(),
           m_changequeue(),
-          m_clients(m_changequeue),
+          m_clients(m_changequeue, m_ewmh),
           m_events(m_ewmh, m_clients, m_x),
           m_changes(m_changequeue, m_ewmh, m_x, m_clients)
     {}

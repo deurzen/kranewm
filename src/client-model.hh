@@ -13,7 +13,7 @@
 class client_model_t
 {
 public:
-    explicit client_model_t(changequeue_t& changequeue)
+    explicit client_model_t(changequeue_t& changequeue, ewmh_t& ewmh)
         : m_changequeue(changequeue),
           m_current_workspace(nullptr),
           m_move_workspace(new moveresize_workspace_t{workspacetype_t::move}),
@@ -22,7 +22,7 @@ public:
           m_focused_client(nullptr)
         {
             for (auto&& [nr,name] : USER_WORKSPACES)
-                m_user_workspaces.push_back(new user_workspace_t{nr, name.c_str()});
+                m_user_workspaces.push_back(new user_workspace_t{nr, name.c_str(), ewmh});
 
             m_current_workspace = m_user_workspaces.front();
         }

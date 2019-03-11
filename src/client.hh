@@ -38,8 +38,8 @@ typedef struct client_t
     bool redeem_expect(clientexpect_t);
     void must_expect(clientexpect_t);
 
-    client_t& move(pos_t);
-    client_t& resize(dim_t);
+    client_t& move(pos_t, bool = false);
+    client_t& resize(dim_t, bool = false);
 
     client_t& map();
     client_t& unmap();
