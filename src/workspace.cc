@@ -125,6 +125,34 @@ user_workspace_t&
 user_workspace_t::mirror()
 {
     mirrored = !mirrored;
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::jump_pane()
+{
+    static client_ptr_t master_client, stack_client;
+    unsigned i = clients.index_of(clients.get());
+
+    if (!(n_master == 0 || n_master >= clients.size())) {
+        if (master_client && clients.index_of(master_client) >= n_master)
+            master_client = nullptr;
+
+        if (stack_client && clients.index_of(stack_client) < n_master)
+            stack_client = nullptr;
+
+        if (i >= n_master) {
+            stack_client = clients.get();
+            if (!clients.set(master_client))
+                clients.set(static_cast<unsigned>(0u));
+        } else {
+            master_client = clients.get();
+            if (!clients.set(stack_client))
+                clients.set(n_master);
+        }
+    }
+
+    return *this;
 }
 
 user_workspace_t&

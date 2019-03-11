@@ -165,7 +165,12 @@ x_events_t::on_button_press()
             case mouseop_t::client_move:    m_clients.start_moving(client);   break;
             case mouseop_t::client_resize:  m_clients.start_resizing(client); break;
             case mouseop_t::client_center:  client->center();                 break;
-            case mouseop_t::client_next_ws: // fallthrough
+            case mouseop_t::client_next_ws:
+                {
+                    unsigned workspace = m_clients.active_workspace()->get_number();
+                    workspace %= USER_WORKSPACES.size();
+                    m_clients.client_to_workspace(client, workspace + 1);
+                } // fallthrough
             case mouseop_t::goto_next_ws:
                 {
                     unsigned workspace = m_clients.active_workspace()->get_number();
@@ -173,7 +178,12 @@ x_events_t::on_button_press()
                     m_clients.change_active_workspace(workspace + 1);
                 }
                 return;
-            case mouseop_t::client_prev_ws: // fallthrough
+            case mouseop_t::client_prev_ws:
+                {
+                    unsigned workspace = m_clients.active_workspace()->get_number() - 1;
+                    workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
+                    m_clients.client_to_workspace(client, workspace);
+                } // fallthrough
             case mouseop_t::goto_prev_ws:
                 {
                     unsigned workspace = m_clients.active_workspace()->get_number() - 1;
@@ -484,15 +494,15 @@ x_events_t::on_key_press()
     case keyop_t::spawn_7lock:         fork_external("systemctl suspend");                                    break;
 
 
-    case keyop_t::activate_workspace_1: m_clients.change_active_workspace(1); break;
-    case keyop_t::activate_workspace_2: m_clients.change_active_workspace(2); break;
-    case keyop_t::activate_workspace_3: m_clients.change_active_workspace(3); break;
-    case keyop_t::activate_workspace_4: m_clients.change_active_workspace(4); break;
-    case keyop_t::activate_workspace_5: m_clients.change_active_workspace(5); break;
-    case keyop_t::activate_workspace_6: m_clients.change_active_workspace(6); break;
-    case keyop_t::activate_workspace_7: m_clients.change_active_workspace(7); break;
-    case keyop_t::activate_workspace_8: m_clients.change_active_workspace(8); break;
-    case keyop_t::activate_workspace_9: m_clients.change_active_workspace(9); break;
+    case keyop_t::activate_ws_1: m_clients.change_active_workspace(1); break;
+    case keyop_t::activate_ws_2: m_clients.change_active_workspace(2); break;
+    case keyop_t::activate_ws_3: m_clients.change_active_workspace(3); break;
+    case keyop_t::activate_ws_4: m_clients.change_active_workspace(4); break;
+    case keyop_t::activate_ws_5: m_clients.change_active_workspace(5); break;
+    case keyop_t::activate_ws_6: m_clients.change_active_workspace(6); break;
+    case keyop_t::activate_ws_7: m_clients.change_active_workspace(7); break;
+    case keyop_t::activate_ws_8: m_clients.change_active_workspace(8); break;
+    case keyop_t::activate_ws_9: m_clients.change_active_workspace(9); break;
     case keyop_t::activate_next_ws:
         {
             unsigned workspace = m_clients.active_workspace()->get_number();
@@ -524,7 +534,12 @@ x_events_t::on_key_press()
         }
         break;
     /* case JUMP_MASTER:          cm_.focus_jump(0);                break; */
-    /* case JUMP_PANE:            cm_.pane_jump();                  break; */
+    case keyop_t::jump_pane:
+        {
+            m_clients.active_workspace()->jump_pane();
+            m_clients.sync_workspace_focus();
+        }
+        break;
     /* case JUMP_CLIENT_1:        cm_.focus_jump(0);                break; */
     /* case JUMP_CLIENT_2:        cm_.focus_jump(1);                break; */
     /* case JUMP_CLIENT_3:        cm_.focus_jump(2);                break; */
@@ -576,15 +591,8 @@ x_events_t::on_key_press()
                 m_clients.active_workspace()->set_gap_size(--gap_size).arrange();
         }
         break;
-    case keyop_t::jump_to_marked_client: m_clients.jump_marked(); break;
-    /* case TOGGLE_WORKSPACE: */
-    /*     { */
-    /*         if (cm_.scratchpad_active()) */
-    /*             cm_.toggle_scratchpad(cm_.get_current_scratchpad()->number); */
-    /*         else */
-    /*             cm_.change_active_workspace(0); */
-    /*     } */
-    /*     break; */
+    case keyop_t::jump_to_marked_client: m_clients.jump_marked();        break;
+    case keyop_t::toggle_workspace: m_clients.change_active_workspace(); break;
     /* case JUMP_STACK: */
     /*     { */
     /*         if (!cm_.scratchpad_active()) */
@@ -618,15 +626,15 @@ x_events_t::on_key_press()
     /* case TOGGLE_SHADE:              cm_.toggle_shade(client);                      break; */
     /* case TOGGLE_ICONIFY:            cm_.toggle_iconify(client);                    break; */
     case keyop_t::center_client:         client->center();                         break;
-    case keyop_t::client_to_workspace_1: m_clients.client_to_workspace(client, 1); break;
-    case keyop_t::client_to_workspace_2: m_clients.client_to_workspace(client, 2); break;
-    case keyop_t::client_to_workspace_3: m_clients.client_to_workspace(client, 3); break;
-    case keyop_t::client_to_workspace_4: m_clients.client_to_workspace(client, 4); break;
-    case keyop_t::client_to_workspace_5: m_clients.client_to_workspace(client, 5); break;
-    case keyop_t::client_to_workspace_6: m_clients.client_to_workspace(client, 6); break;
-    case keyop_t::client_to_workspace_7: m_clients.client_to_workspace(client, 7); break;
-    case keyop_t::client_to_workspace_8: m_clients.client_to_workspace(client, 8); break;
-    case keyop_t::client_to_workspace_9: m_clients.client_to_workspace(client, 9); break;
+    case keyop_t::client_to_ws_1: m_clients.client_to_workspace(client, 1); break;
+    case keyop_t::client_to_ws_2: m_clients.client_to_workspace(client, 2); break;
+    case keyop_t::client_to_ws_3: m_clients.client_to_workspace(client, 3); break;
+    case keyop_t::client_to_ws_4: m_clients.client_to_workspace(client, 4); break;
+    case keyop_t::client_to_ws_5: m_clients.client_to_workspace(client, 5); break;
+    case keyop_t::client_to_ws_6: m_clients.client_to_workspace(client, 6); break;
+    case keyop_t::client_to_ws_7: m_clients.client_to_workspace(client, 7); break;
+    case keyop_t::client_to_ws_8: m_clients.client_to_workspace(client, 8); break;
+    case keyop_t::client_to_ws_9: m_clients.client_to_workspace(client, 9); break;
     case keyop_t::float_grow_left:
         {
             if (!(client->floating || m_clients.active_workspace()->in_float_layout()))
@@ -768,8 +776,20 @@ x_events_t::on_key_press()
         }
         break;
     case keyop_t::mark_client: m_clients.set_marked(client); break;
-    /* case CLIENT_TO_NEXT_WORKSPACE:  cm_.client_to_next_workspace(client);          break; */
-    /* case CLIENT_TO_PREV_WORKSPACE:  cm_.client_to_prev_workspace(client);          break; */
+    case keyop_t::client_to_next_ws:
+        {
+            unsigned workspace = m_clients.active_workspace()->get_number();
+            workspace %= USER_WORKSPACES.size();
+            m_clients.client_to_workspace(client, workspace + 1);
+        }
+        break;
+    case keyop_t::client_to_prev_ws:
+        {
+            unsigned workspace = m_clients.active_workspace()->get_number() - 1;
+            workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
+            m_clients.client_to_workspace(client, workspace);
+        }
+        break;
     default: break;
     }
 }

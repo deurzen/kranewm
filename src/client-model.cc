@@ -223,7 +223,12 @@ client_model_t::change_active_workspace(unsigned workspace_nr)
 void
 client_model_t::change_active_workspace(user_workspace_ptr_t workspace)
 {
-    if (m_current_workspace == workspace)
+    static user_workspace_ptr_t prev_workspace = nullptr;
+
+    if (!workspace)
+        workspace = prev_workspace;
+
+    if (!workspace || m_current_workspace == workspace)
         return;
 
     if (m_move_workspace->is_set())
@@ -231,6 +236,8 @@ client_model_t::change_active_workspace(user_workspace_ptr_t workspace)
 
     if (m_resize_workspace->is_set())
         stop_resizing(m_resize_workspace->get());
+
+    prev_workspace = m_current_workspace;;
 
     m_changequeue.add(change_workspace_active(m_current_workspace, workspace));
     m_current_workspace = workspace;

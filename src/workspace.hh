@@ -146,6 +146,7 @@ public:
 
     user_workspace_t& zoom();
     user_workspace_t& mirror();
+    user_workspace_t& jump_pane();
 
     user_workspace_t& set_n_master(unsigned);
     user_workspace_t& set_gap_size(unsigned);

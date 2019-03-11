@@ -47,20 +47,15 @@ enum class keyop_t
     focus_fwd, focus_bck,
     down_stack, up_stack,
     down_master, up_master,
-    activate_workspace_1, activate_workspace_2,
-    activate_workspace_3, activate_workspace_4,
-    activate_workspace_5, activate_workspace_6,
-    activate_workspace_7, activate_workspace_8,
-    activate_workspace_9, toggle_workspace,
+    activate_ws_1, activate_ws_2, activate_ws_3,
+    activate_ws_4, activate_ws_5, activate_ws_6,
+    activate_ws_7, activate_ws_8, activate_ws_9,
+    toggle_workspace,
     activate_next_ws, activate_prev_ws,
-    toggle_scratchpad_1, toggle_scratchpad_2,
-    client_to_next_workspace, client_to_prev_workspace,
-    client_to_workspace_1, client_to_workspace_2,
-    client_to_workspace_3, client_to_workspace_4,
-    client_to_workspace_5, client_to_workspace_6,
-    client_to_workspace_7, client_to_workspace_8,
-    client_to_workspace_9, client_to_scratchpad_1,
-    client_to_scratchpad_2
+    client_to_next_ws, client_to_prev_ws,
+    client_to_ws_1, client_to_ws_2, client_to_ws_3,
+    client_to_ws_4, client_to_ws_5, client_to_ws_6,
+    client_to_ws_7, client_to_ws_8, client_to_ws_9,
 };
 
 struct keyshortcut_t
