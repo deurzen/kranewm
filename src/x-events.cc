@@ -507,12 +507,12 @@ x_events_t::on_key_press()
     /* case ACTIVATE_PREV_WS:     cm_.goto_prev_workspace();        break; */
     /* case TOGGLE_SCRATCHPAD_1:  cm_.toggle_scratchpad(1);         break; */
     /* case TOGGLE_SCRATCHPAD_2:  cm_.toggle_scratchpad(2);         break; */
-    case keyop_t::floating: m_clients.active_workspace()->set_layout(layout_t::floating).arrange(); break;
-    case keyop_t::tile: m_clients.active_workspace()->set_layout(layout_t::tile).arrange();       break;
-    case keyop_t::deck: m_clients.active_workspace()->set_layout(layout_t::deck).arrange();       break;
+    case keyop_t::floating:   m_clients.active_workspace()->set_layout(layout_t::floating).arrange();   break;
+    case keyop_t::tile:       m_clients.active_workspace()->set_layout(layout_t::tile).arrange();       break;
+    case keyop_t::deck:       m_clients.active_workspace()->set_layout(layout_t::deck).arrange();       break;
     case keyop_t::doubledeck: m_clients.active_workspace()->set_layout(layout_t::doubledeck).arrange(); break;
-    case keyop_t::grid: m_clients.active_workspace()->set_layout(layout_t::grid).arrange(); break;
-    case keyop_t::monocle: m_clients.active_workspace()->set_layout(layout_t::monocle).arrange();    break;
+    case keyop_t::grid:       m_clients.active_workspace()->set_layout(layout_t::grid).arrange();       break;
+    case keyop_t::monocle:    m_clients.active_workspace()->set_layout(layout_t::monocle).arrange();    break;
     /* case TOGGLE_LAYOUT:        cm_.change_layout(LT_TOGGLE);     break; */
     /* case SWAP_ORIENTATION:     cm_.swap_orientation();           break; */
     case keyop_t::focus_bck:            m_clients.cycle_focus_backward();     break;
@@ -529,14 +529,48 @@ x_events_t::on_key_press()
     /* case JUMP_CLIENT_7:        cm_.focus_jump(6);                break; */
     /* case JUMP_CLIENT_8:        cm_.focus_jump(7);                break; */
     /* case JUMP_CLIENT_9:        cm_.focus_jump(8);                break; */
-    /* case INC_NMASTER:          cm_.change_n_master(1);           break; */
-    /* case DEC_NMASTER:          cm_.change_n_master(-1);          break; */
-    /* case INC_MRATIO:           cm_.change_m_ratio(0.05f);        break; */
-    /* case DEC_MRATIO:           cm_.change_m_ratio(-0.05f);       break; */
-    /* case INC_MFACTOR:          cm_.change_m_factor(0.05f);       break; */
-    /* case DEC_MFACTOR:          cm_.change_m_factor(-0.05f);      break; */
-    /* case INC_GAPSIZE:          cm_.change_gap_size(5);           break; */
-    /* case DEC_GAPSIZE:          cm_.change_gap_size(-5);          break; */
+    case keyop_t::inc_m_factor:
+        {
+            float m_factor = m_clients.active_workspace()->get_m_factor();
+            if (m_factor <= 0.85f)
+                m_clients.active_workspace()->set_m_factor(m_factor + .05f).arrange();
+        }
+        break;
+    case keyop_t::dec_m_factor:
+        {
+            float m_factor = m_clients.active_workspace()->get_m_factor();
+            if (m_factor >= .15f)
+                m_clients.active_workspace()->set_m_factor(m_factor - .05f).arrange();
+        }
+        break;
+    case keyop_t::inc_n_master:
+        {
+            unsigned n_master = m_clients.active_workspace()->get_n_master();
+            if (n_master < MAX_N_MASTER)
+                m_clients.active_workspace()->set_n_master(++n_master).arrange();
+        }
+        break;
+    case keyop_t::dec_n_master:
+        {
+            unsigned n_master = m_clients.active_workspace()->get_n_master();
+            if (n_master > 0)
+                m_clients.active_workspace()->set_n_master(--n_master).arrange();
+        }
+        break;
+    case keyop_t::inc_gap_size:
+        {
+            int gap_size = m_clients.active_workspace()->get_gap_size();
+            if (gap_size < MAX_GAP_SIZE)
+                m_clients.active_workspace()->set_gap_size(++gap_size).arrange();
+        }
+        break;
+    case keyop_t::dec_gap_size:
+        {
+            int gap_size = m_clients.active_workspace()->get_gap_size();
+            if (gap_size > 0)
+                m_clients.active_workspace()->set_gap_size(--gap_size).arrange();
+        }
+        break;
     /* case JUMP_TO_MARKED:       cm_.jump_to_marked();             break; */
     /* case TOGGLE_WORKSPACE: */
     /*     { */

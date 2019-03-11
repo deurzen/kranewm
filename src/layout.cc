@@ -38,7 +38,7 @@ layouthandler_t::layout_tile(const user_workspace_t& workspace) const
     };
 
     dim_t stack_dim = {
-        screen_dim.w - (n_master > 0 ? master_dim.w : 0) - 2 * gap_size,
+        screen_dim.w - (n_master > 0 ? master_dim.w : 0) - (n_master ? 2 : 1) * gap_size,
         screen_dim.h / static_cast<int>(n_master < clients.size() ? (clients.size() - n_master) : 1) - gap_size
     };
 
@@ -48,7 +48,7 @@ layouthandler_t::layout_tile(const user_workspace_t& workspace) const
     };
 
     pos_t stack_pos  = {
-        (n_master > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut() + 2 * gap_size,
+        (n_master > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut() + (n_master ? 2 : 1) * gap_size,
         m_ewmh.get_top_strut() + gap_size
     };
 
@@ -101,7 +101,7 @@ layouthandler_t::layout_deck(const user_workspace_t& workspace) const
     };
 
     dim_t stack_dim = {
-        screen_dim.w - (n_master > 0 ? master_dim.w : 0) - 2 * gap_size,
+        screen_dim.w - (n_master > 0 ? master_dim.w : 0) - (n_master ? 2 : 1) * gap_size,
         screen_dim.h - gap_size
     };
 
@@ -111,7 +111,7 @@ layouthandler_t::layout_deck(const user_workspace_t& workspace) const
     };
 
     pos_t stack_pos  = {
-        (n_master > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut() + 2 * gap_size,
+        (n_master > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut() + (n_master ? 2 : 1) * gap_size,
         m_ewmh.get_top_strut() + gap_size
     };
 
@@ -158,7 +158,7 @@ layouthandler_t::layout_doubledeck(const user_workspace_t& workspace) const
     };
 
     dim_t stack_dim = {
-        screen_dim.w - (n_master > 0 ? master_dim.w : 0) - 2 * gap_size,
+        screen_dim.w - (n_master > 0 ? master_dim.w : 0) - (n_master ? 2 : 1) * gap_size,
         screen_dim.h - gap_size
     };
 
@@ -168,7 +168,7 @@ layouthandler_t::layout_doubledeck(const user_workspace_t& workspace) const
     };
 
     pos_t stack_pos  = {
-        (n_master > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut() + 2 * gap_size,
+        (n_master > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut() + (n_master ? 2 : 1) * gap_size,
         m_ewmh.get_top_strut() + gap_size
     };
 

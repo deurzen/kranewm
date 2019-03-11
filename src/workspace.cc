@@ -105,30 +105,30 @@ user_workspace_t::backward()
 }
 
 user_workspace_t&
-user_workspace_t::set_n_master(unsigned)
+user_workspace_t::set_n_master(unsigned new_n_master)
 {
-
+    n_master = new_n_master;
     return *this;
 }
 
 user_workspace_t&
-user_workspace_t::set_gap_size(unsigned)
+user_workspace_t::set_gap_size(unsigned new_gap_size)
 {
-
+    gap_size = new_gap_size;
     return *this;
 }
 
 user_workspace_t&
-user_workspace_t::set_m_factor(float)
+user_workspace_t::set_m_factor(float new_m_factor)
 {
-
+    m_factor = new_m_factor;
     return *this;
 }
 
 user_workspace_t&
-user_workspace_t::set_m1_weight(unsigned)
+user_workspace_t::set_m1_weight(unsigned new_m1_weight)
 {
-
+    m1_weight = new_m1_weight;
     return *this;
 }
 
