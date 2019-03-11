@@ -244,6 +244,44 @@ client_model_t::zoom()
     sync_workspace_focus();
 }
 
+void
+client_model_t::set_marked(client_ptr_t client)
+{
+    m_marked_client = client;
+}
+
+void
+client_model_t::jump_marked()
+{
+    static client_ptr_t prev_focused_client = nullptr;
+
+    if (!m_marked_client)
+        return;
+
+    client_ptr_t to_jump_to = m_marked_client;
+    if (m_marked_client == m_focused_client && prev_focused_client
+        && m_client_workspaces.find(prev_focused_client) != m_client_workspaces.end())
+    {
+        to_jump_to = prev_focused_client;
+    }
+
+    if (to_jump_to == m_focused_client)
+        return;
+
+    if (m_marked_client != m_focused_client)
+        prev_focused_client = m_focused_client;
+
+    if (!is_user_workspace(client_workspace(to_jump_to)))
+        return;
+
+    auto workspace = client_user_workspace(to_jump_to);
+    if (workspace != m_current_workspace)
+        change_active_workspace(workspace);
+
+    focus(to_jump_to);
+    sync_workspace_focus();
+}
+
 
 void
 client_model_t::sync_workspace_focus()

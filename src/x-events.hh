@@ -131,7 +131,7 @@ public:
               { { XK_x,            MODMASK|ShiftMask },   keyop_t::pop_iconified                },
               { { XK_bracketleft,  MODMASK|ControlMask }, keyop_t::dec_m1_weight                },
               { { XK_bracketright, MODMASK|ControlMask }, keyop_t::inc_m1_weight                },
-              { { XK_m,            MODMASK|ControlMask }, keyop_t::jump_to_marked               },
+              { { XK_m,            MODMASK|ControlMask }, keyop_t::jump_to_marked_client        },
               { { XK_space,        MODMASK|ControlMask }, keyop_t::center_client                },
               { { XK_BackSpace,    MODMASK|ControlMask }, keyop_t::kill_client                  },
               { { XK_h,            MODMASK|ControlMask }, keyop_t::float_left_or_master_fwd     },

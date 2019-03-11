@@ -571,7 +571,7 @@ x_events_t::on_key_press()
                 m_clients.active_workspace()->set_gap_size(--gap_size).arrange();
         }
         break;
-    /* case JUMP_TO_MARKED:       cm_.jump_to_marked();             break; */
+    case keyop_t::jump_to_marked_client: m_clients.jump_marked(); break;
     /* case TOGGLE_WORKSPACE: */
     /*     { */
     /*         if (cm_.scratchpad_active()) */
@@ -632,7 +632,7 @@ x_events_t::on_key_press()
     /* case FLOAT_SHRINK_DOWN:         cm_.resize_floating_client(client, UP, -1);    break; */
     /* case FLOAT_SHRINK_UP:           cm_.resize_floating_client(client, DOWN, -1);  break; */
     /* case FLOAT_SHRINK_RIGHT:        cm_.resize_floating_client(client, LEFT, -1);  break; */
-    /* case MARK_CLIENT:               cm_.set_marked(client);                        break; */
+    case keyop_t::mark_client: m_clients.set_marked(client); break;
     /* case CLIENT_TO_NEXT_WORKSPACE:  cm_.client_to_next_workspace(client);          break; */
     /* case CLIENT_TO_PREV_WORKSPACE:  cm_.client_to_prev_workspace(client);          break; */
     /* case FLOAT_LEFT_OR_MASTER_FWD: */

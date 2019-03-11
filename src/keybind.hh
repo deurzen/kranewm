@@ -34,7 +34,7 @@ enum class keyop_t
     float_shrink_left, float_shrink_right,
     float_up_or_stack_fwd, float_down_or_stack_bck,
     float_left_or_master_fwd, float_right_or_master_bck,
-    mark_client, jump_to_marked,
+    mark_client, jump_to_marked_client,
     stick, maximize,
     inc_n_master, inc_gap_size, inc_m1_weight, dec_n_master,
     dec_gap_size, dec_m1_weight, inc_m_factor, dec_m_factor,
