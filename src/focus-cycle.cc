@@ -7,111 +7,113 @@
 void
 focus_cycle::add(client_ptr_t client)
 {
-    if (has_focus_)
-        previously_focused_client_ = *focus_;
+    if (m_has_focus)
+        m_previously_focused_client = *m_focus;
 
-    clients_.push_back(client);
-    focus_ = clients_.end() - 1;
-    has_focus_ = true;
+    m_clients.push_back(client);
+    m_focus = m_clients.end() - 1;
+    m_has_focus = true;
 }
 
 void
 focus_cycle::remove(client_ptr_t client)
 {
-    client_ptr_t prev_focus = *focus_;
-    erase_remove(clients_, client);
+    client_ptr_t prev_focus = *m_focus;
+    erase_remove(m_clients, client);
 
     if (is_empty()) {
-        has_focus_ = false;
+        m_has_focus = false;
         return;
     }
 
     if (prev_focus == client)
-        if (focus_ >= clients_.end())
-            --focus_;
+        if (m_focus >= m_clients.end())
+            --m_focus;
 
-    if (previously_focused_client_)
-        set(previously_focused_client_);
+    if (m_previously_focused_client)
+        set(m_previously_focused_client);
 }
 
 bool
 focus_cycle::is_empty() const
 {
-    return clients_.empty();
+    return m_clients.empty();
 }
 
 ::std::deque<client_ptr_t>::size_type
 focus_cycle::size() const
 {
-    return clients_.size();
+    return m_clients.size();
 }
 
 bool
 focus_cycle::contains(client_ptr_t c) const
 {
-    return ::std::find(clients_.begin(), clients_.end(), c)
-        != clients_.end();
+    return ::std::find(m_clients.begin(), m_clients.end(), c)
+        != m_clients.end();
 }
 
 const client_ptr_t
 focus_cycle::get() const
 {
-    if (!has_focus_)
+    if (!m_has_focus)
         return nullptr;
 
-    return *focus_;
+    return *m_focus;
 }
 
 const ::std::deque<client_ptr_t>&
 focus_cycle::get_all() const
 {
-    return clients_;
+    return m_clients;
 }
 
 bool
 focus_cycle::set(client_ptr_t c)
 {
-    auto it = ::std::find(clients_.begin(), clients_.end(), c);
-    if (it == clients_.end())
+    auto it = ::std::find(m_clients.begin(), m_clients.end(), c);
+    if (it == m_clients.end())
         return false;
 
-    focus_ = it;
+    m_previously_focused_client = *m_focus;
+    m_focus = it;
     return true;
 }
 
 bool
 focus_cycle::set(fg_sz index)
 {
-    if (index >= clients_.size())
+    if (index >= m_clients.size())
         return false;
 
-    focus_ = clients_.begin() + index;
+    m_previously_focused_client = *m_focus;
+    m_focus = m_clients.begin() + index;
     return true;
 }
 
 void
 focus_cycle::unset()
 {
-    has_focus_ = false;
+    m_has_focus = false;
 }
 
 unsigned
 focus_cycle::index_of(client_ptr_t client)
 {
-    fg_it it = ::std::find(clients_.begin(), clients_.end(), client);
-    return it - clients_.begin();
+    fg_it it = ::std::find(m_clients.begin(), m_clients.end(), client);
+    return it - m_clients.begin();
 }
 
 bool // moves down towards first (mod+k)
 focus_cycle::next_focus()
 {
-    if (clients_.size() <= 1)
+    if (m_clients.size() <= 1)
         return false;
 
-    if (focus_ == clients_.begin())
-        focus_ = clients_.end() - 1;
+    if (m_focus == m_clients.begin())
+        m_focus = m_clients.end() - 1;
     else
-        --focus_;
+        --m_focus;
 
     return true;
 }
@@ -119,11 +121,11 @@ focus_cycle::next_focus()
 bool // moves up towards last (mod+j)
 focus_cycle::prev_focus()
 {
-    if (clients_.size() <= 1)
+    if (m_clients.size() <= 1)
         return false;
 
-    if (++focus_ == clients_.end())
-        focus_ = clients_.begin();
+    if (++m_focus == m_clients.end())
+        m_focus = m_clients.begin();
 
     return true;
 }
@@ -131,7 +133,7 @@ focus_cycle::prev_focus()
 void
 focus_cycle::rotate_group_forward(unsigned from, unsigned to)
 {
-    if (from > to || from > clients_.size() || to > clients_.size())
+    if (from > to || from > m_clients.size() || to > m_clients.size())
         return;
 
     ::std::map<client_ptr_t, unsigned> floating_clients;
@@ -150,20 +152,20 @@ focus_cycle::rotate_group_forward(unsigned from, unsigned to)
     fg_it to_it   = clients.begin() + to;
 
     if (from > 0)
-        to_it -= clients_.size() - clients.size();
+        to_it -= m_clients.size() - clients.size();
 
     ::std::rotate(from_it, from_it + 1, to_it);
 
     for (auto&& [_client,_index] : floating_clients)
         clients.insert(clients.begin() + _index, _client);
 
-    clients_ = clients;
+    m_clients = clients;
 }
 
 void
 focus_cycle::rotate_group_backward(unsigned from, unsigned to)
 {
-    if (from > to || from > clients_.size() || to > clients_.size())
+    if (from > to || from > m_clients.size() || to > m_clients.size())
         return;
 
     ::std::map<client_ptr_t, unsigned> floating_clients;
@@ -182,55 +184,55 @@ focus_cycle::rotate_group_backward(unsigned from, unsigned to)
     fg_rit to_it   = clients.rend() - from;
 
     if (from > 0)
-        from_it += clients_.size() - clients.size();
+        from_it += m_clients.size() - clients.size();
 
     ::std::rotate(from_it, from_it + 1, to_it);
 
     for (auto&& [_client,_index] : floating_clients)
         clients.insert(clients.begin() + _index, _client);
 
-    clients_ = clients;
+    m_clients = clients;
 }
 
 ::std::pair<client_ptr_t, client_ptr_t>
 focus_cycle::move_focused_client_forward()
 {
-    if (clients_.size() <= 1)
+    if (m_clients.size() <= 1)
         return {nullptr, nullptr};
 
-    auto to = focus_;
+    auto to = m_focus;
     do {
-        if (to == clients_.begin())
-            to = clients_.end();
+        if (to == m_clients.begin())
+            to = m_clients.end();
     } while ((*--to)->floating);
 
-    if (to == focus_)
+    if (to == m_focus)
         return {nullptr, nullptr};
 
-    auto from = focus_;
+    auto from = m_focus;
     ::std::iter_swap(from, to);
-    focus_ = to;
+    m_focus = to;
     return {*from, *to};
 }
 
 ::std::pair<client_ptr_t, client_ptr_t>
 focus_cycle::move_focused_client_backward()
 {
-    if (clients_.size() <= 1)
+    if (m_clients.size() <= 1)
         return {nullptr, nullptr};
 
-    auto to = focus_;
+    auto to = m_focus;
     do {
-        if (++to == clients_.end())
-            to = clients_.begin();
+        if (++to == m_clients.end())
+            to = m_clients.begin();
     } while ((*to)->floating);
 
-    if (to == focus_)
+    if (to == m_focus)
         return {nullptr, nullptr};
 
-    auto from = focus_;
+    auto from = m_focus;
     ::std::iter_swap(from, to);
-    focus_ = to;
+    m_focus = to;
     return {*from, *to};
 }
 
@@ -239,16 +241,16 @@ focus_cycle::zoom()
 {
     static client_ptr_t prev_zoomed_out = nullptr;
 
-    if (clients_.size() <= 1)
+    if (m_clients.size() <= 1)
         return {nullptr, nullptr};
 
-    if (focus_ == clients_.begin())
+    if (m_focus == m_clients.begin())
         set(prev_zoomed_out);
 
-    prev_zoomed_out = clients_.front();
+    prev_zoomed_out = m_clients.front();
 
-    ::std::iter_swap(focus_, clients_.begin());
-    client_ptr_t prev_focused = *focus_;
-    focus_ = clients_.begin();
-    return {prev_focused, *focus_};
+    ::std::iter_swap(m_focus, m_clients.begin());
+    client_ptr_t prev_focused = *m_focus;
+    m_focus = m_clients.begin();
+    return {prev_focused, *m_focus};
 }

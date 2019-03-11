@@ -43,10 +43,10 @@ public:
     ::std::pair<client_ptr_t, client_ptr_t> zoom();
 
 private:
-    bool has_focus_ = false;
-    client_ptr_t previously_focused_client_ = nullptr;
-    fg_it focus_;
-    ::std::deque<client_ptr_t> clients_;
+    bool m_has_focus = false;
+    client_ptr_t m_previously_focused_client = nullptr;
+    fg_it m_focus;
+    ::std::deque<client_ptr_t> m_clients;
 
 };
 
