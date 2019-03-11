@@ -144,6 +144,8 @@ public:
     user_workspace_t& forward();
     user_workspace_t& backward();
 
+    user_workspace_t& zoom();
+
     user_workspace_t& set_n_master(unsigned);
     user_workspace_t& set_gap_size(unsigned);
     user_workspace_t& set_m_factor(float);

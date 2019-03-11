@@ -517,7 +517,7 @@ x_events_t::on_key_press()
     /* case SWAP_ORIENTATION:     cm_.swap_orientation();           break; */
     case keyop_t::focus_bck:            m_clients.cycle_focus_backward();     break;
     case keyop_t::focus_fwd:            m_clients.cycle_focus_forward();      break;
-    /* case ZOOM:                 cm_.zoom();                       break; */
+    case keyop_t::zoom: m_clients.zoom(); break;
     /* case JUMP_MASTER:          cm_.focus_jump(0);                break; */
     /* case JUMP_PANE:            cm_.pane_jump();                  break; */
     /* case JUMP_CLIENT_1:        cm_.focus_jump(0);                break; */

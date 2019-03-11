@@ -237,6 +237,13 @@ client_model_t::change_active_workspace(user_workspace_ptr_t workspace)
     sync_workspace_focus();
 }
 
+void
+client_model_t::zoom()
+{
+    m_current_workspace->zoom().arrange();
+    sync_workspace_focus();
+}
+
 
 void
 client_model_t::sync_workspace_focus()

@@ -105,6 +105,23 @@ user_workspace_t::backward()
 }
 
 user_workspace_t&
+user_workspace_t::zoom()
+{
+    if (!empty())
+    {
+        auto zoomed = clients.zoom();
+        if (in_float_layout() && zoomed.first && zoomed.second) {
+            pos_t pos1 = zoomed.first->float_pos, pos2 = zoomed.second->float_pos;
+            dim_t dim1 = zoomed.first->float_dim, dim2 = zoomed.second->float_dim;
+            zoomed.first->resize(dim2).move(pos2);
+            zoomed.second->resize(dim1).move(pos1);
+        }
+    }
+
+    return *this;
+}
+
+user_workspace_t&
 user_workspace_t::set_n_master(unsigned new_n_master)
 {
     n_master = new_n_master;

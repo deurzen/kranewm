@@ -54,6 +54,8 @@ public:
     void change_active_workspace(unsigned);
     void change_active_workspace(user_workspace_ptr_t);
 
+    void zoom();
+
 private:
     void sync_workspace_focus();
 
