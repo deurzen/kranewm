@@ -112,6 +112,8 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::spawn_gpick:         fork_external("gpick");                                                 break;
     case keyop_t::spawn_qalculate:     fork_external("qalculate-gtk");                                         break;
     case keyop_t::spawn_7lock:         fork_external("systemctl suspend");                                     break;
+
+
     case keyop_t::activate_ws_1: m_clients.change_active_workspace(1); break;
     case keyop_t::activate_ws_2: m_clients.change_active_workspace(2); break;
     case keyop_t::activate_ws_3: m_clients.change_active_workspace(3); break;
@@ -142,16 +144,45 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::grid:       m_clients.active_workspace()->set_layout(layout_t::grid).arrange();       break;
     case keyop_t::monocle:    m_clients.active_workspace()->set_layout(layout_t::monocle).arrange();    break;
     case keyop_t::toggle_layout: m_clients.active_workspace()->set_layout(layout_t::toggle).arrange();  break;
-    case keyop_t::mirror_workspace: m_clients.active_workspace()->mirror().arrange(); break;
-    case keyop_t::focus_bck:  m_clients.cycle_focus_backward(); break;
-    case keyop_t::focus_fwd:  m_clients.cycle_focus_forward();  break;
+    case keyop_t::mirror_workspace: m_clients.active_workspace()->mirror().arrange();                   break;
+    case keyop_t::focus_bck:  m_clients.cycle_focus_backward();                                         break;
+    case keyop_t::focus_fwd:  m_clients.cycle_focus_forward();                                          break;
+    case keyop_t::jump_to_marked_client: m_clients.jump_marked();                                       break;
+    case keyop_t::toggle_workspace: m_clients.change_active_workspace();                                break;
     case keyop_t::zoom:
         {
-            m_clients.active_workspace()->zoom().arrange();
+            m_clients.active_workspace()->zoom();
             m_clients.sync_workspace_focus();
         }
         break;
-    /* case JUMP_MASTER:          cm_.focus_jump(0);                break; */
+    case keyop_t::jump_master:
+        {
+            auto clients = m_clients.active_workspace()->get_all();
+            if (!clients.empty()) {
+                m_clients.active_workspace()->set_focused(clients[0]);
+                m_clients.sync_workspace_focus();
+            }
+        }
+        break;
+    case keyop_t::jump_stack:
+        {
+            auto clients = m_clients.active_workspace()->get_all();
+            unsigned n_master = m_clients.active_workspace()->get_n_master();
+            if (!clients.empty() && n_master < clients.size()) {
+                m_clients.active_workspace()->set_focused(clients[n_master]);
+                m_clients.sync_workspace_focus();
+            }
+        }
+        break;
+    case keyop_t::jump_last:
+        {
+            auto clients = m_clients.active_workspace()->get_all();
+            if (!clients.empty()) {
+                m_clients.active_workspace()->set_focused(clients[clients.size() - 1]);
+                m_clients.sync_workspace_focus();
+            }
+        }
+        break;
     case keyop_t::jump_pane:
         {
             m_clients.active_workspace()->jump_pane();
@@ -281,20 +312,6 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
                 m_clients.active_workspace()->set_gap_size(--gap_size).arrange();
         }
         break;
-    case keyop_t::jump_to_marked_client: m_clients.jump_marked();        break;
-    case keyop_t::toggle_workspace: m_clients.change_active_workspace(); break;
-    /* case JUMP_STACK: */
-    /*     { */
-    /*         if (!cm_.scratchpad_active()) */
-    /*             cm_.focus_jump(cm_.get_current_workspace()->n_master); */
-    /*     } */
-    /*     break; */
-    /* case JUMP_LAST: */
-    /*     { */
-    /*         if (!cm_.scratchpad_active()) */
-    /*             cm_.focus_jump(cm_.get_current_workspace()->clients.size()-1); */
-    /*     } */
-    /*     break; */
     default: break;
     }
 }
@@ -310,14 +327,14 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
     case keyop_t::up_stack:                                                           break;
     case keyop_t::down_master:                                                        break;
     case keyop_t::up_master:                                                          break;
-    /* case MOVE_CLIENT_FWD:           cm_.move_focused_client_forward();             break; */
-    /* case MOVE_CLIENT_BCK:           cm_.move_focused_client_backward();            break; */
+    case keyop_t::move_client_fwd: m_clients.active_workspace()->move_forward();      break;
+    case keyop_t::move_client_bck: m_clients.active_workspace()->move_backward();     break;
     /* case TOGGLE_FLOAT:              cm_.toggle_float(client);                      break; */
     /* case TOGGLE_FULLSCREEN:         cm_.toggle_fullscreen(client);                 break; */
     /* case TOGGLE_SHADE:              cm_.toggle_shade(client);                      break; */
     /* case TOGGLE_ICONIFY:            cm_.toggle_iconify(client);                    break; */
-    case keyop_t::center_client: client->center(); break;
-    case keyop_t::mark_client: m_clients.set_marked(client); break;
+    case keyop_t::center_client:   client->center();                                  break;
+    case keyop_t::mark_client:     m_clients.set_marked(client);                      break;
     case keyop_t::client_to_ws_1:
         {
             m_clients.client_to_workspace(client, 1);
@@ -475,7 +492,8 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 pos.x -= KB_MOVE_INCREMENT;
                 client->move(pos);
             } else {
-                // TODO master fwd
+                m_clients.active_workspace()->rotate_master_forward();
+                m_clients.sync_workspace_focus();
             }
         }
         break;
@@ -486,7 +504,8 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 pos.y += KB_MOVE_INCREMENT;
                 client->move(pos);
             } else {
-                // TODO stack bck
+                m_clients.active_workspace()->rotate_stack_backward();
+                m_clients.sync_workspace_focus();
             }
         }
         break;
@@ -497,7 +516,8 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 pos.y -= KB_MOVE_INCREMENT;
                 client->move(pos);
             } else {
-                // TODO stack fwd
+                m_clients.active_workspace()->rotate_stack_forward();
+                m_clients.sync_workspace_focus();
             }
         }
         break;
@@ -508,7 +528,8 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 pos.x += KB_MOVE_INCREMENT;
                 client->move(pos);
             } else {
-                // TODO master bck
+                m_clients.active_workspace()->rotate_master_backward();
+                m_clients.sync_workspace_focus();
             }
         }
         break;

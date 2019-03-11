@@ -40,15 +40,21 @@ user_workspace_t::contains(client_ptr_t client) const
 }
 
 bool
+user_workspace_t::is_mirrored() const
+{
+    return mirrored;
+}
+
+bool
 user_workspace_t::in_float_layout() const
 {
     return layout == layout_t::floating;
 }
 
 bool
-user_workspace_t::is_mirrored() const
+user_workspace_t::in_monocle_layout() const
 {
-    return mirrored;
+    return layout == layout_t::monocle;
 }
 
 const
@@ -105,6 +111,91 @@ user_workspace_t::backward()
 }
 
 user_workspace_t&
+user_workspace_t::move_forward()
+{
+    if (!clients.get()->floating) {
+        auto moved = clients.move_focused_client_forward();
+        if (moved.first && moved.second) {
+            if (in_float_layout()) {
+                pos_t pos1 = moved.first->float_pos, pos2 = moved.second->float_pos;
+                dim_t dim1 = moved.first->float_dim, dim2 = moved.second->float_dim;
+                moved.first->resize(dim2).move(pos2);
+                moved.second->resize(dim1).move(pos1);
+            } else {
+                arrange();
+            }
+        }
+    }
+
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::move_backward()
+{
+    if (!clients.get()->floating) {
+        auto moved = clients.move_focused_client_backward();
+        if (moved.first && moved.second) {
+            if (in_float_layout()) {
+                pos_t pos1 = moved.first->float_pos, pos2 = moved.second->float_pos;
+                dim_t dim1 = moved.first->float_dim, dim2 = moved.second->float_dim;
+                moved.first->resize(dim2).move(pos2);
+                moved.second->resize(dim1).move(pos1);
+            } else
+                arrange();
+        }
+    }
+
+    return *this;
+}
+
+
+user_workspace_t&
+user_workspace_t::rotate_stack_forward()
+{
+    if (!in_monocle_layout() && clients.size() - n_master > 1) {
+        clients.rotate_group_forward(n_master, clients.size());
+        arrange();
+    }
+
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::rotate_stack_backward()
+{
+    if (!in_monocle_layout() && clients.size() - n_master > 1) {
+        clients.rotate_group_backward(n_master, clients.size());
+        arrange();
+    }
+
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::rotate_master_forward()
+{
+    if (!in_monocle_layout() && n_master > 1) {
+        clients.rotate_group_backward(0, n_master);
+        arrange();
+    }
+
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::rotate_master_backward()
+{
+    if (!in_monocle_layout() && n_master > 1) {
+        clients.rotate_group_forward(0, n_master);
+        arrange();
+    }
+
+    return *this;
+}
+
+
+user_workspace_t&
 user_workspace_t::zoom()
 {
     if (!empty())
@@ -115,7 +206,8 @@ user_workspace_t::zoom()
             dim_t dim1 = zoomed.first->float_dim, dim2 = zoomed.second->float_dim;
             zoomed.first->resize(dim2).move(pos2);
             zoomed.second->resize(dim1).move(pos1);
-        }
+        } else
+            arrange();
     }
 
     return *this;

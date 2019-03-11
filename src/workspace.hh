@@ -131,8 +131,10 @@ public:
 
     bool empty() const;
     bool contains(client_ptr_t client) const;
-    bool in_float_layout() const;
     bool is_mirrored() const;
+
+    bool in_float_layout() const;
+    bool in_monocle_layout() const;
 
     const client_ptr_t get_focused() const;
     void set_focused(client_ptr_t client);
@@ -143,6 +145,13 @@ public:
 
     user_workspace_t& forward();
     user_workspace_t& backward();
+    user_workspace_t& move_forward();
+    user_workspace_t& move_backward();
+
+    user_workspace_t& rotate_stack_forward();
+    user_workspace_t& rotate_stack_backward();
+    user_workspace_t& rotate_master_forward();
+    user_workspace_t& rotate_master_backward();
 
     user_workspace_t& zoom();
     user_workspace_t& mirror();
