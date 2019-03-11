@@ -697,16 +697,62 @@ x_events_t::on_key_press()
     /* case TOGGLE_FULLSCREEN:         cm_.toggle_fullscreen(client);                 break; */
     /* case TOGGLE_SHADE:              cm_.toggle_shade(client);                      break; */
     /* case TOGGLE_ICONIFY:            cm_.toggle_iconify(client);                    break; */
-    case keyop_t::center_client:         client->center();                         break;
-    case keyop_t::client_to_ws_1: m_clients.client_to_workspace(client, 1); break;
-    case keyop_t::client_to_ws_2: m_clients.client_to_workspace(client, 2); break;
-    case keyop_t::client_to_ws_3: m_clients.client_to_workspace(client, 3); break;
-    case keyop_t::client_to_ws_4: m_clients.client_to_workspace(client, 4); break;
-    case keyop_t::client_to_ws_5: m_clients.client_to_workspace(client, 5); break;
-    case keyop_t::client_to_ws_6: m_clients.client_to_workspace(client, 6); break;
-    case keyop_t::client_to_ws_7: m_clients.client_to_workspace(client, 7); break;
-    case keyop_t::client_to_ws_8: m_clients.client_to_workspace(client, 8); break;
-    case keyop_t::client_to_ws_9: m_clients.client_to_workspace(client, 9); break;
+    case keyop_t::center_client: client->center(); break;
+    case keyop_t::mark_client: m_clients.set_marked(client); break;
+    case keyop_t::client_to_ws_1:
+        {
+            m_clients.client_to_workspace(client, 1);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_ws_2:
+        {
+            m_clients.client_to_workspace(client, 2);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_ws_3:
+        {
+            m_clients.client_to_workspace(client, 3);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_ws_4:
+        {
+            m_clients.client_to_workspace(client, 4);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_ws_5:
+        {
+            m_clients.client_to_workspace(client, 5);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_ws_6:
+        {
+            m_clients.client_to_workspace(client, 6);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_ws_7:
+        {
+            m_clients.client_to_workspace(client, 7);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_ws_8:
+        {
+            m_clients.client_to_workspace(client, 8);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_ws_9:
+        {
+            m_clients.client_to_workspace(client, 9);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
     case keyop_t::float_grow_left:
         {
             if (!(client->floating || m_clients.active_workspace()->in_float_layout()))
@@ -847,7 +893,6 @@ x_events_t::on_key_press()
             }
         }
         break;
-    case keyop_t::mark_client: m_clients.set_marked(client); break;
     case keyop_t::client_to_next_ws:
         {
             unsigned workspace = m_clients.active_workspace()->get_number();
