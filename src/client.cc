@@ -3,7 +3,6 @@
 #include "x-wrapper/event.hh"
 #include "x-wrapper/attributes.hh"
 #include "x-wrapper/hints.hh"
-#include "x-wrapper/input.hh"
 
 client_ptr_t
 create_client(x_wrapper::window_t win, rule_t& rule)

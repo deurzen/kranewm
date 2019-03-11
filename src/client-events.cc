@@ -1,6 +1,5 @@
 #include "client-events.hh"
 #include "x-wrapper/mouse.hh"
-#include "x-wrapper/input.hh"
 
 
 void

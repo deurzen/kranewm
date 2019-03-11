@@ -1,5 +1,4 @@
 #include "kranewm.hh"
-#include "x-wrapper/input.hh"
 #include "x-wrapper/window.hh"
 #include "x-wrapper/event.hh"
 #include "x-wrapper/attributes.hh"

@@ -79,6 +79,13 @@ x_wrapper::set_input_focus(window_t win)
     return get_input_focus().get() == win.get();
 }
 
+void
+x_wrapper::select_input(window_t win, long mask)
+{
+    XSelectInput(g_dpy, win, mask);
+}
+
+
 
 ::std::string
 x_wrapper::window_t::get_name()

@@ -1,8 +1,6 @@
 #ifndef __KRANEWM_LAYOUT_GUARD__
 #define __KRANEWM_LAYOUT_GUARD__
 
-#include "ewmh.hh"
-
 
 enum class layout_t
 {
@@ -17,6 +15,7 @@ enum class layout_t
 
 // Forward decl
 class user_workspace_t;
+class ewmh_t;
 
 class layouthandler_t
 {
@@ -33,6 +32,7 @@ public:
 
 private:
     ewmh_t& m_ewmh;
+
 };
 
 #endif//__KRANEWM_LAYOUT_GUARD__

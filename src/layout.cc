@@ -1,4 +1,5 @@
 #include "layout.hh"
+#include "ewmh.hh"
 #include "workspace.hh"
 #include "x-wrapper/attributes.hh"
 

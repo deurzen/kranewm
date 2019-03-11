@@ -184,6 +184,8 @@ namespace x_wrapper
     extern window_t get_input_focus();
     extern bool set_input_focus(window_t = None);
 
+    extern void select_input(window_t, long);
+
 }
 
 namespace std
