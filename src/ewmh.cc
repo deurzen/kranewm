@@ -172,8 +172,8 @@ ewmh_t::set_strut_property(x_wrapper::window_t win, unsigned left, unsigned righ
 bool
 ewmh_t::check_apply_strut(x_wrapper::window_t win)
 {
-    ::std::vector<CARD32> partial_strut_vals;
-    ::std::vector<CARD32> strut_vals;
+    ::std::vector<unsigned long> partial_strut_vals;
+    ::std::vector<unsigned long> strut_vals;
 
     if (x_wrapper::has_property<x_wrapper::cardinal_t>(win, "_NET_WM_STRUT_PARTIAL"))
         partial_strut_vals = x_wrapper::get_property<x_wrapper::cardinal_list_t>(win,
@@ -186,38 +186,28 @@ ewmh_t::check_apply_strut(x_wrapper::window_t win)
     if (partial_strut_vals.empty() && strut_vals.empty())
         return false;
 
-    if (partial_strut_vals.size() >= 4 && strut_vals.size() == 4) {
-        if (strut_vals[0] == 0)
-            strut_vals[0] = partial_strut_vals[0];
-        if (strut_vals[1] == 0)
-            strut_vals[1] = partial_strut_vals[1];
-        if (strut_vals[2] == 0)
-            strut_vals[2] = partial_strut_vals[2];
-        if (strut_vals[3] == 0)
-            strut_vals[3] = partial_strut_vals[3];
-    }
+    if (partial_strut_vals.size() >= 4 && strut_vals.size() == 4)
+        for (size_t i = 0; i < 4; ++i)
+            if (strut_vals[i] == 0)
+                strut_vals[i] = partial_strut_vals[i];
 
     if (strut.left_window.get() == None
-        && strut_vals.size() > 0
-        && strut_vals[0] > 0)
+        && strut_vals.size() > 0 && strut_vals[0] > 0)
     {
         strut.left_width = strut_vals[0];
         strut.left_window = win;
     } else if (strut.right_window.get() == None
-        && strut_vals.size() > 1
-        && strut_vals[1] > 0)
+        && strut_vals.size() > 1 && strut_vals[1] > 0)
     {
         strut.right_width = strut_vals[1];
         strut.right_window = win;
     } else if (strut.top_window.get() == None
-        && strut_vals.size() > 2
-        && strut_vals[2] > 0)
+        && strut_vals.size() > 2 && strut_vals[2] > 0)
     {
         strut.top_height = strut_vals[2];
         strut.top_window = win;
     } else if (strut.bottom_window.get() == None
-        && strut_vals.size() > 3
-        && strut_vals[3] > 0)
+        && strut_vals.size() > 3 && strut_vals[3] > 0)
     {
         strut.bottom_height = strut_vals[3];
         strut.bottom_window = win;

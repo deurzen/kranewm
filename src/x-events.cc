@@ -379,6 +379,7 @@ x_events_t::on_destroy_notify()
         client->parent->disown_child(client);
 
     m_clients.unmanage_client(client);
+    m_clients.active_workspace()->arrange();
 }
 
 void
@@ -667,11 +668,8 @@ x_events_t::on_map_request()
         return;
     }
 
-    if (client && client->redeem_expect(clientexpect_t::map)) {
-        return;
-    }
-
     register_window(win);
+    win.map();
 }
 
 void

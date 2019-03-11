@@ -154,13 +154,15 @@ client_model_t::cycle_focus_backward()
 void
 client_model_t::start_moving(client_ptr_t client)
 {
-    client_to_workspace(client, m_move_workspace);
+    if (client_user_workspace(client)->in_float_layout() || client->floating)
+        client_to_workspace(client, m_move_workspace);
 }
 
 void
 client_model_t::start_resizing(client_ptr_t client)
 {
-    client_to_workspace(client, m_resize_workspace);
+    if (client_user_workspace(client)->in_float_layout() || client->floating)
+        client_to_workspace(client, m_resize_workspace);
 }
 
 void

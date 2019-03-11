@@ -59,7 +59,7 @@ namespace x_wrapper
     public:
         cardinal_list_t() = default;
 
-        cardinal_list_t(CARD32* card_list, size_t list_len)
+        cardinal_list_t(unsigned long* card_list, size_t list_len)
             : len(list_len)
         {
             for (size_t i = 0; i < list_len; ++i)
@@ -69,13 +69,13 @@ namespace x_wrapper
         cardinal_list_t(void* raw_data, unsigned long data_len)
             : len(data_len)
         {
-            CARD32* card_list = (CARD32*) raw_data;
+            unsigned long* card_list = (unsigned long*) raw_data;
             for (size_t i = 0; i < data_len; ++i)
                 val.push_back(card_list[i]);
         }
 
-        operator ::std::vector<CARD32>() const { return val; }
-        operator CARD32*() { return val.data(); }
+        operator ::std::vector<unsigned long>() const { return val; }
+        operator unsigned long*() { return val.data(); }
         operator bool() const { return len != 0; }
 
         inline bool operator==(const cardinal_list_t& card_list) const
@@ -95,11 +95,11 @@ namespace x_wrapper
         inline Atom type() const { return XA_CARDINAL; }
         inline int  size() const { return 32; }
 
-        inline ::std::vector<CARD32> get() { return val; }
-        inline CARD32* get_ptr() { return val.data(); }
+        inline ::std::vector<unsigned long> get() { return val; }
+        inline unsigned long* get_ptr() { return val.data(); }
 
     private:
-        ::std::vector<CARD32> val;
+        ::std::vector<unsigned long> val;
         size_t len;
 
     };
