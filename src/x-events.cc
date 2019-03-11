@@ -540,15 +540,87 @@ x_events_t::on_key_press()
             m_clients.sync_workspace_focus();
         }
         break;
-    /* case JUMP_CLIENT_1:        cm_.focus_jump(0);                break; */
-    /* case JUMP_CLIENT_2:        cm_.focus_jump(1);                break; */
-    /* case JUMP_CLIENT_3:        cm_.focus_jump(2);                break; */
-    /* case JUMP_CLIENT_4:        cm_.focus_jump(3);                break; */
-    /* case JUMP_CLIENT_5:        cm_.focus_jump(4);                break; */
-    /* case JUMP_CLIENT_6:        cm_.focus_jump(5);                break; */
-    /* case JUMP_CLIENT_7:        cm_.focus_jump(6);                break; */
-    /* case JUMP_CLIENT_8:        cm_.focus_jump(7);                break; */
-    /* case JUMP_CLIENT_9:        cm_.focus_jump(8);                break; */
+    case keyop_t::jump_client_1:
+        {
+            auto clients = m_clients.active_workspace()->get_all();
+            if (clients.size() > 0) {
+                m_clients.active_workspace()->set_focused(clients[0]);
+                m_clients.sync_workspace_focus();
+            }
+        }
+        break;
+    case keyop_t::jump_client_2:
+        {
+            auto clients = m_clients.active_workspace()->get_all();
+            if (clients.size() > 1) {
+                m_clients.active_workspace()->set_focused(clients[1]);
+                m_clients.sync_workspace_focus();
+            }
+        }
+        break;
+    case keyop_t::jump_client_3:
+        {
+            auto clients = m_clients.active_workspace()->get_all();
+            if (clients.size() > 2) {
+                m_clients.active_workspace()->set_focused(clients[2]);
+                m_clients.sync_workspace_focus();
+            }
+        }
+        break;
+    case keyop_t::jump_client_4:
+        {
+            auto clients = m_clients.active_workspace()->get_all();
+            if (clients.size() > 3) {
+                m_clients.active_workspace()->set_focused(clients[3]);
+                m_clients.sync_workspace_focus();
+            }
+        }
+        break;
+    case keyop_t::jump_client_5:
+        {
+            auto clients = m_clients.active_workspace()->get_all();
+            if (clients.size() > 4) {
+                m_clients.active_workspace()->set_focused(clients[4]);
+                m_clients.sync_workspace_focus();
+            }
+        }
+        break;
+    case keyop_t::jump_client_6:
+        {
+            auto clients = m_clients.active_workspace()->get_all();
+            if (clients.size() > 5) {
+                m_clients.active_workspace()->set_focused(clients[5]);
+                m_clients.sync_workspace_focus();
+            }
+        }
+        break;
+    case keyop_t::jump_client_7:
+        {
+            auto clients = m_clients.active_workspace()->get_all();
+            if (clients.size() > 6) {
+                m_clients.active_workspace()->set_focused(clients[6]);
+                m_clients.sync_workspace_focus();
+            }
+        }
+        break;
+    case keyop_t::jump_client_8:
+        {
+            auto clients = m_clients.active_workspace()->get_all();
+            if (clients.size() > 7) {
+                m_clients.active_workspace()->set_focused(clients[7]);
+                m_clients.sync_workspace_focus();
+            }
+        }
+        break;
+    case keyop_t::jump_client_9:
+        {
+            auto clients = m_clients.active_workspace()->get_all();
+            if (clients.size() > 8) {
+                m_clients.active_workspace()->set_focused(clients[8]);
+                m_clients.sync_workspace_focus();
+            }
+        }
+        break;
     case keyop_t::inc_m_factor:
         {
             float m_factor = m_clients.active_workspace()->get_m_factor();
