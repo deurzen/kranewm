@@ -122,6 +122,12 @@ user_workspace_t::zoom()
 }
 
 user_workspace_t&
+user_workspace_t::mirror()
+{
+    mirrored = !mirrored;
+}
+
+user_workspace_t&
 user_workspace_t::set_n_master(unsigned new_n_master)
 {
     n_master = new_n_master;

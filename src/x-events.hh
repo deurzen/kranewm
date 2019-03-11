@@ -78,7 +78,7 @@ public:
               { { XK_slash,        MODMASK },             keyop_t::jump_last                    },
               { { XK_a,            MODMASK },             keyop_t::jump_pane                    },
               { { XK_t,            MODMASK },             keyop_t::tile                         },
-              { { XK_s,            MODMASK },             keyop_t::swap_orientation             },
+              { { XK_s,            MODMASK },             keyop_t::mirror_workspace             },
               { { XK_p,            MODMASK },             keyop_t::spawn_dmenu                  },
               { { XK_q,            MODMASK },             keyop_t::spawn_browser                },
               { { XK_space,        MODMASK },             keyop_t::toggle_layout                },
