@@ -45,6 +45,12 @@ user_workspace_t::in_float_layout() const
     return layout == layout_t::floating;
 }
 
+bool
+user_workspace_t::is_mirrored() const
+{
+    return mirrored;
+}
+
 const
 client_ptr_t
 user_workspace_t::get_focused() const
@@ -137,4 +143,35 @@ user_workspace_t::set_layout(layout_t _layout)
 
     previous_layout = current_layout;
     return *this;
+}
+
+
+unsigned
+user_workspace_t::get_n_master() const
+{
+    return n_master;
+}
+
+unsigned
+user_workspace_t::get_gap_size() const
+{
+    return gap_size;
+}
+
+float
+user_workspace_t::get_m_factor() const
+{
+    return m_factor;
+}
+
+unsigned
+user_workspace_t::get_m1_weight() const
+{
+    return m1_weight;
+}
+
+layout_t
+user_workspace_t::get_layout() const
+{
+    return layout;
 }

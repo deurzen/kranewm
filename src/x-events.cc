@@ -508,11 +508,11 @@ x_events_t::on_key_press()
     /* case TOGGLE_SCRATCHPAD_1:  cm_.toggle_scratchpad(1);         break; */
     /* case TOGGLE_SCRATCHPAD_2:  cm_.toggle_scratchpad(2);         break; */
     case keyop_t::floating: m_clients.active_workspace()->set_layout(layout_t::floating).arrange(); break;
-    /* case TILE:                 cm_.change_layout(LT_TILE);       break; */
-    /* case DECK:                 cm_.change_layout(LT_DECK);       break; */
-    /* case DOUBLEDECK:           cm_.change_layout(LT_DOUBLEDECK); break; */
+    case keyop_t::tile: m_clients.active_workspace()->set_layout(layout_t::tile).arrange();       break;
+    case keyop_t::deck: m_clients.active_workspace()->set_layout(layout_t::deck).arrange();       break;
+    case keyop_t::doubledeck: m_clients.active_workspace()->set_layout(layout_t::doubledeck).arrange(); break;
     case keyop_t::grid: m_clients.active_workspace()->set_layout(layout_t::grid).arrange(); break;
-    /* case MONOCLE:              cm_.change_layout(LT_MONOCLE);    break; */
+    case keyop_t::monocle: m_clients.active_workspace()->set_layout(layout_t::monocle).arrange();    break;
     /* case TOGGLE_LAYOUT:        cm_.change_layout(LT_TOGGLE);     break; */
     /* case SWAP_ORIENTATION:     cm_.swap_orientation();           break; */
     case keyop_t::focus_bck:            m_clients.cycle_focus_backward();     break;

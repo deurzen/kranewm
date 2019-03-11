@@ -117,7 +117,7 @@ typedef class user_workspace_t : public workspace_t
 public:
     user_workspace_t(unsigned _number, ::std::string&& _name, ewmh_t& ewmh)
         : workspace_t(workspacetype_t::user), number(_number), name(_name),
-          n_master(1), gap_size(5), m1_weight(1), m_factor(.6f), mirrored(false),
+          n_master(0), gap_size(5), m1_weight(1), m_factor(.6f), mirrored(false),
           layout(layout_t::floating), previous_layout(layout),
           layouthandler(layouthandler_t{ewmh})
     {}
@@ -132,6 +132,7 @@ public:
     bool empty() const;
     bool contains(client_ptr_t client) const;
     bool in_float_layout() const;
+    bool is_mirrored() const;
 
     const client_ptr_t get_focused() const;
     void set_focused(client_ptr_t client);
@@ -148,6 +149,12 @@ public:
     user_workspace_t& set_m_factor(float);
     user_workspace_t& set_m1_weight(unsigned);
     user_workspace_t& set_layout(layout_t);
+
+    unsigned get_n_master() const;
+    unsigned get_gap_size() const;
+    float get_m_factor() const;
+    unsigned get_m1_weight() const;
+    layout_t get_layout() const;
 
 private:
     unsigned        number;
