@@ -24,34 +24,56 @@ layouthandler_t::layout_tile(const user_workspace_t& workspace) const
         return;
 
     auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
-    dim_t screen_dim = {root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut(),
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut()};
-
     unsigned n_master = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_n_master());
+    int gap_size = workspace.get_gap_size();
 
-    dim_t master_dim = {static_cast<int>(screen_dim.w * (n_master < clients.size()
-        ? workspace.get_m_factor() : 1)), n_master > 0 ? static_cast<int>(screen_dim.h / n_master) : 1};
-    dim_t stack_dim = {screen_dim.w - (n_master > 0 ? master_dim.w : 0),
-        screen_dim.h / static_cast<int>(n_master < clients.size() ? (clients.size() - n_master) : 1)};
+    dim_t screen_dim = {
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - gap_size,
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size
+    };
 
-    pos_t master_pos = {m_ewmh.get_left_strut(), m_ewmh.get_top_strut()};
-    pos_t stack_pos  = {(n_master > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut(),
-        m_ewmh.get_top_strut()};
+    dim_t master_dim = {
+        static_cast<int>(screen_dim.w * (n_master < clients.size() ? workspace.get_m_factor() : 1)) - gap_size,
+        (n_master > 0 ? static_cast<int>(screen_dim.h / n_master) : 1) - gap_size
+    };
+
+    dim_t stack_dim = {
+        screen_dim.w - (n_master > 0 ? master_dim.w : 0) - 2 * gap_size,
+        screen_dim.h / static_cast<int>(n_master < clients.size() ? (clients.size() - n_master) : 1) - gap_size
+    };
+
+    pos_t master_pos = {
+        m_ewmh.get_left_strut() + gap_size,
+        m_ewmh.get_top_strut() + gap_size
+    };
+
+    pos_t stack_pos  = {
+        (n_master > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut() + 2 * gap_size,
+        m_ewmh.get_top_strut() + gap_size
+    };
 
     if (workspace.is_mirrored() && clients.size() > n_master && n_master != 0) {
         ::std::swap(master_dim.w, stack_dim.w);
         ::std::swap(master_pos.x, stack_pos.x);
     }
 
-    for (size_t i = 0; i < n_master; ++i) {
+    for (size_t i = 0; n_master && i < n_master - 1; ++i) {
         clients[i]->resize(master_dim, true).move(master_pos, true);
-        master_pos.y += master_dim.h;
+        master_pos.y += master_dim.h + gap_size;
     }
 
-    for (size_t i = n_master; i < clients.size(); ++i) {
+    if (n_master)
+        clients[n_master - 1]->resize({master_dim.w,
+            screen_dim.h + m_ewmh.get_top_strut() - master_pos.y}, true).move(master_pos, true);
+
+    for (size_t i = n_master; i < clients.size() - 1; ++i) {
         clients[i]->resize(stack_dim, true).move(stack_pos, true);
-        stack_pos.y += stack_dim.h;
+        stack_pos.y += stack_dim.h + gap_size;
     }
+
+    if (clients.size() > n_master)
+        clients.back()->resize({stack_dim.w,
+            screen_dim.h + m_ewmh.get_top_strut() - stack_pos.y}, true).move(stack_pos, true);
 }
 
 void
@@ -65,28 +87,47 @@ layouthandler_t::layout_deck(const user_workspace_t& workspace) const
         return;
 
     auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
-    dim_t screen_dim = {root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut(),
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut()};
-
     unsigned n_master = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_n_master());
+    int gap_size = workspace.get_gap_size();
 
-    dim_t master_dim = {static_cast<int>(screen_dim.w * (n_master < clients.size()
-        ? workspace.get_m_factor() : 1)), n_master > 0 ? static_cast<int>(screen_dim.h / n_master) : 1};
-    dim_t stack_dim = {screen_dim.w - (n_master > 0 ? master_dim.w : 0), screen_dim.h};
+    dim_t screen_dim = {
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - gap_size,
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size
+    };
 
-    pos_t master_pos = {m_ewmh.get_left_strut(), m_ewmh.get_top_strut()};
-    pos_t stack_pos  = {(n_master > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut(),
-        m_ewmh.get_top_strut()};
+    dim_t master_dim = {
+        static_cast<int>(screen_dim.w * (n_master < clients.size() ? workspace.get_m_factor() : 1)) - gap_size,
+        (n_master > 0 ? static_cast<int>(screen_dim.h / n_master) : 1) - gap_size
+    };
+
+    dim_t stack_dim = {
+        screen_dim.w - (n_master > 0 ? master_dim.w : 0) - 2 * gap_size,
+        screen_dim.h - gap_size
+    };
+
+    pos_t master_pos = {
+        m_ewmh.get_left_strut() + gap_size,
+        m_ewmh.get_top_strut() + gap_size
+    };
+
+    pos_t stack_pos  = {
+        (n_master > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut() + 2 * gap_size,
+        m_ewmh.get_top_strut() + gap_size
+    };
 
     if (workspace.is_mirrored() && clients.size() > n_master && n_master != 0) {
         ::std::swap(master_dim.w, stack_dim.w);
         ::std::swap(master_pos.x, stack_pos.x);
     }
 
-    for (size_t i = 0; i < n_master; ++i) {
+    for (size_t i = 0; n_master && i < n_master - 1; ++i) {
         clients[i]->resize(master_dim, true).move(master_pos, true);
-        master_pos.y += master_dim.h;
+        master_pos.y += master_dim.h + gap_size;
     }
+
+    if (n_master)
+        clients[n_master - 1]->resize({master_dim.w,
+            screen_dim.h + m_ewmh.get_top_strut() - master_pos.y}, true).move(master_pos, true);
 
     for (size_t i = n_master; i < clients.size(); ++i)
         clients[i]->resize(stack_dim, true).move(stack_pos, true);
@@ -103,18 +144,33 @@ layouthandler_t::layout_doubledeck(const user_workspace_t& workspace) const
         return;
 
     auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
-    dim_t screen_dim = {root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut(),
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut()};
-
     unsigned n_master = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_n_master());
+    int gap_size = workspace.get_gap_size();
 
-    dim_t master_dim = {static_cast<int>(screen_dim.w * (n_master < clients.size()
-        ? workspace.get_m_factor() : 1)), screen_dim.h};
-    dim_t stack_dim = {screen_dim.w - (n_master > 0 ? master_dim.w : 0), screen_dim.h};
+    dim_t screen_dim = {
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - gap_size,
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size
+    };
 
-    pos_t master_pos = {m_ewmh.get_left_strut(), m_ewmh.get_top_strut()};
-    pos_t stack_pos  = {(n_master > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut(),
-        m_ewmh.get_top_strut()};
+    dim_t master_dim = {
+        static_cast<int>(screen_dim.w * (n_master < clients.size() ? workspace.get_m_factor() : 1)) - gap_size,
+        screen_dim.h - gap_size
+    };
+
+    dim_t stack_dim = {
+        screen_dim.w - (n_master > 0 ? master_dim.w : 0) - 2 * gap_size,
+        screen_dim.h - gap_size
+    };
+
+    pos_t master_pos = {
+        m_ewmh.get_left_strut() + gap_size,
+        m_ewmh.get_top_strut() + gap_size
+    };
+
+    pos_t stack_pos  = {
+        (n_master > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut() + 2 * gap_size,
+        m_ewmh.get_top_strut() + gap_size
+    };
 
     if (workspace.is_mirrored() && clients.size() > n_master && n_master != 0) {
         ::std::swap(master_dim.w, stack_dim.w);
@@ -198,12 +254,14 @@ layouthandler_t::layout_monocle(const user_workspace_t& workspace) const
     if (clients.empty())
         return;
 
+    int gap_size = workspace.get_gap_size();
+
     auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
-    dim_t screen_dim = {root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut(),
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut()};
+    dim_t screen_dim = {root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - 2 * gap_size,
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - 2 * gap_size};
 
     for (const auto& client : clients)
-        client->resize(screen_dim, true).move({m_ewmh.get_left_strut(),
-            m_ewmh.get_top_strut()}, true);
+        client->resize(screen_dim, true).move({m_ewmh.get_left_strut() + gap_size,
+            m_ewmh.get_top_strut() + gap_size}, true);
 }
 
