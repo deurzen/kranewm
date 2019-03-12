@@ -9,6 +9,7 @@ windowstack_t::add_to_stack(windowstack_window_t win)
     case layer_t::desktop:      m_desktop_windows.push_back(win.win);      break;
     case layer_t::below:        m_below_windows.push_back(win.win);        break;
     case layer_t::normal:       m_normal_windows.push_back(win.win);       break;
+    case layer_t::floating:     m_floating_windows.push_back(win.win);     break;
     case layer_t::dock:         m_dock_windows.push_back(win.win);         break;
     case layer_t::above:        m_above_windows.push_back(win.win);        break;
     case layer_t::fullscreen:   m_fullscreen_windows.push_back(win.win);   break;
@@ -16,7 +17,6 @@ windowstack_t::add_to_stack(windowstack_window_t win)
     }
 
     m_win_layers[win.win] = win.layer;
-    m_win_floating[win.win] = win.floating;
 }
 
 void
@@ -29,6 +29,7 @@ windowstack_t::remove_from_stack(x_wrapper::window_t win)
     case layer_t::desktop:      erase_find(m_desktop_windows, win);      break;
     case layer_t::below:        erase_find(m_below_windows, win);        break;
     case layer_t::normal:       erase_find(m_normal_windows, win);       break;
+    case layer_t::floating:     erase_find(m_floating_windows, win);     break;
     case layer_t::dock:         erase_find(m_dock_windows, win);         break;
     case layer_t::above:        erase_find(m_above_windows, win);        break;
     case layer_t::fullscreen:   erase_find(m_fullscreen_windows, win);   break;
@@ -36,7 +37,6 @@ windowstack_t::remove_from_stack(x_wrapper::window_t win)
     }
 
     erase_find(m_win_layers, win);
-    erase_find(m_win_floating, win);
 }
 
 void
@@ -47,7 +47,7 @@ windowstack_t::relayer_window(windowstack_window_t win)
 }
 
 void
-windowstack_t::raise_window(x_wrapper::window_t win, bool floating)
+windowstack_t::raise_window(x_wrapper::window_t win)
 {
     if (!m_win_layers.count(win))
         return;
@@ -64,6 +64,10 @@ windowstack_t::raise_window(x_wrapper::window_t win, bool floating)
     case layer_t::normal:
         m_normal_windows.remove(win);
         m_normal_windows.push_front(win);
+        break;
+    case layer_t::floating:
+        m_floating_windows.remove(win);
+        m_floating_windows.push_front(win);
         break;
     case layer_t::dock:
         m_dock_windows.remove(win);
@@ -82,12 +86,10 @@ windowstack_t::raise_window(x_wrapper::window_t win, bool floating)
         m_notification_windows.push_front(win);
         break;
     }
-
-    m_win_floating[win] = floating;
 }
 
 void
-windowstack_t::lower_window(x_wrapper::window_t win, bool floating)
+windowstack_t::lower_window(x_wrapper::window_t win)
 {
     if (!m_win_layers.count(win))
         return;
@@ -96,13 +98,12 @@ windowstack_t::lower_window(x_wrapper::window_t win, bool floating)
     case layer_t::desktop:      splice_back(m_desktop_windows, win);      break;
     case layer_t::below:        splice_back(m_below_windows, win);        break;
     case layer_t::normal:       splice_back(m_normal_windows, win);       break;
+    case layer_t::floating:     splice_back(m_floating_windows, win);     break;
     case layer_t::dock:         splice_back(m_dock_windows, win);         break;
     case layer_t::above:        splice_back(m_above_windows, win);        break;
     case layer_t::fullscreen:   splice_back(m_fullscreen_windows, win);   break;
     case layer_t::notification: splice_back(m_notification_windows, win); break;
     }
-
-    m_win_floating[win] = floating;
 }
 
 void
@@ -116,21 +117,8 @@ windowstack_t::apply()
     wins.insert(wins.end(), m_fullscreen_windows.begin(), m_fullscreen_windows.end());
     wins.insert(wins.end(), m_above_windows.begin(), m_above_windows.end());
     wins.insert(wins.end(), m_dock_windows.begin(), m_dock_windows.end());
-
-    ::std::vector<x_wrapper::window_t> floating_normal_windows;
-    ::std::copy_if(m_normal_windows.begin(), m_normal_windows.end(),
-        ::std::back_inserter(floating_normal_windows),
-        [=](auto win) { return m_win_floating[win]; }
-    );
-    wins.insert(wins.end(), floating_normal_windows.begin(), floating_normal_windows.end());
-
-    ::std::vector<x_wrapper::window_t> nonfloating_normal_windows;
-    ::std::copy_if(m_normal_windows.begin(), m_normal_windows.end(),
-        ::std::back_inserter(nonfloating_normal_windows),
-        [=](auto win) { return !m_win_floating[win]; }
-    );
-    wins.insert(wins.end(), nonfloating_normal_windows.begin(), nonfloating_normal_windows.end());
-
+    wins.insert(wins.end(), m_floating_windows.begin(), m_floating_windows.end());
+    wins.insert(wins.end(), m_normal_windows.begin(), m_normal_windows.end());
     wins.insert(wins.end(), m_below_windows.begin(), m_below_windows.end());
     wins.insert(wins.end(), m_desktop_windows.begin(), m_desktop_windows.end());
 

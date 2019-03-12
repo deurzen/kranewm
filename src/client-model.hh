@@ -14,8 +14,9 @@
 class client_model_t
 {
 public:
-    explicit client_model_t(changequeue_t& changequeue, ewmh_t& ewmh)
+    explicit client_model_t(changequeue_t& changequeue, ewmh_t& ewmh, windowstack_t& windowstack)
         : m_changequeue(changequeue),
+          m_windowstack(windowstack),
           m_current_workspace(nullptr),
           m_move_workspace(new moveresize_workspace_t{workspacetype_t::move}),
           m_resize_workspace(new moveresize_workspace_t{workspacetype_t::resize}),
@@ -58,15 +59,11 @@ public:
     void set_marked(client_ptr_t);
     void jump_marked();
 
-    void register_window_to_stack(windowstack_window_t);
-    void unregister_window_from_stack(x_wrapper::window_t);
-    void raise_client(client_ptr_t);
-    void apply_layering();
-
     void sync_workspace_focus();
 
 private:
     changequeue_t& m_changequeue;
+    windowstack_t& m_windowstack;
 
     user_workspace_ptr_t m_current_workspace;
 
@@ -81,8 +78,6 @@ private:
 
     client_ptr_t m_marked_client;
     client_ptr_t m_focused_client;
-
-    windowstack_t m_windowstack;
 
 };
 

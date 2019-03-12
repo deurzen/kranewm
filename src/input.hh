@@ -13,14 +13,16 @@
 // Forward decl
 class user_workspace_t;
 class client_model_t;
+class windowstack_t;
 typedef struct client_t* client_ptr_t;
 
 
 class inputhandler_t
 {
 public:
-    explicit inputhandler_t(client_model_t& clients, bool& running)
+    explicit inputhandler_t(client_model_t& clients, windowstack_t& windowstack, bool& running)
         : m_clients(clients),
+          m_windowstack(windowstack),
           m_running(running),
           m_mousebinds({
               //  keysym              mask     client  operation
@@ -180,6 +182,7 @@ private:
     void fork_external(::std::string&&);
 
     client_model_t& m_clients;
+    windowstack_t& m_windowstack;;
     bool& m_running;
     mousebinds_t m_mousebinds;
     keybinds_t m_keybinds;

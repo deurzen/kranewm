@@ -42,19 +42,19 @@ x_events_t::register_window(x_wrapper::window_t win)
         m_clients.active_workspace()->arrange();
 
     if (win.is_of_type("NOTIFICATION")) {
-        m_clients.register_window_to_stack({win, layer_t::notification, true});
+        m_windowstack.add_to_stack({win, layer_t::notification});
         m_ewmh.set_frame_extents(win, true);
         return;
     }
 
     if (win.is_of_type("DOCK")) {
-        m_clients.register_window_to_stack({win, layer_t::dock, true});
+        m_windowstack.add_to_stack({win, layer_t::dock});
         m_ewmh.set_frame_extents(win, true);
         return;
     }
 
     if (!x_wrapper::should_manage(win)) {
-        m_clients.register_window_to_stack({win, layer_t::normal, true});
+        m_windowstack.add_to_stack({win, layer_t::floating});
         m_ewmh.set_frame_extents(win, true);
         return;
     }
@@ -69,7 +69,7 @@ x_events_t::register_window(x_wrapper::window_t win)
     x_wrapper::window_t parent = x_wrapper::get_transient_for(win);
     if (parent) {
         if (!x_wrapper::should_manage(parent)) {
-            m_clients.register_window_to_stack({parent, layer_t::normal, true});
+            m_windowstack.add_to_stack({parent, layer_t::floating});
             m_ewmh.set_frame_extents(parent, true);
             return;
         }
@@ -526,7 +526,7 @@ x_events_t::on_unmap_notify()
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (!client) {
-        m_clients.unregister_window_from_stack(win);
+        m_windowstack.remove_from_stack(win);
         return;
     }
 
@@ -549,6 +549,6 @@ x_events_t::on_unmap_notify()
 
     client->unmap();
     win.reparent(pos);
-    m_clients.unregister_window_from_stack(win);
+    m_windowstack.remove_from_stack(win);
     frame.destroy();
 }

@@ -47,7 +47,7 @@ client_model_t::focused_client() const
 void
 client_model_t::manage_client(client_ptr_t client, rule_t rule)
 {
-    m_windowstack.add_to_stack({client->frame, layer_t::normal, rule.floating});
+    m_windowstack.add_to_stack({client->frame, rule.floating ? layer_t::floating : layer_t::normal});
     m_client_windows[client->frame] = client;
     m_client_windows[client->win]   = client;
     m_managed_windows.push_back(client->win);
@@ -118,7 +118,7 @@ client_model_t::focus(client_ptr_t client)
     m_current_workspace->set_focused(client);
     m_changequeue.add(change_client_focus(m_focused_client, client));
     m_focused_client = client;
-    raise_client(client);
+    m_windowstack.raise_window(client->frame);
     m_windowstack.apply();
 }
 
@@ -283,31 +283,6 @@ client_model_t::jump_marked()
 
     focus(to_jump_to);
     sync_workspace_focus();
-}
-
-void
-client_model_t::register_window_to_stack(windowstack_window_t win)
-{
-    m_windowstack.add_to_stack(win);
-}
-
-void
-client_model_t::unregister_window_from_stack(x_wrapper::window_t win)
-{
-    m_windowstack.remove_from_stack(win);
-}
-
-void
-client_model_t::raise_client(client_ptr_t client)
-{
-    m_windowstack.raise_window(client->frame,
-        client->floating || m_current_workspace->in_float_layout());
-}
-
-void
-client_model_t::apply_layering()
-{
-    m_windowstack.apply();
 }
 
 

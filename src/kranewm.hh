@@ -5,6 +5,7 @@
 #include "x-wrapper/error.hh"
 
 #include "ewmh.hh"
+#include "stack.hh"
 #include "x-model.hh"
 #include "changes.hh"
 #include "client-model.hh"
@@ -21,8 +22,8 @@ public:
         : m_ewmh(),
           m_x(),
           m_changequeue(),
-          m_clients(m_changequeue, m_ewmh),
-          m_events(m_ewmh, m_clients, m_x),
+          m_clients(m_changequeue, m_ewmh, m_windowstack),
+          m_events(m_ewmh, m_windowstack, m_clients, m_x),
           m_changes(m_changequeue, m_ewmh, m_x, m_clients)
     {}
 
@@ -38,6 +39,7 @@ private:
     void check_otherwm();
 
     ewmh_t m_ewmh;
+    windowstack_t m_windowstack;
     x_model_t m_x;
     changequeue_t m_changequeue;
     client_model_t m_clients;

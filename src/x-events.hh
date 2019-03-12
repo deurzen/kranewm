@@ -13,6 +13,7 @@
 
 // Forward decls
 class ewmh_t;
+class windowstack_t;
 class client_model_t;
 class x_model_t;
 
@@ -20,12 +21,13 @@ class x_model_t;
 class x_events_t
 {
 public:
-    explicit x_events_t(ewmh_t& ewmh, client_model_t& clients, x_model_t& x)
+    explicit x_events_t(ewmh_t& ewmh, windowstack_t& windowstack, client_model_t& clients, x_model_t& x)
         : m_ewmh(ewmh),
+          m_windowstack(windowstack),
           m_clients(clients),
           m_x(x),
           m_running(true),
-          m_inputhandler(clients, m_running),
+          m_inputhandler(clients, m_windowstack, m_running),
           m_rules({
               //  class            inst             title      float center icon close  workspace
               { { "Firefox",       ALL,             ALL },   {  NO,  YES,   NO,   OFF,  CURRENT } },
@@ -60,6 +62,7 @@ private:
     void on_unmap_notify();
 
     ewmh_t& m_ewmh;
+    windowstack_t& m_windowstack;
     client_model_t& m_clients;
     x_model_t& m_x;
     bool m_running;

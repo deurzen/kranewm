@@ -332,8 +332,9 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
     case keyop_t::toggle_float:
         client->toggle_float().resize(client->float_dim).move(client->float_pos);
         m_clients.active_workspace()->arrange();
-        m_clients.raise_client(client);
-        m_clients.active_workspace();
+        m_windowstack.relayer_window({client->frame, client->floating ? layer_t::floating : layer_t::normal});
+        m_windowstack.raise_window(client->frame);
+        m_windowstack.apply();
         break;
     /* case TOGGLE_FLOAT:              cm_.toggle_float(client);                      break; */
     /* case TOGGLE_FULLSCREEN:         cm_.toggle_fullscreen(client);                 break; */

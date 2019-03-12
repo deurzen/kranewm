@@ -54,7 +54,7 @@ erase_find(::std::list<Valtype>& v, Valtype val)
     if (i == v.end())
         return;
 
-    v.erase(i, v.end());
+    v.erase(i);
 }
 
 template <typename Valtype>
