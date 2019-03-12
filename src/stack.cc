@@ -2,9 +2,14 @@
 #include "util.hh"
 
 
-void
+windowstack_t&
 windowstack_t::add_to_stack(windowstack_window_t win)
 {
+    if (m_win_layers.count(win.win))
+        return *this;
+
+    ::std::cout << "adding: " << win.win.get() << ::std::endl;
+
     switch (win.layer) {
     case layer_t::desktop:      m_desktop_windows.push_back(win.win);      break;
     case layer_t::below:        m_below_windows.push_back(win.win);        break;
@@ -17,13 +22,14 @@ windowstack_t::add_to_stack(windowstack_window_t win)
     }
 
     m_win_layers[win.win] = win.layer;
+    return *this;
 }
 
-void
+windowstack_t&
 windowstack_t::remove_from_stack(x_wrapper::window_t win)
 {
     if (!m_win_layers.count(win))
-        return;
+        return *this;
 
     switch (m_win_layers[win]) {
     case layer_t::desktop:      erase_find(m_desktop_windows, win);      break;
@@ -37,20 +43,23 @@ windowstack_t::remove_from_stack(x_wrapper::window_t win)
     }
 
     erase_find(m_win_layers, win);
+
+    return *this;
 }
 
-void
+windowstack_t&
 windowstack_t::relayer_window(windowstack_window_t win)
 {
     remove_from_stack(win.win);
     add_to_stack(win);
+    return *this;
 }
 
-void
+windowstack_t&
 windowstack_t::raise_window(x_wrapper::window_t win)
 {
     if (!m_win_layers.count(win))
-        return;
+        return *this;
 
     switch (m_win_layers[win]) {
     case layer_t::desktop:
@@ -86,13 +95,15 @@ windowstack_t::raise_window(x_wrapper::window_t win)
         m_notification_windows.push_front(win);
         break;
     }
+
+    return *this;
 }
 
-void
+windowstack_t&
 windowstack_t::lower_window(x_wrapper::window_t win)
 {
     if (!m_win_layers.count(win))
-        return;
+        return *this;
 
     switch (m_win_layers[win]) {
     case layer_t::desktop:      splice_back(m_desktop_windows, win);      break;
@@ -104,6 +115,8 @@ windowstack_t::lower_window(x_wrapper::window_t win)
     case layer_t::fullscreen:   splice_back(m_fullscreen_windows, win);   break;
     case layer_t::notification: splice_back(m_notification_windows, win); break;
     }
+
+    return *this;
 }
 
 void

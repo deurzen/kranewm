@@ -137,13 +137,93 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             m_clients.change_active_workspace(workspace);
         }
         break;
-    case keyop_t::floating:   m_clients.active_workspace()->set_layout(layout_t::floating).arrange();   break;
-    case keyop_t::tile:       m_clients.active_workspace()->set_layout(layout_t::tile).arrange();       break;
-    case keyop_t::deck:       m_clients.active_workspace()->set_layout(layout_t::deck).arrange();       break;
-    case keyop_t::doubledeck: m_clients.active_workspace()->set_layout(layout_t::doubledeck).arrange(); break;
-    case keyop_t::grid:       m_clients.active_workspace()->set_layout(layout_t::grid).arrange();       break;
-    case keyop_t::monocle:    m_clients.active_workspace()->set_layout(layout_t::monocle).arrange();    break;
-    case keyop_t::toggle_layout: m_clients.active_workspace()->set_layout(layout_t::toggle).arrange();  break;
+    case keyop_t::floating:
+        {
+            m_clients.active_workspace()->set_layout(layout_t::floating);
+            for (auto& client : m_clients.active_workspace()->get_all())
+                if (client->floating)
+                    m_windowstack.relayer_window({client->frame, layer_t::normal}).raise_window(client->frame);
+            m_windowstack.apply();
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::tile:
+        {
+            auto workspace = m_clients.active_workspace();
+            workspace->set_layout(layout_t::tile).arrange();
+            for (auto& client : workspace->get_all())
+                if (client->floating)
+                    m_windowstack.relayer_window({client->frame, layer_t::floating}).raise_window(client->frame);
+
+            m_windowstack.apply();
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::deck:
+        {
+            auto workspace = m_clients.active_workspace();
+            workspace->set_layout(layout_t::deck).arrange();
+            for (auto& client : workspace->get_all())
+                if (client->floating)
+                    m_windowstack.relayer_window({client->frame, layer_t::floating}).raise_window(client->frame);
+
+            m_windowstack.apply();
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::doubledeck:
+        {
+            auto workspace = m_clients.active_workspace();
+            workspace->set_layout(layout_t::doubledeck).arrange();
+            for (auto& client : workspace->get_all())
+                if (client->floating)
+                    m_windowstack.relayer_window({client->frame, layer_t::floating}).raise_window(client->frame);
+
+            m_windowstack.apply();
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::grid:
+        {
+            auto workspace = m_clients.active_workspace();
+            workspace->set_layout(layout_t::grid).arrange();
+            for (auto& client : workspace->get_all())
+                if (client->floating)
+                    m_windowstack.relayer_window({client->frame, layer_t::floating}).raise_window(client->frame);
+
+            m_windowstack.apply();
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::monocle:
+        {
+            auto workspace = m_clients.active_workspace();
+            workspace->set_layout(layout_t::monocle);
+            for (auto& client : workspace->get_all())
+                if (client->floating)
+                    m_windowstack.relayer_window({client->frame, layer_t::floating}).raise_window(client->frame);
+
+            m_windowstack.apply();
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::toggle_layout:
+        {
+            auto workspace = m_clients.active_workspace();
+            workspace->set_layout(layout_t::toggle);
+            if (workspace->in_float_layout()) {
+                for (auto& client : workspace->get_all())
+                    if (client->floating)
+                        m_windowstack.relayer_window({client->frame, layer_t::normal}).raise_window(client->frame);
+            } else
+                for (auto& client : workspace->get_all())
+                    if (client->floating)
+                        m_windowstack.relayer_window({client->frame, layer_t::floating}).raise_window(client->frame);
+
+            m_windowstack.apply();
+            workspace->arrange();
+        }
+        break;
     case keyop_t::mirror_workspace: m_clients.active_workspace()->mirror().arrange();                   break;
     case keyop_t::focus_bck:  m_clients.cycle_focus_backward();                                         break;
     case keyop_t::focus_fwd:  m_clients.cycle_focus_forward();                                          break;
@@ -331,12 +411,11 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
     case keyop_t::move_client_bck: m_clients.active_workspace()->move_backward();     break;
     case keyop_t::toggle_float:
         client->toggle_float().resize(client->float_dim).move(client->float_pos);
+        if (!m_clients.active_workspace()->in_float_layout())
+            m_windowstack.relayer_window({client->frame, client->floating ? layer_t::floating : layer_t::normal});
+        m_windowstack.raise_window(client->frame).apply();
         m_clients.active_workspace()->arrange();
-        m_windowstack.relayer_window({client->frame, client->floating ? layer_t::floating : layer_t::normal});
-        m_windowstack.raise_window(client->frame);
-        m_windowstack.apply();
         break;
-    /* case TOGGLE_FLOAT:              cm_.toggle_float(client);                      break; */
     /* case TOGGLE_FULLSCREEN:         cm_.toggle_fullscreen(client);                 break; */
     /* case TOGGLE_SHADE:              cm_.toggle_shade(client);                      break; */
     /* case TOGGLE_ICONIFY:            cm_.toggle_iconify(client);                    break; */
@@ -501,6 +580,10 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
             } else {
                 m_clients.active_workspace()->rotate_master_forward();
                 m_clients.sync_workspace_focus();
+
+                auto clients = m_clients.active_workspace()->get_all();
+                if (clients.size())
+                    m_windowstack.raise_window(clients[0]->frame).apply();
             }
         }
         break;
@@ -513,6 +596,11 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
             } else {
                 m_clients.active_workspace()->rotate_stack_backward();
                 m_clients.sync_workspace_focus();
+
+                unsigned n_master = m_clients.active_workspace()->get_n_master();
+                auto clients = m_clients.active_workspace()->get_all();
+                if (clients.size() && n_master < clients.size())
+                    m_windowstack.raise_window(clients[n_master]->frame).apply();
             }
         }
         break;
@@ -525,6 +613,11 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
             } else {
                 m_clients.active_workspace()->rotate_stack_forward();
                 m_clients.sync_workspace_focus();
+
+                unsigned n_master = m_clients.active_workspace()->get_n_master();
+                auto clients = m_clients.active_workspace()->get_all();
+                if (clients.size() && n_master < clients.size())
+                    m_windowstack.raise_window(clients[n_master]->frame).apply();
             }
         }
         break;
@@ -537,6 +630,10 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
             } else {
                 m_clients.active_workspace()->rotate_master_backward();
                 m_clients.sync_workspace_focus();
+
+                auto clients = m_clients.active_workspace()->get_all();
+                if (clients.size())
+                    m_windowstack.raise_window(clients[0]->frame).apply();
             }
         }
         break;

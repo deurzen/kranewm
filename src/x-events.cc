@@ -41,13 +41,13 @@ x_events_t::register_window(x_wrapper::window_t win)
     if (m_ewmh.check_apply_strut(win))
         m_clients.active_workspace()->arrange();
 
-    if (win.is_of_type("NOTIFICATION")) {
+    if (win.is_of_type("DESKTOP"))
+        m_windowstack.add_to_stack({win, layer_t::desktop});
+    else if (win.is_of_type("BELOW"))
+        m_windowstack.add_to_stack({win, layer_t::below});
+    else if (win.is_of_type("NOTIFICATION"))
         m_windowstack.add_to_stack({win, layer_t::notification});
-        m_ewmh.set_frame_extents(win, true);
-        return;
-    }
-
-    if (win.is_of_type("DOCK")) {
+    else if (win.is_of_type("DOCK")) {
         m_windowstack.add_to_stack({win, layer_t::dock});
         m_ewmh.set_frame_extents(win, true);
         return;

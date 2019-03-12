@@ -37,11 +37,11 @@ struct windowstack_window_t
 class windowstack_t
 {
 public:
-    void add_to_stack(windowstack_window_t);
-    void remove_from_stack(x_wrapper::window_t);
-    void relayer_window(windowstack_window_t);
-    void raise_window(x_wrapper::window_t);
-    void lower_window(x_wrapper::window_t);
+    windowstack_t& add_to_stack(windowstack_window_t);
+    windowstack_t& remove_from_stack(x_wrapper::window_t);
+    windowstack_t& relayer_window(windowstack_window_t);
+    windowstack_t& raise_window(x_wrapper::window_t);
+    windowstack_t& lower_window(x_wrapper::window_t);
 
     void apply();
 
