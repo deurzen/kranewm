@@ -418,7 +418,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
     case keyop_t::move_client_fwd: m_clients.active_workspace()->move_forward();      break;
     case keyop_t::move_client_bck: m_clients.active_workspace()->move_backward();     break;
     case keyop_t::toggle_float:
-        client->toggle_float().resize(client->float_dim).move(client->float_pos);
+        client->set_float(clientaction_t::toggle).resize(client->float_dim).move(client->float_pos);
         if (!m_clients.active_workspace()->in_float_layout())
             m_windowstack.relayer_window({client->frame, client->floating ? layer_t::floating : layer_t::normal});
         m_windowstack.raise_window(client->frame).apply();

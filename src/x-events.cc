@@ -337,7 +337,6 @@ x_events_t::on_destroy_notify()
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (!client) {
-        /* cm_.remove_always_on_top_window(win); */
         if (m_ewmh.check_release_strut(win))
             m_clients.active_workspace()->arrange();
         return;
@@ -368,34 +367,7 @@ x_events_t::on_expose()
 
 void
 x_events_t::on_focus_in()
-{
-    x_wrapper::window_t win = m_current_event.get().xfocus.window;
-    client_ptr_t client = m_clients.win_to_client(win);
-
-    if (client && client == m_clients.focused_client()) {
-        /* if (client->floating */
-        /*     || cm_.get_current_workspace()->layout == LT_FLOAT */
-        /*     || cm_.get_current_workspace()->layout == LT_DECK */
-        /*     || cm_.get_current_workspace()->layout == LT_DOUBLEDECK */
-        /*     || cm_.get_current_workspace()->layout == LT_MONOCLE) */
-        /* { */
-        /*     xh_.raise_window(client->frame); */
-        /*     for (const auto& child_client : client->children) */
-        /*         xh_.raise_window(child_client->frame); */
-        /* } */
-
-        /* if (cm_.get_current_workspace()->layout == LT_DECK */
-        /*     || cm_.get_current_workspace()->layout == LT_DOUBLEDECK */
-        /*     || cm_.get_current_workspace()->layout == LT_MONOCLE) */
-        /* { */
-        /*     for (const auto& floating_client : cm_.get_floating_clients()) */
-        /*         xh_.raise_window(floating_client->frame); */
-        /* } */
-
-        /* for (const auto& always_on_top_win : cm_.get_always_on_top_windows()) */
-        /*     xh_.raise_window(always_on_top_win); */
-    }
-}
+{}
 
 void
 x_events_t::on_key_press()

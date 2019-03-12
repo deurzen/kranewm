@@ -2,6 +2,7 @@
 #define __KRANEWM__DECORATION__GUARD__
 // TODO build frame, redraw title ...
 
+const ::std::string FONTNAME      = "-*-terminus-*-*-*-*-*-*-*-*-*-*-*-*";
 
 const int BORDER_HEIGHT   = 2;
 const int SHADED_HEIGHT   = 14;

@@ -11,6 +11,13 @@
 
 #include <set>
 
+enum class clientaction_t
+{
+    add,
+    remove,
+    toggle
+};
+
 
 enum class clientexpect_t
 {
@@ -47,7 +54,7 @@ typedef struct client_t
     client_t& unmap_children();
 
     client_t& center();
-    client_t& toggle_float();
+    client_t& set_float(clientaction_t);
 
     x_wrapper::window_t win;
     x_wrapper::window_t frame;

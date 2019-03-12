@@ -17,9 +17,7 @@ namespace x_wrapper
             XGCValues values;
             values.function           = GXor;
             values.plane_mask         = AllPlanes;
-            /* values.foreground         = XWhitePixel(g_dpy, XDefaultScreen(g_dpy)); */
             values.foreground         = 0xFFFFFF;
-            /* values.background         = XBlackPixel(g_dpy, XDefaultScreen(g_dpy)); */
             values.background         = 0x000000;
             values.line_width         = line_width;
             values.line_style         = LineSolid;

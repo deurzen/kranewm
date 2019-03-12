@@ -11,7 +11,6 @@ extern "C" {
 
 
 const ::std::string WMNAME = "kranewm";
-const ::std::string FONTNAME = "-*-terminus-*-*-*-*-*-*-*-*-*-*-*-*";
 
 const int LEFT_BUTTON        = 1;
 const int RIGHT_BUTTON       = 3;

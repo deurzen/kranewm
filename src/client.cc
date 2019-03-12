@@ -183,8 +183,14 @@ client_t::center()
 }
 
 client_t&
-client_t::toggle_float()
+client_t::set_float(clientaction_t action)
 {
-    floating = !floating;
+    switch (action) {
+    case clientaction_t::add:    floating = true;      break;
+    case clientaction_t::remove: floating = false;     break;
+    case clientaction_t::toggle: floating = !floating; break;
+    default: break;
+    }
+
     return *this;
 }
