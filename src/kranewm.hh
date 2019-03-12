@@ -5,6 +5,7 @@
 #include "x-wrapper/error.hh"
 
 #include "ewmh.hh"
+#include "sidebar.hh"
 #include "stack.hh"
 #include "x-model.hh"
 #include "changes.hh"
@@ -20,11 +21,12 @@ class kranewm_t
 public:
     kranewm_t()
         : m_ewmh(),
+          m_sidebar(m_ewmh),
           m_x(),
           m_changequeue(),
           m_clients(m_changequeue, m_ewmh, m_windowstack),
-          m_events(m_ewmh, m_windowstack, m_clients, m_x),
-          m_changes(m_changequeue, m_ewmh, m_x, m_clients)
+          m_events(m_ewmh, m_sidebar, m_windowstack, m_clients, m_x),
+          m_changes(m_changequeue, m_ewmh, m_sidebar, m_x, m_clients)
     {}
 
     void setup();
@@ -39,6 +41,7 @@ private:
     void check_otherwm();
 
     ewmh_t m_ewmh;
+    sidebar_t m_sidebar;
     windowstack_t m_windowstack;
     x_model_t m_x;
     changequeue_t m_changequeue;

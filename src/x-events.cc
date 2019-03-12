@@ -1,6 +1,7 @@
 #include "x-events.hh"
 #include "decoration.hh"
 #include "ewmh.hh"
+#include "sidebar.hh"
 #include "client-model.hh"
 #include "x-model.hh"
 #include "x-wrapper/attributes.hh"
@@ -350,27 +351,17 @@ x_events_t::on_destroy_notify()
 
     m_clients.unmanage_client(client);
     m_clients.active_workspace()->arrange();
+    m_sidebar.set_numberclients(m_clients.active_workspace()->get_all().size()).draw();
 }
 
 void
 x_events_t::on_expose()
 {
     x_wrapper::window_t win = m_current_event.get().xexpose.window;
-    client_ptr_t client = m_clients.win_to_client(win);
+    int count = m_current_event.get().xexpose.count;
 
-    if (client && client->shaded)
-        ; /* client->gch->redraw_all(); */
-
-    /* if (cm_.is_icon(m_current_event.xexpose.window)) */
-    /* { */
-    /*     cm_.rerender_icons(); */
-    /* } */
-
-    /* if (m_current_event.xexpose.count == 0 */
-    /*     && xh_.is_root_draw_win(m_current_event.xexpose.window)) */
-    /* { */
-    /*     xh_.redraw_root_draw_win(); */
-    /* } */
+    if (count == 0 && m_sidebar.get_win().get() == win.get())
+        m_sidebar.draw();
 
     x_wrapper::sync(False);
 }
@@ -455,7 +446,6 @@ x_events_t::on_map_notify()
             m_clients.stop_moving(client, attrs);
             m_clients.stop_resizing(client, attrs, attrs);
         }
-
         return;
     }
 

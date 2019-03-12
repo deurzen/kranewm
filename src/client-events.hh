@@ -1,17 +1,22 @@
 #ifndef __KRANEWM__CLIENT_EVENTS__GUARD__
 #define __KRANEWM__CLIENT_EVENTS__GUARD__
 
-#include "changes.hh"
-#include "ewmh.hh"
-#include "x-model.hh"
-#include "client-model.hh"
+// Forward decls
+class changequeue_t;
+class ewmh_t;
+class sidebar_t;
+class x_model_t;
+class client_model_t;
+typedef class clientchange_t* clientchange_ptr_t;
+typedef class client_t* client_ptr_t;
+typedef class workspace_t* workspace_ptr_t;
 
 
 class client_events_t
 {
 public:
-    client_events_t(changequeue_t& changes, ewmh_t& ewmh, x_model_t& x, client_model_t& clients)
-        : m_current_change(nullptr), m_changes(changes), m_ewmh(ewmh), m_x(x), m_clients(clients) {}
+    client_events_t(changequeue_t& changes, ewmh_t& ewmh, sidebar_t& sidebar, x_model_t& x, client_model_t& clients)
+        : m_current_change(nullptr), m_changes(changes), m_ewmh(ewmh), m_sidebar(sidebar), m_x(x), m_clients(clients) {}
 
     void process_queued_changes();
 
@@ -37,6 +42,7 @@ private:
 
     changequeue_t& m_changes;
     ewmh_t& m_ewmh;
+    sidebar_t& m_sidebar;
     x_model_t& m_x;
     client_model_t& m_clients;
 

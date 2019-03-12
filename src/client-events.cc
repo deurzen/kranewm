@@ -1,4 +1,9 @@
 #include "client-events.hh"
+#include "changes.hh"
+#include "ewmh.hh"
+#include "sidebar.hh"
+#include "x-model.hh"
+#include "client-model.hh"
 #include "x-wrapper/mouse.hh"
 
 
@@ -108,6 +113,7 @@ client_events_t::on_change_workspace_active()
     to->arrange();
 
     // TODO iconified clients
+    m_sidebar.set_workspacenumber(m_clients.active_workspace()->get_number()).draw();
 }
 
 
@@ -168,6 +174,8 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
     }
 
     m_ewmh.set_wm_desktop_property(client->win, user_workspace(to)->get_number() - 1);
+    m_sidebar.set_numberclients(m_clients.active_workspace()->get_all().size()).draw();
+
 }
 
 

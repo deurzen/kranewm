@@ -2,15 +2,15 @@
 #define __KRANEWM_LAYOUT_GUARD__
 
 
-enum class layout_t
-{
-    toggle,
-    floating,
-    tile,
-    deck,
-    doubledeck,
-    grid,
-    monocle
+enum class layout_t : char
+{// name         symbol
+    toggle     = '_',
+    floating   = 'F',
+    tile       = 'T',
+    deck       = 'D',
+    doubledeck = '$',
+    grid       = '#',
+    monocle    = 'M'
 };
 
 // Forward decl

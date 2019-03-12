@@ -240,7 +240,7 @@ client_model_t::change_active_workspace(user_workspace_ptr_t workspace)
     if (m_resize_workspace->is_set())
         stop_resizing(m_resize_workspace->get());
 
-    prev_workspace = m_current_workspace;;
+    prev_workspace = m_current_workspace;
 
     m_changequeue.add(change_workspace_active(m_current_workspace, workspace));
     m_current_workspace = workspace;

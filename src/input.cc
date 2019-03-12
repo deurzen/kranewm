@@ -1,4 +1,5 @@
 #include "input.hh"
+#include "sidebar.hh"
 #include "client-model.hh"
 #include "x-wrapper/window.hh"
 
@@ -145,6 +146,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
                     m_windowstack.relayer_window({client->frame, layer_t::normal}).raise_window(client->frame);
             m_windowstack.apply();
             m_clients.active_workspace()->arrange();
+            m_sidebar.set_layoutsymbol(layout_t::floating).draw();
         }
         break;
     case keyop_t::tile:
@@ -157,6 +159,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
 
             m_windowstack.apply();
             m_clients.active_workspace()->arrange();
+            m_sidebar.set_layoutsymbol(layout_t::tile).draw();
         }
         break;
     case keyop_t::deck:
@@ -169,6 +172,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
 
             m_windowstack.apply();
             m_clients.active_workspace()->arrange();
+            m_sidebar.set_layoutsymbol(layout_t::deck).draw();
         }
         break;
     case keyop_t::doubledeck:
@@ -181,6 +185,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
 
             m_windowstack.apply();
             m_clients.active_workspace()->arrange();
+            m_sidebar.set_layoutsymbol(layout_t::doubledeck).draw();
         }
         break;
     case keyop_t::grid:
@@ -193,6 +198,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
 
             m_windowstack.apply();
             m_clients.active_workspace()->arrange();
+            m_sidebar.set_layoutsymbol(layout_t::grid).draw();
         }
         break;
     case keyop_t::monocle:
@@ -205,6 +211,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
 
             m_windowstack.apply();
             m_clients.active_workspace()->arrange();
+            m_sidebar.set_layoutsymbol(layout_t::monocle).draw();
         }
         break;
     case keyop_t::toggle_layout:
@@ -222,6 +229,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
 
             m_windowstack.apply();
             workspace->arrange();
+            m_sidebar.set_layoutsymbol(m_clients.active_workspace()->get_layout()).draw();
         }
         break;
     case keyop_t::mirror_workspace: m_clients.active_workspace()->mirror().arrange();                   break;

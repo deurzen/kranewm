@@ -8,8 +8,6 @@ windowstack_t::add_to_stack(windowstack_window_t win)
     if (m_win_layers.count(win.win))
         return *this;
 
-    ::std::cout << "adding: " << win.win.get() << ::std::endl;
-
     switch (win.layer) {
     case layer_t::desktop:      m_desktop_windows.push_back(win.win);      break;
     case layer_t::below:        m_below_windows.push_back(win.win);        break;

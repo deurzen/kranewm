@@ -30,23 +30,9 @@ kranewm_t::setup()
     x_wrapper::select_input(x_wrapper::g_root, ButtonPressMask | PointerMotionMask
         | StructureNotifyMask | SubstructureNotifyMask | SubstructureRedirectMask);
 
-    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
-
-    auto sidebar = x_wrapper::create_window(true);
-    sidebar.resize({SIDEBAR_WIDTH, root_attrs.get().height}).move({0, 0});
-    m_ewmh.set_strut_property(sidebar, SIDEBAR_WIDTH, 0, 0, 0);
-    sidebar.set_background_color(SIDEBAR_BG_COLOR);
-    m_ewmh.set_window_type_property(sidebar, "DESKTOP");
-    sidebar.map();
+    m_ewmh.set_wm_name_property(x_wrapper::g_root, WMNAME);
 
     m_ewmh.clear_client_list_property();
-
-    m_ewmh.set_wm_name_property(x_wrapper::g_root, WMNAME);
-    m_ewmh.set_wm_name_property(sidebar, WMNAME);
-
-    m_ewmh.set_supporting_wm_check_property(x_wrapper::g_root, sidebar);
-    m_ewmh.set_supporting_wm_check_property(sidebar, sidebar);
-
     m_ewmh.set_desktop_geometry_property();
     m_ewmh.set_desktop_viewport_property();
     m_ewmh.set_workarea_property();
@@ -63,7 +49,13 @@ kranewm_t::setup()
     ::std::for_each(existing_wins.begin(), existing_wins.end(),
         [=](x_wrapper::window_t win) { m_events.register_window(win); });
 
-    // TODO process_client_events?
+    m_changes.process_queued_changes();
+
+    m_sidebar.set_layoutsymbol(m_clients.active_workspace()->get_layout());
+    m_sidebar.set_workspacenumber(m_clients.active_workspace()->get_number());
+    m_sidebar.set_numberclients(m_clients.active_workspace()->get_all().size());
+    m_sidebar.draw();
+
     x_wrapper::sync(true);
 
 #ifndef DEBUG

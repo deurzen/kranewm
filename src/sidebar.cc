@@ -1,0 +1,85 @@
+#include "sidebar.hh"
+#include "workspace.hh"
+
+
+void
+sidebar_t::draw()
+{
+    m_graphicscontext.clear();
+    draw_layoutsymbol();
+    draw_workspacenumber();
+    draw_numberclients();
+}
+
+sidebar_t&
+sidebar_t::set_layoutsymbol(layout_t layout)
+{
+    m_layoutsymbol = layout;
+    return *this;
+}
+
+sidebar_t&
+sidebar_t::set_workspacenumber(unsigned workspace)
+{
+    m_workspacenumber = workspace;
+    return *this;
+}
+
+sidebar_t&
+sidebar_t::set_numberclients(unsigned n)
+{
+    m_numberclients = n;
+    return *this;
+}
+
+
+void
+sidebar_t::draw_layoutsymbol()
+{
+    m_graphicscontext.set_foreground(SIDEBAR_LAYOUT_COLOR);
+
+    pos_t pos = {(SIDEBAR_WIDTH - m_graphicscontext.get_font_dim().w) / 2,
+        4 + m_graphicscontext.get_font_dim().h};
+
+    m_graphicscontext.draw_string(pos, ::std::string(1, static_cast<char>(m_layoutsymbol)));
+}
+
+void
+sidebar_t::draw_workspacenumber()
+{
+    m_graphicscontext.set_foreground(SIDEBAR_WORKSPACES_COLOR);
+
+    pos_t current_pos = {(SIDEBAR_WIDTH - m_graphicscontext.get_font_dim().w) / 2,
+        2 * (4 + m_graphicscontext.get_font_dim().h)};
+
+    for (auto& [nr,_] : USER_WORKSPACES) {
+        if (nr == m_workspacenumber)
+            m_graphicscontext.set_foreground(SIDEBAR_ACTIVE_WORKSPACE_COLOR);
+        else
+            m_graphicscontext.set_foreground(SIDEBAR_WORKSPACES_COLOR);
+
+        m_graphicscontext.draw_string(current_pos, ::std::to_string(nr));
+        current_pos.y += (4 + m_graphicscontext.get_font_dim().h);
+    }
+}
+
+void
+sidebar_t::draw_numberclients()
+{
+    m_graphicscontext.set_foreground(SIDEBAR_NCLIENTS_COLOR);
+
+    x_wrapper::attributes_t root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+    pos_t pos = {(SIDEBAR_WIDTH - m_graphicscontext.get_font_dim().w) / 2,
+        root_attrs.h() - (4 + m_graphicscontext.get_font_dim().h)};
+
+    if (m_numberclients > 9)
+        m_graphicscontext.draw_string(pos, ">");
+    else
+        m_graphicscontext.draw_string(pos, ::std::to_string(m_numberclients));
+}
+
+x_wrapper::window_t
+sidebar_t::get_win() const
+{
+    return m_sidebarwin;
+}

@@ -11,17 +11,19 @@
 #define NOMASK 0
 
 // Forward decl
-class user_workspace_t;
+class sidebar_t;
 class client_model_t;
 class windowstack_t;
+class user_workspace_t;
 typedef struct client_t* client_ptr_t;
 
 
 class inputhandler_t
 {
 public:
-    explicit inputhandler_t(client_model_t& clients, windowstack_t& windowstack, bool& running)
-        : m_clients(clients),
+    explicit inputhandler_t(sidebar_t& sidebar, client_model_t& clients, windowstack_t& windowstack, bool& running)
+        : m_sidebar(sidebar),
+          m_clients(clients),
           m_windowstack(windowstack),
           m_running(running),
           m_mousebinds({
@@ -88,7 +90,7 @@ public:
               { { XK_w,            MODMASK },             keyop_t::spawn_qalculate              },
               { { XK_g,            MODMASK },             keyop_t::spawn_gpick                  },
               { { XK_minus,        MODMASK },             keyop_t::dec_gap_size                 },
-              { { XK_plus,         MODMASK },             keyop_t::inc_gap_size                 },
+              { { XK_equal,        MODMASK },             keyop_t::inc_gap_size                 },
               { { XK_1,            MODMASK|SECMASK },     keyop_t::deiconify_1                  },
               { { XK_2,            MODMASK|SECMASK },     keyop_t::deiconify_2                  },
               { { XK_3,            MODMASK|SECMASK },     keyop_t::deiconify_3                  },
@@ -181,6 +183,7 @@ public:
 private:
     void fork_external(::std::string&&);
 
+    sidebar_t& m_sidebar;
     client_model_t& m_clients;
     windowstack_t& m_windowstack;;
     bool& m_running;
