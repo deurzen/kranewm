@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <deque>
+#include <list>
 
 
 void die(const ::std::string&);
@@ -47,6 +48,17 @@ erase_find(::std::unordered_map<Keytype, Valtype>& m, Keytype key)
 
 template <typename Valtype>
 void
+erase_find(::std::list<Valtype>& v, Valtype val)
+{
+    auto i = ::std::find(v.begin(), v.end(), val);
+    if (i == v.end())
+        return;
+
+    v.erase(i, v.end());
+}
+
+template <typename Valtype>
+void
 erase_remove(::std::vector<Valtype>& v, Valtype val)
 {
     auto i = ::std::remove(v.begin(), v.end(), val);
@@ -65,6 +77,17 @@ erase_remove(::std::deque<Valtype>& v, Valtype val)
         return;
 
     v.erase(i, v.end());
+}
+
+template <typename Valtype>
+void
+splice_back(::std::list<Valtype>& v, Valtype val)
+{
+    auto i = ::std::find(v.begin(), v.end(), val);
+    if (i == v.end())
+        return;
+
+    v.splice(v.end(), v, i);
 }
 
 #endif//__KRANEWM__UTIL__GUARD__

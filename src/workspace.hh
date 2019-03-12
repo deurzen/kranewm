@@ -124,8 +124,6 @@ public:
 
     void arrange() const override;
 
-    void restack() const;
-
     unsigned get_number() const;
     const ::std::deque<client_ptr_t>& get_all() const;
 

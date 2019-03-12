@@ -47,6 +47,7 @@ typedef struct client_t
     client_t& unmap_children();
 
     client_t& center();
+    client_t& toggle_float();
 
     x_wrapper::window_t win;
     x_wrapper::window_t frame;

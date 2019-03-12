@@ -329,6 +329,12 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
     case keyop_t::up_master:                                                          break;
     case keyop_t::move_client_fwd: m_clients.active_workspace()->move_forward();      break;
     case keyop_t::move_client_bck: m_clients.active_workspace()->move_backward();     break;
+    case keyop_t::toggle_float:
+        client->toggle_float().resize(client->float_dim).move(client->float_pos);
+        m_clients.active_workspace()->arrange();
+        m_clients.raise_client(client);
+        m_clients.active_workspace();
+        break;
     /* case TOGGLE_FLOAT:              cm_.toggle_float(client);                      break; */
     /* case TOGGLE_FULLSCREEN:         cm_.toggle_fullscreen(client);                 break; */
     /* case TOGGLE_SHADE:              cm_.toggle_shade(client);                      break; */

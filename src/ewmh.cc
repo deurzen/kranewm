@@ -88,6 +88,13 @@ ewmh_t::set_window_state_property(x_wrapper::window_t win, netwmid_t i)
 }
 
 void
+ewmh_t::set_window_type_property(x_wrapper::window_t win, const ::std::string& type)
+{
+    x_wrapper::replace_property<x_wrapper::atom_t>(win,
+        {"_NET_WM_WINDOW_TYPE", x_wrapper::get_atom("_NET_WM_WINDOW_TYPE_" + type)});
+}
+
+void
 ewmh_t::set_wm_desktop_property(x_wrapper::window_t win, unsigned workspace_nr)
 {
     x_wrapper::replace_property<x_wrapper::cardinal_t>(win, {"_NET_WM_DESKTOP", workspace_nr});

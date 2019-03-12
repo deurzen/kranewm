@@ -85,6 +85,12 @@ x_wrapper::select_input(window_t win, long mask)
     XSelectInput(g_dpy, win, mask);
 }
 
+void
+x_wrapper::restack_windows(Window* wins, int n)
+{
+    XRestackWindows(g_dpy, wins, n);
+}
+
 
 
 ::std::string

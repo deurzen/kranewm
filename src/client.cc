@@ -181,3 +181,10 @@ client_t::center()
     move({root_attrs.w() / 2 - attrs.w() / 2, root_attrs.h() / 2 - attrs.h() / 2});
     return *this;
 }
+
+client_t&
+client_t::toggle_float()
+{
+    floating = !floating;
+    return *this;
+}

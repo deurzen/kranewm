@@ -2,9 +2,10 @@
 #define __KRANEWM_CLIENT_MODEL_GUARD__
 
 #include "changes.hh"
-#include "x-wrapper/window.hh"
+#include "stack.hh"
 #include "workspace.hh"
 #include "rule.hh"
+#include "x-wrapper/window.hh"
 
 #include <unordered_map>
 #include <vector>
@@ -57,6 +58,11 @@ public:
     void set_marked(client_ptr_t);
     void jump_marked();
 
+    void register_window_to_stack(windowstack_window_t);
+    void unregister_window_from_stack(x_wrapper::window_t);
+    void raise_client(client_ptr_t);
+    void apply_layering();
+
     void sync_workspace_focus();
 
 private:
@@ -75,6 +81,8 @@ private:
 
     client_ptr_t m_marked_client;
     client_ptr_t m_focused_client;
+
+    windowstack_t m_windowstack;
 
 };
 

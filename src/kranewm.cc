@@ -36,6 +36,7 @@ kranewm_t::setup()
     sidebar.resize({SIDEBAR_WIDTH, root_attrs.get().height}).move({0, 0});
     m_ewmh.set_strut_property(sidebar, SIDEBAR_WIDTH, 0, 0, 0);
     sidebar.set_background_color(SIDEBAR_BG_COLOR);
+    m_ewmh.set_window_type_property(sidebar, "BELOW");
     sidebar.map();
 
     m_ewmh.clear_client_list_property();

@@ -182,6 +182,7 @@ public:
 
     void set_active_window_property(x_wrapper::window_t);
     void set_window_state_property(x_wrapper::window_t, netwmid_t = netwmid_t::netlast);
+    void set_window_type_property(x_wrapper::window_t, const ::std::string&);
 
     void set_wm_desktop_property(x_wrapper::window_t, unsigned);
 

@@ -41,7 +41,20 @@ x_events_t::register_window(x_wrapper::window_t win)
     if (m_ewmh.check_apply_strut(win))
         m_clients.active_workspace()->arrange();
 
-    if (!x_wrapper::should_manage(win) || win.is_of_type("DOCK")) {
+    if (win.is_of_type("NOTIFICATION")) {
+        m_clients.register_window_to_stack({win, layer_t::notification, true});
+        m_ewmh.set_frame_extents(win, true);
+        return;
+    }
+
+    if (win.is_of_type("DOCK")) {
+        m_clients.register_window_to_stack({win, layer_t::dock, true});
+        m_ewmh.set_frame_extents(win, true);
+        return;
+    }
+
+    if (!x_wrapper::should_manage(win)) {
+        m_clients.register_window_to_stack({win, layer_t::normal, true});
         m_ewmh.set_frame_extents(win, true);
         return;
     }
@@ -56,6 +69,7 @@ x_events_t::register_window(x_wrapper::window_t win)
     x_wrapper::window_t parent = x_wrapper::get_transient_for(win);
     if (parent) {
         if (!x_wrapper::should_manage(parent)) {
+            m_clients.register_window_to_stack({parent, layer_t::normal, true});
             m_ewmh.set_frame_extents(parent, true);
             return;
         }
@@ -511,7 +525,12 @@ x_events_t::on_unmap_notify()
     x_wrapper::window_t win = m_current_event.get().xunmap.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
-    if (!client || client->redeem_expect(clientexpect_t::iconify)
+    if (!client) {
+        m_clients.unregister_window_from_stack(win);
+        return;
+    }
+
+    if (client->redeem_expect(clientexpect_t::iconify)
         || client->redeem_expect(clientexpect_t::withdraw))
     {
         return;
@@ -520,15 +539,16 @@ x_events_t::on_unmap_notify()
     /* if (client->iconified) */
     /*     cm_.toggle_iconify(client); */
 
-    pos_t pos = client->pos;
-    x_wrapper::window_t frame = client->frame;
-
     /* if (client->floating) { */
     /*     xh_.destroy_window(client->float_indicator); */
     /*     client->float_indicator = None; */
     /* } */
 
+    pos_t pos = client->pos;
+    x_wrapper::window_t frame = client->frame;
+
     client->unmap();
     win.reparent(pos);
+    m_clients.unregister_window_from_stack(win);
     frame.destroy();
 }
