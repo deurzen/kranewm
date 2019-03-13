@@ -32,7 +32,7 @@ public:
         x_wrapper::select_input(m_sidebarwin, ExposureMask);
 
         m_ewmh.set_strut_property(m_sidebarwin, SIDEBAR_WIDTH + 2, 0, 0, 0);
-        m_ewmh.set_window_type_property(m_sidebarwin, "DESKTOP");
+        m_ewmh.set_window_type_property(m_sidebarwin, "DOCK");
 
         m_ewmh.set_wm_name_property(m_sidebarwin, WMNAME);
         m_ewmh.set_supporting_wm_check_property(x_wrapper::g_root, m_sidebarwin);

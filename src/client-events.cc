@@ -99,7 +99,7 @@ client_events_t::on_change_client_fullscreen()
         client->float_dim = former_state.float_dim;
         client->pos = former_state.pos;
         client->dim = former_state.dim;
-        if (m_clients.client_user_workspace(client)->in_float_layout())
+        if (m_clients.client_user_workspace(client)->in_float_layout() || client->floating)
             client->frame.resize(client->float_dim).move(client->float_pos);
         else
             m_clients.client_user_workspace(client)->arrange();

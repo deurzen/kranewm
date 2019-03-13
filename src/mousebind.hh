@@ -28,7 +28,7 @@ struct mouseshortcut_t
 
     inline bool operator==(const mouseshortcut_t& ms) const
     {
-        return ms.button == button && ms.mask == mask;
+        return ms.button == button && ms.mask == mask && ms.on_client == on_client;
     }
 
     unsigned button;
@@ -43,7 +43,7 @@ namespace std
     {
         std::size_t operator()(const mouseshortcut_t& ms) const
         {
-            return ms.button + 10000 * ms.mask;
+            return ms.button + 10000 * ms.mask + ms.on_client;
         }
     };
 }

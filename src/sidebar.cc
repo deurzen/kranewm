@@ -77,9 +77,11 @@ sidebar_t::draw_workspacenumber()
         if (nr == m_workspacenumber) {
             m_graphicscontext.set_foreground(SIDEBAR_ACTIVE_WORKSPACE_COLOR);
             m_activity_indicators[nr - 1].set_border_color(SIDEBAR_ACTIVE_WORKSPACE_COLOR);
+            m_activity_indicators[nr - 1].set_background_color(SIDEBAR_ACTIVE_WORKSPACE_COLOR);
         } else {
             m_graphicscontext.set_foreground(SIDEBAR_WORKSPACES_COLOR);
             m_activity_indicators[nr - 1].set_border_color(SIDEBAR_WORKSPACES_COLOR);
+            m_activity_indicators[nr - 1].set_background_color(SIDEBAR_BG_COLOR);
         }
 
         m_graphicscontext.draw_string(current_pos, ::std::to_string(nr));

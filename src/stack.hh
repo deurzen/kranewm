@@ -10,10 +10,10 @@ enum class layer_t
 { // bottom to top
     desktop,
     below,
-    indicator,
     normal,
     floating,
     dock,
+    indicator,
     above,
     fullscreen,
     notification
@@ -51,10 +51,10 @@ private:
 
     ::std::list<x_wrapper::window_t> m_desktop_windows;
     ::std::list<x_wrapper::window_t> m_below_windows;
-    ::std::list<x_wrapper::window_t> m_indicator_windows;
     ::std::list<x_wrapper::window_t> m_normal_windows;
     ::std::list<x_wrapper::window_t> m_floating_windows;
     ::std::list<x_wrapper::window_t> m_dock_windows;
+    ::std::list<x_wrapper::window_t> m_indicator_windows;
     ::std::list<x_wrapper::window_t> m_above_windows;
     ::std::list<x_wrapper::window_t> m_fullscreen_windows;
     ::std::list<x_wrapper::window_t> m_notification_windows;
