@@ -268,6 +268,15 @@ x_events_t::on_configure_request()
         int conf_flags = win_event.get().xconfigurerequest.value_mask;
         int perm_flags = CWWidth | CWHeight;
 
+        if (conf_flags & CWX)
+            client->float_pos.x = m_current_event.get().xconfigurerequest.x;
+        if (conf_flags & CWY)
+            client->float_pos.y = m_current_event.get().xconfigurerequest.y;
+        if (conf_flags & CWWidth)
+            client->float_dim.w = m_current_event.get().xconfigurerequest.width;
+        if (conf_flags & CWHeight)
+            client->float_dim.h = m_current_event.get().xconfigurerequest.height;
+
         conf_flags &= perm_flags;
         if (conf_flags)
             x_wrapper::propagate_configure_request(win_event, conf_flags);
