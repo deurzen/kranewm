@@ -31,7 +31,7 @@ public:
         m_sidebarwin.resize({SIDEBAR_WIDTH, root_attrs.get().height}).move({0, 0});
         x_wrapper::select_input(m_sidebarwin, ExposureMask);
 
-        m_ewmh.set_strut_property(m_sidebarwin, SIDEBAR_WIDTH, 0, 0, 0);
+        m_ewmh.set_strut_property(m_sidebarwin, SIDEBAR_WIDTH + 2, 0, 0, 0);
         m_ewmh.set_window_type_property(m_sidebarwin, "DESKTOP");
 
         m_ewmh.set_wm_name_property(m_sidebarwin, WMNAME);
