@@ -92,6 +92,14 @@ namespace x_wrapper
             return *this;
         }
 
+        window_t& lower()
+        {
+            disable_substructure_events();
+            XLowerWindow(g_dpy, val);
+            enable_substructure_events();
+            return *this;
+        }
+
         window_t& reparent(pos_t pos, window_t parent = g_root)
         {
             disable_substructure_events();
@@ -104,6 +112,14 @@ namespace x_wrapper
         window_t& set_border_color(unsigned long color)
         {
             XSetWindowBorder(g_dpy, val, color);
+            return *this;
+        }
+
+        window_t& set_border_width(int width)
+        {
+            enable_substructure_events();
+            XSetWindowBorderWidth(g_dpy, val, width);
+            disable_substructure_events();
             return *this;
         }
 

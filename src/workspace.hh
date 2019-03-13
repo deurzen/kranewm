@@ -9,7 +9,7 @@
 #include <string>
 
 
-const ::std::map<unsigned, ::std::string> USER_WORKSPACES({
+static const ::std::map<unsigned, ::std::string> USER_WORKSPACES({
 //    nr   name
     { 1,   "1:main" },
     { 2,   "2:web"  },

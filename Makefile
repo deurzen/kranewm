@@ -31,7 +31,6 @@ bin:
 
 obj:
 	@[ -d obj ] || mkdir obj
-	@[ -d obj/x-wrapper ] || mkdir obj/x-wrapper
 
 notify-build:
 	@echo building

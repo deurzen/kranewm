@@ -1,5 +1,4 @@
 #include "sidebar.hh"
-#include "workspace.hh"
 
 
 void
@@ -32,6 +31,21 @@ sidebar_t::set_numberclients(unsigned n)
     return *this;
 }
 
+sidebar_t&
+sidebar_t::record_activity(unsigned workspace)
+{
+    ++m_workspace_activity[workspace - 1];
+    return *this;
+}
+
+sidebar_t&
+sidebar_t::erase_activity(unsigned workspace)
+{
+    if (m_workspace_activity[workspace - 1] > 0)
+        --m_workspace_activity[workspace - 1];
+    return *this;
+}
+
 
 void
 sidebar_t::draw_layoutsymbol()
@@ -48,15 +62,25 @@ void
 sidebar_t::draw_workspacenumber()
 {
     m_graphicscontext.set_foreground(SIDEBAR_WORKSPACES_COLOR);
-
     pos_t current_pos = {(SIDEBAR_WIDTH - m_graphicscontext.get_font_dim().w) / 2,
         2 * (4 + m_graphicscontext.get_font_dim().h)};
 
+    for (size_t i = 0; i < m_activity_indicators.size(); ++i) {
+        if (m_workspace_activity[i]) {
+            m_sidebarwin.lower();
+            m_activity_indicators[i].map();
+        } else
+            m_activity_indicators[i].unmap();
+    }
+
     for (auto& [nr,_] : USER_WORKSPACES) {
-        if (nr == m_workspacenumber)
+        if (nr == m_workspacenumber) {
             m_graphicscontext.set_foreground(SIDEBAR_ACTIVE_WORKSPACE_COLOR);
-        else
+            m_activity_indicators[nr - 1].set_border_color(SIDEBAR_ACTIVE_WORKSPACE_COLOR);
+        } else {
             m_graphicscontext.set_foreground(SIDEBAR_WORKSPACES_COLOR);
+            m_activity_indicators[nr - 1].set_border_color(SIDEBAR_WORKSPACES_COLOR);
+        }
 
         m_graphicscontext.draw_string(current_pos, ::std::to_string(nr));
         current_pos.y += (4 + m_graphicscontext.get_font_dim().h);

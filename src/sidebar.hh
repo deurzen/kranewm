@@ -5,19 +5,12 @@
 #include "decoration.hh"
 #include "ewmh.hh"
 #include "layout.hh"
+#include "workspace.hh"
 #include "x-wrapper/window.hh"
 #include "x-wrapper/attributes.hh"
 #include "x-wrapper/graphics.hh"
 
-enum textposition_t
-{
-    top_1,
-    top_2,
-    top_3,
-    mid_1,
-    bot_1,
-    bot_2
-};
+#include <vector>
 
 
 class sidebar_t
@@ -30,9 +23,8 @@ public:
           m_layoutsymbol(layout_t::floating),
           m_workspacenumber(0),
           m_numberclients(0),
-          m_layoutsymbol_pos(top_1),
-          m_workspacenumber_pos(top_2),
-          m_numberclients_pos(bot_1)
+          m_workspace_activity(USER_WORKSPACES.size(), 0u),
+          m_activity_indicators(USER_WORKSPACES.size())
     {
         auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
         m_sidebarwin.set_background_color(SIDEBAR_BG_COLOR);
@@ -50,6 +42,13 @@ public:
 
         m_graphicscontext.set_foreground(SIDEBAR_FG_COLOR);
         m_graphicscontext.set_background(SIDEBAR_BG_COLOR);
+
+        for (size_t i = 0; i < m_activity_indicators.size(); ++i) {
+            m_activity_indicators[i] = x_wrapper::create_window(true);
+            m_ewmh.set_window_type_property(m_activity_indicators[i], "INDICATOR");
+            m_activity_indicators[i].set_border_color(SIDEBAR_WORKSPACES_COLOR).resize({1, 1}).move({(SIDEBAR_WIDTH - 2),
+                (int)((1.4f + i) * (4 + m_graphicscontext.get_font_dim().h))});
+        }
     }
 
     void draw();
@@ -58,11 +57,12 @@ public:
     sidebar_t& set_workspacenumber(unsigned);
     sidebar_t& set_numberclients(unsigned);
 
+    sidebar_t& record_activity(unsigned);
+    sidebar_t& erase_activity(unsigned);
+
     x_wrapper::window_t get_win() const;
 
 private:
-    pos_t get_position(textposition_t);
-
     void draw_layoutsymbol();
     void draw_workspacenumber();
     void draw_numberclients();
@@ -75,9 +75,8 @@ private:
     unsigned m_workspacenumber;
     unsigned m_numberclients;
 
-    textposition_t m_layoutsymbol_pos;
-    textposition_t m_workspacenumber_pos;
-    textposition_t m_numberclients_pos;
+    ::std::vector<int> m_workspace_activity;
+    ::std::vector<x_wrapper::window_t> m_activity_indicators;
 
 };
 

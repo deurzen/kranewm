@@ -46,6 +46,8 @@ x_events_t::register_window(x_wrapper::window_t win)
         m_windowstack.add_to_stack({win, layer_t::desktop});
     else if (win.is_of_type("BELOW"))
         m_windowstack.add_to_stack({win, layer_t::below});
+    else if (win.is_of_type("INDICATOR"))
+        m_windowstack.add_to_stack({win, layer_t::indicator});
     else if (win.is_of_type("NOTIFICATION"))
         m_windowstack.add_to_stack({win, layer_t::notification});
     else if (win.is_of_type("DOCK")) {
@@ -348,6 +350,7 @@ x_events_t::on_destroy_notify()
     if (client->parent)
         client->parent->disown_child(client);
 
+    m_sidebar.erase_activity(m_clients.client_user_workspace(client)->get_number()).draw();
     m_clients.unmanage_client(client);
     m_clients.active_workspace()->arrange();
     m_sidebar.set_numberclients(m_clients.active_workspace()->get_all().size()).draw();
