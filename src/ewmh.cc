@@ -88,6 +88,13 @@ ewmh_t::set_window_state_property(x_wrapper::window_t win, netwmid_t i)
 }
 
 void
+ewmh_t::set_window_state_property(x_wrapper::window_t win, const ::std::string& state)
+{
+    x_wrapper::replace_property<x_wrapper::atom_t>(win,
+        {"_NET_WM_STATE", x_wrapper::get_atom("_NET_WM_STATE_" + state)});
+}
+
+void
 ewmh_t::set_window_type_property(x_wrapper::window_t win, const ::std::string& type)
 {
     x_wrapper::replace_property<x_wrapper::atom_t>(win,

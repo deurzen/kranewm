@@ -11,15 +11,15 @@
 
 #include <set>
 
-enum class clientaction_t
+enum class clientaction_t : int
 {
-    add,
-    remove,
-    toggle
+    remove = 0,
+    add    = 1,
+    toggle = 2
 };
 
 
-enum class clientexpect_t
+enum class clientexpect_t : int
 {
     noeffect = 0,
     map       = 1 << 0,
@@ -33,6 +33,7 @@ typedef struct ::std::set<client_ptr_t> client_ptr_set_t;
 
 typedef struct client_t
 {
+    client_t() = default;
     client_t(x_wrapper::window_t _win, x_wrapper::window_t _frame,
         sizeconstraints_t _sizeconstraints, rule_t& rule)
         : win(_win), frame(_frame), sizeconstraints(_sizeconstraints),

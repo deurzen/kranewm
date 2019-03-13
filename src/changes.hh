@@ -12,6 +12,7 @@ enum class change_t
     noop,
     client_focus,
     client_destroy,
+    client_fullscreen,
     client_workspace,
     workspace_active,
 };
@@ -88,6 +89,28 @@ inline clientdestroychange_ptr_t change_client_destroy(client_ptr_t client, work
 inline clientdestroychange_ptr_t change_client_destroy(clientchange_ptr_t change)
 {
     return dynamic_cast<clientdestroychange_ptr_t>(change);
+}
+
+
+
+typedef struct clientfullscreenchange_t : clientchange_t
+{
+    explicit clientfullscreenchange_t(client_ptr_t _client, client_t _former_state)
+      : clientchange_t(change_t::client_fullscreen), client(_client), former_state(_former_state) {}
+
+    client_ptr_t client;
+    client_t former_state;
+
+}* clientfullscreenchange_ptr_t;
+
+inline clientfullscreenchange_ptr_t change_client_fullscreen(client_ptr_t client, client_t former_state)
+{
+    return new clientfullscreenchange_t(client, former_state);
+}
+
+inline clientfullscreenchange_ptr_t change_client_fullscreen(clientchange_ptr_t change)
+{
+    return dynamic_cast<clientfullscreenchange_ptr_t>(change);
 }
 
 

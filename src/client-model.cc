@@ -176,14 +176,14 @@ client_model_t::cycle_focus_backward()
 void
 client_model_t::start_moving(client_ptr_t client)
 {
-    if (client_user_workspace(client)->in_float_layout() || client->floating)
+    if ((client_user_workspace(client)->in_float_layout() || client->floating) && !client->fullscreen)
         client_to_workspace(client, m_move_workspace);
 }
 
 void
 client_model_t::start_resizing(client_ptr_t client)
 {
-    if (client_user_workspace(client)->in_float_layout() || client->floating)
+    if ((client_user_workspace(client)->in_float_layout() || client->floating) && !client->fullscreen)
         client_to_workspace(client, m_resize_workspace);
 }
 
@@ -264,6 +264,43 @@ client_model_t::change_active_workspace(user_workspace_ptr_t workspace)
     m_changequeue.add(change_workspace_active(m_current_workspace, workspace));
     m_current_workspace = workspace;
     sync_workspace_focus();
+}
+
+void
+client_model_t::set_fullscreen(client_ptr_t client, clientaction_t action)
+{
+    switch (action) {
+    case clientaction_t::add:
+        {
+            if (m_fullscreen_clients.count(client))
+                return;
+
+            client->fullscreen = true;
+            m_changequeue.add(change_client_fullscreen(client, *client));
+            m_fullscreen_clients[client] = *client;
+            m_windowstack.relayer_window({client->frame, layer_t::fullscreen});
+            m_windowstack.raise_window(client->frame).apply();
+        }
+        break;
+    case clientaction_t::remove:
+        {
+            if (!m_fullscreen_clients.count(client))
+                return;
+
+            client->fullscreen = false;
+            m_changequeue.add(change_client_fullscreen(client, m_fullscreen_clients[client]));
+            erase_find(m_fullscreen_clients, client);
+            m_windowstack.relayer_window({client->frame, client_user_workspace(client)->in_float_layout()
+                || !client->floating ? layer_t::normal : layer_t::floating});
+            m_windowstack.raise_window(client->frame).apply();
+        }
+        break;
+    case clientaction_t::toggle:
+        set_fullscreen(client, client->fullscreen
+            ? clientaction_t::remove : clientaction_t::add);
+        return;
+    default: break;
+    }
 }
 
 void

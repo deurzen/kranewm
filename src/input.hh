@@ -28,17 +28,17 @@ public:
           m_running(running),
           m_mousebinds({
               //  keysym              mask     client  operation
-              { { FORWARD_BUTTON,      NOMASK,  NO },  mouseop_t::goto_next_ws   },
-              { { BACKWARD_BUTTON,     NOMASK,  NO },  mouseop_t::goto_prev_ws   },
-              { { SCROLL_UP_BUTTON,   MODMASK,  NO },  mouseop_t::goto_next_ws   },
-              { { SCROLL_DOWN_BUTTON, MODMASK,  NO },  mouseop_t::goto_prev_ws   },
+              { { BACKWARD_BUTTON,     NOMASK,  NO },  mouseop_t::goto_next_ws   },
+              { { FORWARD_BUTTON,      NOMASK,  NO },  mouseop_t::goto_prev_ws   },
+              { { SCROLL_DOWN_BUTTON, MODMASK,  NO },  mouseop_t::goto_next_ws   },
+              { { SCROLL_UP_BUTTON,   MODMASK,  NO },  mouseop_t::goto_prev_ws   },
               { { LEFT_BUTTON,        MODMASK, YES },  mouseop_t::client_move    },
               { { RIGHT_BUTTON,       MODMASK, YES },  mouseop_t::client_resize  },
               { { MIDDLE_BUTTON,      MODMASK, YES },  mouseop_t::client_center  },
-              { { FORWARD_BUTTON,     MODMASK, YES },  mouseop_t::client_next_ws },
-              { { BACKWARD_BUTTON,    MODMASK, YES },  mouseop_t::client_prev_ws },
-              { { SCROLL_UP_BUTTON,   MODMASK, YES },  mouseop_t::goto_next_ws   },
-              { { SCROLL_DOWN_BUTTON, MODMASK, YES },  mouseop_t::goto_prev_ws   },
+              { { BACKWARD_BUTTON,    MODMASK, YES },  mouseop_t::client_next_ws },
+              { { FORWARD_BUTTON,     MODMASK, YES },  mouseop_t::client_prev_ws },
+              { { SCROLL_DOWN_BUTTON, MODMASK, YES },  mouseop_t::goto_next_ws   },
+              { { SCROLL_UP_BUTTON,   MODMASK, YES },  mouseop_t::goto_prev_ws   },
           }),
           m_keybinds({
               //  keysym           mask                   operation

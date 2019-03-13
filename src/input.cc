@@ -466,7 +466,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
             m_clients.active_workspace()->arrange();
         }
         break;
-    /* case TOGGLE_FULLSCREEN:         cm_.toggle_fullscreen(client);                 break; */
+    case keyop_t::toggle_fullscreen: m_clients.set_fullscreen(client, clientaction_t::toggle); break;
     /* case TOGGLE_SHADE:              cm_.toggle_shade(client);                      break; */
     /* case TOGGLE_ICONIFY:            cm_.toggle_iconify(client);                    break; */
     case keyop_t::center_client:   client->center();                                  break;

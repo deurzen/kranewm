@@ -56,6 +56,7 @@ public:
     void change_active_workspace(unsigned);
     void change_active_workspace(user_workspace_ptr_t = nullptr);
 
+    void set_fullscreen(client_ptr_t, clientaction_t);
     void set_marked(client_ptr_t);
     void jump_marked();
 
@@ -75,6 +76,8 @@ private:
 
     ::std::unordered_map<x_wrapper::window_t, client_ptr_t> m_client_windows;
     ::std::unordered_map<client_ptr_t, user_workspace_ptr_t> m_client_workspaces;
+
+    ::std::unordered_map<client_ptr_t, client_t> m_fullscreen_clients;
 
     client_ptr_t m_marked_client;
     client_ptr_t m_focused_client;

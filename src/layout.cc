@@ -19,7 +19,7 @@ layouthandler_t::layout_tile(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating; }), clients.end());
+        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
 
     if (clients.empty())
         return;
@@ -82,7 +82,7 @@ layouthandler_t::layout_deck(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating; }), clients.end());
+        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
 
     if (clients.empty())
         return;
@@ -139,7 +139,7 @@ layouthandler_t::layout_doubledeck(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating; }), clients.end());
+        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
 
     if (clients.empty())
         return;
@@ -190,7 +190,7 @@ layouthandler_t::layout_grid(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating; }), clients.end());
+        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
 
     if (clients.empty())
         return;
@@ -250,7 +250,7 @@ layouthandler_t::layout_monocle(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating; }), clients.end());
+        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
 
     if (clients.empty())
         return;

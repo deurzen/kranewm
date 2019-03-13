@@ -12,10 +12,11 @@ client_events_t::process_queued_changes()
 {
     while ((m_current_change = m_changes.next())) {
         switch (m_current_change->type) {
-        case change_t::client_focus:     on_change_client_focus();     break;
-        case change_t::client_destroy:   on_change_client_destroy();   break;
-        case change_t::client_workspace: on_change_client_workspace(); break;
-        case change_t::workspace_active: on_change_workspace_active(); break;
+        case change_t::client_focus:      on_change_client_focus();      break;
+        case change_t::client_destroy:    on_change_client_destroy();    break;
+        case change_t::client_fullscreen: on_change_client_fullscreen(); break;
+        case change_t::client_workspace:  on_change_client_workspace();  break;
+        case change_t::workspace_active:  on_change_workspace_active();  break;
         default: break;
         }
 
@@ -77,6 +78,32 @@ client_events_t::on_change_client_destroy()
     }
 
     delete client;
+}
+
+void
+client_events_t::on_change_client_fullscreen()
+{
+    auto change = change_client_fullscreen(m_current_change);
+    auto client = change->client;
+    auto former_state = change->former_state;
+
+    if (client->fullscreen) {
+        m_ewmh.set_window_state_property(client->win, "FULLSCREEN");
+        auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+        client->resize({root_attrs.w() - SIDEBAR_WIDTH, root_attrs.h() + BORDER_HEIGHT}, true);
+        client->move({m_ewmh.get_left_strut(), -BORDER_HEIGHT - 1}, true);
+    } else {
+        m_ewmh.set_window_state_property(client->win);
+        client->floating = former_state.floating;
+        client->float_pos = former_state.float_pos;
+        client->float_dim = former_state.float_dim;
+        client->pos = former_state.pos;
+        client->dim = former_state.dim;
+        if (m_clients.client_user_workspace(client)->in_float_layout())
+            client->frame.resize(client->float_dim).move(client->float_pos);
+        else
+            m_clients.client_user_workspace(client)->arrange();
+    }
 }
 
 void

@@ -24,6 +24,7 @@ private:
     void on_change_client_focus();
     void on_change_client_destroy();
     void on_change_client_workspace();
+    void on_change_client_fullscreen();
 
     void on_change_workspace_active();
 
