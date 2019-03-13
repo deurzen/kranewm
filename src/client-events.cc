@@ -122,7 +122,9 @@ client_events_t::on_change_workspace_active()
     unmap_all(from->get_all());
 
     to->arrange();
-    m_sidebar.set_workspacenumber(m_clients.active_workspace()->get_number()).draw();
+    m_sidebar.set_layoutsymbol(to->get_layout());
+    m_sidebar.set_workspacenumber(to->get_number());
+    m_sidebar.set_numberclients(to->get_all().size()).draw();
 }
 
 
@@ -185,7 +187,7 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
     }
 
     m_ewmh.set_wm_desktop_property(client->win, user_workspace(to)->get_number() - 1);
-    m_sidebar.set_numberclients(m_clients.active_workspace()->get_all().size()).draw();
+    m_sidebar.set_numberclients(m_clients.active_workspace()->get_all().size());
     m_sidebar.record_activity(user_workspace(to)->get_number()).draw();
 }
 
