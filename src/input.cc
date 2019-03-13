@@ -141,9 +141,13 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::floating:
         {
             m_clients.active_workspace()->set_layout(layout_t::floating);
-            for (auto& client : m_clients.active_workspace()->get_all())
+            for (auto& client : m_clients.active_workspace()->get_all()) {
                 if (client->floating)
                     m_windowstack.relayer_window({client->frame, layer_t::normal}).raise_window(client->frame);
+                for (auto& child : client->children)
+                    if (child->floating)
+                        m_windowstack.relayer_window({child->frame, layer_t::normal}).raise_window(child->frame);
+            }
             m_windowstack.apply();
             m_clients.active_workspace()->arrange();
             m_sidebar.set_layoutsymbol(layout_t::floating).draw();
@@ -153,9 +157,13 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             auto workspace = m_clients.active_workspace();
             workspace->set_layout(layout_t::tile).arrange();
-            for (auto& client : workspace->get_all())
+            for (auto& client : workspace->get_all()) {
                 if (client->floating)
                     m_windowstack.relayer_window({client->frame, layer_t::floating}).raise_window(client->frame);
+                for (auto& child : client->children)
+                    if (child->floating)
+                        m_windowstack.relayer_window({child->frame, layer_t::floating}).raise_window(child->frame);
+            }
 
             m_windowstack.apply();
             m_clients.active_workspace()->arrange();
@@ -166,9 +174,13 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             auto workspace = m_clients.active_workspace();
             workspace->set_layout(layout_t::deck).arrange();
-            for (auto& client : workspace->get_all())
+            for (auto& client : workspace->get_all()) {
                 if (client->floating)
                     m_windowstack.relayer_window({client->frame, layer_t::floating}).raise_window(client->frame);
+                for (auto& child : client->children)
+                    if (child->floating)
+                        m_windowstack.relayer_window({child->frame, layer_t::floating}).raise_window(child->frame);
+            }
 
             m_windowstack.apply();
             m_clients.active_workspace()->arrange();
@@ -179,9 +191,13 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             auto workspace = m_clients.active_workspace();
             workspace->set_layout(layout_t::doubledeck).arrange();
-            for (auto& client : workspace->get_all())
+            for (auto& client : workspace->get_all()) {
                 if (client->floating)
                     m_windowstack.relayer_window({client->frame, layer_t::floating}).raise_window(client->frame);
+                for (auto& child : client->children)
+                    if (child->floating)
+                        m_windowstack.relayer_window({child->frame, layer_t::floating}).raise_window(child->frame);
+            }
 
             m_windowstack.apply();
             m_clients.active_workspace()->arrange();
@@ -192,9 +208,13 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             auto workspace = m_clients.active_workspace();
             workspace->set_layout(layout_t::grid).arrange();
-            for (auto& client : workspace->get_all())
+            for (auto& client : workspace->get_all()) {
                 if (client->floating)
                     m_windowstack.relayer_window({client->frame, layer_t::floating}).raise_window(client->frame);
+                for (auto& child : client->children)
+                    if (child->floating)
+                        m_windowstack.relayer_window({child->frame, layer_t::floating}).raise_window(child->frame);
+            }
 
             m_windowstack.apply();
             m_clients.active_workspace()->arrange();
@@ -205,9 +225,13 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             auto workspace = m_clients.active_workspace();
             workspace->set_layout(layout_t::monocle);
-            for (auto& client : workspace->get_all())
+            for (auto& client : workspace->get_all()) {
                 if (client->floating)
                     m_windowstack.relayer_window({client->frame, layer_t::floating}).raise_window(client->frame);
+                for (auto& child : client->children)
+                    if (child->floating)
+                        m_windowstack.relayer_window({child->frame, layer_t::floating}).raise_window(child->frame);
+            }
 
             m_windowstack.apply();
             m_clients.active_workspace()->arrange();
@@ -219,13 +243,21 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             auto workspace = m_clients.active_workspace();
             workspace->set_layout(layout_t::toggle);
             if (workspace->in_float_layout()) {
-                for (auto& client : workspace->get_all())
+                for (auto& client : workspace->get_all()) {
                     if (client->floating)
                         m_windowstack.relayer_window({client->frame, layer_t::normal}).raise_window(client->frame);
+                    for (auto& child : client->children)
+                        if (child->floating)
+                            m_windowstack.relayer_window({child->frame, layer_t::normal}).raise_window(child->frame);
+                }
             } else
-                for (auto& client : workspace->get_all())
+                for (auto& client : workspace->get_all()) {
                     if (client->floating)
                         m_windowstack.relayer_window({client->frame, layer_t::floating}).raise_window(client->frame);
+                    for (auto& child : client->children)
+                        if (child->floating)
+                            m_windowstack.relayer_window({child->frame, layer_t::floating}).raise_window(child->frame);
+                }
 
             m_windowstack.apply();
             workspace->arrange();
@@ -418,11 +450,21 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
     case keyop_t::move_client_fwd: m_clients.active_workspace()->move_forward();      break;
     case keyop_t::move_client_bck: m_clients.active_workspace()->move_backward();     break;
     case keyop_t::toggle_float:
-        client->set_float(clientaction_t::toggle).resize(client->float_dim).move(client->float_pos);
-        if (!m_clients.active_workspace()->in_float_layout())
-            m_windowstack.relayer_window({client->frame, client->floating ? layer_t::floating : layer_t::normal});
-        m_windowstack.raise_window(client->frame).apply();
-        m_clients.active_workspace()->arrange();
+        {
+            if (client->parent)
+                return;
+
+            client->set_float(clientaction_t::toggle).resize(client->float_dim).move(client->float_pos);
+            if (!m_clients.active_workspace()->in_float_layout())
+                m_windowstack.relayer_window({client->frame, client->floating ? layer_t::floating : layer_t::normal});
+
+            m_windowstack.raise_window(client->frame);
+            for (auto& child : client->children)
+                m_windowstack.raise_window(child->frame);
+
+            m_windowstack.apply();
+            m_clients.active_workspace()->arrange();
+        }
         break;
     /* case TOGGLE_FULLSCREEN:         cm_.toggle_fullscreen(client);                 break; */
     /* case TOGGLE_SHADE:              cm_.toggle_shade(client);                      break; */
@@ -590,8 +632,12 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 m_clients.sync_workspace_focus();
 
                 auto clients = m_clients.active_workspace()->get_all();
-                if (clients.size())
-                    m_windowstack.raise_window(clients[0]->frame).apply();
+                if (clients.size()) {
+                    m_windowstack.raise_window(clients[0]->frame);
+                    for (auto& child : clients[0]->children)
+                        m_windowstack.raise_window(child->frame);
+                    m_windowstack.apply();
+                }
             }
         }
         break;
@@ -607,8 +653,12 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
 
                 unsigned n_master = m_clients.active_workspace()->get_n_master();
                 auto clients = m_clients.active_workspace()->get_all();
-                if (clients.size() && n_master < clients.size())
-                    m_windowstack.raise_window(clients[n_master]->frame).apply();
+                if (clients.size() && n_master < clients.size()) {
+                    m_windowstack.raise_window(clients[n_master]->frame);
+                    for (auto& child : clients[n_master]->children)
+                        m_windowstack.raise_window(child->frame);
+                    m_windowstack.apply();
+                }
             }
         }
         break;
@@ -624,8 +674,12 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
 
                 unsigned n_master = m_clients.active_workspace()->get_n_master();
                 auto clients = m_clients.active_workspace()->get_all();
-                if (clients.size() && n_master < clients.size())
-                    m_windowstack.raise_window(clients[n_master]->frame).apply();
+                if (clients.size() && n_master < clients.size()) {
+                    m_windowstack.raise_window(clients[n_master]->frame);
+                    for (auto& child : clients[n_master]->children)
+                        m_windowstack.raise_window(child->frame);
+                    m_windowstack.apply();
+                }
             }
         }
         break;
@@ -640,8 +694,12 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 m_clients.sync_workspace_focus();
 
                 auto clients = m_clients.active_workspace()->get_all();
-                if (clients.size())
-                    m_windowstack.raise_window(clients[0]->frame).apply();
+                if (clients.size()) {
+                    m_windowstack.raise_window(clients[0]->frame);
+                    for (auto& child : clients[0]->children)
+                        m_windowstack.raise_window(child->frame);
+                    m_windowstack.apply();
+                }
             }
         }
         break;

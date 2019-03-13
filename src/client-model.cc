@@ -47,7 +47,6 @@ client_model_t::focused_client() const
 void
 client_model_t::manage_client(client_ptr_t client, rule_t rule)
 {
-    m_windowstack.add_to_stack({client->frame, rule.floating ? layer_t::floating : layer_t::normal});
     m_client_windows[client->frame] = client;
     m_client_windows[client->win]   = client;
     m_managed_windows.push_back(client->win);
@@ -69,10 +68,16 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
         m_client_workspaces[client] = workspace;
         workspace->add_client(client);
         m_changequeue.add(change_client_workspace(client, nullptr, workspace));
+        m_windowstack.add_to_stack({client->frame,
+            !workspace->in_float_layout() && rule.floating
+                ? layer_t::floating : layer_t::normal});
     } else {
         m_client_workspaces[client] = m_current_workspace;
         m_current_workspace->add_client(client).arrange();
         m_changequeue.add(change_client_workspace(client, nullptr, m_current_workspace));
+        m_windowstack.add_to_stack({client->frame,
+            !m_current_workspace->in_float_layout() && rule.floating
+                ? layer_t::floating : layer_t::normal});
     }
 
     focus(client);
@@ -89,6 +94,15 @@ client_model_t::unmanage_client(client_ptr_t client)
     if (client->parent) {
         focus(client->parent);
         client->parent->disown_child(client);
+    }
+
+    if (is_moveresize_workspace(workspace)) {
+        if (is_resize_workspace(workspace))
+            stop_resizing(client);
+        else if (is_move_workspace(workspace))
+            stop_moving(client);
+
+        workspace = client_user_workspace(client);
     }
 
     workspace->remove_client(client);
@@ -119,6 +133,8 @@ client_model_t::focus(client_ptr_t client)
     m_changequeue.add(change_client_focus(m_focused_client, client));
     m_focused_client = client;
     m_windowstack.raise_window(client->frame);
+    for (auto& child : client->children)
+        m_windowstack.raise_window(child->frame);
     m_windowstack.apply();
 }
 

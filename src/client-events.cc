@@ -67,7 +67,16 @@ client_events_t::on_change_client_focus()
 void
 client_events_t::on_change_client_destroy()
 {
+    auto change    = change_client_destroy(m_current_change);
+    auto client    = change->client;
+    auto workspace = change->workspace;
 
+    if (is_moveresize_workspace(workspace)) {
+        x_wrapper::release_pointer();
+        m_x.exit_move_resize();
+    }
+
+    delete client;
 }
 
 void
@@ -86,13 +95,15 @@ client_events_t::on_change_client_workspace()
         default: break;
         }
 
-    if (from)
+    if (from) {
         switch (from->get_type()) {
         case workspacetype_t::move:   from_move_workspace(client, from);     break;
         case workspacetype_t::resize: from_resize_workspace(client, from);   break;
         case workspacetype_t::user:   from_user_workspace(client, from, to); break;
         default: break;
         }
+    } else
+        client->frame.grab();
 
     if (to)
         to->arrange();
@@ -111,8 +122,6 @@ client_events_t::on_change_workspace_active()
     unmap_all(from->get_all());
 
     to->arrange();
-
-    // TODO iconified clients
     m_sidebar.set_workspacenumber(m_clients.active_workspace()->get_number()).draw();
 }
 
@@ -178,7 +187,6 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
     m_ewmh.set_wm_desktop_property(client->win, user_workspace(to)->get_number() - 1);
     m_sidebar.set_numberclients(m_clients.active_workspace()->get_all().size()).draw();
     m_sidebar.record_activity(user_workspace(to)->get_number()).draw();
-
 }
 
 

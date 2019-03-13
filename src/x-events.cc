@@ -347,9 +347,6 @@ x_events_t::on_destroy_notify()
     x_wrapper::select_input(client->win, 0);
     x_wrapper::select_input(client->frame, 0);
 
-    if (client->parent)
-        client->parent->disown_child(client);
-
     m_sidebar.erase_activity(m_clients.client_user_workspace(client)->get_number()).draw();
     m_clients.unmanage_client(client);
     m_clients.active_workspace()->arrange();
@@ -514,6 +511,6 @@ x_events_t::on_unmap_notify()
 
     client->unmap();
     win.reparent(pos);
-    m_windowstack.remove_from_stack(win);
+    m_windowstack.remove_from_stack(frame);
     frame.destroy();
 }

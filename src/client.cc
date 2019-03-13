@@ -62,6 +62,7 @@ create_client(x_wrapper::window_t win, rule_t& rule)
     return client;
 }
 
+
 void
 update_offset(client_ptr_t client)
 {
@@ -88,6 +89,7 @@ update_offset(client_ptr_t client)
 void
 client_t::disown_child(client_ptr_t child)
 {
+    child->parent = nullptr;
     children.erase(child);
 }
 
