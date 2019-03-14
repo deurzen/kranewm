@@ -5,6 +5,9 @@ all: debug
 quick_all:
 	$(MAKE) -j39 all
 
+quick_build:
+	$(MAKE) -j39 build
+
 debug: quick_debug
 
 quick_debug:
