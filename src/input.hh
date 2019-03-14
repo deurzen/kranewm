@@ -171,7 +171,7 @@ public:
             x_wrapper::grab_key(shortcut.keysym, shortcut.mask);
 
         for (auto&& [shortcut,_] : m_mousebinds)
-            x_wrapper::grab_button(shortcut.button, shortcut.mask);
+            if (shortcut.mask) x_wrapper::grab_button(shortcut.button, shortcut.mask);
     }
 
     void process_mouse_input_global(XButtonEvent);
