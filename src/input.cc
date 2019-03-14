@@ -93,9 +93,9 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::rhythmboxstop:       fork_external("/usr/bin/rhythmbox-client --stop");                      break;
     case keyop_t::mpcrandom:           fork_external("/usr/bin/mpc random");                                   break;
     case keyop_t::mpcsingle:           fork_external("/usr/bin/mpc single");                                   break;
-    case keyop_t::volumeup:            fork_external("/usr/bin/pactl set-sink-volume 0 +10%");                 break;
-    case keyop_t::volumedown:          fork_external("/usr/bin/pactl set-sink-volume 0 -10%");                 break;
-    case keyop_t::volumemute:          fork_external("/usr/bin/pactl set-sink-mute 0 toggle");                 break;
+    case keyop_t::volumeup:            fork_external("/usr/bin/pactl set-sink-volume 2 +10%");                 break;
+    case keyop_t::volumedown:          fork_external("/usr/bin/pactl set-sink-volume 2 -10%");                 break;
+    case keyop_t::volumemute:          fork_external("/usr/bin/pactl set-sink-mute 2 toggle");                 break;
     case keyop_t::brightnessup15:      fork_external("/usr/bin/light -A 15");                                  break;
     case keyop_t::brightnessup5:       fork_external("/usr/bin/light -A 5");                                   break;
     case keyop_t::brightnessdown15:    fork_external("/usr/bin/light -U 15");                                  break;
