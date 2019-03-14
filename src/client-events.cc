@@ -15,6 +15,7 @@ client_events_t::process_queued_changes()
         case change_t::client_focus:      on_change_client_focus();      break;
         case change_t::client_destroy:    on_change_client_destroy();    break;
         case change_t::client_fullscreen: on_change_client_fullscreen(); break;
+        case change_t::client_urgent:     on_change_client_urgent();     break;
         case change_t::client_workspace:  on_change_client_workspace();  break;
         case change_t::workspace_active:  on_change_workspace_active();  break;
         default: break;
@@ -37,18 +38,11 @@ client_events_t::on_change_client_focus()
         if (from->urgent) from->frame.set_background_color(URG_COLOR);
         else from->frame.set_background_color(REG_COLOR);
 
-        // TODO floating indicator unmap
-
         from->frame.grab();
-        if (from->shaded) {
-            x_wrapper::select_input(from->frame, SHADED_FRAME_SELECTION);
-            from->frame.set_background_color(REG_SHADE_COLOR);
-            // TODO draw shaded frame title
-        } else
-            x_wrapper::select_input(from->frame, REG_FRAME_SELECTION);
     }
 
     if (to) {
+        if (to->urgent) to->urgent = false;
         if (x_wrapper::set_input_focus(to->win)) {
             m_ewmh.set_active_window_property(to->win);
             to->frame.set_background_color(SEL_COLOR);
@@ -57,8 +51,6 @@ client_events_t::on_change_client_focus()
             to->frame.set_background_color(REG_COLOR);
             to->frame.grab();
         }
-
-        // TODO floating indicator map
 
         if (to->shaded) to->frame.set_background_color(SEL_SHADE_COLOR);
     } else
@@ -104,6 +96,21 @@ client_events_t::on_change_client_fullscreen()
         else
             m_clients.client_user_workspace(client)->arrange();
     }
+}
+
+void
+client_events_t::on_change_client_urgent()
+{
+    auto change = change_client_urgent(m_current_change);
+    auto client = change->client;
+
+    if (client->focused) {
+        client->urgent = false;
+        client->frame.set_background_color(SEL_COLOR);
+    } else if (client->urgent)
+        client->frame.set_background_color(URG_COLOR);
+    else
+        client->frame.set_background_color(REG_COLOR);
 }
 
 void

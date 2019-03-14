@@ -134,11 +134,16 @@ client_model_t::focus(client_ptr_t client)
 
     m_current_workspace->set_focused(client);
     m_changequeue.add(change_client_focus(m_focused_client, client));
-    m_focused_client = client;
+
+    client->focused = true;
+    if (m_focused_client && m_focused_client != client)
+        m_focused_client->focused = false;
+
     m_windowstack.raise_window(client->frame);
     for (auto& child : client->children)
         m_windowstack.raise_window(child->frame);
     m_windowstack.apply();
+    m_focused_client = client;
 }
 
 void
@@ -297,6 +302,30 @@ client_model_t::set_fullscreen(client_ptr_t client, clientaction_t action)
         break;
     case clientaction_t::toggle:
         set_fullscreen(client, client->fullscreen
+            ? clientaction_t::remove : clientaction_t::add);
+        return;
+    default: break;
+    }
+}
+
+void
+client_model_t::set_urgent(client_ptr_t client, clientaction_t action)
+{
+    switch (action) {
+    case clientaction_t::add:
+        {
+            client->urgent = true;
+            m_changequeue.add(change_client_urgent(client));
+        }
+        break;
+    case clientaction_t::remove:
+        {
+            client->urgent = false;
+            m_changequeue.add(change_client_urgent(client));
+        }
+        break;
+    case clientaction_t::toggle:
+        set_urgent(client, client->urgent
             ? clientaction_t::remove : clientaction_t::add);
         return;
     default: break;

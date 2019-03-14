@@ -57,6 +57,8 @@ public:
     void change_active_workspace(user_workspace_ptr_t = nullptr);
 
     void set_fullscreen(client_ptr_t, clientaction_t);
+    void set_urgent(client_ptr_t, clientaction_t);
+
     void set_marked(client_ptr_t);
     void jump_marked();
 

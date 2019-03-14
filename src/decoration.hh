@@ -21,7 +21,7 @@ const unsigned long SIDEBAR_NCLIENTS_COLOR         = 0xFFFFFF;
 
 const unsigned long REG_COLOR = 0x404040;
 const unsigned long SEL_COLOR = 0xC0C0C0;
-const unsigned long URG_COLOR = 0xA52A2A;
+const unsigned long URG_COLOR = 0xFF6347;
 
 const unsigned long REG_SHADE_COLOR = 0x404040;
 const unsigned long SEL_SHADE_COLOR = 0x808080;

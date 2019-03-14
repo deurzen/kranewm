@@ -219,7 +219,7 @@ x_events_t::on_client_message()
                 {
                     if (event.data.l[0] >= static_cast<int>(netwmaction_t::netnoaction))
                         return;
-                    /* m_clients.toggle_urgency(client, event.data.l[0]); */
+                    m_clients.set_urgent(client, static_cast<clientaction_t>(event.data.l[0]));
                 }
             }
         }

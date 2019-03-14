@@ -13,6 +13,7 @@ enum class change_t
     client_focus,
     client_destroy,
     client_fullscreen,
+    client_urgent,
     client_workspace,
     workspace_active,
 };
@@ -111,6 +112,27 @@ inline clientfullscreenchange_ptr_t change_client_fullscreen(client_ptr_t client
 inline clientfullscreenchange_ptr_t change_client_fullscreen(clientchange_ptr_t change)
 {
     return dynamic_cast<clientfullscreenchange_ptr_t>(change);
+}
+
+
+
+typedef struct clienturgentchange_t : clientchange_t
+{
+    explicit clienturgentchange_t(client_ptr_t _client)
+      : clientchange_t(change_t::client_urgent), client(_client) {}
+
+    client_ptr_t client;
+
+}* clienturgentchange_ptr_t;
+
+inline clienturgentchange_ptr_t change_client_urgent(client_ptr_t client)
+{
+    return new clienturgentchange_t(client);
+}
+
+inline clienturgentchange_ptr_t change_client_urgent(clientchange_ptr_t change)
+{
+    return dynamic_cast<clienturgentchange_ptr_t>(change);
 }
 
 
