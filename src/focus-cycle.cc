@@ -36,6 +36,8 @@ focus_stack_t::empty() const
 void
 focus_cycle_t::add(client_ptr_t client)
 {
+    if (m_has_focus)
+        m_focus_stack.push(*m_focus);
     m_clients.push_back(client);
     m_focus = m_clients.end() - 1;
     m_has_focus = true;
