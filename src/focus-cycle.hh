@@ -1,20 +1,38 @@
 #ifndef __KRANEWM_FOCUS_CYCLE_GUARD__
 #define __KRANEWM_FOCUS_CYCLE_GUARD__
-//TODO anything to do with place manipulation within cycle
 
 #include "client.hh"
 #include <deque>
+#include <vector>
 
 
-class focus_cycle
+class focus_stack_t
 {
+public:
+    focus_stack_t()
+        : max_stack_size(50) {}
+
+    void push(client_ptr_t);
+    client_ptr_t pop(client_ptr_t);
+
+    bool empty() const;
+
 private:
+    const size_t max_stack_size;
+    ::std::vector<client_ptr_t> stack;
+
+};
+
+class focus_cycle_t
+{
     typedef ::std::deque<client_ptr_t>::iterator  fg_it;
     typedef ::std::deque<client_ptr_t>::reverse_iterator  fg_rit;
     typedef ::std::deque<client_ptr_t>::size_type fg_sz;
 
-
 public:
+    focus_cycle_t()
+        : m_has_focus(false) {}
+
     void add(client_ptr_t);
     void remove(client_ptr_t);
 
@@ -25,7 +43,7 @@ public:
     const client_ptr_t get() const;
     const ::std::deque<client_ptr_t>& get_all() const;
 
-    bool set(client_ptr_t);
+    bool set(client_ptr_t, bool = false);
     bool set(fg_sz);
     void unset();
 
@@ -37,16 +55,17 @@ public:
     void rotate_group_forward(unsigned, unsigned);
     void rotate_group_backward(unsigned, unsigned);
 
-    ::std::pair<client_ptr_t, client_ptr_t> move_focused_client_forward();
-    ::std::pair<client_ptr_t, client_ptr_t> move_focused_client_backward();
+    ::std::pair<client_ptr_t, client_ptr_t> move_focus_forward();
+    ::std::pair<client_ptr_t, client_ptr_t> move_focus_backward();
 
     ::std::pair<client_ptr_t, client_ptr_t> zoom();
 
 private:
-    bool m_has_focus = false;
-    client_ptr_t m_previously_focused_client = nullptr;
     fg_it m_focus;
+    bool m_has_focus;
+
     ::std::deque<client_ptr_t> m_clients;
+    focus_stack_t m_focus_stack;
 
 };
 

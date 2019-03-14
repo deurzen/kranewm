@@ -175,7 +175,7 @@ private:
     unsigned        m1_weight;
     float           m_factor;
     bool            mirrored;
-    focus_cycle     clients;
+    focus_cycle_t   clients;
     layout_t        layout;
     layout_t        previous_layout;
     layouthandler_t layouthandler;

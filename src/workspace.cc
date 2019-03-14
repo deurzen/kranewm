@@ -114,7 +114,7 @@ user_workspace_t&
 user_workspace_t::move_forward()
 {
     if (!clients.get()->floating) {
-        auto moved = clients.move_focused_client_forward();
+        auto moved = clients.move_focus_forward();
         if (moved.first && moved.second) {
             if (in_float_layout()) {
                 pos_t pos1 = moved.first->float_pos, pos2 = moved.second->float_pos;
@@ -134,7 +134,7 @@ user_workspace_t&
 user_workspace_t::move_backward()
 {
     if (!clients.get()->floating) {
-        auto moved = clients.move_focused_client_backward();
+        auto moved = clients.move_focus_backward();
         if (moved.first && moved.second) {
             if (in_float_layout()) {
                 pos_t pos1 = moved.first->float_pos, pos2 = moved.second->float_pos;
