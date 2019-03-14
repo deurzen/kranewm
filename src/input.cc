@@ -451,7 +451,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
     case keyop_t::move_client_bck: m_clients.active_workspace()->move_backward();     break;
     case keyop_t::toggle_float:
         {
-            if (client->parent)
+            if (client->parent || client->fullscreen)
                 return;
 
             client->set_float(clientaction_t::toggle).resize(client->float_dim).move(client->float_pos);
@@ -464,9 +464,25 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
 
             m_windowstack.apply();
             m_clients.active_workspace()->arrange();
+
+            if (client->floating)
+                m_sidebar.indicate_clientfloating().draw();
+            else
+                m_sidebar.indicate_clientnormal().draw();
         }
         break;
-    case keyop_t::toggle_fullscreen: m_clients.set_fullscreen(client, clientaction_t::toggle); break;
+    case keyop_t::toggle_fullscreen:
+        {
+            m_clients.set_fullscreen(client, clientaction_t::toggle);
+
+            if (client->fullscreen)
+                m_sidebar.indicate_clientfullscreen().draw();
+            else if (client->floating)
+                m_sidebar.indicate_clientfloating().draw();
+            else
+                m_sidebar.indicate_clientnormal().draw();
+        }
+        break;
     /* case TOGGLE_SHADE:              cm_.toggle_shade(client);                      break; */
     /* case TOGGLE_ICONIFY:            cm_.toggle_iconify(client);                    break; */
     case keyop_t::center_client:   client->center();                                  break;

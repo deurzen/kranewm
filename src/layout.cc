@@ -11,7 +11,8 @@ void
 layouthandler_t::layout_floating(const user_workspace_t& workspace) const
 {
     for (auto& client : workspace.get_all())
-        client->resize(client->float_dim, true).move(client->float_pos, true);
+        if (!client->fullscreen)
+            client->resize(client->float_dim, true).move(client->float_pos, true);
 }
 
 void

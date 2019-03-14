@@ -46,16 +46,25 @@ client_events_t::on_change_client_focus()
             to->urgent = false;
             m_sidebar.erase_urgent(m_clients.client_user_workspace(to)->get_number()).draw();
         }
+
         if (x_wrapper::set_input_focus(to->win)) {
             m_ewmh.set_active_window_property(to->win);
             to->frame.set_background_color(SEL_COLOR);
             to->frame.ungrab();
+
+            if (to->fullscreen)
+                m_sidebar.indicate_clientfullscreen().draw();
+            else if (to->floating)
+                m_sidebar.indicate_clientfloating().draw();
+            else
+                m_sidebar.indicate_clientnormal().draw();
+
         } else {
+            m_clients.cycle_focus_backward();
             to->frame.set_background_color(REG_COLOR);
             to->frame.grab();
         }
 
-        if (to->shaded) to->frame.set_background_color(SEL_SHADE_COLOR);
     } else
         x_wrapper::set_input_focus();
 }
@@ -71,6 +80,9 @@ client_events_t::on_change_client_destroy()
         x_wrapper::release_pointer();
         m_x.exit_move_resize();
     }
+
+    if (!m_clients.focused_client())
+        m_sidebar.indicate_clientnormal().draw();
 
     delete client;
 }
@@ -160,6 +172,10 @@ client_events_t::on_change_workspace_active()
     unmap_all(from->get_all());
 
     to->arrange();
+
+    if (!m_clients.focused_client())
+        m_sidebar.indicate_clientnormal();
+
     m_sidebar.set_layoutsymbol(to->get_layout());
     m_sidebar.set_workspacenumber(to->get_number());
     m_sidebar.set_numberclients(to->get_all().size()).draw();

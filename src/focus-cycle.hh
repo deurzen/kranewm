@@ -65,7 +65,7 @@ private:
     bool m_has_focus;
 
     ::std::deque<client_ptr_t> m_clients;
-    focus_stack_t m_focus_stack;
+    focus_stack_t m_focusstack;
 
 };
 

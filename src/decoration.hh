@@ -1,8 +1,9 @@
 #ifndef __KRANEWM__DECORATION__GUARD__
 #define __KRANEWM__DECORATION__GUARD__
-// TODO build frame, redraw title ...
 
-const ::std::string FONTNAME      = "-*-terminus-*-*-*-*-*-*-*-*-*-*-*-*";
+#include <string>
+
+const ::std::string FONTNAME = "-*-terminus-*-*-*-*-*-*-*-*-*-*-*-*";
 
 const int BORDER_HEIGHT   = 2;
 const int SHADED_HEIGHT   = 14;
@@ -27,6 +28,10 @@ const unsigned long REG_SHADE_COLOR = 0x404040;
 const unsigned long SEL_SHADE_COLOR = 0x808080;
 
 const unsigned long MRIND_BG_COLOR     = 0x000000;
-const unsigned long MRIND_BORDER_COLOR = 0xffffff;
+const unsigned long MRIND_BORDER_COLOR = 0xFFFFFF;
+const unsigned long FSIND_BG_COLOR     = 0x000000;
+const unsigned long FSIND_BORDER_COLOR = 0xFF0000;
+const unsigned long FLIND_BG_COLOR     = 0x000000;
+const unsigned long FLIND_BORDER_COLOR = 0xFFFFFF;
 
 #endif//__KRANEWM__DECORATION__GUARD__

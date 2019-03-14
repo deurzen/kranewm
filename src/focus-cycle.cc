@@ -37,7 +37,7 @@ void
 focus_cycle_t::add(client_ptr_t client)
 {
     if (m_has_focus)
-        m_focus_stack.push(*m_focus);
+        m_focusstack.push(*m_focus);
     m_clients.push_back(client);
     m_focus = m_clients.end() - 1;
     m_has_focus = true;
@@ -54,8 +54,8 @@ focus_cycle_t::remove(client_ptr_t client)
         return;
     }
 
-    if (removing_focus && !m_focus_stack.empty())
-        set(m_focus_stack.pop(client), true);
+    if (removing_focus && !m_focusstack.empty())
+        set(m_focusstack.pop(client), true);
     else while (m_focus >= m_clients.end())
         --m_focus;
 }
@@ -102,7 +102,7 @@ focus_cycle_t::set(client_ptr_t c, bool from_stack)
         return false;
 
     if (!from_stack)
-        m_focus_stack.push(*m_focus);
+        m_focusstack.push(*m_focus);
 
     m_focus = it;
     return true;
@@ -114,7 +114,7 @@ focus_cycle_t::set(fg_sz index)
     if (index >= m_clients.size())
         return false;
 
-    m_focus_stack.push(*m_focus);
+    m_focusstack.push(*m_focus);
     m_focus = m_clients.begin() + index;
     return true;
 }

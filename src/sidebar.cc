@@ -61,6 +61,51 @@ sidebar_t::erase_urgent(unsigned workspace)
     return *this;
 }
 
+sidebar_t&
+sidebar_t::indicate_moveresize()
+{
+    m_moveresizeindicator.map();
+    return *this;
+}
+
+sidebar_t&
+sidebar_t::indicate_nomoveresize()
+{
+    m_moveresizeindicator.unmap();
+    return *this;
+}
+
+sidebar_t&
+sidebar_t::indicate_clientfullscreen()
+{
+    m_floatingindicator.unmap();
+    m_fullscreenindicator.map();
+    return *this;
+}
+
+sidebar_t&
+sidebar_t::indicate_clientfloating()
+{
+    m_fullscreenindicator.unmap();
+    m_floatingindicator.map();
+    return *this;
+}
+
+sidebar_t&
+sidebar_t::indicate_clientnormal()
+{
+
+    m_floatingindicator.unmap();
+    m_fullscreenindicator.unmap();
+    return *this;
+}
+
+x_wrapper::window_t
+sidebar_t::get_win() const
+{
+    return m_sidebarwin;
+}
+
 
 void
 sidebar_t::draw_layoutsymbol()
@@ -125,10 +170,4 @@ sidebar_t::draw_numberclients()
         m_graphicscontext.draw_string(pos, ">");
     else
         m_graphicscontext.draw_string(pos, ::std::to_string(m_numberclients));
-}
-
-x_wrapper::window_t
-sidebar_t::get_win() const
-{
-    return m_sidebarwin;
 }

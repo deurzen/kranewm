@@ -29,8 +29,8 @@ typedef struct moveresize_t
         indicator(x_wrapper::create_window(true))
     {
         indicator.set_background_color(MRIND_BG_COLOR);
-        indicator.set_border_color(MRIND_BORDER_COLOR);
-        indicator.resize({1, 1}).move({1, 1}).map();
+        indicator.set_border_width(0);
+        indicator.resize({1, 1}).move({-1, -1}).map();
     };
 
     ~moveresize_t()
