@@ -23,8 +23,9 @@ public:
           m_layoutsymbol(layout_t::floating),
           m_workspacenumber(0),
           m_numberclients(0),
+          m_activity_indicators(USER_WORKSPACES.size()),
           m_workspace_activity(USER_WORKSPACES.size(), 0u),
-          m_activity_indicators(USER_WORKSPACES.size())
+          m_workspace_urgent(USER_WORKSPACES.size(), 0u)
     {
         auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
         m_sidebarwin.set_background_color(SIDEBAR_BG_COLOR);
@@ -46,8 +47,9 @@ public:
         for (size_t i = 0; i < m_activity_indicators.size(); ++i) {
             m_activity_indicators[i] = x_wrapper::create_window(true);
             m_ewmh.set_window_type_property(m_activity_indicators[i], "INDICATOR");
-            m_activity_indicators[i].set_border_color(SIDEBAR_WORKSPACES_COLOR).resize({1, 1}).move({(SIDEBAR_WIDTH - 2),
-                (int)((1.4f + i) * (4 + m_graphicscontext.get_font_dim().h))});
+            m_activity_indicators[i].set_border_color(SIDEBAR_WORKSPACES_COLOR);
+            m_activity_indicators[i].resize({1, 1}).move({(SIDEBAR_WIDTH - 2),
+                static_cast<int>((1.4f + i) * (4 + m_graphicscontext.get_font_dim().h))});
         }
     }
 
@@ -59,6 +61,9 @@ public:
 
     sidebar_t& record_activity(unsigned);
     sidebar_t& erase_activity(unsigned);
+
+    sidebar_t& record_urgent(unsigned);
+    sidebar_t& erase_urgent(unsigned);
 
     x_wrapper::window_t get_win() const;
 
@@ -75,8 +80,9 @@ private:
     unsigned m_workspacenumber;
     unsigned m_numberclients;
 
-    ::std::vector<int> m_workspace_activity;
     ::std::vector<x_wrapper::window_t> m_activity_indicators;
+    ::std::vector<int> m_workspace_activity;
+    ::std::vector<int> m_workspace_urgent;
 
 };
 

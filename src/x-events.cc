@@ -356,7 +356,10 @@ x_events_t::on_destroy_notify()
     x_wrapper::select_input(client->win, 0);
     x_wrapper::select_input(client->frame, 0);
 
-    m_sidebar.erase_activity(m_clients.client_user_workspace(client)->get_number()).draw();
+    if (client->urgent)
+        m_sidebar.erase_urgent(m_clients.client_user_workspace(client)->get_number());
+
+    m_sidebar.erase_activity(m_clients.client_user_workspace(client)->get_number());
     m_clients.unmanage_client(client);
     m_clients.active_workspace()->arrange();
     m_sidebar.set_numberclients(m_clients.active_workspace()->get_all().size()).draw();

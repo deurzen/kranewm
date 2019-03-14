@@ -46,6 +46,21 @@ sidebar_t::erase_activity(unsigned workspace)
     return *this;
 }
 
+sidebar_t&
+sidebar_t::record_urgent(unsigned workspace)
+{
+    ++m_workspace_urgent[workspace - 1];
+    return *this;
+}
+
+sidebar_t&
+sidebar_t::erase_urgent(unsigned workspace)
+{
+    if (m_workspace_urgent[workspace - 1] > 0)
+        --m_workspace_urgent[workspace - 1];
+    return *this;
+}
+
 
 void
 sidebar_t::draw_layoutsymbol()
@@ -75,13 +90,21 @@ sidebar_t::draw_workspacenumber()
 
     for (auto& [nr,_] : USER_WORKSPACES) {
         if (nr == m_workspacenumber) {
+            unsigned long color = m_workspace_urgent[nr - 1]
+                ? URG_COLOR
+                : SIDEBAR_ACTIVE_WORKSPACE_COLOR;
+
             m_graphicscontext.set_foreground(SIDEBAR_ACTIVE_WORKSPACE_COLOR);
-            m_activity_indicators[nr - 1].set_border_color(SIDEBAR_ACTIVE_WORKSPACE_COLOR);
-            m_activity_indicators[nr - 1].set_background_color(SIDEBAR_ACTIVE_WORKSPACE_COLOR);
+            m_activity_indicators[nr - 1].set_border_color(color);
+            m_activity_indicators[nr - 1].set_background_color(color);
         } else {
+            unsigned long color = m_workspace_urgent[nr - 1]
+                ? URG_COLOR
+                : SIDEBAR_WORKSPACES_COLOR;
+
             m_graphicscontext.set_foreground(SIDEBAR_WORKSPACES_COLOR);
-            m_activity_indicators[nr - 1].set_border_color(SIDEBAR_WORKSPACES_COLOR);
-            m_activity_indicators[nr - 1].set_background_color(SIDEBAR_BG_COLOR);
+            m_activity_indicators[nr - 1].set_border_color(color);
+            m_activity_indicators[nr - 1].set_background_color(color);
         }
 
         m_graphicscontext.draw_string(current_pos, ::std::to_string(nr));

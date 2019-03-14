@@ -42,7 +42,10 @@ client_events_t::on_change_client_focus()
     }
 
     if (to) {
-        if (to->urgent) to->urgent = false;
+        if (to->urgent) {
+            to->urgent = false;
+            m_sidebar.erase_urgent(m_clients.client_user_workspace(to)->get_number()).draw();
+        }
         if (x_wrapper::set_input_focus(to->win)) {
             m_ewmh.set_active_window_property(to->win);
             to->frame.set_background_color(SEL_COLOR);
@@ -107,9 +110,10 @@ client_events_t::on_change_client_urgent()
     if (client->focused) {
         client->urgent = false;
         client->frame.set_background_color(SEL_COLOR);
-    } else if (client->urgent)
+    } else if (client->urgent) {
         client->frame.set_background_color(URG_COLOR);
-    else
+        m_sidebar.record_urgent(m_clients.client_user_workspace(client)->get_number()).draw();
+    } else
         client->frame.set_background_color(REG_COLOR);
 }
 
