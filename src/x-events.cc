@@ -213,7 +213,16 @@ x_events_t::on_client_message()
                 {
                     if (event.data.l[0] >= static_cast<int>(netwmaction_t::netnoaction))
                         return;
+
                     m_clients.set_fullscreen(client, static_cast<clientaction_t>(event.data.l[0]));
+
+                    if (client->fullscreen)
+                        m_sidebar.indicate_clientfullscreen().draw();
+                    else if (client->floating)
+                        m_sidebar.indicate_clientfloating().draw();
+                    else
+                        m_sidebar.indicate_clientnormal().draw();
+
                 } else if ((Atom)event.data.l[property]
                     == m_ewmh.get_netwm_atom(netwmid_t::netwmstatedemandsattention))
                 {
