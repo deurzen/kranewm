@@ -15,17 +15,20 @@ namespace x_wrapper
     public:
         wmhints_t() = default;
 
-        wmhints_t(XWMHints wmhints)
-            : val(wmhints)
+        wmhints_t(XWMHints wmhints, bool _status)
+            : val(wmhints), status(_status)
         {}
 
         operator XWMHints() const { return val; }
 
-        inline XWMHints get() const { return val; }
+        inline XWMHints& get() { return val; }
         inline XWMHints* get_ptr() { return &val; }
+
+        inline bool success() { return status; }
 
     private:
         XWMHints val;
+        bool status;
 
     };
 
@@ -54,7 +57,7 @@ namespace x_wrapper
     class window_t;
 
     extern wmhints_t get_wmhints(window_t&);
-    extern void set_wmhints(wmhints_t&, window_t&);
+    extern void set_wmhints(window_t&, wmhints_t&);
 
     extern sizehints_t get_sizehints(window_t&);
 }

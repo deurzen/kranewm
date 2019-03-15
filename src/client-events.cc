@@ -42,10 +42,8 @@ client_events_t::on_change_client_focus()
     }
 
     if (to) {
-        if (to->urgent) {
-            to->urgent = false;
-            m_sidebar.erase_urgent(m_clients.client_user_workspace(to)->get_number()).draw();
-        }
+        if (to->urgent)
+            m_clients.set_urgent(to, clientaction_t::remove);
 
         if (x_wrapper::set_input_focus(to->win)) {
             m_ewmh.set_active_window_property(to->win);
@@ -122,11 +120,19 @@ client_events_t::on_change_client_urgent()
     if (client->focused) {
         client->urgent = false;
         client->frame.set_background_color(SEL_COLOR);
+        m_sidebar.erase_urgent(m_clients.client_user_workspace(client)->get_number()).draw();
     } else if (client->urgent) {
         client->frame.set_background_color(URG_COLOR);
         m_sidebar.record_urgent(m_clients.client_user_workspace(client)->get_number()).draw();
     } else
         client->frame.set_background_color(REG_COLOR);
+
+    x_wrapper::wmhints_t hints = x_wrapper::get_wmhints(client->win);
+    if (hints.success())
+        hints.get().flags = client->urgent
+            ? (hints.get().flags | XUrgencyHint) : (hints.get().flags & ~XUrgencyHint);
+
+    x_wrapper::set_wmhints(client->win, hints);
 }
 
 void
