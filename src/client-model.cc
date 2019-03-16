@@ -1,6 +1,7 @@
 #include "client-model.hh"
 #include "util.hh"
 
+
 client_ptr_t
 client_model_t::win_to_client(x_wrapper::window_t win)
 {

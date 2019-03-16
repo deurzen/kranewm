@@ -16,7 +16,7 @@ focus_stack_t::push(client_ptr_t client)
 client_ptr_t
 focus_stack_t::pop(client_ptr_t current)
 {
-    erase_remove(stack, current);
+    erase(current);
     if (stack.empty())
         return nullptr;
 
@@ -30,6 +30,12 @@ bool
 focus_stack_t::empty() const
 {
     return stack.empty();
+}
+
+void
+focus_stack_t::erase(client_ptr_t client)
+{
+    erase_remove(stack, client);
 }
 
 
@@ -54,6 +60,7 @@ focus_cycle_t::remove(client_ptr_t client)
         return;
     }
 
+    m_focusstack.erase(client);
     if (removing_focus && !m_focusstack.empty())
         set(m_focusstack.pop(client), true);
     else while (m_focus >= m_clients.end())

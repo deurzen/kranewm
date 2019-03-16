@@ -17,6 +17,8 @@ public:
 
     bool empty() const;
 
+    void erase(client_ptr_t);
+
 private:
     const size_t max_stack_size;
     ::std::vector<client_ptr_t> stack;

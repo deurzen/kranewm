@@ -36,7 +36,15 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
         switch (m_mousebinds[{event.button, event.state, true}]) {
         case mouseop_t::client_move:    m_clients.start_moving(client);   break;
         case mouseop_t::client_resize:  m_clients.start_resizing(client); break;
-        case mouseop_t::client_center:  client->center();                 break;
+        case mouseop_t::client_center:
+            {
+                if ((m_clients.client_user_workspace(client)->in_float_layout() || client->floating)
+                    && !client->fullscreen)
+                {
+                    client->center();
+                }
+            }
+            break;
         case mouseop_t::client_next_ws:
             {
                 unsigned workspace = m_clients.active_workspace()->get_number();
@@ -93,9 +101,9 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::rhythmboxstop:       fork_external("/usr/bin/rhythmbox-client --stop");                      break;
     case keyop_t::mpcrandom:           fork_external("/usr/bin/mpc random");                                   break;
     case keyop_t::mpcsingle:           fork_external("/usr/bin/mpc single");                                   break;
-    case keyop_t::volumeup:            fork_external("/usr/bin/pactl set-sink-volume 2 +10%");                 break;
-    case keyop_t::volumedown:          fork_external("/usr/bin/pactl set-sink-volume 2 -10%");                 break;
-    case keyop_t::volumemute:          fork_external("/usr/bin/pactl set-sink-mute 2 toggle");                 break;
+    case keyop_t::volumeup:            fork_external("/usr/bin/pactl set-sink-volume 0 +10%");                 break;
+    case keyop_t::volumedown:          fork_external("/usr/bin/pactl set-sink-volume 0 -10%");                 break;
+    case keyop_t::volumemute:          fork_external("/usr/bin/pactl set-sink-mute 0 toggle");                 break;
     case keyop_t::brightnessup15:      fork_external("/usr/bin/light -A 15");                                  break;
     case keyop_t::brightnessup5:       fork_external("/usr/bin/light -A 5");                                   break;
     case keyop_t::brightnessdown15:    fork_external("/usr/bin/light -U 15");                                  break;
