@@ -491,10 +491,16 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 m_sidebar.indicate_clientnormal().draw();
         }
         break;
-    /* case TOGGLE_SHADE:              cm_.toggle_shade(client);                      break; */
-    /* case TOGGLE_ICONIFY:            cm_.toggle_iconify(client);                    break; */
-    case keyop_t::center_client:   client->center();                                  break;
-    case keyop_t::mark_client:     m_clients.set_marked(client);                      break;
+    case keyop_t::center_client:
+        {
+            if ((m_clients.client_user_workspace(client)->in_float_layout() || client->floating)
+                && !client->fullscreen)
+            {
+                client->center();
+            }
+        }
+        break;
+    case keyop_t::mark_client: m_clients.set_marked(client); break;
     case keyop_t::client_to_ws_1:
         {
             m_clients.client_to_workspace(client, 1);
