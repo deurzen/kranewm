@@ -180,8 +180,11 @@ focus_cycle_t::rotate_group_forward(unsigned from, unsigned to)
     }
 
     auto clients = get_all();
-    clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t c) { return c->floating; }), clients.end());
+    auto it = ::std::remove_if(clients.begin(), clients.end(),
+        [](client_ptr_t c) { return c->floating; });
+
+    if (it != clients.end())
+        clients.erase(it, clients.end());
 
     fg_it from_it = clients.begin() + from;
     fg_it to_it   = clients.begin() + to;
@@ -212,8 +215,11 @@ focus_cycle_t::rotate_group_backward(unsigned from, unsigned to)
     }
 
     auto clients = get_all();
-    clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t c) { return c->floating; }), clients.end());
+    auto it = ::std::remove_if(clients.begin(), clients.end(),
+        [](client_ptr_t c) { return c->floating; });
+
+    if (it != clients.end())
+        clients.erase(it, clients.end());
 
     fg_rit from_it = clients.rend() - to;
     fg_rit to_it   = clients.rend() - from;

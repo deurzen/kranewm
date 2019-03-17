@@ -659,8 +659,6 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 client->move(pos);
             } else {
                 m_clients.active_workspace()->rotate_master_forward();
-                m_clients.sync_workspace_focus();
-
                 auto clients = m_clients.active_workspace()->get_all();
                 if (clients.size()) {
                     m_windowstack.raise_window(clients[0]->frame);
@@ -668,6 +666,9 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                         m_windowstack.raise_window(child->frame);
                     m_windowstack.apply();
                 }
+
+                m_clients.focus(m_clients.active_workspace()->get_focused());
+                m_clients.sync_workspace_focus();
             }
         }
         break;
@@ -679,8 +680,6 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 client->move(pos);
             } else {
                 m_clients.active_workspace()->rotate_stack_backward();
-                m_clients.sync_workspace_focus();
-
                 unsigned n_master = m_clients.active_workspace()->get_n_master();
                 auto clients = m_clients.active_workspace()->get_all();
                 if (clients.size() && n_master < clients.size()) {
@@ -689,6 +688,9 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                         m_windowstack.raise_window(child->frame);
                     m_windowstack.apply();
                 }
+
+                m_clients.focus(m_clients.active_workspace()->get_focused());
+                m_clients.sync_workspace_focus();
             }
         }
         break;
@@ -700,8 +702,6 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 client->move(pos);
             } else {
                 m_clients.active_workspace()->rotate_stack_forward();
-                m_clients.sync_workspace_focus();
-
                 unsigned n_master = m_clients.active_workspace()->get_n_master();
                 auto clients = m_clients.active_workspace()->get_all();
                 if (clients.size() && n_master < clients.size()) {
@@ -710,6 +710,9 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                         m_windowstack.raise_window(child->frame);
                     m_windowstack.apply();
                 }
+
+                m_clients.focus(m_clients.active_workspace()->get_focused());
+                m_clients.sync_workspace_focus();
             }
         }
         break;
@@ -721,8 +724,6 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 client->move(pos);
             } else {
                 m_clients.active_workspace()->rotate_master_backward();
-                m_clients.sync_workspace_focus();
-
                 auto clients = m_clients.active_workspace()->get_all();
                 if (clients.size()) {
                     m_windowstack.raise_window(clients[0]->frame);
@@ -730,6 +731,9 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                         m_windowstack.raise_window(child->frame);
                     m_windowstack.apply();
                 }
+
+                m_clients.focus(m_clients.active_workspace()->get_focused());
+                m_clients.sync_workspace_focus();
             }
         }
         break;
