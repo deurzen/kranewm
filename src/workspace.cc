@@ -318,3 +318,29 @@ user_workspace_t::get_layout() const
 {
     return layout;
 }
+
+bool
+user_workspace_t::is_master(client_ptr_t client)
+{
+    unsigned index = clients.index_of(client);
+    return index < n_master;
+}
+
+bool
+user_workspace_t::is_stack(client_ptr_t client)
+{
+    unsigned index = clients.index_of(client);
+    return index >= n_master && n_master <= clients.size();
+}
+
+bool
+user_workspace_t::master_focused()
+{
+    return is_master(clients.get());
+}
+
+bool
+user_workspace_t::stack_focused()
+{
+    return is_stack(clients.get());
+}

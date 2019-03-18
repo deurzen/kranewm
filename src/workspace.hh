@@ -167,6 +167,12 @@ public:
     unsigned get_m1_weight() const;
     layout_t get_layout() const;
 
+    bool is_master(client_ptr_t);
+    bool is_stack(client_ptr_t);
+
+    bool master_focused();
+    bool stack_focused();
+
 private:
     unsigned        number;
     ::std::string   name;

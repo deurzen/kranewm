@@ -659,8 +659,9 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 client->move(pos);
             } else {
                 m_clients.active_workspace()->rotate_master_forward();
+                unsigned n_master = m_clients.active_workspace()->get_n_master();
                 auto clients = m_clients.active_workspace()->get_all();
-                if (clients.size()) {
+                if (clients.size() && m_clients.active_workspace()->stack_focused()) {
                     m_windowstack.raise_window(clients[0]->frame);
                     for (auto& child : clients[0]->children)
                         m_windowstack.raise_window(child->frame);
@@ -682,7 +683,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 m_clients.active_workspace()->rotate_stack_backward();
                 unsigned n_master = m_clients.active_workspace()->get_n_master();
                 auto clients = m_clients.active_workspace()->get_all();
-                if (clients.size() && n_master < clients.size()) {
+                if (clients.size() && n_master < clients.size() && m_clients.active_workspace()->master_focused()) {
                     m_windowstack.raise_window(clients[n_master]->frame);
                     for (auto& child : clients[n_master]->children)
                         m_windowstack.raise_window(child->frame);
@@ -704,7 +705,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 m_clients.active_workspace()->rotate_stack_forward();
                 unsigned n_master = m_clients.active_workspace()->get_n_master();
                 auto clients = m_clients.active_workspace()->get_all();
-                if (clients.size() && n_master < clients.size()) {
+                if (clients.size() && n_master < clients.size()  && m_clients.active_workspace()->master_focused()) {
                     m_windowstack.raise_window(clients[n_master]->frame);
                     for (auto& child : clients[n_master]->children)
                         m_windowstack.raise_window(child->frame);
@@ -725,7 +726,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
             } else {
                 m_clients.active_workspace()->rotate_master_backward();
                 auto clients = m_clients.active_workspace()->get_all();
-                if (clients.size()) {
+                if (clients.size()  && m_clients.active_workspace()->stack_focused()) {
                     m_windowstack.raise_window(clients[0]->frame);
                     for (auto& child : clients[0]->children)
                         m_windowstack.raise_window(child->frame);
