@@ -39,7 +39,7 @@ public:
     void manage_client(client_ptr_t, rule_t);
     void unmanage_client(client_ptr_t);
 
-    void focus(client_ptr_t);
+    void focus(client_ptr_t, bool = false);
     void unfocus();
     void unfocus_if_focused(client_ptr_t);
 
@@ -62,7 +62,7 @@ public:
     void set_marked(client_ptr_t);
     void jump_marked();
 
-    void sync_workspace_focus();
+    void sync_workspace_focus(bool = false);
 
 private:
     changequeue_t& m_changequeue;

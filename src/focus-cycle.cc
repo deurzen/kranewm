@@ -102,13 +102,13 @@ focus_cycle_t::get_all() const
 }
 
 bool
-focus_cycle_t::set(client_ptr_t c, bool from_stack)
+focus_cycle_t::set(client_ptr_t c, bool do_not_push)
 {
     auto it = ::std::find(m_clients.begin(), m_clients.end(), c);
     if (it == m_clients.end())
         return false;
 
-    if (!from_stack)
+    if (!do_not_push)
         m_focusstack.push(*m_focus);
 
     m_focus = it;

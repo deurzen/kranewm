@@ -659,7 +659,6 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 client->move(pos);
             } else {
                 m_clients.active_workspace()->rotate_master_forward();
-                unsigned n_master = m_clients.active_workspace()->get_n_master();
                 auto clients = m_clients.active_workspace()->get_all();
                 if (clients.size() && m_clients.active_workspace()->stack_focused()) {
                     m_windowstack.raise_window(clients[0]->frame);
@@ -743,6 +742,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
             unsigned workspace = m_clients.active_workspace()->get_number();
             workspace %= USER_WORKSPACES.size();
             m_clients.client_to_workspace(client, workspace + 1);
+            m_clients.active_workspace()->arrange();
         }
         break;
     case keyop_t::client_to_prev_ws:
@@ -750,6 +750,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
             unsigned workspace = m_clients.active_workspace()->get_number() - 1;
             workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
             m_clients.client_to_workspace(client, workspace);
+            m_clients.active_workspace()->arrange();
         }
         break;
     default: break;

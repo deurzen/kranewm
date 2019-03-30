@@ -65,9 +65,9 @@ user_workspace_t::get_focused() const
 }
 
 void
-user_workspace_t::set_focused(client_ptr_t client)
+user_workspace_t::set_focused(client_ptr_t client, bool ignore_unwind)
 {
-    clients.set(client);
+    clients.set(client, ignore_unwind);
 }
 
 void

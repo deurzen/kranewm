@@ -121,7 +121,7 @@ client_model_t::unmanage_client(client_ptr_t client)
 }
 
 void
-client_model_t::focus(client_ptr_t client)
+client_model_t::focus(client_ptr_t client, bool ignore_unwind)
 {
     if (!client)
         return;
@@ -133,7 +133,7 @@ client_model_t::focus(client_ptr_t client)
     if (parent && !m_current_workspace->contains(parent))
         return;
 
-    m_current_workspace->set_focused(client);
+    m_current_workspace->set_focused(client, ignore_unwind);
     m_changequeue.add(change_client_focus(m_focused_client, client));
 
     client->focused = true;
@@ -269,7 +269,7 @@ client_model_t::change_active_workspace(user_workspace_ptr_t workspace)
 
     m_changequeue.add(change_workspace_active(m_current_workspace, workspace));
     m_current_workspace = workspace;
-    sync_workspace_focus();
+    sync_workspace_focus(true);
 }
 
 void
@@ -373,11 +373,11 @@ client_model_t::jump_marked()
 
 
 void
-client_model_t::sync_workspace_focus()
+client_model_t::sync_workspace_focus(bool ignore_unwind)
 {
     if (!m_current_workspace->empty()) {
         if (m_current_workspace->get_focused() != m_focused_client)
-            focus(m_current_workspace->get_focused());
+            focus(m_current_workspace->get_focused(), ignore_unwind);
     } else
         unfocus();
 }

@@ -135,7 +135,7 @@ public:
     bool in_monocle_layout() const;
 
     const client_ptr_t get_focused() const;
-    void set_focused(client_ptr_t client);
+    void set_focused(client_ptr_t client, bool = false);
     void unset_focused();
 
     user_workspace_t& add_client(client_ptr_t) override;
