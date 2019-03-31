@@ -8,7 +8,7 @@ void
 focus_stack_t::push(client_ptr_t client)
 {
     if (stack.size() == max_stack_size)
-        stack.pop_back();
+        stack.pop_front();
 
     stack.push_back(client);
 }

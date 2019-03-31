@@ -3,7 +3,6 @@
 
 #include "client.hh"
 #include <deque>
-#include <vector>
 
 
 class focus_stack_t
@@ -21,7 +20,7 @@ public:
 
 private:
     const size_t max_stack_size;
-    ::std::vector<client_ptr_t> stack;
+    ::std::deque<client_ptr_t> stack;
 
 };
 
