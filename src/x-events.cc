@@ -27,6 +27,7 @@ x_events_t::step()
     case KeyPress:         on_key_press();         break;
     case MapNotify:        on_map_notify();        break;
     case MapRequest:       on_map_request();       break;
+    case MappingNotify:    on_mapping_notify();    break;
     case MotionNotify:     on_motion_notify();     break;
     case PropertyNotify:   on_property_notify();   break;
     case UnmapNotify:      on_unmap_notify();      break;
@@ -422,6 +423,15 @@ x_events_t::on_map_request()
 
     register_window(win);
     win.map();
+}
+
+void
+x_events_t::on_mapping_notify()
+{
+    XMappingEvent event = m_current_event.get().xmapping;
+    if (event.request == MappingKeyboard) {
+        x_wrapper::refresh_keyboard_mapping(event);
+    }
 }
 
 void

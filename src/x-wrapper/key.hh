@@ -9,6 +9,7 @@ extern "C" {
 namespace x_wrapper
 {
     extern KeySym get_keysym(int);
+    extern void refresh_keyboard_mapping(XMappingEvent&);
 
     extern void grab_key(KeySym, unsigned);
     extern void grab_keycode(int, unsigned);

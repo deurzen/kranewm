@@ -59,6 +59,7 @@ private:
     void on_key_press();
     void on_map_notify();
     void on_map_request();
+    void on_mapping_notify();
     void on_motion_notify();
     void on_property_notify();
     void on_unmap_notify();

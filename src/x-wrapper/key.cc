@@ -24,6 +24,12 @@ x_wrapper::get_keysym(int keycode)
 }
 
 void
+x_wrapper::refresh_keyboard_mapping(XMappingEvent& event)
+{
+    XRefreshKeyboardMapping(&event);
+}
+
+void
 x_wrapper::grab_key(KeySym key, unsigned mask)
 {
     static const ::std::vector<int> ignored_masks({
