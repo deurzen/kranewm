@@ -257,3 +257,33 @@ ewmh_t::check_release_strut(x_wrapper::window_t win)
     set_workarea_property();
     return is_strut_win;
 }
+
+
+void
+ewmh_t::register_to_list(x_wrapper::window_t win)
+{
+    m_registered_windows.push_back(win);
+    append_client_list_property(win);
+}
+
+void
+ewmh_t::unregister_from_list(x_wrapper::window_t win)
+{
+    erase_remove(m_registered_windows, win);
+    set_client_list_property(m_registered_windows);
+}
+
+void
+ewmh_t::append_client_list_property(x_wrapper::window_t win)
+{
+    x_wrapper::append_property<x_wrapper::window_t>(x_wrapper::g_root,
+        {"_NET_CLIENT_LIST", win});
+}
+
+void
+ewmh_t::set_client_list_property(::std::vector<x_wrapper::window_t>& wins)
+{
+    clear_client_list_property();
+    ::std::for_each(wins.begin(), wins.end(),
+        [=](auto win) { append_client_list_property(win); });
+}

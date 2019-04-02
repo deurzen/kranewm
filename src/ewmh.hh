@@ -11,7 +11,6 @@ enum netwmid_t : int
 { // NetWM atom identifiers
     netsupported = 0, netfirst = netsupported,
     netclientlist,
-    netclientliststacking,
     netnumberofdesktops,
     netcurrentdesktop,
     netdesktopnames,
@@ -71,7 +70,6 @@ public:
         static const ::std::unordered_map<netwmid_t, const char*> NETWM_ATOM_NAMES({
             { netwmid_t::netsupported,                "_NET_SUPPORTED"                    },
             { netwmid_t::netclientlist,               "_NET_CLIENT_LIST"                  },
-            { netwmid_t::netclientliststacking,       "_NET_CLIENT_LIST_STACKING"         },
             { netwmid_t::netnumberofdesktops,         "_NET_NUMBER_OF_DESKTOPS"           },
             { netwmid_t::netcurrentdesktop,           "_NET_CURRENT_DESKTOP"              },
             { netwmid_t::netdesktopnames,             "_NET_DESKTOP_NAMES"                },
@@ -195,9 +193,16 @@ public:
     void clear_active_window_property();
     void clear_workarea_property();
 
+    void register_to_list(x_wrapper::window_t);
+    void unregister_from_list(x_wrapper::window_t);
+
+    void append_client_list_property(x_wrapper::window_t);
+    void set_client_list_property(::std::vector<x_wrapper::window_t>&);
 
 private:
     ::std::map<netwmid_t, Atom> m_netwm_atoms;
+
+    ::std::vector<x_wrapper::window_t> m_registered_windows;
 
     struct {
         x_wrapper::window_t top_window;
@@ -209,7 +214,6 @@ private:
         unsigned left_width;
         unsigned right_width;
     } strut;
-
 
 };
 

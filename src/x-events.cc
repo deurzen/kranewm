@@ -360,6 +360,7 @@ x_events_t::on_destroy_notify()
     if (!client) {
         if (m_ewmh.check_release_strut(win))
             m_clients.active_workspace()->arrange();
+        m_ewmh.unregister_from_list(win);
         return;
     }
 
@@ -373,6 +374,7 @@ x_events_t::on_destroy_notify()
     m_clients.unmanage_client(client);
     m_clients.active_workspace()->arrange();
     m_sidebar.set_numberclients(m_clients.active_workspace()->get_all().size()).draw();
+    m_ewmh.unregister_from_list(client->win);
 }
 
 void
@@ -423,6 +425,7 @@ x_events_t::on_map_request()
 
     register_window(win);
     win.map();
+    m_ewmh.register_to_list(win);
 }
 
 void
