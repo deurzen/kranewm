@@ -338,7 +338,7 @@ x_events_t::on_configure_notify()
     x_wrapper::window_t win = m_current_event.get().xconfigure.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
-    if (!client)
+    if (!client || (m_x.is_valid() && m_x.moveresize()->state == moveresizestate_t::resize))
         return;
 
     auto sizehints = x_wrapper::get_sizehints(client->win);
