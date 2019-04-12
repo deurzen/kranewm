@@ -24,7 +24,7 @@ debug_parallel: build
 	@ctags -R --exclude=.git --c++-kinds=+p --fields=+iaS --extras=+q .
 
 install:
-	install $(RELEASE) /usr/$(BIN)
+	install $(RELEASE) $(INSTALL)$(PROJECT)
 
 release:
 	@[ -d release ] || mkdir release
