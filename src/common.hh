@@ -27,8 +27,8 @@ const int MODMASK = Mod1Mask;
 const int SECMASK = Mod4Mask;
 #endif
 
-const int KB_RESIZE_INCREMENT = 10;
-const int KB_MOVE_INCREMENT   = 10;
+const int KB_RESIZE_INCREMENT = 15;
+const int KB_MOVE_INCREMENT   = 15;
 
 const int MAX_GAP_SIZE = 200;
 const int MAX_N_MASTER = 50;

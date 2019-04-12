@@ -3,6 +3,7 @@
 
 #include <string>
 
+
 const ::std::string FONTNAME = "-*-terminus-*-*-*-*-*-*-*-*-*-*-*-*";
 
 const int BORDER_HEIGHT   = 2;
@@ -17,7 +18,7 @@ const unsigned long SIDEBAR_BG_COLOR = 0x080808;
 
 const unsigned long SIDEBAR_LAYOUT_COLOR           = 0xFFFFFF;
 const unsigned long SIDEBAR_WORKSPACES_COLOR       = 0xBBBBBB;
-const unsigned long SIDEBAR_ACTIVE_WORKSPACE_COLOR = 0xFFFF00;
+const unsigned long SIDEBAR_ACTIVE_WORKSPACE_COLOR = 0xFFC66D;
 const unsigned long SIDEBAR_NCLIENTS_COLOR         = 0xFFFFFF;
 
 const unsigned long REG_COLOR = 0x404040;
