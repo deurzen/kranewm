@@ -1,10 +1,10 @@
 #ifndef __KRANEWM__FLOATING__GUARD__
 #define __KRANEWM__FLOATING__GUARD__
 
-//TODO move, resize
 #include "client.hh"
 #include "common.hh"
 #include "decoration.hh"
+
 
 enum class moveresizestate_t {
     invalid,

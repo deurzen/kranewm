@@ -1,15 +1,11 @@
 #ifndef __KRANEWM__CLIENT__GUARD__
 #define __KRANEWM__CLIENT__GUARD__
-//TODO update_child_offset from x_handler
-//
-//TODO register child etc...
-//
-//TODO focus() unfocus()
 
 #include "constraints.hh"
 #include "rule.hh"
 
 #include <set>
+
 
 enum class clientaction_t : int
 {
@@ -18,13 +14,12 @@ enum class clientaction_t : int
     toggle = 2
 };
 
-
 enum class clientexpect_t : int
 {
     noeffect = 0,
-    map       = 1 << 0,
-    withdraw  = 1 << 1,
-    iconify   = 1 << 2
+    map      = 1 << 0,
+    withdraw = 1 << 1,
+    iconify  = 1 << 2
 };
 
 
@@ -78,8 +73,6 @@ typedef struct client_t
 
 
 extern client_ptr_t create_client(x_wrapper::window_t, rule_t&);
-
 extern void update_offset(client_ptr_t);
-
 
 #endif//__KRANEWM__CLIENT__GUARD__

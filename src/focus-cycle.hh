@@ -15,6 +15,7 @@ public:
     client_ptr_t pop(client_ptr_t);
 
     bool empty() const;
+    ::std::deque<client_ptr_t>::size_type size() const;
 
     void erase(client_ptr_t);
 

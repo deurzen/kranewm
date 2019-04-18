@@ -2,6 +2,7 @@
 #include "common.hh"
 #include "x-wrapper/attributes.hh"
 
+
 void
 sizeconstraints_t::apply(pos_t& pos, dim_t& dim) const
 {

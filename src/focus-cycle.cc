@@ -32,6 +32,12 @@ focus_stack_t::empty() const
     return stack.empty();
 }
 
+::std::deque<client_ptr_t>::size_type
+focus_stack_t::size() const
+{
+    return stack.size();
+}
+
 void
 focus_stack_t::erase(client_ptr_t client)
 {
