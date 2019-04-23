@@ -158,6 +158,7 @@ x_events_t::on_button_press()
     if (client) {
         m_clients.focus(client);
         m_inputhandler.process_mouse_input_client(client, event);
+        m_clients.focus(client);
     }
 }
 
