@@ -16,7 +16,7 @@ DEPS = $(OBJ_FILES:%.o=%.d)
 
 RELEASE = release/$(PROJECT)
 BIN = bin/$(PROJECT)
-INSTALL = /usr/local/
+INSTALL = /usr/local/bin/
 TARGET ?= $(RELEASE)
 
 CXXFLAGS ?= -std=c++17
