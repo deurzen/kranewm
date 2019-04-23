@@ -39,6 +39,7 @@ public:
               { { "RuneLite",      ALL,             ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
               { { "URxvt",         "kranewm:float", ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
               { { "URxvt",         ALL,             ALL },   {  NO,  YES,   NO,   OFF,  CURRENT } },
+              { { "GoldenDict",    ALL,             ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
           }) {}
 
     bool step();
