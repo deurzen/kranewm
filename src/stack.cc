@@ -124,6 +124,23 @@ windowstack_t::lower_window(x_wrapper::window_t win)
     return *this;
 }
 
+::std::list<x_wrapper::window_t>
+windowstack_t::get_all_of_type(layer_t type)
+{
+    switch (type) {
+    case layer_t::desktop:      return m_desktop_windows;
+    case layer_t::below:        return m_below_windows;
+    case layer_t::normal:       return m_normal_windows;
+    case layer_t::floating:     return m_floating_windows;
+    case layer_t::dock:         return m_dock_windows;
+    case layer_t::indicator:    return m_indicator_windows;
+    case layer_t::above:        return m_above_windows;
+    case layer_t::fullscreen:   return m_fullscreen_windows;
+    case layer_t::notification: return m_notification_windows;
+    default: return m_normal_windows;
+    }
+}
+
 void
 windowstack_t::apply()
 {

@@ -44,6 +44,7 @@ public:
     windowstack_t& raise_window(x_wrapper::window_t);
     windowstack_t& lower_window(x_wrapper::window_t);
 
+    ::std::list<x_wrapper::window_t> get_all_of_type(layer_t);
     void apply();
 
 private:
