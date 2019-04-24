@@ -64,8 +64,11 @@ x_events_t::register_window(x_wrapper::window_t win)
     }
 
     rule_t rule = retrieve_rule(win);
-    if (x_wrapper::has_property<x_wrapper::cardinal_t>(win, "_NET_WM_DESKTOP"))
-        rule.workspace = x_wrapper::get_property<x_wrapper::cardinal_t>(win, "_NET_WM_DESKTOP")();
+    if (x_wrapper::has_property<x_wrapper::cardinal_t>(win, "_NET_WM_DESKTOP")) {
+        rule.workspace = x_wrapper::get_property<x_wrapper::cardinal_t>(win, "_NET_WM_DESKTOP")().get() + 1;
+        if (!range_t<unsigned>::contains(1, USER_WORKSPACES.size(), rule.workspace))
+            rule.workspace = 0;
+    }
 
     if (x_wrapper::get_sizehints(win).success() & USPosition)
         rule.center = false;
