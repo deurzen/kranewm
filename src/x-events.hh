@@ -31,16 +31,19 @@ public:
           m_running(true),
           m_inputhandler(sidebar, clients, m_windowstack, m_running),
           m_rules({
-              //  class            inst             title      float center icon close  workspace
-              { { "Firefox",       ALL,             ALL },   {  NO,  YES,   NO,   OFF,  CURRENT } },
-              { { "Gimp",          ALL,             ALL },   { YES,   NO,   NO,   OFF,  4       } },
-              { { "Qalculate-gtk", ALL,             ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
-              { { "Rhythmbox",     ALL,             ALL },   { YES,  YES,   NO,  ONCE,  CURRENT } },
-              { { "RuneLite",      ALL,             ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
-              { { "URxvt",         "kranewm:float", ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
-              { { "URxvt",         ALL,             ALL },   {  NO,  YES,   NO,   OFF,  CURRENT } },
-              { { "GoldenDict",    ALL,             ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
-              { { "Artha",         ALL,             ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
+              //  class                  inst             title      float center icon close  workspace
+              { { "Artha",               ALL,             ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
+              { { "Firefox",             ALL,             ALL },   {  NO,  YES,   NO,   OFF,  CURRENT } },
+              { { "Gimp",                ALL,             ALL },   { YES,   NO,   NO,   OFF,  4       } },
+              { { "GoldenDict",          ALL,             ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
+              { { "Qalculate-gtk",       ALL,             ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
+              { { "Rhythmbox",           ALL,             ALL },   { YES,  YES,   NO,  ONCE,  CURRENT } },
+              { { "RuneLite",            ALL,             ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
+              { { "URxvt",               "kranewm:float", ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
+              { { "URxvt",               ALL,             ALL },   {  NO,  YES,   NO,   OFF,  CURRENT } },
+              { { "cantata",             ALL,             ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
+              { { "mate-volume-control", ALL,             ALL },   { YES,  YES,   NO,   OFF,  CURRENT } },
+
           }) {}
 
     bool step();
