@@ -20,7 +20,7 @@ enum class keyop_t
     spawn_browser, spawn_sec_browser,
     spawn_neomutt, spawn_ranger, spawn_sncli, spawn_rtv,
     spawn_7lock, spawn_sage, spawn_gpick, spawn_qalculate,
-    spawn_irssi, spawn_newsboat, rhythmboxshow,
+    spawn_irssi, spawn_newsboat, cantatashow, rhythmboxshow,
     rhythmboxtoggle, rhythmboxnext, rhythmboxprev, rhythmboxstop,
     mpctoggle, mpcnext, mpcprev, mpcstop, mpcrandom, mpcsingle,
     volumeup, volumedown, volumemute,

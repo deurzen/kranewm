@@ -94,13 +94,14 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::mpcnext:             fork_external("/usr/bin/mpc next");                                     break;
     case keyop_t::mpcprev:             fork_external("/usr/bin/mpc prev");                                     break;
     case keyop_t::mpcstop:             fork_external("/usr/bin/mpc stop");                                     break;
+    case keyop_t::mpcrandom:           fork_external("/usr/bin/mpc random");                                   break;
+    case keyop_t::mpcsingle:           fork_external("/usr/bin/mpc single");                                   break;
+    case keyop_t::cantatashow:         fork_external("/usr/bin/cantata");                                      break;
     case keyop_t::rhythmboxshow:       fork_external("/usr/bin/rhythmbox-client");                             break;
     case keyop_t::rhythmboxtoggle:     fork_external("/usr/bin/rhythmbox-client --play-pause");                break;
     case keyop_t::rhythmboxnext:       fork_external("/usr/bin/rhythmbox-client --next");                      break;
     case keyop_t::rhythmboxprev:       fork_external("/usr/bin/rhythmbox-client --previous");                  break;
     case keyop_t::rhythmboxstop:       fork_external("/usr/bin/rhythmbox-client --stop");                      break;
-    case keyop_t::mpcrandom:           fork_external("/usr/bin/mpc random");                                   break;
-    case keyop_t::mpcsingle:           fork_external("/usr/bin/mpc single");                                   break;
     case keyop_t::volumeup:            fork_external("/usr/bin/pactl set-sink-volume 0 +10%");                 break;
     case keyop_t::volumedown:          fork_external("/usr/bin/pactl set-sink-volume 0 -10%");                 break;
     case keyop_t::volumemute:          fork_external("/usr/bin/pactl set-sink-mute 0 toggle");                 break;
