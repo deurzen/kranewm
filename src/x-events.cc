@@ -109,6 +109,7 @@ x_events_t::retrieve_rule(x_wrapper::window_t win)
     bool center    = false;
     bool iconify   = false;
     bool autoclose = false;
+    bool nohint    = false;
     unsigned workspace = 0;
 
     ::std::string cls = win.get_class();
@@ -131,16 +132,17 @@ x_events_t::retrieve_rule(x_wrapper::window_t win)
             floating = rule.floating;
             center   = rule.center;
             iconify  = rule.iconify;
+            nohint     = rule.nohint;
             if (rule.autoclose != OFF) {
                 autoclose = true;
                 if (rule.autoclose == ONCE)
                     rule.autoclose = OFF;
             }
-            return {floating, center, false, iconify, autoclose, workspace};
+            return {floating, center, false, iconify, autoclose, nohint, workspace};
         }
     }
 
-    return {false, false, false, false, false, 0};
+    return {false, false, false, false, false, false, 0};
 }
 
 void

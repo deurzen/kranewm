@@ -67,7 +67,7 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
     if (rule.autoclose)
         client->win.force_close();
 
-    if (rule.workspace) {
+    if (!rule.nohint && rule.workspace) {
         auto workspace = m_user_workspaces[rule.workspace - 1];
         m_client_workspaces[client] = workspace;
         workspace->add_client(client);
