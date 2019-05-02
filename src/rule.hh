@@ -90,4 +90,4 @@ struct rulecomp
 typedef ::std::map<ruleid_t, rulespec_t, rulecomp> rules_t;
 
 
-#endif//__KRANEWM__X_EVENTS__GUARD__
+#endif//__KRANEWM__RULE__GUARD__
