@@ -29,8 +29,9 @@ public:
           m_processes(processes),
           m_running(running),
           m_processbinds({
-              //  keysym mask       class
-              { { XK_b,  MODMASK }, "qutebrowser" },
+              //  keysym mask                 class
+              { { XK_b,  MODMASK },           "qutebrowser" },
+              { { XK_b,  MODMASK|ShiftMask }, "Firefox"     },
           }),
           m_mousebinds({
               //  keysym              mask     client  operation

@@ -44,7 +44,7 @@ public:
               { { "URxvt",               ALL,             ALL },   {  NO,  YES,   NO,   OFF,  NO,   CURRENT } },
               { { "cantata",             ALL,             ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
               { { "mate-volume-control", ALL,             ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
-
+              { { "noson-gui",           ALL,             ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
           }) {}
 
     bool step();
