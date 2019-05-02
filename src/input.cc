@@ -78,9 +78,12 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
 void
 inputhandler_t::process_key_input_global(XKeyEvent event)
 {
-    keyshortcut_t shortcut{event};
+    if (m_processbinds.count(processshortcut_t{event})) {
+        m_clients.jump_process(m_processbinds[processshortcut_t{event}]);
+        return;
+    }
 
-    switch (m_keybinds[shortcut]) {
+    switch (m_keybinds[keyshortcut_t{event}]) {
     case keyop_t::quit: m_running = false; return;
     case keyop_t::spawn_terminal:      fork_external("/usr/bin/urxvt -geometry 80x22");                        break;
     case keyop_t::spawn_quickterm:     fork_external("/usr/bin/term -name \"kranewm:float\" -geometry 80x22"); break;
@@ -318,7 +321,6 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             m_clients.sync_workspace_focus();
         }
         break;
-    case keyop_t::jump_qutebrowser: m_clients.jump_process("qutebrowser"); break;
     case keyop_t::jump_client_1:
         {
             auto clients = m_clients.active_workspace()->get_all();

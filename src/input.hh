@@ -4,6 +4,7 @@
 #include "common.hh"
 #include "mousebind.hh"
 #include "keybind.hh"
+#include "process.hh"
 #include "x-wrapper/event.hh"
 
 #define YES true
@@ -14,7 +15,6 @@
 class sidebar_t;
 class client_model_t;
 class windowstack_t;
-class processjumplist_t;
 class user_workspace_t;
 typedef struct client_t* client_ptr_t;
 
@@ -28,6 +28,10 @@ public:
           m_windowstack(windowstack),
           m_processes(processes),
           m_running(running),
+          m_processbinds({
+              //  keysym mask       class
+              { { XK_b,  MODMASK }, "qutebrowser" },
+          }),
           m_mousebinds({
               //  keysym              mask     client  operation
               { { BACKWARD_BUTTON,     NOMASK,  NO },  mouseop_t::goto_next_ws   },
@@ -81,7 +85,6 @@ public:
               { { XK_period,       MODMASK },             keyop_t::jump_stack                   },
               { { XK_slash,        MODMASK },             keyop_t::jump_last                    },
               { { XK_a,            MODMASK },             keyop_t::jump_pane                    },
-              { { XK_b,            MODMASK },             keyop_t::jump_qutebrowser             },
               { { XK_t,            MODMASK },             keyop_t::tile                         },
               { { XK_s,            MODMASK },             keyop_t::mirror_workspace             },
               { { XK_p,            MODMASK },             keyop_t::spawn_dmenu                  },
@@ -171,6 +174,11 @@ public:
               { { XK_q,            MODMASK|ShiftMask|ControlMask }, keyop_t::quit               },
           })
     {
+        for (auto&& [shortcut,name] : m_processbinds) {
+            x_wrapper::grab_key(shortcut.keysym, shortcut.mask);
+            m_processes.activate_process_name(name);
+        }
+
         for (auto&& [shortcut,_] : m_keybinds)
             x_wrapper::grab_key(shortcut.keysym, shortcut.mask);
 
@@ -192,6 +200,7 @@ private:
     windowstack_t& m_windowstack;
     processjumplist_t& m_processes;
     bool& m_running;
+    processbinds_t m_processbinds;
     mousebinds_t m_mousebinds;
     keybinds_t m_keybinds;
 
