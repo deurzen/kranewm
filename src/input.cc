@@ -318,6 +318,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             m_clients.sync_workspace_focus();
         }
         break;
+    case keyop_t::jump_qutebrowser: m_clients.jump_process("qutebrowser"); break;
     case keyop_t::jump_client_1:
         {
             auto clients = m_clients.active_workspace()->get_all();

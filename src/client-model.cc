@@ -51,6 +51,7 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
     m_client_windows[client->frame] = client;
     m_client_windows[client->win]   = client;
     m_managed_windows.push_back(client->win);
+    m_processes.add_process(client);
 
     if (client->parent) {
         // deiconify parent
@@ -112,10 +113,11 @@ client_model_t::unmanage_client(client_ptr_t client)
     workspace->remove_client(client);
     sync_workspace_focus();
 
-    erase_find(m_client_windows, client->win);
     erase_find(m_client_windows, client->frame);
-    erase_find(m_client_workspaces, client);
+    erase_find(m_client_windows, client->win);
     erase_remove(m_managed_windows, client->win);
+    m_processes.remove_process(client);
+    erase_find(m_client_workspaces, client);
 
     m_changequeue.add(change_client_destroy(client, workspace));
 }
@@ -145,6 +147,7 @@ client_model_t::focus(client_ptr_t client, bool ignore_unwind)
         m_windowstack.raise_window(child->frame);
     m_windowstack.apply();
     m_focused_client = client;
+    m_processes.relayer_process(client);
 }
 
 void
@@ -368,6 +371,33 @@ client_model_t::jump_marked()
         change_active_workspace(workspace);
 
     focus(to_jump_to);
+    sync_workspace_focus();
+}
+
+void
+client_model_t::jump_process(const ::std::string& name)
+{
+    auto process = m_processes.get_process(name);
+    if (!process)
+        return;
+
+    auto client = process->target;
+    if (client == focused_client())
+        client = process->prev;
+
+    if (!client || !client_workspace(client)
+            || !is_user_workspace(client_workspace(client)))
+    {
+        return;
+    }
+
+    process->prev = focused_client();
+
+    auto workspace = client_user_workspace(client);
+    if (workspace != active_workspace())
+        change_active_workspace(workspace);
+
+    focus(client);
     sync_workspace_focus();
 }
 

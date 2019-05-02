@@ -31,7 +31,7 @@ typedef struct client_t
     client_t() = default;
     client_t(x_wrapper::window_t _win, x_wrapper::window_t _frame,
         sizeconstraints_t _sizeconstraints, rule_t& rule)
-        : win(_win), frame(_frame), sizeconstraints(_sizeconstraints),
+        : name(_win.get_class()), win(_win), frame(_frame), sizeconstraints(_sizeconstraints),
           expect(clientexpect_t::noeffect), focused(false),
           floating(rule.floating), fullscreen(rule.fullscreen),
           shaded(false), iconified(rule.iconify), urgent(false), parent(nullptr)
@@ -52,6 +52,7 @@ typedef struct client_t
     client_t& center();
     client_t& set_float(clientaction_t);
 
+    ::std::string       name;
     x_wrapper::window_t win;
     x_wrapper::window_t frame;
     pos_t               pos;

@@ -5,6 +5,7 @@
 #include "stack.hh"
 #include "workspace.hh"
 #include "rule.hh"
+#include "process.hh"
 #include "x-wrapper/window.hh"
 
 #include <unordered_map>
@@ -14,9 +15,10 @@
 class client_model_t
 {
 public:
-    explicit client_model_t(changequeue_t& changequeue, ewmh_t& ewmh, windowstack_t& windowstack)
+    explicit client_model_t(changequeue_t& changequeue, ewmh_t& ewmh, windowstack_t& windowstack, processjumplist_t& processes)
         : m_changequeue(changequeue),
           m_windowstack(windowstack),
+          m_processes(processes),
           m_current_workspace(nullptr),
           m_move_workspace(new moveresize_workspace_t{workspacetype_t::move}),
           m_resize_workspace(new moveresize_workspace_t{workspacetype_t::resize}),
@@ -58,15 +60,17 @@ public:
 
     void set_fullscreen(client_ptr_t, clientaction_t);
     void set_urgent(client_ptr_t, clientaction_t);
-
     void set_marked(client_ptr_t);
+
     void jump_marked();
+    void jump_process(const ::std::string&);
 
     void sync_workspace_focus(bool = false);
 
 private:
     changequeue_t& m_changequeue;
     windowstack_t& m_windowstack;
+    processjumplist_t& m_processes;
 
     user_workspace_ptr_t m_current_workspace;
 

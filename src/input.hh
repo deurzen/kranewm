@@ -14,6 +14,7 @@
 class sidebar_t;
 class client_model_t;
 class windowstack_t;
+class processjumplist_t;
 class user_workspace_t;
 typedef struct client_t* client_ptr_t;
 
@@ -21,10 +22,11 @@ typedef struct client_t* client_ptr_t;
 class inputhandler_t
 {
 public:
-    explicit inputhandler_t(sidebar_t& sidebar, client_model_t& clients, windowstack_t& windowstack, bool& running)
+    explicit inputhandler_t(sidebar_t& sidebar, client_model_t& clients, windowstack_t& windowstack, processjumplist_t& processes, bool& running)
         : m_sidebar(sidebar),
           m_clients(clients),
           m_windowstack(windowstack),
+          m_processes(processes),
           m_running(running),
           m_mousebinds({
               //  keysym              mask     client  operation
@@ -79,6 +81,7 @@ public:
               { { XK_period,       MODMASK },             keyop_t::jump_stack                   },
               { { XK_slash,        MODMASK },             keyop_t::jump_last                    },
               { { XK_a,            MODMASK },             keyop_t::jump_pane                    },
+              { { XK_b,            MODMASK },             keyop_t::jump_qutebrowser             },
               { { XK_t,            MODMASK },             keyop_t::tile                         },
               { { XK_s,            MODMASK },             keyop_t::mirror_workspace             },
               { { XK_p,            MODMASK },             keyop_t::spawn_dmenu                  },
@@ -186,7 +189,8 @@ private:
 
     sidebar_t& m_sidebar;
     client_model_t& m_clients;
-    windowstack_t& m_windowstack;;
+    windowstack_t& m_windowstack;
+    processjumplist_t& m_processes;
     bool& m_running;
     mousebinds_t m_mousebinds;
     keybinds_t m_keybinds;

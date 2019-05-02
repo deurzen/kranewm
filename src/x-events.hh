@@ -15,6 +15,7 @@
 class ewmh_t;
 class sidebar_t;
 class windowstack_t;
+class processjumplist_t;
 class client_model_t;
 class x_model_t;
 
@@ -22,14 +23,14 @@ class x_model_t;
 class x_events_t
 {
 public:
-    explicit x_events_t(ewmh_t& ewmh, sidebar_t& sidebar, windowstack_t& windowstack, client_model_t& clients, x_model_t& x)
+    explicit x_events_t(ewmh_t& ewmh, sidebar_t& sidebar, windowstack_t& windowstack, processjumplist_t& processes,  client_model_t& clients, x_model_t& x)
         : m_ewmh(ewmh),
           m_sidebar(sidebar),
           m_windowstack(windowstack),
           m_clients(clients),
           m_x(x),
           m_running(true),
-          m_inputhandler(sidebar, clients, m_windowstack, m_running),
+          m_inputhandler(sidebar, clients, windowstack, processes, m_running),
           m_rules({
               //  class                  inst             title      float center icon close nohint workspace
               { { "Artha",               ALL,             ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
