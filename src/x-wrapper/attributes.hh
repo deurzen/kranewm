@@ -13,8 +13,7 @@ namespace x_wrapper
     {
     public:
         attributes_t(XWindowAttributes wa)
-            : val(wa)
-        {}
+            : val(wa) {}
 
         operator XWindowAttributes() const { return val; }
 

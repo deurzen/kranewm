@@ -27,20 +27,16 @@ namespace x_wrapper
         atom_t() = default;
 
         atom_t(Atom atom)
-            : val(atom)
-        {}
+            : val(atom) {}
 
         atom_t(const ::std::string& name)
-            : val(XInternAtom(g_dpy, name.c_str(), False))
-        {}
+            : val(XInternAtom(g_dpy, name.c_str(), False)) {}
 
         atom_t(const char* name)
-            : val(XInternAtom(g_dpy, name, False))
-        {}
+            : val(XInternAtom(g_dpy, name, False)) {}
 
         explicit atom_t(void* raw_data, unsigned long _)
-            : val(*(Atom*)raw_data)
-        {}
+            : val(*(Atom*)raw_data) {}
 
         operator Atom() const { return val; }
         operator bool() const { return val != 0; }

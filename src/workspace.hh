@@ -56,8 +56,7 @@ typedef class moveresize_workspace_t : public workspace_t
 public:
     explicit moveresize_workspace_t(workspacetype_t _type)
         : workspace_t(_type),
-          client(nullptr)
-    {}
+          client(nullptr) {}
 
     void arrange() const override {}
 
@@ -116,11 +115,17 @@ typedef class user_workspace_t : public workspace_t
 {
 public:
     user_workspace_t(unsigned _number, ::std::string&& _name, ewmh_t& ewmh)
-        : workspace_t(workspacetype_t::user), number(_number), name(_name),
-          n_master(1), gap_size(0), m1_weight(1), m_factor(.5f), mirrored(false),
-          layout(layout_t::floating), previous_layout(layout),
-          layouthandler(layouthandler_t{ewmh})
-    {}
+        : workspace_t(workspacetype_t::user),
+          number(_number),
+          name(_name),
+          n_master(1),
+          gap_size(0),
+          m1_weight(1),
+          m_factor(.5f),
+          mirrored(false),
+          layout(layout_t::floating),
+          previous_layout(layout),
+          layouthandler(layouthandler_t{ewmh}) {}
 
     void arrange() const override;
 

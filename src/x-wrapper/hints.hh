@@ -16,8 +16,8 @@ namespace x_wrapper
         wmhints_t() = default;
 
         wmhints_t(XWMHints wmhints, bool _status)
-            : val(wmhints), status(_status)
-        {}
+            : val(wmhints),
+              status(_status) {}
 
         operator XWMHints() const { return val; }
 
@@ -38,8 +38,8 @@ namespace x_wrapper
         sizehints_t() = default;
 
         sizehints_t(XSizeHints sizehints, bool _status)
-            : val(sizehints), status(_status)
-        {}
+            : val(sizehints),
+              status(_status) {}
 
         operator XSizeHints() const { return val; }
 

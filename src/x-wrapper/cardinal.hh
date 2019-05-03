@@ -21,12 +21,10 @@ namespace x_wrapper
         cardinal_t() = default;
 
         cardinal_t(CARD32 x)
-            : val(x)
-        {}
+            : val(x) {}
 
         cardinal_t(void* raw_data, unsigned long _)
-            : val(*(CARD32*)raw_data)
-        {}
+            : val(*(CARD32*)raw_data) {}
 
         operator CARD32() const { return val; }
         operator bool()   const { return val != 0; }

@@ -31,11 +31,18 @@ typedef struct client_t
     client_t() = default;
     client_t(x_wrapper::window_t _win, x_wrapper::window_t _frame,
         sizeconstraints_t _sizeconstraints, rule_t& rule)
-        : name(_win.get_class()), win(_win), frame(_frame), sizeconstraints(_sizeconstraints),
-          expect(clientexpect_t::noeffect), focused(false),
-          floating(rule.floating), fullscreen(rule.fullscreen),
-          shaded(false), iconified(rule.iconify), urgent(false), parent(nullptr)
-    {}
+        : name(_win.get_class()),
+          win(_win),
+          frame(_frame),
+          sizeconstraints(_sizeconstraints),
+          expect(clientexpect_t::noeffect),
+          focused(false),
+          floating(rule.floating),
+          fullscreen(rule.fullscreen),
+          shaded(false),
+          iconified(rule.iconify),
+          urgent(false),
+          parent(nullptr) {}
 
     void disown_child(client_ptr_t);
     bool redeem_expect(clientexpect_t);

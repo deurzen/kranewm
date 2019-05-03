@@ -25,16 +25,13 @@ namespace x_wrapper
         string_t() = default;
 
         string_t(const char* c_str)
-            : val(c_str)
-        {}
+            : val(c_str) {}
 
         string_t(const ::std::string& str)
-            : val(str)
-        {}
+            : val(str) {}
 
         explicit string_t(void* raw_data)
-            : val((wrapped_type*)raw_data)
-        {}
+            : val((wrapped_type*)raw_data) {}
 
         operator ::std::string() const { return val; }
         operator bool() const { return !val.empty(); }
@@ -59,8 +56,8 @@ namespace x_wrapper
         string_list_t() = default;
 
         string_list_t(char** c_str_list, size_t list_length)
-            : val(c_str_list, c_str_list + list_length), len(list_length)
-        {}
+            : val(c_str_list, c_str_list + list_length),
+              len(list_length) {}
 
         string_list_t(::std::vector<::std::string> str_list)
             : len(str_list.size())

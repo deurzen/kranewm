@@ -22,8 +22,7 @@ struct range_t
 
     range_t(T _min = 0, T _max = 0)
       : min(_min),
-        max(_max)
-    {}
+        max(_max) {}
 
     inline bool operator==(const range_t<T>& range) const
     {

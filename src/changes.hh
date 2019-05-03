@@ -53,7 +53,9 @@ typedef struct clientchange_t
 typedef struct clientfocuschange_t : clientchange_t
 {
     explicit clientfocuschange_t(client_ptr_t _from, client_ptr_t _to)
-      : clientchange_t(change_t::client_focus), from(_from), to(_to) {}
+      : clientchange_t(change_t::client_focus),
+        from(_from),
+        to(_to) {}
 
     client_ptr_t from;
     client_ptr_t to;
@@ -75,7 +77,9 @@ inline clientfocuschange_ptr_t change_client_focus(clientchange_ptr_t change)
 typedef struct clientdestroychange_t : clientchange_t
 {
     explicit clientdestroychange_t(client_ptr_t _client, workspace_ptr_t _workspace)
-      : clientchange_t(change_t::client_destroy), client(_client), workspace(_workspace) {}
+      : clientchange_t(change_t::client_destroy),
+        client(_client),
+        workspace(_workspace) {}
 
     client_ptr_t client;
     workspace_ptr_t workspace;
@@ -97,7 +101,9 @@ inline clientdestroychange_ptr_t change_client_destroy(clientchange_ptr_t change
 typedef struct clientfullscreenchange_t : clientchange_t
 {
     explicit clientfullscreenchange_t(client_ptr_t _client, client_t _former_state)
-      : clientchange_t(change_t::client_fullscreen), client(_client), former_state(_former_state) {}
+      : clientchange_t(change_t::client_fullscreen),
+        client(_client),
+        former_state(_former_state) {}
 
     client_ptr_t client;
     client_t former_state;
@@ -119,7 +125,8 @@ inline clientfullscreenchange_ptr_t change_client_fullscreen(clientchange_ptr_t 
 typedef struct clienturgentchange_t : clientchange_t
 {
     explicit clienturgentchange_t(client_ptr_t _client)
-      : clientchange_t(change_t::client_urgent), client(_client) {}
+      : clientchange_t(change_t::client_urgent),
+        client(_client) {}
 
     client_ptr_t client;
 
@@ -140,7 +147,10 @@ inline clienturgentchange_ptr_t change_client_urgent(clientchange_ptr_t change)
 typedef struct clientworkspacechange_t : clientchange_t
 {
     explicit clientworkspacechange_t(client_ptr_t _client, workspace_ptr_t _from, workspace_ptr_t _to)
-      : clientchange_t(change_t::client_workspace), client(_client), from(_from), to(_to) {}
+      : clientchange_t(change_t::client_workspace),
+        client(_client),
+        from(_from),
+        to(_to) {}
 
     client_ptr_t client;
     workspace_ptr_t from;
@@ -164,7 +174,9 @@ inline clientworkspacechange_ptr_t change_client_workspace(clientchange_ptr_t ch
 typedef struct workspaceactivechange_t : clientchange_t
 {
     explicit workspaceactivechange_t(user_workspace_ptr_t _from, user_workspace_ptr_t _to)
-      : clientchange_t(change_t::workspace_active), from(_from), to(_to) {}
+      : clientchange_t(change_t::workspace_active),
+        from(_from),
+        to(_to) {}
 
     user_workspace_ptr_t from;
     user_workspace_ptr_t to;
@@ -180,7 +192,5 @@ inline workspaceactivechange_ptr_t change_workspace_active(clientchange_ptr_t ch
 {
     return dynamic_cast<workspaceactivechange_ptr_t>(change);
 }
-
-
 
 #endif//__KRANEWM_CHANGES_GUARD__

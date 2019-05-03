@@ -27,7 +27,8 @@ typedef client_t* client_ptr_t;
 struct windowstack_window_t
 {
     windowstack_window_t(x_wrapper::window_t _win, layer_t _layer)
-        : win(_win), layer(_layer) {}
+        : win(_win),
+          layer(_layer) {}
 
     x_wrapper::window_t win;
     layer_t layer;

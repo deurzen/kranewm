@@ -21,8 +21,7 @@ struct rulespec_t
           iconify(_iconify),
           autoclose(_autoclose),
           nohint(_nohint),
-          workspace(_workspace)
-    {}
+          workspace(_workspace) {}
 
     bool floating;
     bool center;
@@ -42,8 +41,7 @@ struct rule_t
           iconify(_iconify),
           autoclose(_autoclose),
           nohint(_nohint),
-          workspace(_workspace)
-    {}
+          workspace(_workspace) {}
 
     bool floating;
     bool center;

@@ -13,6 +13,9 @@
 #include <vector>
 
 
+static const bool SHOW_SIDEBAR = true;
+
+
 class sidebar_t
 {
 public:
@@ -30,6 +33,9 @@ public:
           m_floatingindicator(x_wrapper::create_window(true)),
           m_fullscreenindicator(x_wrapper::create_window(true))
     {
+        if (!SHOW_SIDEBAR)
+            return;
+
         auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
         m_sidebarwin.set_background_color(SIDEBAR_BG_COLOR);
         m_sidebarwin.resize({SIDEBAR_WIDTH, root_attrs.get().height}).move({0, 0});

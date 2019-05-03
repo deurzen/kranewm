@@ -22,16 +22,17 @@ typedef struct client_t* client_ptr_t;
 class inputhandler_t
 {
 public:
-    explicit inputhandler_t(sidebar_t& sidebar, client_model_t& clients, windowstack_t& windowstack, processjumplist_t& processes, bool& running)
+    explicit inputhandler_t(sidebar_t& sidebar, client_model_t& clients,
+        windowstack_t& windowstack, processjumplist_t& processes, bool& running)
         : m_sidebar(sidebar),
           m_clients(clients),
           m_windowstack(windowstack),
           m_processes(processes),
           m_running(running),
           m_processbinds({
-              //  keysym mask                 class
-              { { XK_b,  MODMASK },           "qutebrowser" },
-              { { XK_b,  MODMASK|ShiftMask }, "Firefox"     },
+              //  keysym  mask                 class
+              { { XK_b,   MODMASK           }, "qutebrowser" },
+              { { XK_b,   MODMASK|ShiftMask }, "Firefox"     },
           }),
           m_mousebinds({
               //  keysym              mask     client  operation

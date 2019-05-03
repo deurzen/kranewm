@@ -15,7 +15,8 @@
 class client_model_t
 {
 public:
-    explicit client_model_t(changequeue_t& changequeue, ewmh_t& ewmh, windowstack_t& windowstack, processjumplist_t& processes)
+    explicit client_model_t(changequeue_t& changequeue, ewmh_t& ewmh,
+        windowstack_t& windowstack, processjumplist_t& processes)
         : m_changequeue(changequeue),
           m_windowstack(windowstack),
           m_processes(processes),

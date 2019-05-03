@@ -23,7 +23,8 @@ class x_model_t;
 class x_events_t
 {
 public:
-    explicit x_events_t(ewmh_t& ewmh, sidebar_t& sidebar, windowstack_t& windowstack, processjumplist_t& processes,  client_model_t& clients, x_model_t& x)
+    explicit x_events_t(ewmh_t& ewmh, sidebar_t& sidebar, windowstack_t& windowstack,
+        processjumplist_t& processes,  client_model_t& clients, x_model_t& x)
         : m_ewmh(ewmh),
           m_sidebar(sidebar),
           m_windowstack(windowstack),

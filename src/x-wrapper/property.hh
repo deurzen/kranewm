@@ -20,8 +20,7 @@ namespace x_wrapper
               data(t),
               data_length(t.length()),
               data_type(t.type()),
-              type_size(t.size())
-        {}
+              type_size(t.size()) {}
 
         operator T() { return data; }
 

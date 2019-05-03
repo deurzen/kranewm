@@ -10,8 +10,8 @@
 typedef struct processjump_t
 {
     processjump_t(client_ptr_t _target, client_ptr_t _prev)
-        : target(_target), prev(_prev)
-    {}
+        : target(_target),
+          prev(_prev) {}
 
     inline bool operator==(const processjump_t& pj) const
     {
@@ -50,8 +50,7 @@ struct processshortcut_t
 {
     processshortcut_t(KeySym _keysym, unsigned _mask)
         : keysym(_keysym),
-          mask(_mask)
-    {}
+          mask(_mask) {}
 
     processshortcut_t(XKeyEvent event)
         : keysym(x_wrapper::get_keysym(event.keycode)),

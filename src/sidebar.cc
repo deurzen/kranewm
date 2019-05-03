@@ -4,6 +4,9 @@
 void
 sidebar_t::draw()
 {
+    if (!SHOW_SIDEBAR)
+        return;
+
     m_graphicscontext.clear();
     draw_layoutsymbol();
     draw_workspacenumber();

@@ -23,8 +23,7 @@ struct mouseshortcut_t
     mouseshortcut_t(unsigned _button , unsigned _mask, bool _on_client)
         : button(_button),
           mask(_mask),
-          on_client(_on_client)
-    {}
+          on_client(_on_client) {}
 
     inline bool operator==(const mouseshortcut_t& ms) const
     {

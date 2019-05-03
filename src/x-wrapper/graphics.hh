@@ -12,7 +12,8 @@ namespace x_wrapper
     {
     public:
         graphicscontext_t(window_t _win, const ::std::string& fontname, int line_width)
-            : win(_win), font_dim{12, 6}
+            : win(_win),
+              font_dim{12, 6}
         {
             XGCValues values;
             values.function           = GXor;

@@ -24,16 +24,13 @@ namespace x_wrapper
     {
     public:
         window_t()
-            : val(None)
-        {}
+            : val(None) {}
 
         window_t(Window win)
-            : val(win)
-        {}
+            : val(win) {}
 
         explicit window_t(void* raw_data, unsigned long _)
-            : val(*(Window*)raw_data)
-        {}
+            : val(*(Window*)raw_data) {}
 
         operator Window() const { return val; }
         operator bool()   const { return val != None; }

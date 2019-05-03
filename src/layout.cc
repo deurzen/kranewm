@@ -290,7 +290,6 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
     auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
     unsigned n_master = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_n_master());
     unsigned n_stack = clients.size() - n_master;
-    int gap_size = workspace.get_gap_size();
 
     bool has_leftstack = n_stack;
     bool has_rightstack = n_stack > 1;
