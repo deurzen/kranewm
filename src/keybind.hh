@@ -39,7 +39,7 @@ enum class keyop_t
     stick, maximize,
     inc_n_master, inc_gap_size, inc_m1_weight, dec_n_master,
     dec_gap_size, dec_m1_weight, inc_m_factor, dec_m_factor,
-    floating, tile, deck, doubledeck, grid, monocle,
+    floating, tile, deck, doubledeck, grid, monocle, pillar,
     mirror_workspace, toggle_layout,
     jump_master, jump_stack, jump_last, jump_pane,
     jump_client_1, jump_client_2, jump_client_3,

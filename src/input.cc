@@ -250,6 +250,23 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             m_sidebar.set_layoutsymbol(layout_t::monocle).draw();
         }
         break;
+    case keyop_t::pillar:
+        {
+            auto workspace = m_clients.active_workspace();
+            workspace->set_layout(layout_t::pillar);
+            for (auto& client : workspace->get_all()) {
+                if (client->floating)
+                    m_windowstack.relayer_window({client->frame, layer_t::floating}).raise_window(client->frame);
+                for (auto& child : client->children)
+                    if (child->floating)
+                        m_windowstack.relayer_window({child->frame, layer_t::floating}).raise_window(child->frame);
+            }
+
+            m_windowstack.apply();
+            m_clients.active_workspace()->arrange();
+            m_sidebar.set_layoutsymbol(layout_t::pillar).draw();
+        }
+        break;
     case keyop_t::toggle_layout:
         {
             auto workspace = m_clients.active_workspace();

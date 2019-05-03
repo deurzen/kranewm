@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <cmath>
 
 
 void
@@ -276,3 +277,101 @@ layouthandler_t::layout_monocle(const user_workspace_t& workspace) const
             m_ewmh.get_top_strut() + gap_size}, true);
 }
 
+void
+layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
+{
+    auto clients = workspace.get_all();
+    clients.erase(::std::remove_if(clients.begin(), clients.end(),
+        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+
+    if (clients.empty())
+        return;
+
+    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+    unsigned n_master = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_n_master());
+    unsigned n_stack = clients.size() - n_master;
+    int gap_size = workspace.get_gap_size();
+
+    bool has_leftstack = n_stack;
+    bool has_rightstack = n_stack > 1;
+
+    dim_t screen_dim = {
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut(),
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut()
+    };
+
+    dim_t master_dim;
+    master_dim.w = (n_stack ? screen_dim.w * workspace.get_m_factor() : screen_dim.w);
+    master_dim.h = screen_dim.h / (n_master > 1 ? n_master : 1);
+
+    dim_t leftstack_dim;
+    if (n_master) {
+        leftstack_dim.w = (screen_dim.w - master_dim.w) / (has_rightstack ? 2 : 1);
+    } else {
+        leftstack_dim.w = screen_dim.w / (has_rightstack ? 2 : 1);
+    }
+    leftstack_dim.h = screen_dim.h / (has_leftstack ? ::std::ceil((float)n_stack / 2) : 1);
+
+    dim_t rightstack_dim;
+    if (n_master) {
+        rightstack_dim.w = (screen_dim.w - master_dim.w) / (has_rightstack ? 2 : 1);
+    } else {
+        rightstack_dim.w = screen_dim.w / (has_rightstack ? 2 : 1);
+    }
+    rightstack_dim.h = screen_dim.h / (has_rightstack ? ::std::floor((float)n_stack / 2) : 1);
+
+    pos_t leftstack_pos  = {
+        m_ewmh.get_left_strut(),
+        m_ewmh.get_top_strut()
+    };
+
+    pos_t master_pos = {
+        leftstack_pos.x + leftstack_dim.w + 1,
+        m_ewmh.get_top_strut()
+    };
+
+    pos_t rightstack_pos  = {
+        master_pos.x + master_dim.w + 1,
+        m_ewmh.get_top_strut()
+    };
+
+    if (!n_master)
+        rightstack_pos.x = leftstack_pos.x + leftstack_dim.w + 1;
+
+    if (workspace.is_mirrored() && clients.size() > n_master && n_master != 0 && has_rightstack) {
+        ::std::swap(leftstack_dim.w, rightstack_dim.w);
+        ::std::swap(leftstack_pos.x, rightstack_pos.x);
+    }
+
+    if (!has_rightstack && n_master) {
+        master_pos.x = leftstack_pos.x;
+        leftstack_pos.x = m_ewmh.get_left_strut() + master_dim.w + 1;
+    }
+
+    { // tile master clients (center pillar)
+        for (size_t i = 0; n_master && i < n_master - 1; ++i) {
+            clients[i]->resize(master_dim, true).move(master_pos, true);
+            master_pos.y += master_dim.h;
+        }
+
+        if (n_master)
+            clients[n_master - 1]->resize({master_dim.w,
+                screen_dim.h + m_ewmh.get_top_strut() - master_pos.y}, true).move(master_pos, true);
+    }
+
+    { // tile stack clients (left pillar)
+        for (size_t i = 0; i < ::std::ceil((float)n_stack / 2); ++i) {
+            clients[n_master + i]->resize(leftstack_dim, true).move(leftstack_pos, true);
+            leftstack_pos.y += leftstack_dim.h;
+        }
+    }
+
+    { // tile stack clients (right pillar)
+        if (has_rightstack)
+            for (size_t i = 0; i < ::std::floor((float)n_stack / 2); ++i) {
+                clients[clients.size() - ::std::floor((float)n_stack / 2) + i]->
+                    resize(rightstack_dim, true).move(rightstack_pos, true);
+                rightstack_pos.y += rightstack_dim.h;
+            }
+    }
+}

@@ -11,6 +11,7 @@ user_workspace_t::arrange() const
     case layout_t::doubledeck: layouthandler.layout_doubledeck(*this); break;
     case layout_t::grid:       layouthandler.layout_grid(*this);       break;
     case layout_t::monocle:    layouthandler.layout_monocle(*this);    break;
+    case layout_t::pillar:     layouthandler.layout_pillar(*this);     break;
     default: break;
     }
 }

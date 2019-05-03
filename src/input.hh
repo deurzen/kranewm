@@ -130,6 +130,7 @@ public:
               { { XK_bracketright, MODMASK|ShiftMask },   keyop_t::client_to_next_ws            },
               { { XK_d,            MODMASK|ShiftMask },   keyop_t::deck                         },
               { { XK_g,            MODMASK|ShiftMask },   keyop_t::grid                         },
+              { { XK_l,            MODMASK|ShiftMask },   keyop_t::pillar                       },
               { { XK_j,            MODMASK|ShiftMask },   keyop_t::move_client_bck              },
               { { XK_k,            MODMASK|ShiftMask },   keyop_t::move_client_fwd              },
               { { XK_space,        MODMASK|ShiftMask },   keyop_t::toggle_float                 },
