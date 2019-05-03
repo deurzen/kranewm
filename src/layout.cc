@@ -59,23 +59,27 @@ layouthandler_t::layout_tile(const user_workspace_t& workspace) const
         ::std::swap(master_pos.x, stack_pos.x);
     }
 
-    for (size_t i = 0; n_master && i < n_master - 1; ++i) {
-        clients[i]->resize(master_dim, true).move(master_pos, true);
-        master_pos.y += master_dim.h + gap_size;
+    { // tile master clients
+        for (size_t i = 0; n_master && i < n_master - 1; ++i) {
+            clients[i]->resize(master_dim, true).move(master_pos, true);
+            master_pos.y += master_dim.h + gap_size;
+        }
+
+        if (n_master)
+            clients[n_master - 1]->resize({master_dim.w,
+                screen_dim.h + m_ewmh.get_top_strut() - master_pos.y}, true).move(master_pos, true);
     }
 
-    if (n_master)
-        clients[n_master - 1]->resize({master_dim.w,
-            screen_dim.h + m_ewmh.get_top_strut() - master_pos.y}, true).move(master_pos, true);
+    { // tile stack clients
+        for (size_t i = n_master; i < clients.size() - 1; ++i) {
+            clients[i]->resize(stack_dim, true).move(stack_pos, true);
+            stack_pos.y += stack_dim.h + gap_size;
+        }
 
-    for (size_t i = n_master; i < clients.size() - 1; ++i) {
-        clients[i]->resize(stack_dim, true).move(stack_pos, true);
-        stack_pos.y += stack_dim.h + gap_size;
+        if (clients.size() > n_master)
+            clients.back()->resize({stack_dim.w,
+                screen_dim.h + m_ewmh.get_top_strut() - stack_pos.y}, true).move(stack_pos, true);
     }
-
-    if (clients.size() > n_master)
-        clients.back()->resize({stack_dim.w,
-            screen_dim.h + m_ewmh.get_top_strut() - stack_pos.y}, true).move(stack_pos, true);
 }
 
 void
@@ -122,15 +126,18 @@ layouthandler_t::layout_deck(const user_workspace_t& workspace) const
         ::std::swap(master_pos.x, stack_pos.x);
     }
 
-    for (size_t i = 0; n_master && i < n_master - 1; ++i) {
-        clients[i]->resize(master_dim, true).move(master_pos, true);
-        master_pos.y += master_dim.h + gap_size;
+    { // tile master clients
+        for (size_t i = 0; n_master && i < n_master - 1; ++i) {
+            clients[i]->resize(master_dim, true).move(master_pos, true);
+            master_pos.y += master_dim.h + gap_size;
+        }
+
+        if (n_master)
+            clients[n_master - 1]->resize({master_dim.w,
+                screen_dim.h + m_ewmh.get_top_strut() - master_pos.y}, true).move(master_pos, true);
     }
 
-    if (n_master)
-        clients[n_master - 1]->resize({master_dim.w,
-            screen_dim.h + m_ewmh.get_top_strut() - master_pos.y}, true).move(master_pos, true);
-
+    // tile stack clients
     for (size_t i = n_master; i < clients.size(); ++i)
         clients[i]->resize(stack_dim, true).move(stack_pos, true);
 }
@@ -179,9 +186,11 @@ layouthandler_t::layout_doubledeck(const user_workspace_t& workspace) const
         ::std::swap(master_pos.x, stack_pos.x);
     }
 
+    // tile master clients
     for (size_t i = 0; i < n_master; ++i)
         clients[i]->resize(master_dim, true).move(master_pos, true);
 
+    // tile stack clients
     for (size_t i = n_master; i < clients.size(); ++i)
         clients[i]->resize(stack_dim, true).move(stack_pos, true);
 }
