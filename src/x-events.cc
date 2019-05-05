@@ -532,17 +532,15 @@ x_events_t::on_unmap_notify()
         return;
     }
 
+    x_wrapper::sync(false);
+
     if (client->redeem_expect(clientexpect_t::iconify)
         || client->redeem_expect(clientexpect_t::withdraw))
     {
         return;
     }
 
-    pos_t pos = client->pos;
-    x_wrapper::window_t frame = client->frame;
-
     client->unmap();
-    win.reparent(pos);
-    m_windowstack.remove_from_stack(frame);
-    frame.destroy();
+    client->win.reparent(client->pos);
+    client->frame.destroy();
 }

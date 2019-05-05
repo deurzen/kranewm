@@ -119,6 +119,7 @@ client_model_t::unmanage_client(client_ptr_t client)
     m_processes.remove_process(client);
     erase_find(m_client_workspaces, client);
 
+    m_windowstack.remove_from_stack(client->frame);
     m_changequeue.add(change_client_destroy(client, workspace));
 }
 
