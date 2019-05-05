@@ -38,10 +38,16 @@ x_wrapper::next_event(event_t& event)
     XNextEvent(g_dpy, event.get_ptr());
 }
 
+bool
+x_wrapper::typed_event(event_t& event, int type)
+{
+    return XCheckTypedEvent(g_dpy, type, event.get_ptr());
+}
+
 void
 x_wrapper::last_typed_event(event_t& event, int type)
 {
-    while (XCheckTypedEvent(g_dpy, type, event.get_ptr()));
+    while (typed_event(event, type));
 }
 
 void

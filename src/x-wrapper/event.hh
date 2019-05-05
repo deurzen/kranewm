@@ -56,6 +56,7 @@ namespace x_wrapper
     extern void disable_substructure_events();
 
     extern void next_event(event_t&);
+    extern bool typed_event(event_t&, int);
     extern void last_typed_event(event_t&, int);
     extern void sync(bool);
 }
