@@ -25,12 +25,12 @@ public:
           m_resize_workspace(new moveresize_workspace_t{workspacetype_t::resize}),
           m_marked_client(nullptr),
           m_focused_client(nullptr)
-        {
-            for (auto&& [nr,name] : USER_WORKSPACES)
-                m_user_workspaces.push_back(new user_workspace_t{nr, name.c_str(), ewmh});
+    {
+        for (auto&& [nr,name] : USER_WORKSPACES)
+            m_user_workspaces.push_back(new user_workspace_t{nr, name.c_str(), ewmh});
 
-            m_current_workspace = m_user_workspaces.front();
-        }
+        m_current_workspace = m_user_workspaces.front();
+    }
 
     client_ptr_t win_to_client(x_wrapper::window_t);
     workspace_ptr_t client_workspace(client_ptr_t);
