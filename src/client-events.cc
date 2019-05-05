@@ -4,6 +4,7 @@
 #include "sidebar.hh"
 #include "x-model.hh"
 #include "client-model.hh"
+#include "x-wrapper/event.hh"
 #include "x-wrapper/mouse.hh"
 
 
@@ -172,6 +173,22 @@ client_events_t::on_change_workspace_active()
     auto to     = change->to;
 
     m_ewmh.set_current_desktop_property(to->get_number() - 1);
+
+    { // circumvents X server race condition
+        x_wrapper::sync(false);
+        x_wrapper::event_t event;
+        while (x_wrapper::typed_event(event, UnmapNotify)) {
+            x_wrapper::window_t win = event.get().xunmap.window;
+            client_ptr_t client = m_clients.win_to_client(win);
+
+            if (client && !client->redeem_expect(clientexpect_t::withdraw)) {
+                client->unmap();
+                client->win.reparent(client->pos);
+                client->frame.destroy();
+                x_wrapper::sync(false);
+            }
+        }
+    }
 
     map_all(to->get_all());
     unmap_all(from->get_all());
