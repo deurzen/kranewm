@@ -95,7 +95,7 @@ client_events_t::on_change_client_fullscreen()
     if (client->fullscreen) {
         m_ewmh.set_window_state_property(client->win, "FULLSCREEN");
         auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
-        client->resize({root_attrs.w() - SIDEBAR_WIDTH, root_attrs.h() + BORDER_HEIGHT}, true);
+        client->resize({root_attrs.w() - SIDEBAR_WIDTH - 1, root_attrs.h() + BORDER_HEIGHT}, true);
         client->move({m_ewmh.get_left_strut(), -BORDER_HEIGHT - 1}, true);
     } else {
         m_ewmh.set_window_state_property(client->win);
