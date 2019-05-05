@@ -58,7 +58,6 @@ client_events_t::on_change_client_focus()
                 m_sidebar.indicate_clientnormal().draw();
 
         } else {
-            m_clients.cycle_focus_backward();
             to->frame.set_background_color(REG_COLOR);
             to->frame.grab();
         }

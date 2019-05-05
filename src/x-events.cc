@@ -538,14 +538,6 @@ x_events_t::on_unmap_notify()
         return;
     }
 
-    /* if (client->iconified) */
-    /*     cm_.toggle_iconify(client); */
-
-    /* if (client->floating) { */
-    /*     xh_.destroy_window(client->float_indicator); */
-    /*     client->float_indicator = None; */
-    /* } */
-
     pos_t pos = client->pos;
     x_wrapper::window_t frame = client->frame;
 
