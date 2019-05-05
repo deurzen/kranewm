@@ -162,8 +162,8 @@ x_wrapper::window_t::is_of_type(::std::string&& type_name)
 bool
 x_wrapper::window_t::is_of_state(::std::string&& type_name)
 {
-    const auto state_atom = get_property<atom_t>(val, "_NET_WM_WINDOW_STATE");
-    const atom_t state_id = get_atom("_NET_WM_WINDOW_STATE_" + type_name);
+    const auto state_atom = get_property<atom_t>(val, "_NET_WM_STATE");
+    const atom_t state_id = get_atom("_NET_WM_STATE_" + type_name);
 
     return state_atom.get_data().get() == state_id.get();
 }
