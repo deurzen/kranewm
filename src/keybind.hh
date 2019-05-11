@@ -25,6 +25,7 @@ enum class keyop_t
     rhythmboxtoggle, rhythmboxnext, rhythmboxprev, rhythmboxstop,
     mpctoggle, mpcnext, mpcprev, mpcstop, mpcrandom, mpcsingle,
     volumeup, volumedown, volumemute,
+    audioplay, audiostop, audioprev, audionext,
     brightnessup15, brightnessdown15,
     brightnessup5, brightnessdown5,
     take_screenshot, take_screenshot_sel,

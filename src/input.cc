@@ -93,9 +93,13 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::spawn_dmenupasscopy: fork_external("/usr/bin/dmenupass --copy");                             break;
     case keyop_t::spawn_browser:       fork_external("/usr/bin/qutebrowser");                                  break;
     case keyop_t::spawn_sec_browser:   fork_external("/usr/bin/firefox");                                      break;
+    case keyop_t::audioplay: // fallthrough
     case keyop_t::mpctoggle:           fork_external("/usr/bin/mpc toggle");                                   break;
+    case keyop_t::audionext: // fallthrough
     case keyop_t::mpcnext:             fork_external("/usr/bin/mpc next");                                     break;
+    case keyop_t::audioprev: // fallthrough
     case keyop_t::mpcprev:             fork_external("/usr/bin/mpc prev");                                     break;
+    case keyop_t::audiostop: // fallthrough
     case keyop_t::mpcstop:             fork_external("/usr/bin/mpc stop");                                     break;
     case keyop_t::mpcrandom:           fork_external("/usr/bin/mpc random");                                   break;
     case keyop_t::mpcsingle:           fork_external("/usr/bin/mpc single");                                   break;
