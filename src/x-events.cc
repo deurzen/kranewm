@@ -154,7 +154,7 @@ x_events_t::on_button_press()
 
     if (win.get() == x_wrapper::g_root.get()) {
         if (subwin.get() == None)
-            m_inputhandler.process_mouse_input_global(m_current_event.get().xbutton);
+            m_input.process_mouse_input_global(event);
         else
             win = subwin;
     }
@@ -162,7 +162,7 @@ x_events_t::on_button_press()
     client_ptr_t client = m_clients.win_to_client(win);
     if (client) {
         m_clients.focus(client);
-        m_inputhandler.process_mouse_input_client(client, event);
+        m_input.process_mouse_input_client(client, event);
         m_clients.focus(client);
     }
 }
@@ -404,10 +404,10 @@ x_events_t::on_key_press()
 {
     XKeyEvent event = m_current_event.get().xkey;
 
-    m_inputhandler.process_key_input_global(event);
+    m_input.process_key_input_global(event);
     client_ptr_t client = m_clients.focused_client();
     if (client)
-        m_inputhandler.process_key_input_client(client, event);
+        m_input.process_key_input_client(client, event);
 }
 
 void

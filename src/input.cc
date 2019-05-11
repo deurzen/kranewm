@@ -475,13 +475,13 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
     keyshortcut_t shortcut{event};
 
     switch (m_keybinds[shortcut]) {
-    case keyop_t::kill_client:         client->win.force_close();                     break;
-    case keyop_t::down_stack:                                                         break;
-    case keyop_t::up_stack:                                                           break;
-    case keyop_t::down_master:                                                        break;
-    case keyop_t::up_master:                                                          break;
-    case keyop_t::move_client_fwd: m_clients.active_workspace()->move_forward();      break;
-    case keyop_t::move_client_bck: m_clients.active_workspace()->move_backward();     break;
+    case keyop_t::kill_client: client->win.force_close();                         break;
+    case keyop_t::down_stack:                                                     break;
+    case keyop_t::up_stack:                                                       break;
+    case keyop_t::down_master:                                                    break;
+    case keyop_t::up_master:                                                      break;
+    case keyop_t::move_client_fwd: m_clients.active_workspace()->move_forward();  break;
+    case keyop_t::move_client_bck: m_clients.active_workspace()->move_backward(); break;
     case keyop_t::toggle_float:
         {
             if (client->parent || client->fullscreen)

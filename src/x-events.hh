@@ -31,7 +31,7 @@ public:
           m_clients(clients),
           m_x(x),
           m_running(true),
-          m_inputhandler(sidebar, clients, windowstack, processes, m_running),
+          m_input(sidebar, clients, windowstack, processes, m_running),
           m_rules({
               //  class                  inst             title      float center icon close nohint workspace
               { { "Artha",               ALL,             ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
@@ -79,7 +79,7 @@ private:
     client_model_t& m_clients;
     x_model_t& m_x;
     bool m_running;
-    inputhandler_t m_inputhandler;
+    inputhandler_t m_input;
     x_wrapper::event_t m_current_event;
     rules_t m_rules;
 
