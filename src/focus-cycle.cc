@@ -5,7 +5,7 @@
 
 
 void
-focus_stack_t::push(client_ptr_t client)
+focus_cycle_t::focus_stack_t::push(client_ptr_t client)
 {
     if (stack.size() == max_stack_size)
         stack.pop_front();
@@ -14,7 +14,7 @@ focus_stack_t::push(client_ptr_t client)
 }
 
 client_ptr_t
-focus_stack_t::pop(client_ptr_t current)
+focus_cycle_t::focus_stack_t::pop(client_ptr_t current)
 {
     erase(current);
     if (stack.empty())
@@ -27,19 +27,19 @@ focus_stack_t::pop(client_ptr_t current)
 }
 
 bool
-focus_stack_t::empty() const
+focus_cycle_t::focus_stack_t::empty() const
 {
     return stack.empty();
 }
 
 ::std::deque<client_ptr_t>::size_type
-focus_stack_t::size() const
+focus_cycle_t::focus_stack_t::size() const
 {
     return stack.size();
 }
 
 void
-focus_stack_t::erase(client_ptr_t client)
+focus_cycle_t::focus_stack_t::erase(client_ptr_t client)
 {
     erase_remove(stack, client);
 }

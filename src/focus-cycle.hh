@@ -5,31 +5,33 @@
 #include <deque>
 
 
-class focus_stack_t
-{
-public:
-    focus_stack_t()
-        : max_stack_size(50) {}
-
-    void push(client_ptr_t);
-    client_ptr_t pop(client_ptr_t);
-
-    bool empty() const;
-    ::std::deque<client_ptr_t>::size_type size() const;
-
-    void erase(client_ptr_t);
-
-private:
-    const size_t max_stack_size;
-    ::std::deque<client_ptr_t> stack;
-
-};
-
 class focus_cycle_t
 {
-    typedef ::std::deque<client_ptr_t>::iterator  fg_it;
-    typedef ::std::deque<client_ptr_t>::reverse_iterator  fg_rit;
+    static const unsigned MAX_STACK_SIZE = 50;
+
+    typedef ::std::deque<client_ptr_t>::iterator fg_it;
+    typedef ::std::deque<client_ptr_t>::reverse_iterator fg_rit;
     typedef ::std::deque<client_ptr_t>::size_type fg_sz;
+
+    class focus_stack_t
+    {
+    public:
+        focus_stack_t()
+            : max_stack_size(MAX_STACK_SIZE) {}
+
+        void push(client_ptr_t);
+        client_ptr_t pop(client_ptr_t);
+
+        bool empty() const;
+        ::std::deque<client_ptr_t>::size_type size() const;
+
+        void erase(client_ptr_t);
+
+    private:
+        const size_t max_stack_size;
+        ::std::deque<client_ptr_t> stack;
+
+    };
 
 public:
     focus_cycle_t()
