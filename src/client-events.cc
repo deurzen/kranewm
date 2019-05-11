@@ -181,7 +181,7 @@ client_events_t::on_change_workspace_active()
             x_wrapper::window_t win = event.get().xunmap.window;
             client_ptr_t client = m_clients.win_to_client(win);
 
-            if (client && !client->redeem_expect(clientexpect_t::withdraw)) {
+            if (client && !client->consume_expect(clientexpect_t::withdraw)) {
                 client->unmap();
                 client->win.reparent(client->pos);
                 client->frame.destroy();

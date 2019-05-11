@@ -95,7 +95,7 @@ client_t::disown_child(client_ptr_t child)
 }
 
 bool
-client_t::redeem_expect(clientexpect_t occurred)
+client_t::consume_expect(clientexpect_t occurred)
 {
     if (occurred == expect) {
         switch (expect) {

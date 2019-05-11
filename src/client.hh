@@ -45,7 +45,7 @@ typedef struct client_t
           parent(nullptr) {}
 
     void disown_child(client_ptr_t);
-    bool redeem_expect(clientexpect_t);
+    bool consume_expect(clientexpect_t);
     void must_expect(clientexpect_t);
 
     client_t& move(pos_t, bool = false);

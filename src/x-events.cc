@@ -417,7 +417,7 @@ x_events_t::on_map_request()
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (client) {
-        if (!client->redeem_expect(clientexpect_t::map)
+        if (!client->consume_expect(clientexpect_t::map)
             && is_moveresize_workspace(m_clients.client_workspace(client)))
         {
             m_x.exit_move_resize();
@@ -450,7 +450,7 @@ x_events_t::on_map_notify()
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (client) {
-        if (!client->redeem_expect(clientexpect_t::map)
+        if (!client->consume_expect(clientexpect_t::map)
             && is_moveresize_workspace(m_clients.client_workspace(client)))
         {
             m_x.exit_move_resize();
@@ -534,8 +534,8 @@ x_events_t::on_unmap_notify()
 
     x_wrapper::sync(false);
 
-    if (client->redeem_expect(clientexpect_t::iconify)
-        || client->redeem_expect(clientexpect_t::withdraw))
+    if (client->consume_expect(clientexpect_t::iconify)
+        || client->consume_expect(clientexpect_t::withdraw))
     {
         return;
     }
