@@ -83,7 +83,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         return;
     }
 
-    switch (m_keybinds[keyshortcut_t{event}]) {
+    switch (m_keybinds[event]) {
     case keyop_t::quit: m_running = false; return;
     case keyop_t::spawn_terminal:      fork_external("/usr/bin/urxvt -geometry 80x22");                        break;
     case keyop_t::spawn_quickterm:     fork_external("/usr/bin/term -name \"kranewm:float\" -geometry 80x22"); break;
@@ -472,9 +472,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
 void
 inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
 {
-    keyshortcut_t shortcut{event};
-
-    switch (m_keybinds[shortcut]) {
+    switch (m_keybinds[event]) {
     case keyop_t::kill_client: client->win.force_close();                         break;
     case keyop_t::down_stack:                                                     break;
     case keyop_t::up_stack:                                                       break;
