@@ -56,8 +56,8 @@ public:
 
     void client_to_workspace(client_ptr_t, unsigned);
     void client_to_workspace(client_ptr_t, workspace_ptr_t);
-    void change_active_workspace(unsigned);
-    void change_active_workspace(user_workspace_ptr_t = nullptr);
+    void change_active_workspace(unsigned, bool = true);
+    void change_active_workspace(user_workspace_ptr_t = nullptr, bool = true);
 
     void set_fullscreen(client_ptr_t, clientaction_t);
     void set_urgent(client_ptr_t, clientaction_t);

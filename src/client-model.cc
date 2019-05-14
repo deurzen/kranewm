@@ -246,21 +246,18 @@ client_model_t::client_to_workspace(client_ptr_t client, workspace_ptr_t to)
 }
 
 void
-client_model_t::change_active_workspace(unsigned workspace_nr)
+client_model_t::change_active_workspace(unsigned workspace_nr, bool save_prev)
 {
     if (range_t<unsigned>::contains(1, USER_WORKSPACES.size(), workspace_nr))
-        change_active_workspace(m_user_workspaces[workspace_nr - 1]);
+        change_active_workspace(m_user_workspaces[workspace_nr - 1], save_prev);
 }
 
 void
-client_model_t::change_active_workspace(user_workspace_ptr_t workspace)
+client_model_t::change_active_workspace(user_workspace_ptr_t workspace, bool save_prev)
 {
     static user_workspace_ptr_t prev_workspace = nullptr;
 
-    if (!workspace)
-        workspace = prev_workspace;
-
-    if (!workspace || m_current_workspace == workspace)
+    if ((!workspace && !(workspace = prev_workspace)) || m_current_workspace == workspace)
         return;
 
     if (m_move_workspace->is_set())
@@ -269,7 +266,18 @@ client_model_t::change_active_workspace(user_workspace_ptr_t workspace)
     if (m_resize_workspace->is_set())
         stop_resizing(m_resize_workspace->get());
 
-    prev_workspace = m_current_workspace;
+    { // ignore successive {next,prev}-ws
+        static bool prev_ignored = false;
+        if (!prev_ignored) {
+            prev_workspace = m_current_workspace;
+            prev_ignored = true;
+        }
+
+        if (!workspace || save_prev) {
+            prev_workspace = m_current_workspace;
+            prev_ignored = false;
+        }
+    }
 
     m_changequeue.add(change_workspace_active(m_current_workspace, workspace));
     m_current_workspace = workspace;

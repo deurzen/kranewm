@@ -15,14 +15,14 @@ inputhandler_t::process_mouse_input_global(XButtonEvent event)
                 {
                     unsigned workspace = m_clients.active_workspace()->get_number();
                     workspace %= USER_WORKSPACES.size();
-                    m_clients.change_active_workspace(workspace + 1);
+                    m_clients.change_active_workspace(workspace + 1, false);
                 }
                 return;
             case mouseop_t::goto_prev_ws:
                 {
                     unsigned workspace = m_clients.active_workspace()->get_number() - 1;
                     workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
-                    m_clients.change_active_workspace(workspace);
+                    m_clients.change_active_workspace(workspace, false);
                 }
                 return;
             default: break;
@@ -55,7 +55,7 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
             {
                 unsigned workspace = m_clients.active_workspace()->get_number();
                 workspace %= USER_WORKSPACES.size();
-                m_clients.change_active_workspace(workspace + 1);
+                m_clients.change_active_workspace(workspace + 1, false);
             }
             return;
         case mouseop_t::client_prev_ws:
@@ -68,7 +68,7 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
             {
                 unsigned workspace = m_clients.active_workspace()->get_number() - 1;
                 workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
-                m_clients.change_active_workspace(workspace);
+                m_clients.change_active_workspace(workspace, false);
             }
             return;
         default: break;
@@ -144,14 +144,14 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             unsigned workspace = m_clients.active_workspace()->get_number();
             workspace %= USER_WORKSPACES.size();
-            m_clients.change_active_workspace(workspace + 1);
+            m_clients.change_active_workspace(workspace + 1, false);
         }
         break;
     case keyop_t::activate_prev_ws:
         {
             unsigned workspace = m_clients.active_workspace()->get_number() - 1;
             workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
-            m_clients.change_active_workspace(workspace);
+            m_clients.change_active_workspace(workspace, false);
         }
         break;
     case keyop_t::floating:
