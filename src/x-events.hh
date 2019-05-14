@@ -48,6 +48,7 @@ public:
               { { "noson",               ALL,             ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
               { { "noson-gui",           ALL,             ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
               { { "qutebrowser",         ALL,             ALL },   { YES,   NO,   NO,   OFF,  NO,   CURRENT } },
+              { { "nixnote2",            ALL,             ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
           }) {}
 
     bool step();

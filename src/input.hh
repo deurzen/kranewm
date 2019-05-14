@@ -101,6 +101,7 @@ public:
               { { XK_r,            MODMASK },             keyop_t::spawn_ranger                 },
               { { XK_w,            MODMASK },             keyop_t::spawn_qalculate              },
               { { XK_g,            MODMASK },             keyop_t::spawn_gpick                  },
+              { { XK_n,            MODMASK },             keyop_t::spawn_nixnote                },
               { { XK_minus,        MODMASK },             keyop_t::dec_gap_size                 },
               { { XK_equal,        MODMASK },             keyop_t::inc_gap_size                 },
               { { XK_1,            MODMASK|SECMASK },     keyop_t::deiconify_1                  },
