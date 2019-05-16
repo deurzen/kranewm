@@ -1,5 +1,5 @@
-#ifndef __KRANEWM__X_WRAPPER__COMMON__GUARD__
-#define __KRANEWM__X_WRAPPER__COMMON__GUARD__
+#ifndef __KRANEWM__X_DATA__COMMON__GUARD__
+#define __KRANEWM__X_DATA__COMMON__GUARD__
 
 #include <iostream>
 
@@ -44,4 +44,4 @@ struct dim_t
     int h;
 };
 
-#endif//__KRANEWM__X_WRAPPER__COMMON__GUARD__
+#endif//__KRANEWM__X_DATA__COMMON__GUARD__

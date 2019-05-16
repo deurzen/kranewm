@@ -4,8 +4,8 @@
 #include "sidebar.hh"
 #include "x-model.hh"
 #include "client-model.hh"
-#include "x-wrapper/event.hh"
-#include "x-wrapper/mouse.hh"
+#include "x-data/event.hh"
+#include "x-data/mouse.hh"
 
 
 void
@@ -46,7 +46,7 @@ client_events_t::on_change_client_focus()
         if (to->urgent)
             m_clients.set_urgent(to, clientaction_t::remove);
 
-        if (x_wrapper::set_input_focus(to->win)) {
+        if (x_data::set_input_focus(to->win)) {
             m_ewmh.set_active_window_property(to->win);
             to->frame.set_background_color(SEL_COLOR);
             to->frame.ungrab();
@@ -64,7 +64,7 @@ client_events_t::on_change_client_focus()
         }
 
     } else
-        x_wrapper::set_input_focus();
+        x_data::set_input_focus();
 }
 
 void
@@ -75,7 +75,7 @@ client_events_t::on_change_client_destroy()
     auto workspace = change->workspace;
 
     if (is_moveresize_workspace(workspace)) {
-        x_wrapper::release_pointer();
+        x_data::release_pointer();
         m_x.exit_move_resize();
     }
 
@@ -94,7 +94,7 @@ client_events_t::on_change_client_fullscreen()
 
     if (client->fullscreen) {
         m_ewmh.set_window_state_property(client->win, "FULLSCREEN");
-        auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+        auto root_attrs = x_data::get_attributes(x_data::g_root);
         client->resize({root_attrs.w() - SIDEBAR_WIDTH - 1, root_attrs.h() + BORDER_HEIGHT}, true);
         client->move({m_ewmh.get_left_strut(), -BORDER_HEIGHT - 1}, true);
     } else {
@@ -127,12 +127,12 @@ client_events_t::on_change_client_urgent()
     } else
         client->frame.set_background_color(REG_COLOR);
 
-    x_wrapper::wmhints_t hints = x_wrapper::get_wmhints(client->win);
+    x_data::wmhints_t hints = x_data::get_wmhints(client->win);
     if (hints.success())
         hints.get().flags = client->urgent
             ? (hints.get().flags | XUrgencyHint) : (hints.get().flags & ~XUrgencyHint);
 
-    x_wrapper::set_wmhints(client->win, hints);
+    x_data::set_wmhints(client->win, hints);
 }
 
 void
@@ -175,17 +175,17 @@ client_events_t::on_change_workspace_active()
     m_ewmh.set_current_desktop_property(to->get_number() - 1);
 
     { // circumvents X server race condition
-        x_wrapper::sync(false);
-        x_wrapper::event_t event;
-        while (x_wrapper::typed_event(event, UnmapNotify)) {
-            x_wrapper::window_t win = event.get().xunmap.window;
+        x_data::sync(false);
+        x_data::event_t event;
+        while (x_data::typed_event(event, UnmapNotify)) {
+            x_data::window_t win = event.get().xunmap.window;
             client_ptr_t client = m_clients.win_to_client(win);
 
             if (client && !client->consume_expect(clientexpect_t::withdraw)) {
                 client->unmap();
                 client->win.reparent(client->pos);
                 client->frame.destroy();
-                x_wrapper::sync(false);
+                x_data::sync(false);
             }
         }
     }
@@ -208,7 +208,7 @@ void
 client_events_t::from_move_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
     map_all(client->children);
-    x_wrapper::release_pointer();
+    x_data::release_pointer();
     m_x.exit_move_resize();
 }
 
@@ -216,7 +216,7 @@ void
 client_events_t::from_resize_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
     map_all(client->children);
-    x_wrapper::release_pointer();
+    x_data::release_pointer();
     m_x.exit_move_resize();
 }
 
@@ -238,16 +238,16 @@ void
 client_events_t::to_move_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
     unmap_all(client->children);
-    m_x.enter_move(client, x_wrapper::pointer_position());
-    x_wrapper::confine_pointer(m_x.moveresize()->indicator);
+    m_x.enter_move(client, x_data::pointer_position());
+    x_data::confine_pointer(m_x.moveresize()->indicator);
 }
 
 void
 client_events_t::to_resize_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
     unmap_all(client->children);
-    m_x.enter_resize(client, x_wrapper::pointer_position());
-    x_wrapper::confine_pointer(m_x.moveresize()->indicator);
+    m_x.enter_resize(client, x_data::pointer_position());
+    x_data::confine_pointer(m_x.moveresize()->indicator);
 }
 
 void

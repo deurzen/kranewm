@@ -2,7 +2,7 @@
 #define __KRANEWM_CONSTRAINTS_GUARD__
 
 #include "util.hh"
-#include "x-wrapper/window.hh"
+#include "x-data/window.hh"
 
 
 struct sizeconstraints_t

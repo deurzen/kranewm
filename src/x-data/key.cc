@@ -6,7 +6,7 @@
 
 
 KeySym
-x_wrapper::get_keysym(int keycode)
+x_data::get_keysym(int keycode)
 {
     KeySym* keysyms;
     int keysyms_per_keycode;
@@ -24,13 +24,13 @@ x_wrapper::get_keysym(int keycode)
 }
 
 void
-x_wrapper::refresh_keyboard_mapping(XMappingEvent& event)
+x_data::refresh_keyboard_mapping(XMappingEvent& event)
 {
     XRefreshKeyboardMapping(&event);
 }
 
 void
-x_wrapper::grab_key(KeySym key, unsigned mask)
+x_data::grab_key(KeySym key, unsigned mask)
 {
     static const ::std::vector<int> ignored_masks({
         0, LockMask, Mod2Mask,
@@ -44,7 +44,7 @@ x_wrapper::grab_key(KeySym key, unsigned mask)
 }
 
 void
-x_wrapper::grab_keycode(int keycode, unsigned mask)
+x_data::grab_keycode(int keycode, unsigned mask)
 {
     static const ::std::vector<int> ignored_masks({
         0, LockMask, Mod2Mask,

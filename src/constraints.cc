@@ -1,6 +1,6 @@
 #include "constraints.hh"
 #include "common.hh"
-#include "x-wrapper/attributes.hh"
+#include "x-data/attributes.hh"
 
 
 void
@@ -9,7 +9,7 @@ sizeconstraints_t::apply(pos_t& pos, dim_t& dim) const
     dim.w = ::std::max(dim.w, MIN_WINDOW_SIZE);
     dim.h = ::std::max(dim.h, MIN_WINDOW_SIZE);
 
-    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
 
     if (pos.x >= root_attrs.w())
         pos.x = root_attrs.w() - dim.w;

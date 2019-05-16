@@ -29,7 +29,7 @@ typedef struct ::std::set<client_ptr_t> client_ptr_set_t;
 typedef struct client_t
 {
     client_t() = default;
-    client_t(x_wrapper::window_t _win, x_wrapper::window_t _frame,
+    client_t(x_data::window_t _win, x_data::window_t _frame,
         sizeconstraints_t _sizeconstraints, rule_t& rule)
         : name(_win.get_class()),
           win(_win),
@@ -60,8 +60,8 @@ typedef struct client_t
     client_t& set_float(clientaction_t);
 
     ::std::string       name;
-    x_wrapper::window_t win;
-    x_wrapper::window_t frame;
+    x_data::window_t    win;
+    x_data::window_t    frame;
     pos_t               pos;
     pos_t               float_pos;
     dim_t               dim;
@@ -80,7 +80,7 @@ typedef struct client_t
 }* client_ptr_t;
 
 
-extern client_ptr_t create_client(x_wrapper::window_t, rule_t&);
+extern client_ptr_t create_client(x_data::window_t, rule_t&);
 extern void update_offset(client_ptr_t);
 
 #endif//__KRANEWM__CLIENT__GUARD__

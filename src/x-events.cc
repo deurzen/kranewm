@@ -4,15 +4,15 @@
 #include "sidebar.hh"
 #include "client-model.hh"
 #include "x-model.hh"
-#include "x-wrapper/attributes.hh"
-#include "x-wrapper/request.hh"
-#include "x-wrapper/hints.hh"
+#include "x-data/attributes.hh"
+#include "x-data/request.hh"
+#include "x-data/hints.hh"
 
 
 bool
 x_events_t::step()
 {
-    x_wrapper::next_event(m_current_event);
+    x_data::next_event(m_current_event);
 
     switch (m_current_event.type()) {
     case ButtonPress:      on_button_press();      break;
@@ -38,7 +38,7 @@ x_events_t::step()
 }
 
 void
-x_events_t::register_window(x_wrapper::window_t win)
+x_events_t::register_window(x_data::window_t win)
 {
     if (m_ewmh.check_apply_strut(win))
         m_clients.active_workspace()->arrange();
@@ -57,25 +57,25 @@ x_events_t::register_window(x_wrapper::window_t win)
         return;
     }
 
-    if (!x_wrapper::should_manage(win)) {
+    if (!x_data::should_manage(win)) {
         m_windowstack.add_to_stack({win, layer_t::floating});
         m_ewmh.set_frame_extents(win, true);
         return;
     }
 
     rule_t rule = retrieve_rule(win);
-    if (x_wrapper::has_property<x_wrapper::cardinal_t>(win, "_NET_WM_DESKTOP")) {
-        rule.workspace = x_wrapper::get_property<x_wrapper::cardinal_t>(win, "_NET_WM_DESKTOP")().get() + 1;
+    if (x_data::has_property<x_data::cardinal_t>(win, "_NET_WM_DESKTOP")) {
+        rule.workspace = x_data::get_property<x_data::cardinal_t>(win, "_NET_WM_DESKTOP")().get() + 1;
         if (!range_t<unsigned>::contains(1, USER_WORKSPACES.size(), rule.workspace))
             rule.workspace = 0;
     }
 
-    if (x_wrapper::get_sizehints(win).success() & USPosition)
+    if (x_data::get_sizehints(win).success() & USPosition)
         rule.center = false;
 
-    x_wrapper::window_t parent = x_wrapper::get_transient_for(win);
+    x_data::window_t parent = x_data::get_transient_for(win);
     if (parent) {
-        if (!x_wrapper::should_manage(parent)) {
+        if (!x_data::should_manage(parent)) {
             m_windowstack.add_to_stack({parent, layer_t::floating});
             m_ewmh.set_frame_extents(parent, true);
             return;
@@ -103,7 +103,7 @@ x_events_t::register_window(x_wrapper::window_t win)
 }
 
 rule_t
-x_events_t::retrieve_rule(x_wrapper::window_t win)
+x_events_t::retrieve_rule(x_data::window_t win)
 {
     bool floating  = false;
     bool center    = false;
@@ -149,10 +149,10 @@ void
 x_events_t::on_button_press()
 {
     XButtonEvent event = m_current_event.get().xbutton;
-    x_wrapper::window_t win = event.window;
-    x_wrapper::window_t subwin = event.subwindow;
+    x_data::window_t win = event.window;
+    x_data::window_t subwin = event.subwindow;
 
-    if (win.get() == x_wrapper::g_root.get()) {
+    if (win.get() == x_data::g_root.get()) {
         if (subwin.get() == None)
             m_input.process_mouse_input_global(event);
         else
@@ -170,13 +170,13 @@ x_events_t::on_button_press()
 void
 x_events_t::on_button_release()
 {
-    x_wrapper::window_t win = m_current_event.get().xbutton.window;
+    x_data::window_t win = m_current_event.get().xbutton.window;
 
     if (!m_x.is_valid() || (win.get() != m_x.moveresize()->indicator.get()))
         return;
 
     auto client = m_x.moveresize()->client;
-    auto attrs = x_wrapper::get_attributes(client->frame);
+    auto attrs = x_data::get_attributes(client->frame);
 
     switch (m_x.moveresize()->state) {
     case moveresizestate_t::move:   m_clients.stop_moving(client, attrs);          break;
@@ -188,14 +188,14 @@ x_events_t::on_button_release()
 void
 x_events_t::on_circulate_request()
 {
-    x_wrapper::propagate_circulate_request(m_current_event);
+    x_data::propagate_circulate_request(m_current_event);
 }
 
 void
 x_events_t::on_client_message()
 {
     XClientMessageEvent event = m_current_event.get().xclient;
-    x_wrapper::window_t win = event.window;
+    x_data::window_t win = event.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (!client)
@@ -253,12 +253,12 @@ x_events_t::on_client_message()
 void
 x_events_t::on_configure_request()
 {
-    x_wrapper::window_t win = m_current_event.get().xconfigurerequest.window;
+    x_data::window_t win = m_current_event.get().xconfigurerequest.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (!client) {
         int perm_flags = CWX | CWY | CWWidth | CWHeight;
-        x_wrapper::propagate_configure_request(m_current_event, perm_flags);
+        x_data::propagate_configure_request(m_current_event, perm_flags);
         return;
     }
 
@@ -274,7 +274,7 @@ x_events_t::on_configure_request()
     m_current_event.get().xconfigurerequest.height =
         ::std::max(m_current_event.get().xconfigurerequest.height, MIN_WINDOW_SIZE);
 
-    auto before_attrs = x_wrapper::get_attributes(client->frame);
+    auto before_attrs = x_data::get_attributes(client->frame);
 
     if (win.get() == client->win.get()) {
         if (m_x.is_valid() && m_x.moveresize()->state == moveresizestate_t::resize)
@@ -295,7 +295,7 @@ x_events_t::on_configure_request()
 
         conf_flags &= perm_flags;
         if (conf_flags)
-            x_wrapper::propagate_configure_request(win_event, conf_flags);
+            x_data::propagate_configure_request(win_event, conf_flags);
 
         m_current_event.get().xconfigurerequest.window = client->frame;
         m_current_event.get().xconfigurerequest.height += BORDER_HEIGHT;
@@ -306,10 +306,10 @@ x_events_t::on_configure_request()
 
     conf_flags &= perm_flags;
     if (conf_flags)
-        x_wrapper::propagate_configure_request(m_current_event, conf_flags);
+        x_data::propagate_configure_request(m_current_event, conf_flags);
 
     if (m_x.is_valid()) {
-        auto after_attrs = x_wrapper::get_attributes(client->frame);
+        auto after_attrs = x_data::get_attributes(client->frame);
 
         pos_t pos;
         switch (m_x.moveresize()->grabbed_at) {
@@ -341,13 +341,13 @@ x_events_t::on_configure_request()
 void
 x_events_t::on_configure_notify()
 {
-    x_wrapper::window_t win = m_current_event.get().xconfigure.window;
+    x_data::window_t win = m_current_event.get().xconfigure.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (!client || (m_x.is_valid() && m_x.moveresize()->state == moveresizestate_t::resize))
         return;
 
-    auto sizehints = x_wrapper::get_sizehints(client->win);
+    auto sizehints = x_data::get_sizehints(client->win);
     if (sizehints.success())
         sizehints.get().flags = PSize;
 
@@ -360,7 +360,7 @@ x_events_t::on_configure_notify()
 void
 x_events_t::on_destroy_notify()
 {
-    x_wrapper::window_t win = m_current_event.get().xdestroywindow.window;
+    x_data::window_t win = m_current_event.get().xdestroywindow.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (!client) {
@@ -370,8 +370,8 @@ x_events_t::on_destroy_notify()
         return;
     }
 
-    x_wrapper::select_input(client->win, 0);
-    x_wrapper::select_input(client->frame, 0);
+    x_data::select_input(client->win, 0);
+    x_data::select_input(client->frame, 0);
 
     if (client->urgent)
         m_sidebar.erase_urgent(m_clients.client_user_workspace(client)->get_number());
@@ -386,13 +386,13 @@ x_events_t::on_destroy_notify()
 void
 x_events_t::on_expose()
 {
-    x_wrapper::window_t win = m_current_event.get().xexpose.window;
+    x_data::window_t win = m_current_event.get().xexpose.window;
     int count = m_current_event.get().xexpose.count;
 
     if (count == 0 && m_sidebar.get_win().get() == win.get())
         m_sidebar.draw();
 
-    x_wrapper::sync(False);
+    x_data::sync(false);
 }
 
 void
@@ -413,7 +413,7 @@ x_events_t::on_key_press()
 void
 x_events_t::on_map_request()
 {
-    x_wrapper::window_t win = m_current_event.get().xmaprequest.window;
+    x_data::window_t win = m_current_event.get().xmaprequest.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (client) {
@@ -421,7 +421,7 @@ x_events_t::on_map_request()
             && is_moveresize_workspace(m_clients.client_workspace(client)))
         {
             m_x.exit_move_resize();
-            auto attrs = x_wrapper::get_attributes(client->frame);
+            auto attrs = x_data::get_attributes(client->frame);
             m_clients.stop_moving(client, attrs);
             m_clients.stop_resizing(client, attrs, attrs);
         }
@@ -439,14 +439,14 @@ x_events_t::on_mapping_notify()
 {
     XMappingEvent event = m_current_event.get().xmapping;
     if (event.request == MappingKeyboard) {
-        x_wrapper::refresh_keyboard_mapping(event);
+        x_data::refresh_keyboard_mapping(event);
     }
 }
 
 void
 x_events_t::on_map_notify()
 {
-    x_wrapper::window_t win = m_current_event.get().xmap.window;
+    x_data::window_t win = m_current_event.get().xmap.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (client) {
@@ -454,7 +454,7 @@ x_events_t::on_map_notify()
             && is_moveresize_workspace(m_clients.client_workspace(client)))
         {
             m_x.exit_move_resize();
-            auto attrs = x_wrapper::get_attributes(client->frame);
+            auto attrs = x_data::get_attributes(client->frame);
             m_clients.stop_moving(client, attrs);
             m_clients.stop_resizing(client, attrs, attrs);
         }
@@ -471,14 +471,14 @@ x_events_t::on_motion_notify()
     if (!m_x.is_valid() || !(client = m_x.moveresize()->client))
         return;
 
-    x_wrapper::last_typed_event(m_current_event, MotionNotify);
+    x_data::last_typed_event(m_current_event, MotionNotify);
 
-    auto client_attrs = x_wrapper::get_attributes(client->frame);
+    auto client_attrs = x_data::get_attributes(client->frame);
     client_attrs.get().height -= BORDER_HEIGHT;
 
     pos_t pos = client_attrs;
     dim_t dim = client_attrs;
-    pos_t delta = m_x.update_pointer(x_wrapper::pointer_position());
+    pos_t delta = m_x.update_pointer(x_data::pointer_position());
 
     switch (m_x.moveresize()->state) {
     case moveresizestate_t::move:   m_x.moveresize()->process_move_increment(pos, dim, delta);   break;
@@ -491,19 +491,19 @@ void
 x_events_t::on_property_notify()
 {
     auto event = m_current_event.get().xproperty;
-    x_wrapper::window_t win = event.window;
+    x_data::window_t win = event.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (client && event.state == PropertyNewValue) {
         if (event.atom == XA_WM_NORMAL_HINTS) {
-            auto sizehints = x_wrapper::get_sizehints(win);
+            auto sizehints = x_data::get_sizehints(win);
 
             if (!sizehints.get().flags)
                 sizehints.get().flags = PSize;
 
             m_x.update_hints(client, sizehints);
         } else if ((event.atom == XA_WM_NAME || event.atom
-            == x_wrapper::get_atom("_NET_WM_NAME").get()))
+            == x_data::get_atom("_NET_WM_NAME").get()))
         {
             if (client->iconified)
                 ; // handle iconified
@@ -512,8 +512,8 @@ x_events_t::on_property_notify()
         }
     }
 
-    if (event.atom == x_wrapper::get_atom("_NET_WM_STRUT").get()
-        || event.atom == x_wrapper::get_atom("_NET_WM_STRUT_PARTIAL").get())
+    if (event.atom == x_data::get_atom("_NET_WM_STRUT").get()
+        || event.atom == x_data::get_atom("_NET_WM_STRUT_PARTIAL").get())
     {
         m_ewmh.check_release_strut(event.window);
         m_ewmh.check_apply_strut(event.window);
@@ -524,7 +524,7 @@ x_events_t::on_property_notify()
 void
 x_events_t::on_unmap_notify()
 {
-    x_wrapper::window_t win = m_current_event.get().xunmap.window;
+    x_data::window_t win = m_current_event.get().xunmap.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
     if (!client) {
@@ -532,7 +532,7 @@ x_events_t::on_unmap_notify()
         return;
     }
 
-    x_wrapper::sync(false);
+    x_data::sync(false);
 
     if (client->consume_expect(clientexpect_t::iconify)
         || client->consume_expect(clientexpect_t::withdraw))

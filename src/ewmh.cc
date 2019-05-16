@@ -4,7 +4,7 @@
 #include "util.hh"
 #include "workspace.hh"
 
-#include "x-wrapper/attributes.hh"
+#include "x-data/attributes.hh"
 
 #include <algorithm>
 #include <cstring>
@@ -19,38 +19,38 @@ ewmh_t::get_netwm_atom(netwmid_t index)
 }
 
 void
-ewmh_t::set_wm_name_property(x_wrapper::window_t win, ::std::string name)
+ewmh_t::set_wm_name_property(x_data::window_t win, ::std::string name)
 {
-    x_wrapper::replace_property<x_wrapper::string_t>(win, {"_NET_WM_NAME", name});
+    x_data::replace_property<x_data::string_t>(win, {"_NET_WM_NAME", name});
 }
 
 void
-ewmh_t::set_supporting_wm_check_property(x_wrapper::window_t win, x_wrapper::window_t check_win)
+ewmh_t::set_supporting_wm_check_property(x_data::window_t win, x_data::window_t check_win)
 {
-    x_wrapper::replace_property<x_wrapper::window_t>(win, {"_NET_SUPPORTING_WM_CHECK", check_win});
+    x_data::replace_property<x_data::window_t>(win, {"_NET_SUPPORTING_WM_CHECK", check_win});
 }
 
 void
 ewmh_t::set_number_of_desktops_property(unsigned&& n)
 {
-    x_wrapper::replace_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_NUMBER_OF_DESKTOPS", n});
+    x_data::replace_property<x_data::cardinal_t>(x_data::g_root, {"_NET_NUMBER_OF_DESKTOPS", n});
 }
 
 void
 ewmh_t::set_current_desktop_property(unsigned&& i)
 {
-    x_wrapper::replace_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_CURRENT_DESKTOP", i});
+    x_data::replace_property<x_data::cardinal_t>(x_data::g_root, {"_NET_CURRENT_DESKTOP", i});
 }
 
 void
 ewmh_t::set_desktop_names_property(::std::vector<::std::string>& names)
 {
-    x_wrapper::string_list_t names_list(names);
-    x_wrapper::set_text_property(x_wrapper::g_root, {"_NET_DESKTOP_NAMES", names_list});
+    x_data::string_list_t names_list(names);
+    x_data::set_text_property(x_data::g_root, {"_NET_DESKTOP_NAMES", names_list});
 }
 
 void
-ewmh_t::set_frame_extents(x_wrapper::window_t win, bool overridden)
+ewmh_t::set_frame_extents(x_data::window_t win, bool overridden)
 {
     static CARD32 frame_extents_normal[] = {
         0, // left
@@ -66,80 +66,80 @@ ewmh_t::set_frame_extents(x_wrapper::window_t win, bool overridden)
         0  // bottom
     };
 
-    x_wrapper::remove_property(win, "_NET_WM_FRAME_EXTENTS");
+    x_data::remove_property(win, "_NET_WM_FRAME_EXTENTS");
     for (size_t i = 0; i < 4; ++i)
-        x_wrapper::append_property<x_wrapper::cardinal_t>(win, {"_NET_WM_FRAME_EXTENTS",
+        x_data::append_property<x_data::cardinal_t>(win, {"_NET_WM_FRAME_EXTENTS",
             overridden ? frame_extents_overridden[i] : frame_extents_normal[i]});
 }
 
 void
-ewmh_t::set_active_window_property(x_wrapper::window_t win)
+ewmh_t::set_active_window_property(x_data::window_t win)
 {
-    x_wrapper::replace_property<x_wrapper::window_t>(x_wrapper::g_root, {"_NET_ACTIVE_WINDOW", win});
+    x_data::replace_property<x_data::window_t>(x_data::g_root, {"_NET_ACTIVE_WINDOW", win});
 }
 
 void
-ewmh_t::set_window_state_property(x_wrapper::window_t win, netwmid_t i)
+ewmh_t::set_window_state_property(x_data::window_t win, netwmid_t i)
 {
     if (range_t<int>::contains(netwmid_t::netwmstatefirst, netwmid_t::netwmstatelast, i))
-        x_wrapper::replace_property<x_wrapper::atom_t>(win, {"_NET_WM_STATE", m_netwm_atoms[i]});
+        x_data::replace_property<x_data::atom_t>(win, {"_NET_WM_STATE", m_netwm_atoms[i]});
     else
-        x_wrapper::unset_property<x_wrapper::atom_t>(win, {"_NET_WM_STATE"});
+        x_data::unset_property<x_data::atom_t>(win, {"_NET_WM_STATE"});
 }
 
 void
-ewmh_t::set_window_state_property(x_wrapper::window_t win, const ::std::string& state)
+ewmh_t::set_window_state_property(x_data::window_t win, const ::std::string& state)
 {
-    x_wrapper::replace_property<x_wrapper::atom_t>(win,
-        {"_NET_WM_STATE", x_wrapper::get_atom("_NET_WM_STATE_" + state)});
+    x_data::replace_property<x_data::atom_t>(win,
+        {"_NET_WM_STATE", x_data::get_atom("_NET_WM_STATE_" + state)});
 }
 
 void
-ewmh_t::set_window_type_property(x_wrapper::window_t win, const ::std::string& type)
+ewmh_t::set_window_type_property(x_data::window_t win, const ::std::string& type)
 {
-    x_wrapper::replace_property<x_wrapper::atom_t>(win,
-        {"_NET_WM_WINDOW_TYPE", x_wrapper::get_atom("_NET_WM_WINDOW_TYPE_" + type)});
+    x_data::replace_property<x_data::atom_t>(win,
+        {"_NET_WM_WINDOW_TYPE", x_data::get_atom("_NET_WM_WINDOW_TYPE_" + type)});
 }
 
 void
-ewmh_t::set_wm_desktop_property(x_wrapper::window_t win, unsigned workspace_nr)
+ewmh_t::set_wm_desktop_property(x_data::window_t win, unsigned workspace_nr)
 {
-    x_wrapper::replace_property<x_wrapper::cardinal_t>(win, {"_NET_WM_DESKTOP", workspace_nr});
+    x_data::replace_property<x_data::cardinal_t>(win, {"_NET_WM_DESKTOP", workspace_nr});
 }
 
 void
 ewmh_t::set_desktop_geometry_property()
 {
-    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
-    x_wrapper::replace_property<x_wrapper::cardinal_t>(x_wrapper::g_root,
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
+    x_data::replace_property<x_data::cardinal_t>(x_data::g_root,
         {"_NET_DESKTOP_GEOMETRY", (unsigned) root_attrs.get().width});
-    x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root,
+    x_data::append_property<x_data::cardinal_t>(x_data::g_root,
         {"_NET_DESKTOP_GEOMETRY", (unsigned) root_attrs.get().height});
 }
 
 void
 ewmh_t::set_desktop_viewport_property()
 {
-    x_wrapper::remove_property(x_wrapper::g_root, "_NET_DESKTOP_VIEWPORT");
+    x_data::remove_property(x_data::g_root, "_NET_DESKTOP_VIEWPORT");
     for (size_t i = 0; i < USER_WORKSPACES.size(); ++i) {
-        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_DESKTOP_VIEWPORT", 0});
-        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_DESKTOP_VIEWPORT", 0});
+        x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_DESKTOP_VIEWPORT", 0});
+        x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_DESKTOP_VIEWPORT", 0});
     }
 }
 
 void
 ewmh_t::set_workarea_property()
 {
-    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
-    x_wrapper::remove_property(x_wrapper::g_root, "_NET_WORKAREA");
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
+    x_data::remove_property(x_data::g_root, "_NET_WORKAREA");
     for (size_t i = 0; i < USER_WORKSPACES.size(); ++i) {
-        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_WORKAREA",
+        x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",
             (strut.left_window.get() != None) ? strut.left_width : SIDEBAR_WIDTH});
-        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_WORKAREA",
+        x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",
             strut.top_height});
-        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_WORKAREA",
+        x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",
             root_attrs.get().width - ((strut.left_window.get() != None) ? strut.left_width : SIDEBAR_WIDTH)});
-        x_wrapper::append_property<x_wrapper::cardinal_t>(x_wrapper::g_root, {"_NET_WORKAREA",
+        x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",
             root_attrs.get().height - strut.top_height});
     }
 }
@@ -147,54 +147,54 @@ ewmh_t::set_workarea_property()
 void
 ewmh_t::clear_client_list_property()
 {
-    x_wrapper::remove_property(x_wrapper::g_root, "_NET_CLIENT_LIST");
+    x_data::remove_property(x_data::g_root, "_NET_CLIENT_LIST");
 }
 
 void
 ewmh_t::clear_workarea_property()
 {
-    x_wrapper::remove_property(x_wrapper::g_root, "_NET_WORKAREA");
+    x_data::remove_property(x_data::g_root, "_NET_WORKAREA");
 }
 
 void
 ewmh_t::clear_active_window_property()
 {
-    x_wrapper::remove_property(x_wrapper::g_root, "_NET_ACTIVE_WINDOW");
+    x_data::remove_property(x_data::g_root, "_NET_ACTIVE_WINDOW");
 }
 
 void
-ewmh_t::set_strut_property(x_wrapper::window_t win, unsigned left, unsigned right,
+ewmh_t::set_strut_property(x_data::window_t win, unsigned left, unsigned right,
     unsigned top, unsigned bottom)
 {
-    x_wrapper::remove_property(win, "_NET_WM_STRUT");
-    x_wrapper::remove_property(win, "_NET_WM_STRUT_PARTIAL");
+    x_data::remove_property(win, "_NET_WM_STRUT");
+    x_data::remove_property(win, "_NET_WM_STRUT_PARTIAL");
 
-    x_wrapper::append_property<x_wrapper::cardinal_t>(win, {"_NET_WM_STRUT", left});
-    x_wrapper::append_property<x_wrapper::cardinal_t>(win, {"_NET_WM_STRUT", right});
-    x_wrapper::append_property<x_wrapper::cardinal_t>(win, {"_NET_WM_STRUT", top});
-    x_wrapper::append_property<x_wrapper::cardinal_t>(win, {"_NET_WM_STRUT", bottom});
+    x_data::append_property<x_data::cardinal_t>(win, {"_NET_WM_STRUT", left});
+    x_data::append_property<x_data::cardinal_t>(win, {"_NET_WM_STRUT", right});
+    x_data::append_property<x_data::cardinal_t>(win, {"_NET_WM_STRUT", top});
+    x_data::append_property<x_data::cardinal_t>(win, {"_NET_WM_STRUT", bottom});
 
-    x_wrapper::append_property<x_wrapper::cardinal_t>(win, {"_NET_WM_STRUT_PARTIAL", left});
-    x_wrapper::append_property<x_wrapper::cardinal_t>(win, {"_NET_WM_STRUT_PARTIAL", right});
-    x_wrapper::append_property<x_wrapper::cardinal_t>(win, {"_NET_WM_STRUT_PARTIAL", top});
-    x_wrapper::append_property<x_wrapper::cardinal_t>(win, {"_NET_WM_STRUT_PARTIAL", bottom});
+    x_data::append_property<x_data::cardinal_t>(win, {"_NET_WM_STRUT_PARTIAL", left});
+    x_data::append_property<x_data::cardinal_t>(win, {"_NET_WM_STRUT_PARTIAL", right});
+    x_data::append_property<x_data::cardinal_t>(win, {"_NET_WM_STRUT_PARTIAL", top});
+    x_data::append_property<x_data::cardinal_t>(win, {"_NET_WM_STRUT_PARTIAL", bottom});
 
     for (size_t i = 0; i < 8; ++i)
-        x_wrapper::append_property<x_wrapper::cardinal_t>(win, {"_NET_WM_STRUT_PARTIAL", 0});
+        x_data::append_property<x_data::cardinal_t>(win, {"_NET_WM_STRUT_PARTIAL", 0});
 }
 
 bool
-ewmh_t::check_apply_strut(x_wrapper::window_t win)
+ewmh_t::check_apply_strut(x_data::window_t win)
 {
     ::std::vector<unsigned long> partial_strut_vals;
     ::std::vector<unsigned long> strut_vals;
 
-    if (x_wrapper::has_property<x_wrapper::cardinal_t>(win, "_NET_WM_STRUT_PARTIAL"))
-        partial_strut_vals = x_wrapper::get_property<x_wrapper::cardinal_list_t>(win,
+    if (x_data::has_property<x_data::cardinal_t>(win, "_NET_WM_STRUT_PARTIAL"))
+        partial_strut_vals = x_data::get_property<x_data::cardinal_list_t>(win,
             {"_NET_WM_STRUT_PARTIAL"}).get_data().get();
 
-    if (x_wrapper::has_property<x_wrapper::cardinal_list_t>(win, "_NET_WM_STRUT"))
-        strut_vals = x_wrapper::get_property<x_wrapper::cardinal_list_t>(win,
+    if (x_data::has_property<x_data::cardinal_list_t>(win, "_NET_WM_STRUT"))
+        strut_vals = x_data::get_property<x_data::cardinal_list_t>(win,
             {"_NET_WM_STRUT"}).get_data().get();
 
     if (partial_strut_vals.empty() && strut_vals.empty())
@@ -233,7 +233,7 @@ ewmh_t::check_apply_strut(x_wrapper::window_t win)
 }
 
 bool
-ewmh_t::check_release_strut(x_wrapper::window_t win)
+ewmh_t::check_release_strut(x_data::window_t win)
 {
     bool is_strut_win = false;
     if (strut.left_window == win) {
@@ -260,28 +260,28 @@ ewmh_t::check_release_strut(x_wrapper::window_t win)
 
 
 void
-ewmh_t::register_to_list(x_wrapper::window_t win)
+ewmh_t::register_to_list(x_data::window_t win)
 {
     m_registered_windows.push_back(win);
     append_client_list_property(win);
 }
 
 void
-ewmh_t::unregister_from_list(x_wrapper::window_t win)
+ewmh_t::unregister_from_list(x_data::window_t win)
 {
     erase_remove(m_registered_windows, win);
     set_client_list_property(m_registered_windows);
 }
 
 void
-ewmh_t::append_client_list_property(x_wrapper::window_t win)
+ewmh_t::append_client_list_property(x_data::window_t win)
 {
-    x_wrapper::append_property<x_wrapper::window_t>(x_wrapper::g_root,
+    x_data::append_property<x_data::window_t>(x_data::g_root,
         {"_NET_CLIENT_LIST", win});
 }
 
 void
-ewmh_t::set_client_list_property(::std::vector<x_wrapper::window_t>& wins)
+ewmh_t::set_client_list_property(::std::vector<x_data::window_t>& wins)
 {
     clear_client_list_property();
     ::std::for_each(wins.begin(), wins.end(),

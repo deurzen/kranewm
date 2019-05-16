@@ -3,7 +3,7 @@
 
 
 client_ptr_t
-client_model_t::win_to_client(x_wrapper::window_t win)
+client_model_t::win_to_client(x_data::window_t win)
 {
     if (m_client_windows.find(win) != m_client_windows.end())
         return m_client_windows[win];

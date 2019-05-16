@@ -3,8 +3,8 @@
 
 #include "floating.hh"
 #include "constraints.hh"
-#include "x-wrapper/window.hh"
-#include "x-wrapper/hints.hh"
+#include "x-data/window.hh"
+#include "x-data/hints.hh"
 
 
 class x_model_t
@@ -13,7 +13,7 @@ public:
     x_model_t()
         : m_moveresize(nullptr) {};
 
-    static bool update_hints(client_ptr_t, x_wrapper::sizehints_t);
+    static bool update_hints(client_ptr_t, x_data::sizehints_t);
 
     void enter_move(client_ptr_t, pos_t);
     void enter_resize(client_ptr_t, pos_t);

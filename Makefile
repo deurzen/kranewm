@@ -81,7 +81,7 @@ obj/%.o: obj
 obj/%.o: src/%.cc
 	${CC} ${CXXFLAGS} -MMD -c $< -o $@
 
-obj/%.o: src/x-wrapper/%.cc
+obj/%.o: src/x-data/%.cc
 	${CC} ${CXXFLAGS} -MMD -c $< -o $@
 
 run:

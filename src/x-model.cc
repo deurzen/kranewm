@@ -1,10 +1,10 @@
 #include "x-model.hh"
 #include "common.hh"
-#include "x-wrapper/attributes.hh"
+#include "x-data/attributes.hh"
 
 
 bool
-x_model_t::update_hints(client_ptr_t client, x_wrapper::sizehints_t sh)
+x_model_t::update_hints(client_ptr_t client, x_data::sizehints_t sh)
 {
     dim_t base{}, inc{}, max{}, min{};
     range_t<float> aspect{};
@@ -51,7 +51,7 @@ x_model_t::enter_resize(client_ptr_t client, pos_t pos)
     if (m_moveresize)
         return;
 
-    auto attrs = x_wrapper::get_attributes(client->frame);
+    auto attrs = x_data::get_attributes(client->frame);
     auto center_x = attrs.x() + attrs.w() / 2;
     auto center_y = attrs.y() + attrs.h() / 2;
 

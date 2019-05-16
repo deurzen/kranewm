@@ -1,5 +1,5 @@
-#ifndef __KRANEWM__X_WRAPPER__ATOM__GUARD__
-#define __KRANEWM__X_WRAPPER__ATOM__GUARD__
+#ifndef __KRANEWM__X_DATA__ATOM__GUARD__
+#define __KRANEWM__X_DATA__ATOM__GUARD__
 
 #include "common.hh"
 #include "type.hh"
@@ -17,7 +17,7 @@ extern "C" {
 #include <map>
 
 
-namespace x_wrapper
+namespace x_data
 {
     class atom_t : public x_type
     {
@@ -116,4 +116,4 @@ namespace x_wrapper
     extern atom_t get_atom(::std::string name);
 }
 
-#endif//__KRANEWM__X_WRAPPER__ATOM__GUARD__
+#endif//__KRANEWM__X_DATA__ATOM__GUARD__

@@ -1,7 +1,7 @@
 #include "layout.hh"
 #include "ewmh.hh"
 #include "workspace.hh"
-#include "x-wrapper/attributes.hh"
+#include "x-data/attributes.hh"
 
 #include <algorithm>
 #include <functional>
@@ -26,7 +26,7 @@ layouthandler_t::layout_tile(const user_workspace_t& workspace) const
     if (clients.empty())
         return;
 
-    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
     unsigned n_master = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_n_master());
     int gap_size = workspace.get_gap_size();
 
@@ -93,7 +93,7 @@ layouthandler_t::layout_deck(const user_workspace_t& workspace) const
     if (clients.empty())
         return;
 
-    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
     unsigned n_master = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_n_master());
     int gap_size = workspace.get_gap_size();
 
@@ -153,7 +153,7 @@ layouthandler_t::layout_doubledeck(const user_workspace_t& workspace) const
     if (clients.empty())
         return;
 
-    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
     unsigned n_master = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_n_master());
     int gap_size = workspace.get_gap_size();
 
@@ -206,7 +206,7 @@ layouthandler_t::layout_grid(const user_workspace_t& workspace) const
     if (clients.empty())
         return;
 
-    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
     dim_t screen_dim = {root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut(),
         root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut()};
 
@@ -268,7 +268,7 @@ layouthandler_t::layout_monocle(const user_workspace_t& workspace) const
 
     int gap_size = workspace.get_gap_size();
 
-    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
     dim_t screen_dim = {root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - 2 * gap_size,
         root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - 2 * gap_size};
 
@@ -287,7 +287,7 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
     if (clients.empty())
         return;
 
-    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
     unsigned n_master = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_n_master());
     unsigned n_stack = clients.size() - n_master;
 

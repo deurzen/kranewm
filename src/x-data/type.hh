@@ -1,5 +1,5 @@
-#ifndef __KRANEWM__X_WRAPPER__TYPE__GUARD__
-#define __KRANEWM__X_WRAPPER__TYPE__GUARD__
+#ifndef __KRANEWM__X_DATA__TYPE__GUARD__
+#define __KRANEWM__X_DATA__TYPE__GUARD__
 
 extern "C" {
 #include <X11/X.h>
@@ -7,7 +7,7 @@ extern "C" {
 }
 
 
-namespace x_wrapper
+namespace x_data
 {
     class x_type
     {
@@ -18,4 +18,4 @@ namespace x_wrapper
     };
 }
 
-#endif//__KRANEWM__X_WRAPPER__TYPE__GUARD__
+#endif//__KRANEWM__X_DATA__TYPE__GUARD__

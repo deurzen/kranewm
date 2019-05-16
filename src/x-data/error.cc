@@ -7,7 +7,7 @@ extern "C" {
 #include <unordered_map>
 
 int
-x_wrapper::g_xerror(Display* dpy, XErrorEvent* error)
+x_data::g_xerror(Display* dpy, XErrorEvent* error)
 {
     static const ::std::unordered_map<int, int> permissible_errors({
         { X_GrabButton,        BadAccess   },
@@ -34,13 +34,13 @@ x_wrapper::g_xerror(Display* dpy, XErrorEvent* error)
 }
 
 int
-x_wrapper::g_xerroroff(Display* dpy, XErrorEvent* error)
+x_data::g_xerroroff(Display* dpy, XErrorEvent* error)
 {
     return 0;
 }
 
 XErrorHandler
-x_wrapper::set_error_handler(int (*handler)(Display*, XErrorEvent*))
+x_data::set_error_handler(int (*handler)(Display*, XErrorEvent*))
 {
     return XSetErrorHandler(handler);
 }

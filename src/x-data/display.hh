@@ -1,5 +1,5 @@
-#ifndef __KRANEWM__X_WRAPPER__DISPLAY__GUARD__
-#define __KRANEWM__X_WRAPPER__DISPLAY__GUARD__
+#ifndef __KRANEWM__X_DATA__DISPLAY__GUARD__
+#define __KRANEWM__X_DATA__DISPLAY__GUARD__
 
 #include "cursor.hh"
 
@@ -9,7 +9,7 @@ extern "C" {
 }
 
 
-namespace x_wrapper
+namespace x_data
 {
     class window_t;
     class display_t
@@ -36,4 +36,4 @@ namespace x_wrapper
     extern window_t g_root;
 }
 
-#endif//__KRANEWM__X_WRAPPER__DISPLAY__GUARD__
+#endif//__KRANEWM__X_DATA__DISPLAY__GUARD__

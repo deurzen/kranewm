@@ -1,5 +1,5 @@
-#ifndef __KRANEWM__X_WRAPPER__WINDOW__GUARD__
-#define __KRANEWM__X_WRAPPER__WINDOW__GUARD__
+#ifndef __KRANEWM__X_DATA__WINDOW__GUARD__
+#define __KRANEWM__X_DATA__WINDOW__GUARD__
 
 #include "common.hh"
 #include "type.hh"
@@ -15,7 +15,7 @@ extern "C" {
 #include <vector>
 
 
-namespace x_wrapper
+namespace x_data
 {
     extern void enable_substructure_events();
     extern void disable_substructure_events();
@@ -201,13 +201,13 @@ namespace x_wrapper
 namespace std
 {
     template <>
-    struct hash<x_wrapper::window_t>
+    struct hash<x_data::window_t>
     {
-        std::size_t operator()(const x_wrapper::window_t& win) const
+        std::size_t operator()(const x_data::window_t& win) const
         {
             return win.get();
         }
     };
 }
 
-#endif//__KRANEWM__X_WRAPPER__WINDOW__GUARD__
+#endif//__KRANEWM__X_DATA__WINDOW__GUARD__

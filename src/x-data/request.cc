@@ -2,7 +2,7 @@
 
 
 void
-x_wrapper::propagate_configure_request(event_t event, unsigned flags)
+x_data::propagate_configure_request(event_t event, unsigned flags)
 {
     XWindowChanges wc;
     wc.x = event.get().xconfigurerequest.x;
@@ -21,7 +21,7 @@ x_wrapper::propagate_configure_request(event_t event, unsigned flags)
 }
 
 void
-x_wrapper::propagate_circulate_request(event_t event)
+x_data::propagate_circulate_request(event_t event)
 {
     int dir = (event.get().xcirculaterequest.place == PlaceOnTop) ?  RaiseLowest : LowerHighest;
     XCirculateSubwindows(g_dpy, event.get().xcirculaterequest.window, dir);

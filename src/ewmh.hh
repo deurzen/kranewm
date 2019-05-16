@@ -1,8 +1,8 @@
 #ifndef __KRANEWM__EWMH__GUARD__
 #define __KRANEWM__EWMH__GUARD__
 
-#include "x-wrapper/window.hh"
-#include "x-wrapper/property.hh"
+#include "x-data/window.hh"
+#include "x-data/property.hh"
 
 #include <unordered_map>
 
@@ -106,13 +106,13 @@ public:
         });
 
         for (auto&& [id,atom_name] : NETWM_ATOM_NAMES)
-            m_netwm_atoms[id] = x_wrapper::get_atom(atom_name);
+            m_netwm_atoms[id] = x_data::get_atom(atom_name);
 
         Atom supported_atoms[netwmid_t::netlast];
         for (netwmid_t i = netwmid_t::netfirst; i < netwmid_t::netlast; ++i)
             supported_atoms[i] = get_netwm_atom(i);
 
-        x_wrapper::replace_property<x_wrapper::atom_list_t>(x_wrapper::g_root,
+        x_data::replace_property<x_data::atom_list_t>(x_data::g_root,
             {"_NET_SUPPORTED", {supported_atoms, netwmid_t::netlast}});
     }
 
@@ -141,49 +141,49 @@ public:
         return strut.right_width;
     }
 
-    inline x_wrapper::window_t
+    inline x_data::window_t
     get_top_window() const
     {
         return strut.top_window;
     }
 
-    inline x_wrapper::window_t
+    inline x_data::window_t
     get_bottom_window() const
     {
         return strut.bottom_window;
     }
 
-    inline x_wrapper::window_t
+    inline x_data::window_t
     get_left_window() const
     {
         return strut.left_window;
     }
 
-    inline x_wrapper::window_t
+    inline x_data::window_t
     get_right_window() const
     {
         return strut.right_window;
     }
 
-    void set_strut_property(x_wrapper::window_t, unsigned, unsigned, unsigned, unsigned);
-    bool check_apply_strut(x_wrapper::window_t);
-    bool check_release_strut(x_wrapper::window_t);
+    void set_strut_property(x_data::window_t, unsigned, unsigned, unsigned, unsigned);
+    bool check_apply_strut(x_data::window_t);
+    bool check_release_strut(x_data::window_t);
 
     Atom get_netwm_atom(netwmid_t);
 
-    void set_wm_name_property(x_wrapper::window_t, ::std::string);
-    void set_supporting_wm_check_property(x_wrapper::window_t, x_wrapper::window_t);
+    void set_wm_name_property(x_data::window_t, ::std::string);
+    void set_supporting_wm_check_property(x_data::window_t, x_data::window_t);
     void set_number_of_desktops_property(unsigned&&);
     void set_current_desktop_property(unsigned&&);
     void set_desktop_names_property(::std::vector<::std::string>&);
-    void set_frame_extents(x_wrapper::window_t, bool = false);
+    void set_frame_extents(x_data::window_t, bool = false);
 
-    void set_active_window_property(x_wrapper::window_t);
-    void set_window_state_property(x_wrapper::window_t, netwmid_t = netwmid_t::netlast);
-    void set_window_state_property(x_wrapper::window_t, const ::std::string&);
-    void set_window_type_property(x_wrapper::window_t, const ::std::string&);
+    void set_active_window_property(x_data::window_t);
+    void set_window_state_property(x_data::window_t, netwmid_t = netwmid_t::netlast);
+    void set_window_state_property(x_data::window_t, const ::std::string&);
+    void set_window_type_property(x_data::window_t, const ::std::string&);
 
-    void set_wm_desktop_property(x_wrapper::window_t, unsigned);
+    void set_wm_desktop_property(x_data::window_t, unsigned);
 
     void set_desktop_geometry_property();
     void set_desktop_viewport_property();
@@ -193,22 +193,22 @@ public:
     void clear_active_window_property();
     void clear_workarea_property();
 
-    void register_to_list(x_wrapper::window_t);
-    void unregister_from_list(x_wrapper::window_t);
+    void register_to_list(x_data::window_t);
+    void unregister_from_list(x_data::window_t);
 
-    void append_client_list_property(x_wrapper::window_t);
-    void set_client_list_property(::std::vector<x_wrapper::window_t>&);
+    void append_client_list_property(x_data::window_t);
+    void set_client_list_property(::std::vector<x_data::window_t>&);
 
 private:
     ::std::map<netwmid_t, Atom> m_netwm_atoms;
 
-    ::std::vector<x_wrapper::window_t> m_registered_windows;
+    ::std::vector<x_data::window_t> m_registered_windows;
 
     struct {
-        x_wrapper::window_t top_window;
-        x_wrapper::window_t bottom_window;
-        x_wrapper::window_t left_window;
-        x_wrapper::window_t right_window;
+        x_data::window_t top_window;
+        x_data::window_t bottom_window;
+        x_data::window_t left_window;
+        x_data::window_t right_window;
         unsigned top_height;
         unsigned bottom_height;
         unsigned left_width;

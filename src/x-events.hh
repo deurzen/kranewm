@@ -4,7 +4,7 @@
 #include "common.hh"
 #include "input.hh"
 #include "rule.hh"
-#include "x-wrapper/event.hh"
+#include "x-data/event.hh"
 
 #define ALL ""
 #define YES true
@@ -52,10 +52,10 @@ public:
           }) {}
 
     bool step();
-    void register_window(x_wrapper::window_t);
+    void register_window(x_data::window_t);
 
 private:
-    rule_t retrieve_rule(x_wrapper::window_t);
+    rule_t retrieve_rule(x_data::window_t);
 
     void on_button_press();
     void on_button_release();
@@ -81,7 +81,7 @@ private:
     x_model_t& m_x;
     bool m_running;
     inputhandler_t m_input;
-    x_wrapper::event_t m_current_event;
+    x_data::event_t m_current_event;
     rules_t m_rules;
 
 };

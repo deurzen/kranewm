@@ -1,5 +1,5 @@
-#ifndef __KRANEWM__X_WRAPPER__CARDINAL__GUARD__
-#define __KRANEWM__X_WRAPPER__CARDINAL__GUARD__
+#ifndef __KRANEWM__X_DATA__CARDINAL__GUARD__
+#define __KRANEWM__X_DATA__CARDINAL__GUARD__
 
 #include "common.hh"
 #include "type.hh"
@@ -13,7 +13,7 @@ extern "C" {
 #include <cstring>
 
 
-namespace x_wrapper
+namespace x_data
 {
     class cardinal_t : public x_type
     {
@@ -103,4 +103,4 @@ namespace x_wrapper
     };
 }
 
-#endif//__KRANEWM__X_WRAPPER__CARDINAL__GUARD__
+#endif//__KRANEWM__X_DATA__CARDINAL__GUARD__

@@ -1,5 +1,5 @@
-#ifndef __KRANEWM__X_WRAPPER__EVENT__GUARD__
-#define __KRANEWM__X_WRAPPER__EVENT__GUARD__
+#ifndef __KRANEWM__X_DATA__EVENT__GUARD__
+#define __KRANEWM__X_DATA__EVENT__GUARD__
 
 #include "common.hh"
 #include "display.hh"
@@ -13,7 +13,7 @@ extern "C" {
 }
 
 
-namespace x_wrapper
+namespace x_data
 {
     class window_t;
     class event_t
@@ -61,4 +61,4 @@ namespace x_wrapper
     extern void sync(bool);
 }
 
-#endif//__KRANEWM__X_WRAPPER__EVENT__GUARD__
+#endif//__KRANEWM__X_DATA__EVENT__GUARD__

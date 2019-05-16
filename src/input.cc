@@ -1,7 +1,7 @@
 #include "input.hh"
 #include "sidebar.hh"
 #include "client-model.hh"
-#include "x-wrapper/window.hh"
+#include "x-data/window.hh"
 
 #include <unistd.h>
 

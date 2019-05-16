@@ -1,5 +1,5 @@
-#ifndef __KRANEWM__X_WRAPPER__HINTS__GUARD__
-#define __KRANEWM__X_WRAPPER__HINTS__GUARD__
+#ifndef __KRANEWM__X_DATA__HINTS__GUARD__
+#define __KRANEWM__X_DATA__HINTS__GUARD__
 
 #include "display.hh"
 
@@ -8,7 +8,7 @@ extern "C" {
 }
 
 
-namespace x_wrapper
+namespace x_data
 {
     class wmhints_t
     {
@@ -62,4 +62,4 @@ namespace x_wrapper
     extern sizehints_t get_sizehints(window_t&);
 }
 
-#endif//__KRANEWM__X_WRAPPER__HINTS__GUARD__
+#endif//__KRANEWM__X_DATA__HINTS__GUARD__

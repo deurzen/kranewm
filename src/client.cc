@@ -1,14 +1,14 @@
 #include "client.hh"
 #include "decoration.hh"
-#include "x-wrapper/event.hh"
-#include "x-wrapper/attributes.hh"
-#include "x-wrapper/hints.hh"
+#include "x-data/event.hh"
+#include "x-data/attributes.hh"
+#include "x-data/hints.hh"
 
 
 client_ptr_t
-create_client(x_wrapper::window_t win, rule_t& rule)
+create_client(x_data::window_t win, rule_t& rule)
 {
-    auto sizehints = x_wrapper::get_sizehints(win);
+    auto sizehints = x_data::get_sizehints(win);
     if (!sizehints.get().flags)
         sizehints.get().flags = PSize;
 
@@ -37,14 +37,14 @@ create_client(x_wrapper::window_t win, rule_t& rule)
 
     sizeconstraints_t sizeconstraints(base, inc, max, min, aspect);
 
-    auto win_attrs = x_wrapper::get_attributes(win);
+    auto win_attrs = x_data::get_attributes(win);
     pos_t pos = win_attrs;
     dim_t dim = win_attrs;
     sizeconstraints.apply(pos, dim);
 
-    x_wrapper::window_t frame = x_wrapper::create_window();
-    x_wrapper::select_input(win, REG_WIN_SELECTION);
-    x_wrapper::select_input(frame, REG_FRAME_SELECTION);
+    x_data::window_t frame = x_data::create_window();
+    x_data::select_input(win, REG_WIN_SELECTION);
+    x_data::select_input(frame, REG_FRAME_SELECTION);
 
     frame.set_background_color(REG_COLOR);
     win.reparent({0, BORDER_HEIGHT}, frame);
@@ -67,13 +67,13 @@ create_client(x_wrapper::window_t win, rule_t& rule)
 void
 update_offset(client_ptr_t client)
 {
-    auto frame_attrs = x_wrapper::get_attributes(client->frame);
-    auto win_attrs = x_wrapper::get_attributes(client->win);
+    auto frame_attrs = x_data::get_attributes(client->frame);
+    auto win_attrs = x_data::get_attributes(client->win);
 
-    x_wrapper::event_t event;
+    x_data::event_t event;
     event.get().type = ConfigureNotify;
     event.get().xconfigure.send_event = True;
-    event.get().xconfigure.display = x_wrapper::g_dpy;
+    event.get().xconfigure.display = x_data::g_dpy;
     event.get().xconfigure.event = client->win;
     event.get().xconfigure.window = client->win;
     event.get().xconfigure.x = frame_attrs.x();
@@ -179,8 +179,8 @@ client_t::unmap_children()
 client_t&
 client_t::center()
 {
-    auto attrs = x_wrapper::get_attributes(frame);
-    auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+    auto attrs = x_data::get_attributes(frame);
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
     move({root_attrs.w() / 2 - attrs.w() / 2, root_attrs.h() / 2 - attrs.h() / 2});
     return *this;
 }

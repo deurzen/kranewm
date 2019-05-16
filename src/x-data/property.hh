@@ -1,5 +1,5 @@
-#ifndef __KRANEWM__X_WRAPPER__PROPERTY__GUARD__
-#define __KRANEWM__X_WRAPPER__PROPERTY__GUARD__
+#ifndef __KRANEWM__X_DATA__PROPERTY__GUARD__
+#define __KRANEWM__X_DATA__PROPERTY__GUARD__
 
 #include "common.hh"
 #include "type.hh"
@@ -9,7 +9,7 @@
 #include "cardinal.hh"
 
 
-namespace x_wrapper
+namespace x_data
 {
     template <class T>
     class property_t : public x_type
@@ -125,4 +125,4 @@ namespace x_wrapper
 }
 
 
-#endif//__KRANEWM__X_WRAPPER__PROPERTY__GUARD__
+#endif//__KRANEWM__X_DATA__PROPERTY__GUARD__

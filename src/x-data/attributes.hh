@@ -1,5 +1,5 @@
-#ifndef __KRANEWM__X_WRAPPER__ATTRIBUTES__GUARD__
-#define __KRANEWM__X_WRAPPER__ATTRIBUTES__GUARD__
+#ifndef __KRANEWM__X_DATA__ATTRIBUTES__GUARD__
+#define __KRANEWM__X_DATA__ATTRIBUTES__GUARD__
 
 #include "window.hh"
 
@@ -7,7 +7,7 @@ extern "C" {
 #include <X11/Xlib.h>
 }
 
-namespace x_wrapper
+namespace x_data
 {
     class attributes_t
     {
@@ -36,4 +36,4 @@ namespace x_wrapper
     extern attributes_t get_attributes(window_t&);
 }
 
-#endif//__KRANEWM__X_WRAPPER__ATTRIBUTES__GUARD__
+#endif//__KRANEWM__X_DATA__ATTRIBUTES__GUARD__

@@ -4,11 +4,11 @@
 
 #include <cstring>
 
-using namespace x_wrapper;
+using namespace x_data;
 
 
 wmhints_t
-x_wrapper::get_wmhints(window_t& win)
+x_data::get_wmhints(window_t& win)
 {
     bool status = false;
     XWMHints hints;
@@ -23,13 +23,13 @@ x_wrapper::get_wmhints(window_t& win)
 }
 
 void
-x_wrapper::set_wmhints(window_t& win, wmhints_t& hints)
+x_data::set_wmhints(window_t& win, wmhints_t& hints)
 {
     XSetWMHints(g_dpy, win.get(), hints.get_ptr());
 }
 
 sizehints_t
-x_wrapper::get_sizehints(window_t& win)
+x_data::get_sizehints(window_t& win)
 {
     long _l;
     XSizeHints hints;

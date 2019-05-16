@@ -6,9 +6,9 @@
 #include "ewmh.hh"
 #include "layout.hh"
 #include "workspace.hh"
-#include "x-wrapper/window.hh"
-#include "x-wrapper/attributes.hh"
-#include "x-wrapper/graphics.hh"
+#include "x-data/window.hh"
+#include "x-data/attributes.hh"
+#include "x-data/graphics.hh"
 
 #include <vector>
 
@@ -21,7 +21,7 @@ class sidebar_t
 public:
     explicit sidebar_t(ewmh_t& ewmh)
         : m_ewmh(ewmh),
-          m_sidebarwin(x_wrapper::create_window(true)),
+          m_sidebarwin(x_data::create_window(true)),
           m_graphicscontext(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_layoutsymbol(layout_t::floating),
           m_workspacenumber(0),
@@ -29,23 +29,23 @@ public:
           m_activity_indicators(USER_WORKSPACES.size()),
           m_workspace_activity(USER_WORKSPACES.size(), 0u),
           m_workspace_urgent(USER_WORKSPACES.size(), 0u),
-          m_moveresizeindicator(x_wrapper::create_window(true)),
-          m_floatingindicator(x_wrapper::create_window(true)),
-          m_fullscreenindicator(x_wrapper::create_window(true))
+          m_moveresizeindicator(x_data::create_window(true)),
+          m_floatingindicator(x_data::create_window(true)),
+          m_fullscreenindicator(x_data::create_window(true))
     {
         if (!SHOW_SIDEBAR)
             return;
 
-        auto root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+        auto root_attrs = x_data::get_attributes(x_data::g_root);
         m_sidebarwin.set_background_color(SIDEBAR_BG_COLOR);
         m_sidebarwin.resize({SIDEBAR_WIDTH, root_attrs.get().height}).move({0, 0});
-        x_wrapper::select_input(m_sidebarwin, ExposureMask);
+        x_data::select_input(m_sidebarwin, ExposureMask);
 
         m_ewmh.set_strut_property(m_sidebarwin, SIDEBAR_WIDTH + 2, 0, 0, 0);
         m_ewmh.set_window_type_property(m_sidebarwin, "DOCK");
 
         m_ewmh.set_wm_name_property(m_sidebarwin, WMNAME);
-        m_ewmh.set_supporting_wm_check_property(x_wrapper::g_root, m_sidebarwin);
+        m_ewmh.set_supporting_wm_check_property(x_data::g_root, m_sidebarwin);
         m_ewmh.set_supporting_wm_check_property(m_sidebarwin, m_sidebarwin);
 
         m_sidebarwin.map();
@@ -54,7 +54,7 @@ public:
         m_graphicscontext.set_background(SIDEBAR_BG_COLOR);
 
         for (size_t i = 0; i < m_activity_indicators.size(); ++i) {
-            m_activity_indicators[i] = x_wrapper::create_window(true);
+            m_activity_indicators[i] = x_data::create_window(true);
             m_ewmh.set_window_type_property(m_activity_indicators[i], "INDICATOR");
             m_activity_indicators[i].set_border_color(SIDEBAR_WORKSPACES_COLOR);
             m_activity_indicators[i].resize({1, 1}).move({SIDEBAR_WIDTH - 2,
@@ -94,7 +94,7 @@ public:
     sidebar_t& indicate_clientfloating();
     sidebar_t& indicate_clientnormal();
 
-    x_wrapper::window_t get_win() const;
+    x_data::window_t get_win() const;
 
 private:
     void draw_layoutsymbol();
@@ -102,20 +102,20 @@ private:
     void draw_numberclients();
 
     ewmh_t& m_ewmh;
-    x_wrapper::window_t m_sidebarwin;
-    x_wrapper::graphicscontext_t m_graphicscontext;
+    x_data::window_t m_sidebarwin;
+    x_data::graphicscontext_t m_graphicscontext;
 
     layout_t m_layoutsymbol;
     unsigned m_workspacenumber;
     unsigned m_numberclients;
 
-    ::std::vector<x_wrapper::window_t> m_activity_indicators;
+    ::std::vector<x_data::window_t> m_activity_indicators;
     ::std::vector<int> m_workspace_activity;
     ::std::vector<int> m_workspace_urgent;
 
-    x_wrapper::window_t m_moveresizeindicator;
-    x_wrapper::window_t m_floatingindicator;
-    x_wrapper::window_t m_fullscreenindicator;
+    x_data::window_t m_moveresizeindicator;
+    x_data::window_t m_floatingindicator;
+    x_data::window_t m_fullscreenindicator;
 
 };
 

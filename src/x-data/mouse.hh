@@ -1,5 +1,5 @@
-#ifndef __KRANEWM__X_WRAPPER__MOUSE__GUARD__
-#define __KRANEWM__X_WRAPPER__MOUSE__GUARD__
+#ifndef __KRANEWM__X_DATA__MOUSE__GUARD__
+#define __KRANEWM__X_DATA__MOUSE__GUARD__
 
 #include "window.hh"
 
@@ -8,7 +8,7 @@ extern "C" {
 }
 
 
-namespace x_wrapper
+namespace x_data
 {
     extern void grab_button(unsigned, unsigned);
     extern void confine_pointer(window_t);
@@ -16,4 +16,4 @@ namespace x_wrapper
     extern pos_t pointer_position();
 }
 
-#endif//__KRANEWM__X_WRAPPER__MOUSE__GUARD__
+#endif//__KRANEWM__X_DATA__MOUSE__GUARD__

@@ -103,7 +103,7 @@ sidebar_t::indicate_clientnormal()
     return *this;
 }
 
-x_wrapper::window_t
+x_data::window_t
 sidebar_t::get_win() const
 {
     return m_sidebarwin;
@@ -165,7 +165,7 @@ sidebar_t::draw_numberclients()
 {
     m_graphicscontext.set_foreground(SIDEBAR_NCLIENTS_COLOR);
 
-    x_wrapper::attributes_t root_attrs = x_wrapper::get_attributes(x_wrapper::g_root);
+    x_data::attributes_t root_attrs = x_data::get_attributes(x_data::g_root);
     pos_t pos = {(SIDEBAR_WIDTH - m_graphicscontext.get_font_dim().w) / 2,
         root_attrs.h() - (m_graphicscontext.get_font_dim().h)};
 

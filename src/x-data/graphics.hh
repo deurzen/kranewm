@@ -1,12 +1,12 @@
-#ifndef __KRANEWM_X_WRAPPER_GRAPHICS_GUARD__
-#define __KRANEWM_X_WRAPPER_GRAPHICS_GUARD__
+#ifndef __KRANEWM_X_DATA_GRAPHICS_GUARD__
+#define __KRANEWM_X_DATA_GRAPHICS_GUARD__
 
 #include "window.hh"
 
 #include <string>
 
 
-namespace x_wrapper
+namespace x_data
 {
     class graphicscontext_t
     {
@@ -74,4 +74,4 @@ namespace x_wrapper
     };
 }
 
-#endif//__KRANEWM_X_WRAPPER_GRAPHICS_GUARD__
+#endif//__KRANEWM_X_DATA_GRAPHICS_GUARD__

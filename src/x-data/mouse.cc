@@ -1,12 +1,12 @@
 #include "mouse.hh"
 #include "display.hh"
 
-using namespace x_wrapper;
+using namespace x_data;
 
 window_t l_confined;
 
 void
-x_wrapper::grab_button(unsigned button, unsigned mask)
+x_data::grab_button(unsigned button, unsigned mask)
 {
     static const ::std::vector<int> ignored_masks({
         0, LockMask, Mod2Mask,
@@ -20,7 +20,7 @@ x_wrapper::grab_button(unsigned button, unsigned mask)
 }
 
 void
-x_wrapper::confine_pointer(window_t win)
+x_data::confine_pointer(window_t win)
 {
     if (l_confined.get() != None)
         return;
@@ -34,7 +34,7 @@ x_wrapper::confine_pointer(window_t win)
 }
 
 void
-x_wrapper::release_pointer()
+x_data::release_pointer()
 {
     if (l_confined.get() == None)
         return;
@@ -44,7 +44,7 @@ x_wrapper::release_pointer()
 }
 
 pos_t
-x_wrapper::pointer_position()
+x_data::pointer_position()
 {
     Window _w;
     int _i;

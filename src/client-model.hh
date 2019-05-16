@@ -6,7 +6,7 @@
 #include "workspace.hh"
 #include "rule.hh"
 #include "process.hh"
-#include "x-wrapper/window.hh"
+#include "x-data/window.hh"
 
 #include <unordered_map>
 #include <vector>
@@ -32,7 +32,7 @@ public:
         m_current_workspace = m_user_workspaces.front();
     }
 
-    client_ptr_t win_to_client(x_wrapper::window_t);
+    client_ptr_t win_to_client(x_data::window_t);
     workspace_ptr_t client_workspace(client_ptr_t);
     user_workspace_ptr_t client_user_workspace(client_ptr_t);
 
@@ -78,10 +78,10 @@ private:
     moveresize_workspace_ptr_t m_move_workspace;
     moveresize_workspace_ptr_t m_resize_workspace;
 
-    ::std::vector<x_wrapper::window_t> m_managed_windows;
+    ::std::vector<x_data::window_t> m_managed_windows;
     ::std::vector<user_workspace_ptr_t> m_user_workspaces;
 
-    ::std::unordered_map<x_wrapper::window_t, client_ptr_t> m_client_windows;
+    ::std::unordered_map<x_data::window_t, client_ptr_t> m_client_windows;
     ::std::unordered_map<client_ptr_t, user_workspace_ptr_t> m_client_workspaces;
 
     ::std::unordered_map<client_ptr_t, client_t> m_fullscreen_clients;

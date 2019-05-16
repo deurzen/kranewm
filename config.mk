@@ -3,15 +3,15 @@ PROJECT = kranewm
 OBJDIR = obj
 SRCDIR = src
 
-X_WRAPPER_SRC_FILES := $(wildcard src/x-wrapper/*.cc)
-X_WRAPPER_OBJ_FILES := $(patsubst src/x-wrapper/%.cc,obj/%.o,${X_WRAPPER_SRC_FILES})
+X_DATA_SRC_FILES := $(wildcard src/x-data/*.cc)
+X_DATA_OBJ_FILES := $(patsubst src/x-data/%.cc,obj/%.o,${X_DATA_SRC_FILES})
 
 BASE_SRC_FILES := $(wildcard src/*.cc)
 BASE_OBJ_FILES := $(patsubst src/%.cc,obj/%.o,${BASE_SRC_FILES})
 
 H_FILES := $(shell find $(SRCDIR) -name '*.hh')
 SRC_FILES := $(shell find $(SRCDIR) -name '*.cc')
-OBJ_FILES := ${X_WRAPPER_OBJ_FILES} ${BASE_OBJ_FILES}
+OBJ_FILES := ${X_DATA_OBJ_FILES} ${BASE_OBJ_FILES}
 DEPS = $(OBJ_FILES:%.o=%.d)
 
 RELEASE = release/$(PROJECT)

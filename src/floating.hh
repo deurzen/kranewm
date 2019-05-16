@@ -26,7 +26,7 @@ typedef struct moveresize_t
       : client(_client),
         state(_state),
         grabbed_at(_grabbed_at),
-        indicator(x_wrapper::create_window(true))
+        indicator(x_data::create_window(true))
     {
         indicator.set_background_color(MRIND_BG_COLOR);
         indicator.set_border_width(0);
@@ -44,7 +44,7 @@ typedef struct moveresize_t
     client_ptr_t client;
     moveresizestate_t state;
     corner_t grabbed_at;
-    x_wrapper::window_t indicator;
+    x_data::window_t indicator;
 
 }* moveresize_ptr_t;
 

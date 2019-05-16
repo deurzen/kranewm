@@ -2,7 +2,7 @@
 #define __KRANEWM__PROCESS__GUARD__
 
 #include "client.hh"
-#include "x-wrapper/key.hh"
+#include "x-data/key.hh"
 
 #include <unordered_map>
 
@@ -53,7 +53,7 @@ struct processshortcut_t
           mask(_mask) {}
 
     processshortcut_t(XKeyEvent event)
-        : keysym(x_wrapper::get_keysym(event.keycode)),
+        : keysym(x_data::get_keysym(event.keycode)),
           mask(event.state)
     {}
 

@@ -6,11 +6,11 @@
 
 #include <cstring>
 
-using namespace x_wrapper;
+using namespace x_data;
 
 
 window_t
-x_wrapper::create_window(bool do_not_manage)
+x_data::create_window(bool do_not_manage)
 {
     window_t win(XCreateSimpleWindow(g_dpy, g_root, -2, -2,
         1, 1, 1, 0x000000, 0x404040));
@@ -25,7 +25,7 @@ x_wrapper::create_window(bool do_not_manage)
 }
 
 ::std::vector<window_t>
-x_wrapper::get_top_level_windows()
+x_data::get_top_level_windows()
 {
     Window _w;
     Window *children;
@@ -45,7 +45,7 @@ x_wrapper::get_top_level_windows()
 }
 
 window_t
-x_wrapper::get_transient_for(window_t& trans)
+x_data::get_transient_for(window_t& trans)
 {
     Window win = None;
     XGetTransientForHint(g_dpy, trans.get(), &win);
@@ -53,15 +53,15 @@ x_wrapper::get_transient_for(window_t& trans)
 }
 
 bool
-x_wrapper::should_manage(window_t& win)
+x_data::should_manage(window_t& win)
 {
-    auto attrs = x_wrapper::get_attributes(win);
+    auto attrs = x_data::get_attributes(win);
     return !(attrs.get().override_redirect
         || attrs.get().c_class == InputOnly);
 }
 
 window_t
-x_wrapper::get_input_focus()
+x_data::get_input_focus()
 {
     Window focused;
     int _i;
@@ -70,7 +70,7 @@ x_wrapper::get_input_focus()
 }
 
 bool
-x_wrapper::set_input_focus(window_t win)
+x_data::set_input_focus(window_t win)
 {
     if (win.get() == None)
         win = g_root;
@@ -80,13 +80,13 @@ x_wrapper::set_input_focus(window_t win)
 }
 
 void
-x_wrapper::select_input(window_t win, long mask)
+x_data::select_input(window_t win, long mask)
 {
     XSelectInput(g_dpy, win, mask);
 }
 
 void
-x_wrapper::restack_windows(Window* wins, int n)
+x_data::restack_windows(Window* wins, int n)
 {
     XRestackWindows(g_dpy, wins, n);
 }
@@ -94,7 +94,7 @@ x_wrapper::restack_windows(Window* wins, int n)
 
 
 ::std::string
-x_wrapper::window_t::get_name()
+x_data::window_t::get_name()
 {
     ::std::string name;
     char name_arr[512];
@@ -109,7 +109,7 @@ x_wrapper::window_t::get_name()
 }
 
 void
-x_wrapper::window_t::close()
+x_data::window_t::close()
 {
     event_t event = create_event(val, get_atom("WM_PROTOCOLS").get(),
         get_atom("WM_DELETE_WINDOW").get());
@@ -117,7 +117,7 @@ x_wrapper::window_t::close()
 }
 
 void
-x_wrapper::window_t::force_close()
+x_data::window_t::force_close()
 {
     int n;
     Atom* protocols;
@@ -143,7 +143,7 @@ x_wrapper::window_t::force_close()
 }
 
 void
-x_wrapper::window_t::set_state(long state)
+x_data::window_t::set_state(long state)
 {
     long data[] = { state, None };
     XChangeProperty(g_dpy, val, get_atom("WM_STATE"), get_atom("WM_STATE"), 32,
@@ -151,7 +151,7 @@ x_wrapper::window_t::set_state(long state)
 }
 
 bool
-x_wrapper::window_t::is_of_type(::std::string&& type_name)
+x_data::window_t::is_of_type(::std::string&& type_name)
 {
     const auto type_atom = get_property<atom_t>(val, "_NET_WM_WINDOW_TYPE");
     const atom_t type_id = get_atom("_NET_WM_WINDOW_TYPE_" + type_name);
@@ -160,7 +160,7 @@ x_wrapper::window_t::is_of_type(::std::string&& type_name)
 }
 
 bool
-x_wrapper::window_t::is_of_state(::std::string&& type_name)
+x_data::window_t::is_of_state(::std::string&& type_name)
 {
     const auto state_atom = get_property<atom_t>(val, "_NET_WM_STATE");
     const atom_t state_id = get_atom("_NET_WM_STATE_" + type_name);

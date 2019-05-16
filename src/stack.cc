@@ -25,7 +25,7 @@ windowstack_t::add_to_stack(windowstack_window_t win)
 }
 
 windowstack_t&
-windowstack_t::remove_from_stack(x_wrapper::window_t win)
+windowstack_t::remove_from_stack(x_data::window_t win)
 {
     if (!m_win_layers.count(win))
         return *this;
@@ -56,7 +56,7 @@ windowstack_t::relayer_window(windowstack_window_t win)
 }
 
 windowstack_t&
-windowstack_t::raise_window(x_wrapper::window_t win)
+windowstack_t::raise_window(x_data::window_t win)
 {
     if (!m_win_layers.count(win))
         return *this;
@@ -104,7 +104,7 @@ windowstack_t::raise_window(x_wrapper::window_t win)
 }
 
 windowstack_t&
-windowstack_t::lower_window(x_wrapper::window_t win)
+windowstack_t::lower_window(x_data::window_t win)
 {
     if (!m_win_layers.count(win))
         return *this;
@@ -124,7 +124,7 @@ windowstack_t::lower_window(x_wrapper::window_t win)
     return *this;
 }
 
-::std::list<x_wrapper::window_t>
+::std::list<x_data::window_t>
 windowstack_t::get_all_of_type(layer_t type)
 {
     switch (type) {
@@ -158,5 +158,5 @@ windowstack_t::apply()
     wins.insert(wins.end(), m_below_windows.begin(),        m_below_windows.end());
     wins.insert(wins.end(), m_desktop_windows.begin(),      m_desktop_windows.end());
 
-    x_wrapper::restack_windows(wins.data(), n);
+    x_data::restack_windows(wins.data(), n);
 }

@@ -1,8 +1,8 @@
 #ifndef __KRANEWM__KRANEWM__GUARD__
 #define __KRANEWM__KRANEWM__GUARD__
 
-#include "x-wrapper/display.hh"
-#include "x-wrapper/error.hh"
+#include "x-data/display.hh"
+#include "x-data/error.hh"
 
 #include "ewmh.hh"
 #include "sidebar.hh"

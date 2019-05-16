@@ -1,7 +1,7 @@
 #ifndef __KRANEWM__MOUSEBIND__GUARD__
 #define __KRANEWM__MOUSEBIND__GUARD__
 
-#include "x-wrapper/mouse.hh"
+#include "x-data/mouse.hh"
 
 #include <unordered_map>
 

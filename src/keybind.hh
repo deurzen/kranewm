@@ -1,7 +1,7 @@
 #ifndef __KRANEWM__KEYBIND__GUARD__
 #define __KRANEWM__KEYBIND__GUARD__
 
-#include "x-wrapper/key.hh"
+#include "x-data/key.hh"
 
 #include <unordered_map>
 
@@ -68,7 +68,7 @@ struct keyshortcut_t
           mask(_mask) {}
 
     keyshortcut_t(XKeyEvent event)
-        : keysym(x_wrapper::get_keysym(event.keycode)),
+        : keysym(x_data::get_keysym(event.keycode)),
           mask(event.state) {}
 
     inline bool operator==(const keyshortcut_t& ks) const

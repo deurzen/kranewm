@@ -1,13 +1,13 @@
 #include "event.hh"
 
-using namespace x_wrapper;
+using namespace x_data;
 
 
 int l_substructure_level = 0;
 long l_prev_root_mask = 0;
 
 void
-x_wrapper::enable_substructure_events()
+x_data::enable_substructure_events()
 {
     if (--l_substructure_level != 0)
         return;
@@ -20,7 +20,7 @@ x_wrapper::enable_substructure_events()
 }
 
 void
-x_wrapper::disable_substructure_events()
+x_data::disable_substructure_events()
 {
     if (++l_substructure_level != 1)
         return;
@@ -33,32 +33,32 @@ x_wrapper::disable_substructure_events()
 }
 
 void
-x_wrapper::next_event(event_t& event)
+x_data::next_event(event_t& event)
 {
     XNextEvent(g_dpy, event.get_ptr());
 }
 
 bool
-x_wrapper::typed_event(event_t& event, int type)
+x_data::typed_event(event_t& event, int type)
 {
     return XCheckTypedEvent(g_dpy, type, event.get_ptr());
 }
 
 void
-x_wrapper::last_typed_event(event_t& event, int type)
+x_data::last_typed_event(event_t& event, int type)
 {
     while (typed_event(event, type));
 }
 
 void
-x_wrapper::sync(bool discard)
+x_data::sync(bool discard)
 {
     XSync(g_dpy, discard);
 }
 
 
 event_t&
-x_wrapper::event_t::send(long mask, window_t win)
+x_data::event_t::send(long mask, window_t win)
 {
     XSendEvent(g_dpy, ((win.get() == None) ? val.xany.window : win.get()),
         False, mask, &val);

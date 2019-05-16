@@ -1,5 +1,5 @@
-#ifndef __KRANEWM__X_WRAPPER__STRING__GUARD__
-#define __KRANEWM__X_WRAPPER__STRING__GUARD__
+#ifndef __KRANEWM__X_DATA__STRING__GUARD__
+#define __KRANEWM__X_DATA__STRING__GUARD__
 
 #include "common.hh"
 #include "type.hh"
@@ -15,7 +15,7 @@ extern "C" {
 #include <string>
 
 
-namespace x_wrapper
+namespace x_data
 {
     class string_t : public x_type
     {
@@ -103,4 +103,4 @@ namespace x_wrapper
     };
 }
 
-#endif//__KRANEWM__X_WRAPPER__STRING__GUARD__
+#endif//__KRANEWM__X_DATA__STRING__GUARD__

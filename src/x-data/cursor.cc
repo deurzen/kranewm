@@ -2,7 +2,7 @@
 #include "window.hh"
 
 void
-x_wrapper::set_cursor(window_t win)
+x_data::set_cursor(window_t win)
 {
     XSetWindowAttributes wa;
     wa.cursor = XCreateFontCursor(g_dpy, XC_left_ptr);

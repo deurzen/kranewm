@@ -5,7 +5,7 @@
 #include "mousebind.hh"
 #include "keybind.hh"
 #include "process.hh"
-#include "x-wrapper/event.hh"
+#include "x-data/event.hh"
 
 #define YES true
 #define NO  false
@@ -183,15 +183,15 @@ public:
           })
     {
         for (auto&& [shortcut,name] : m_processbinds) {
-            x_wrapper::grab_key(shortcut.keysym, shortcut.mask);
+            x_data::grab_key(shortcut.keysym, shortcut.mask);
             m_processes.activate_process_name(name);
         }
 
         for (auto&& [shortcut,_] : m_keybinds)
-            x_wrapper::grab_key(shortcut.keysym, shortcut.mask);
+            x_data::grab_key(shortcut.keysym, shortcut.mask);
 
         for (auto&& [shortcut,_] : m_mousebinds)
-            if (shortcut.mask) x_wrapper::grab_button(shortcut.button, shortcut.mask);
+            if (shortcut.mask) x_data::grab_button(shortcut.button, shortcut.mask);
     }
 
     void process_mouse_input_global(XButtonEvent);

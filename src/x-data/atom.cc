@@ -1,12 +1,12 @@
 #include "atom.hh"
 
-using namespace x_wrapper;
+using namespace x_data;
 
 
 ::std::map<::std::string, Atom> atom_t::g_interned_atoms;
 
 atom_t
-x_wrapper::get_atom(::std::string name)
+x_data::get_atom(::std::string name)
 {
     if (atom_t::g_interned_atoms.count(name) > 0)
         return atom_t::g_interned_atoms[name];
