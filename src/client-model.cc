@@ -54,13 +54,15 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
     m_processes.add_process(client);
 
     if (client->parent) {
-        // deiconify parent
         if (is_user_workspace(client_workspace(client->parent))
             && client_workspace(client->parent) != client_workspace(client))
         {
             change_active_workspace(client_user_workspace(client->parent));
         }
     }
+
+    if (client->parent)
+        rule.workspace = m_client_workspaces[client->parent]->get_number();
 
     if (rule.center)
         client->center();
@@ -236,6 +238,8 @@ client_model_t::client_to_workspace(client_ptr_t client, workspace_ptr_t to)
     if (is_user_workspace(to)) {
         from->remove_client(client);
         m_client_workspaces[client] = user_workspace(to);
+        for (auto& child : client->children)
+            m_client_workspaces[child] = user_workspace(to);
     }
 
     m_changequeue.add(change_client_workspace(client,
@@ -266,7 +270,7 @@ client_model_t::change_active_workspace(user_workspace_ptr_t workspace, bool sav
     if (m_resize_workspace->is_set())
         stop_resizing(m_resize_workspace->get());
 
-    { // ignore successive {next,prev}-ws
+    { // do not save successive {next,prev}-ws
         static bool prev_ignored = false;
         if (!prev_ignored) {
             prev_workspace = m_current_workspace;
