@@ -62,7 +62,6 @@ client_events_t::on_change_client_focus()
             to->frame.set_background_color(REG_COLOR);
             to->frame.grab();
         }
-
     } else
         x_data::set_input_focus();
 }
@@ -231,7 +230,11 @@ client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t from, 
         unmap_all(client->children);
     }
 
-    m_sidebar.erase_activity(user_workspace(from)->get_number()).draw();
+    m_sidebar.erase_activity(user_workspace(from)->get_number());
+    for (auto& child : client->children)
+        m_sidebar.erase_activity(user_workspace(from)->get_number());
+
+    m_sidebar.draw();
 }
 
 void
@@ -264,7 +267,12 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
 
     m_ewmh.set_wm_desktop_property(client->win, user_workspace(to)->get_number() - 1);
     m_sidebar.set_numberclients(m_clients.active_workspace()->get_all().size());
-    m_sidebar.record_activity(user_workspace(to)->get_number()).draw();
+
+    m_sidebar.record_activity(user_workspace(to)->get_number());
+    for (auto& child : client->children)
+        m_sidebar.record_activity(user_workspace(to)->get_number());
+
+    m_sidebar.draw();
 }
 
 

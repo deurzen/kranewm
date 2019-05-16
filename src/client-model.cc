@@ -220,6 +220,9 @@ client_model_t::stop_resizing(client_ptr_t client, pos_t pos, dim_t dim)
 void
 client_model_t::client_to_workspace(client_ptr_t client, unsigned workspace_nr)
 {
+    if (client->parent)
+        return;
+
     if (range_t<unsigned>::contains(1, USER_WORKSPACES.size(), workspace_nr))
         client_to_workspace(client, m_user_workspaces[workspace_nr - 1]);
 }
