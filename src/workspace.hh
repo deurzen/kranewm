@@ -116,16 +116,16 @@ typedef class user_workspace_t : public workspace_t
 public:
     user_workspace_t(unsigned _number, ::std::string&& _name, ewmh_t& ewmh)
         : workspace_t(workspacetype_t::user),
-          number(_number),
-          name(_name),
-          n_master(1),
-          gap_size(0),
-          m1_weight(1),
-          m_factor(.5f),
-          mirrored(false),
-          layout(layout_t::floating),
-          previous_layout(layout),
-          layouthandler(layouthandler_t{ewmh}) {}
+          m_number(_number),
+          m_name(_name),
+          m_nmaster(1),
+          m_gap_size(0),
+          m_m1weight(1),
+          m_mfactor(.5f),
+          m_mirrored(false),
+          m_layout(layout_t::floating),
+          m_previous_layout(m_layout),
+          m_layouthandler(layouthandler_t{ewmh}) {}
 
     void arrange() const override;
 
@@ -160,16 +160,16 @@ public:
     user_workspace_t& mirror();
     user_workspace_t& jump_pane();
 
-    user_workspace_t& set_n_master(unsigned);
+    user_workspace_t& set_nmaster(unsigned);
     user_workspace_t& set_gap_size(unsigned);
-    user_workspace_t& set_m_factor(float);
-    user_workspace_t& set_m1_weight(unsigned);
+    user_workspace_t& set_mfactor(float);
+    user_workspace_t& set_m1weight(unsigned);
     user_workspace_t& set_layout(layout_t);
 
-    unsigned get_n_master() const;
+    unsigned get_nmaster() const;
     unsigned get_gap_size() const;
-    float get_m_factor() const;
-    unsigned get_m1_weight() const;
+    float get_mfactor() const;
+    unsigned get_m1weight() const;
     layout_t get_layout() const;
 
     bool is_master(client_ptr_t);
@@ -179,17 +179,17 @@ public:
     bool stack_focused();
 
 private:
-    unsigned        number;
-    ::std::string   name;
-    unsigned        n_master;
-    unsigned        gap_size;
-    unsigned        m1_weight;
-    float           m_factor;
-    bool            mirrored;
-    focus_cycle_t   clients;
-    layout_t        layout;
-    layout_t        previous_layout;
-    layouthandler_t layouthandler;
+    unsigned        m_number;
+    ::std::string   m_name;
+    unsigned        m_nmaster;
+    unsigned        m_gap_size;
+    unsigned        m_m1weight;
+    float           m_mfactor;
+    bool            m_mirrored;
+    focus_cycle_t   m_clients;
+    layout_t        m_layout;
+    layout_t        m_previous_layout;
+    layouthandler_t m_layouthandler;
 
 }* user_workspace_ptr_t;
 

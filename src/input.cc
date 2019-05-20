@@ -321,9 +321,9 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::jump_stack:
         {
             auto clients = m_clients.active_workspace()->get_all();
-            unsigned n_master = m_clients.active_workspace()->get_n_master();
-            if (!clients.empty() && n_master < clients.size()) {
-                m_clients.active_workspace()->set_focused(clients[n_master]);
+            unsigned nmaster = m_clients.active_workspace()->get_nmaster();
+            if (!clients.empty() && nmaster < clients.size()) {
+                m_clients.active_workspace()->set_focused(clients[nmaster]);
                 m_clients.sync_workspace_focus();
             }
         }
@@ -424,32 +424,32 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             }
         }
         break;
-    case keyop_t::inc_m_factor:
+    case keyop_t::inc_mfactor:
         {
-            float m_factor = m_clients.active_workspace()->get_m_factor();
-            if (m_factor <= 0.85f)
-                m_clients.active_workspace()->set_m_factor(m_factor + .05f).arrange();
+            float mfactor = m_clients.active_workspace()->get_mfactor();
+            if (mfactor <= 0.85f)
+                m_clients.active_workspace()->set_mfactor(mfactor + .05f).arrange();
         }
         break;
-    case keyop_t::dec_m_factor:
+    case keyop_t::dec_mfactor:
         {
-            float m_factor = m_clients.active_workspace()->get_m_factor();
-            if (m_factor >= .15f)
-                m_clients.active_workspace()->set_m_factor(m_factor - .05f).arrange();
+            float mfactor = m_clients.active_workspace()->get_mfactor();
+            if (mfactor >= .15f)
+                m_clients.active_workspace()->set_mfactor(mfactor - .05f).arrange();
         }
         break;
-    case keyop_t::inc_n_master:
+    case keyop_t::inc_nmaster:
         {
-            unsigned n_master = m_clients.active_workspace()->get_n_master();
-            if (n_master < MAX_N_MASTER)
-                m_clients.active_workspace()->set_n_master(++n_master).arrange();
+            unsigned nmaster = m_clients.active_workspace()->get_nmaster();
+            if (nmaster < MAX_NMASTER)
+                m_clients.active_workspace()->set_nmaster(++nmaster).arrange();
         }
         break;
-    case keyop_t::dec_n_master:
+    case keyop_t::dec_nmaster:
         {
-            unsigned n_master = m_clients.active_workspace()->get_n_master();
-            if (n_master > 0)
-                m_clients.active_workspace()->set_n_master(--n_master).arrange();
+            unsigned nmaster = m_clients.active_workspace()->get_nmaster();
+            if (nmaster > 0)
+                m_clients.active_workspace()->set_nmaster(--nmaster).arrange();
         }
         break;
     case keyop_t::inc_gap_size:
@@ -704,11 +704,11 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 client->move(pos);
             } else {
                 m_clients.active_workspace()->rotate_stack_backward();
-                unsigned n_master = m_clients.active_workspace()->get_n_master();
+                unsigned nmaster = m_clients.active_workspace()->get_nmaster();
                 auto clients = m_clients.active_workspace()->get_all();
-                if (clients.size() && n_master < clients.size() && m_clients.active_workspace()->master_focused()) {
-                    m_windowstack.raise_window(clients[n_master]->frame);
-                    for (auto& child : clients[n_master]->children)
+                if (clients.size() && nmaster < clients.size() && m_clients.active_workspace()->master_focused()) {
+                    m_windowstack.raise_window(clients[nmaster]->frame);
+                    for (auto& child : clients[nmaster]->children)
                         m_windowstack.raise_window(child->frame);
                     m_windowstack.apply();
                 }
@@ -726,11 +726,11 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 client->move(pos);
             } else {
                 m_clients.active_workspace()->rotate_stack_forward();
-                unsigned n_master = m_clients.active_workspace()->get_n_master();
+                unsigned nmaster = m_clients.active_workspace()->get_nmaster();
                 auto clients = m_clients.active_workspace()->get_all();
-                if (clients.size() && n_master < clients.size()  && m_clients.active_workspace()->master_focused()) {
-                    m_windowstack.raise_window(clients[n_master]->frame);
-                    for (auto& child : clients[n_master]->children)
+                if (clients.size() && nmaster < clients.size()  && m_clients.active_workspace()->master_focused()) {
+                    m_windowstack.raise_window(clients[nmaster]->frame);
+                    for (auto& child : clients[nmaster]->children)
                         m_windowstack.raise_window(child->frame);
                     m_windowstack.apply();
                 }
