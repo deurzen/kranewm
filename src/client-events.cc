@@ -231,8 +231,10 @@ client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t from, 
     }
 
     m_sidebar.erase_activity(user_workspace(from)->get_number());
-    for (auto& child : client->children)
-        m_sidebar.erase_activity(user_workspace(from)->get_number());
+    for (auto& child : client->children) {
+        user_workspace_ptr_t child_workspace = m_clients.client_user_workspace(child);
+        m_sidebar.erase_activity(user_workspace(child_workspace)->get_number());
+    }
 
     m_sidebar.draw();
 }
@@ -269,8 +271,10 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
     m_sidebar.set_numberclients(m_clients.active_workspace()->get_all().size());
 
     m_sidebar.record_activity(user_workspace(to)->get_number());
-    for (auto& child : client->children)
-        m_sidebar.record_activity(user_workspace(to)->get_number());
+    for (auto& child : client->children) {
+        user_workspace_ptr_t child_workspace = m_clients.client_user_workspace(child);
+        m_sidebar.erase_activity(user_workspace(child_workspace)->get_number());
+    }
 
     m_sidebar.draw();
 }
