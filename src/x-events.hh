@@ -38,6 +38,8 @@ public:
               { { "Firefox",             ALL,             ALL },   {  NO,  YES,   NO,   OFF,  NO,   CURRENT } },
               { { "Gimp",                ALL,             ALL },   { YES,   NO,   NO,   OFF,  NO,   4       } },
               { { "GoldenDict",          ALL,             ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
+              { { "Gpick",               ALL,             ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
+              { { "Inkscape",            ALL,             ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
               { { "Qalculate-gtk",       ALL,             ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
               { { "Rhythmbox",           ALL,             ALL },   { YES,  YES,   NO,  ONCE,  NO,   CURRENT } },
               { { "RuneLite",            ALL,             ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
@@ -45,10 +47,9 @@ public:
               { { "URxvt",               ALL,             ALL },   {  NO,  YES,   NO,   OFF,  NO,   CURRENT } },
               { { "cantata",             ALL,             ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
               { { "mate-volume-control", ALL,             ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
+              { { "nixnote2",            ALL,             ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
               { { "noson",               ALL,             ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
               { { "noson-gui",           ALL,             ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
-              { { "qutebrowser",         ALL,             ALL },   { YES,   NO,   NO,   OFF,  NO,   CURRENT } },
-              { { "nixnote2",            ALL,             ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
           }) {}
 
     bool step();
