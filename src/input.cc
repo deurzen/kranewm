@@ -109,8 +109,8 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::rhythmboxnext:       fork_external("/usr/bin/rhythmbox-client --next");                      break;
     case keyop_t::rhythmboxprev:       fork_external("/usr/bin/rhythmbox-client --previous");                  break;
     case keyop_t::rhythmboxstop:       fork_external("/usr/bin/rhythmbox-client --stop");                      break;
-    case keyop_t::volumeup:            fork_external("amixer -D pulse sset Master 10%+");                      break;
-    case keyop_t::volumedown:          fork_external("amixer -D pulse sset Master 10%-");                      break;
+    case keyop_t::volumeup:            fork_external("amixer -D pulse sset Master 5%+");                       break;
+    case keyop_t::volumedown:          fork_external("amixer -D pulse sset Master 5%-");                       break;
     case keyop_t::volumemute:          fork_external("amixer -D pulse set Master 1+ toggle");                  break;
     case keyop_t::brightnessup15:      fork_external("/usr/bin/light -A 15");                                  break;
     case keyop_t::brightnessup5:       fork_external("/usr/bin/light -A 5");                                   break;
