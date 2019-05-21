@@ -291,11 +291,13 @@ x_events_t::on_configure_request()
         if (conf_flags & CWWidth)
             client->float_dim.w = m_current_event.get().xconfigurerequest.width;
         if (conf_flags & CWHeight)
-            client->float_dim.h = m_current_event.get().xconfigurerequest.height;
+            client->float_dim.h = m_current_event.get().xconfigurerequest.height + BORDER_HEIGHT;
 
         conf_flags &= perm_flags;
-        if (conf_flags)
+        if (conf_flags) {
             x_data::propagate_configure_request(win_event, conf_flags);
+            update_offset(client);
+        }
 
         m_current_event.get().xconfigurerequest.window = client->frame;
         m_current_event.get().xconfigurerequest.height += BORDER_HEIGHT;
