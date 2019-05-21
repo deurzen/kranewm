@@ -1,5 +1,32 @@
 #include "stack.hh"
 #include "util.hh"
+#include "client.hh"
+
+
+void
+workspacestack_t::add(client_ptr_t client)
+{
+    m_clients.push_back(client);
+}
+
+void
+workspacestack_t::remove(client_ptr_t client)
+{
+    erase_remove(m_clients, client);
+}
+
+void
+workspacestack_t::raise(client_ptr_t client)
+{
+    remove(client);
+    add(client);
+}
+
+::std::vector<client_ptr_t>&
+workspacestack_t::get_clients()
+{
+    return m_clients;
+}
 
 
 windowstack_t&
@@ -11,12 +38,9 @@ windowstack_t::add_to_stack(windowstack_window_t win)
     switch (win.layer) {
     case layer_t::desktop:      m_desktop_windows.push_back(win.win);      break;
     case layer_t::below:        m_below_windows.push_back(win.win);        break;
-    case layer_t::normal:       m_normal_windows.push_back(win.win);       break;
-    case layer_t::floating:     m_floating_windows.push_back(win.win);     break;
     case layer_t::dock:         m_dock_windows.push_back(win.win);         break;
     case layer_t::indicator:    m_indicator_windows.push_back(win.win);    break;
     case layer_t::above:        m_above_windows.push_back(win.win);        break;
-    case layer_t::fullscreen:   m_fullscreen_windows.push_back(win.win);   break;
     case layer_t::notification: m_notification_windows.push_back(win.win); break;
     }
 
@@ -33,12 +57,9 @@ windowstack_t::remove_from_stack(x_data::window_t win)
     switch (m_win_layers[win]) {
     case layer_t::desktop:      erase_find(m_desktop_windows, win);      break;
     case layer_t::below:        erase_find(m_below_windows, win);        break;
-    case layer_t::normal:       erase_find(m_normal_windows, win);       break;
-    case layer_t::floating:     erase_find(m_floating_windows, win);     break;
     case layer_t::dock:         erase_find(m_dock_windows, win);         break;
     case layer_t::indicator:    erase_find(m_indicator_windows, win);    break;
     case layer_t::above:        erase_find(m_above_windows, win);        break;
-    case layer_t::fullscreen:   erase_find(m_fullscreen_windows, win);   break;
     case layer_t::notification: erase_find(m_notification_windows, win); break;
     }
 
@@ -70,14 +91,6 @@ windowstack_t::raise_window(x_data::window_t win)
         m_below_windows.remove(win);
         m_below_windows.push_front(win);
         break;
-    case layer_t::normal:
-        m_normal_windows.remove(win);
-        m_normal_windows.push_front(win);
-        break;
-    case layer_t::floating:
-        m_floating_windows.remove(win);
-        m_floating_windows.push_front(win);
-        break;
     case layer_t::dock:
         m_dock_windows.remove(win);
         m_dock_windows.push_front(win);
@@ -89,10 +102,6 @@ windowstack_t::raise_window(x_data::window_t win)
     case layer_t::above:
         m_above_windows.remove(win);
         m_above_windows.push_front(win);
-        break;
-    case layer_t::fullscreen:
-        m_fullscreen_windows.remove(win);
-        m_fullscreen_windows.push_front(win);
         break;
     case layer_t::notification:
         m_notification_windows.remove(win);
@@ -112,12 +121,9 @@ windowstack_t::lower_window(x_data::window_t win)
     switch (m_win_layers[win]) {
     case layer_t::desktop:      splice_back(m_desktop_windows, win);      break;
     case layer_t::below:        splice_back(m_below_windows, win);        break;
-    case layer_t::normal:       splice_back(m_normal_windows, win);       break;
-    case layer_t::floating:     splice_back(m_floating_windows, win);     break;
     case layer_t::dock:         splice_back(m_dock_windows, win);         break;
     case layer_t::indicator:    splice_back(m_indicator_windows, win);    break;
     case layer_t::above:        splice_back(m_above_windows, win);        break;
-    case layer_t::fullscreen:   splice_back(m_fullscreen_windows, win);   break;
     case layer_t::notification: splice_back(m_notification_windows, win); break;
     }
 
@@ -130,33 +136,44 @@ windowstack_t::get_all_of_type(layer_t type)
     switch (type) {
     case layer_t::desktop:      return m_desktop_windows;
     case layer_t::below:        return m_below_windows;
-    case layer_t::normal:       return m_normal_windows;
-    case layer_t::floating:     return m_floating_windows;
     case layer_t::dock:         return m_dock_windows;
     case layer_t::indicator:    return m_indicator_windows;
     case layer_t::above:        return m_above_windows;
-    case layer_t::fullscreen:   return m_fullscreen_windows;
     case layer_t::notification: return m_notification_windows;
-    default: return m_normal_windows;
+    default: return m_notification_windows;
     }
 }
 
 void
-windowstack_t::apply()
+windowstack_t::apply(workspacestack_t stack)
 {
-    size_t n = m_win_layers.size();
+    auto workspace_clients = stack.get_clients();
+    size_t n = m_win_layers.size() + workspace_clients.size();
+
     ::std::vector<Window> wins;
     wins.reserve(n);
 
-    wins.insert(wins.end(), m_notification_windows.begin(), m_notification_windows.end());
-    wins.insert(wins.end(), m_fullscreen_windows.begin(),   m_fullscreen_windows.end());
-    wins.insert(wins.end(), m_above_windows.begin(),        m_above_windows.end());
-    wins.insert(wins.end(), m_floating_windows.begin(),     m_floating_windows.end());
-    wins.insert(wins.end(), m_normal_windows.begin(),       m_normal_windows.end());
-    wins.insert(wins.end(), m_indicator_windows.begin(),    m_indicator_windows.end());
-    wins.insert(wins.end(), m_dock_windows.begin(),         m_dock_windows.end());
-    wins.insert(wins.end(), m_below_windows.begin(),        m_below_windows.end());
-    wins.insert(wins.end(), m_desktop_windows.begin(),      m_desktop_windows.end());
+    ::std::list<x_data::window_t> fullscreen_windows;
+    ::std::list<x_data::window_t> floating_windows;
+    ::std::list<x_data::window_t> normal_windows;
+
+    for (auto&& client : reverse(workspace_clients))
+        if (client->fullscreen)
+            fullscreen_windows.push_back(client->frame);
+        else if (client->floating)
+            floating_windows.push_back(client->frame);
+        else
+            normal_windows.push_back(client->frame);
+
+    insert_container(wins, m_notification_windows);
+    insert_container(wins, fullscreen_windows);
+    insert_container(wins, m_above_windows);
+    insert_container(wins, m_indicator_windows);
+    insert_container(wins, m_dock_windows);
+    insert_container(wins, floating_windows);
+    insert_container(wins, normal_windows);
+    insert_container(wins, m_below_windows);
+    insert_container(wins, m_desktop_windows);
 
     x_data::restack_windows(wins.data(), n);
 }

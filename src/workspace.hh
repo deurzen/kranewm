@@ -3,6 +3,7 @@
 
 #include "client.hh"
 #include "layout.hh"
+#include "stack.hh"
 #include "focus-cycle.hh"
 
 #include <map>
@@ -145,6 +146,7 @@ public:
 
     user_workspace_t& add_client(client_ptr_t) override;
     user_workspace_t& remove_client(client_ptr_t) override;
+    user_workspace_t& raise_client(client_ptr_t);
 
     user_workspace_t& forward();
     user_workspace_t& backward();
@@ -171,6 +173,7 @@ public:
     float get_mfactor() const;
     unsigned get_m1weight() const;
     layout_t get_layout() const;
+    const workspacestack_t& get_stack() const;
 
     bool is_master(client_ptr_t);
     bool is_stack(client_ptr_t);
@@ -179,17 +182,18 @@ public:
     bool stack_focused();
 
 private:
-    unsigned        m_number;
-    ::std::string   m_name;
-    unsigned        m_nmaster;
-    unsigned        m_gap_size;
-    unsigned        m_m1weight;
-    float           m_mfactor;
-    bool            m_mirrored;
-    focus_cycle_t   m_clients;
-    layout_t        m_layout;
-    layout_t        m_previous_layout;
-    layouthandler_t m_layouthandler;
+    unsigned         m_number;
+    ::std::string    m_name;
+    unsigned         m_nmaster;
+    unsigned         m_gap_size;
+    unsigned         m_m1weight;
+    float            m_mfactor;
+    bool             m_mirrored;
+    focus_cycle_t    m_clients;
+    workspacestack_t m_stack;
+    layout_t         m_layout;
+    layout_t         m_previous_layout;
+    layouthandler_t  m_layouthandler;
 
 }* user_workspace_ptr_t;
 

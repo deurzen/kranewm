@@ -75,16 +75,10 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
         m_client_workspaces[client] = workspace;
         workspace->add_client(client);
         m_changequeue.add(change_client_workspace(client, nullptr, workspace));
-        m_windowstack.add_to_stack({client->frame,
-            !workspace->in_float_layout() && rule.floating
-                ? layer_t::floating : layer_t::normal});
     } else {
         m_client_workspaces[client] = m_current_workspace;
         m_current_workspace->add_client(client).arrange();
         m_changequeue.add(change_client_workspace(client, nullptr, m_current_workspace));
-        m_windowstack.add_to_stack({client->frame,
-            !m_current_workspace->in_float_layout() && rule.floating
-                ? layer_t::floating : layer_t::normal});
     }
 
     focus(client);
@@ -117,11 +111,10 @@ client_model_t::unmanage_client(client_ptr_t client)
 
     erase_find(m_client_windows, client->frame);
     erase_find(m_client_windows, client->win);
+    erase_find(m_client_workspaces, client);
     erase_remove(m_managed_windows, client->win);
     m_processes.remove_process(client);
-    erase_find(m_client_workspaces, client);
 
-    m_windowstack.remove_from_stack(client->frame);
     m_changequeue.add(change_client_destroy(client, workspace));
 }
 
@@ -145,10 +138,7 @@ client_model_t::focus(client_ptr_t client, bool ignore_unwind)
     if (m_focused_client && m_focused_client != client)
         m_focused_client->focused = false;
 
-    m_windowstack.raise_window(client->frame);
-    for (auto& child : client->children)
-        m_windowstack.raise_window(child->frame);
-    m_windowstack.apply();
+    m_windowstack.apply(m_current_workspace->get_stack());
     m_focused_client = client;
     m_processes.relayer_process(client);
 }
@@ -303,8 +293,7 @@ client_model_t::set_fullscreen(client_ptr_t client, clientaction_t action)
             client->fullscreen = true;
             m_changequeue.add(change_client_fullscreen(client, *client));
             m_fullscreen_clients[client] = *client;
-            m_windowstack.relayer_window({client->frame, layer_t::fullscreen});
-            m_windowstack.raise_window(client->frame).apply();
+            client_user_workspace(client)->raise_client(client);
         }
         break;
     case clientaction_t::remove:
@@ -315,9 +304,6 @@ client_model_t::set_fullscreen(client_ptr_t client, clientaction_t action)
             client->fullscreen = false;
             m_changequeue.add(change_client_fullscreen(client, m_fullscreen_clients[client]));
             erase_find(m_fullscreen_clients, client);
-            m_windowstack.relayer_window({client->frame, client_user_workspace(client)->in_float_layout()
-                || !client->floating ? layer_t::normal : layer_t::floating});
-            m_windowstack.raise_window(client->frame).apply();
         }
         break;
     case clientaction_t::toggle:
@@ -326,6 +312,8 @@ client_model_t::set_fullscreen(client_ptr_t client, clientaction_t action)
         return;
     default: break;
     }
+
+    m_windowstack.apply(client_user_workspace(client)->get_stack());
 }
 
 void

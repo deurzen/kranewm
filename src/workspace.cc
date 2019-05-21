@@ -69,6 +69,9 @@ void
 user_workspace_t::set_focused(client_ptr_t client, bool ignore_unwind)
 {
     m_clients.set(client, ignore_unwind);
+    m_stack.raise(client);
+    ::std::for_each(client->children.begin(), client->children.end(),
+        [=](client_ptr_t child) { m_stack.raise(child); });
 }
 
 void
@@ -84,6 +87,10 @@ user_workspace_t::add_client(client_ptr_t client)
     ::std::for_each(client->children.begin(), client->children.end(),
         [=](client_ptr_t child) { m_clients.add(child); });
 
+    m_stack.add(client);
+    ::std::for_each(client->children.begin(), client->children.end(),
+        [=](client_ptr_t child) { m_stack.add(child); });
+
     return *this;
 }
 
@@ -94,6 +101,17 @@ user_workspace_t::remove_client(client_ptr_t client)
         [=](client_ptr_t child) { m_clients.remove(child); });
     m_clients.remove(client);
 
+    ::std::for_each(client->children.begin(), client->children.end(),
+        [=](client_ptr_t child) { m_stack.remove(child); });
+    m_stack.remove(client);
+
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::raise_client(client_ptr_t client)
+{
+    m_stack.raise(client);
     return *this;
 }
 
@@ -318,6 +336,12 @@ layout_t
 user_workspace_t::get_layout() const
 {
     return m_layout;
+}
+
+const workspacestack_t&
+user_workspace_t::get_stack() const
+{
+    return m_stack;
 }
 
 bool
