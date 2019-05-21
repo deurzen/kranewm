@@ -89,4 +89,36 @@ splice_back(::std::list<Valtype>& v, Valtype val)
     v.splice(v.end(), v, i);
 }
 
+template <typename Valtype1, typename Valtype2>
+void
+insert_container(::std::vector<Valtype1>& v, ::std::list<Valtype2>& l)
+{
+    for (auto& le : l)
+        v.push_back(le.get());
+}
+
+template <typename T>
+struct revertible
+{
+    T& iterable;
+};
+
+template <typename T>
+auto begin(revertible<T> r)
+{
+    return std::rbegin(r.iterable);
+}
+
+template <typename T>
+auto end(revertible<T> r)
+{
+    return std::rend(r.iterable);
+}
+
+template <typename T>
+revertible<T> reverse(T&& iterable)
+{
+    return {iterable};
+}
+
 #endif//__KRANEWM__UTIL__GUARD__

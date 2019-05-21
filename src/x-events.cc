@@ -58,7 +58,7 @@ x_events_t::register_window(x_data::window_t win)
     }
 
     if (!x_data::should_manage(win)) {
-        m_windowstack.add_to_stack({win, layer_t::floating});
+        m_windowstack.add_to_stack({win, layer_t::above});
         m_ewmh.set_frame_extents(win, true);
         return;
     }
@@ -76,7 +76,7 @@ x_events_t::register_window(x_data::window_t win)
     x_data::window_t parent = x_data::get_transient_for(win);
     if (parent) {
         if (!x_data::should_manage(parent)) {
-            m_windowstack.add_to_stack({parent, layer_t::floating});
+            m_windowstack.add_to_stack({parent, layer_t::above});
             m_ewmh.set_frame_extents(parent, true);
             return;
         }

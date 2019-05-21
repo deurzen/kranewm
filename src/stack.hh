@@ -10,12 +10,9 @@ enum class layer_t
 { // bottom to top
     desktop,
     below,
-    normal,
-    floating,
     dock,
     indicator,
     above,
-    fullscreen,
     notification
 };
 
@@ -35,6 +32,23 @@ struct windowstack_window_t
 
 };
 
+class workspacestack_t
+{
+public:
+    workspacestack_t() = default;
+
+    void add(client_ptr_t);
+    void remove(client_ptr_t);
+    void raise(client_ptr_t);
+
+    ::std::vector<client_ptr_t>& get_clients();
+
+private:
+
+    ::std::vector<client_ptr_t> m_clients;
+
+};
+
 
 class windowstack_t
 {
@@ -46,19 +60,16 @@ public:
     windowstack_t& lower_window(x_data::window_t);
 
     ::std::list<x_data::window_t> get_all_of_type(layer_t);
-    void apply();
+    void apply(workspacestack_t);
 
 private:
     ::std::unordered_map<x_data::window_t, layer_t> m_win_layers;
 
     ::std::list<x_data::window_t> m_desktop_windows;
     ::std::list<x_data::window_t> m_below_windows;
-    ::std::list<x_data::window_t> m_normal_windows;
-    ::std::list<x_data::window_t> m_floating_windows;
     ::std::list<x_data::window_t> m_dock_windows;
     ::std::list<x_data::window_t> m_indicator_windows;
     ::std::list<x_data::window_t> m_above_windows;
-    ::std::list<x_data::window_t> m_fullscreen_windows;
     ::std::list<x_data::window_t> m_notification_windows;
 
 };
