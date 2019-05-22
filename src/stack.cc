@@ -1,6 +1,7 @@
 #include "stack.hh"
 #include "util.hh"
 #include "client.hh"
+#include "workspace.hh"
 
 
 void
@@ -145,7 +146,13 @@ windowstack_t::get_all_of_type(layer_t type)
 }
 
 void
-windowstack_t::apply(workspacestack_t stack)
+windowstack_t::apply(user_workspace_ptr_t workspace)
+{
+    apply(workspace->get_stack(), workspace->in_float_layout());
+}
+
+void
+windowstack_t::apply(workspacestack_t stack, bool ignore_floating)
 {
     auto workspace_clients = stack.get_clients();
     size_t n = m_win_layers.size() + workspace_clients.size();
@@ -160,7 +167,7 @@ windowstack_t::apply(workspacestack_t stack)
     for (auto&& client : reverse(workspace_clients))
         if (client->fullscreen)
             fullscreen_windows.push_back(client->frame);
-        else if (client->floating)
+        else if (client->floating && !ignore_floating)
             floating_windows.push_back(client->frame);
         else
             normal_windows.push_back(client->frame);
@@ -169,9 +176,9 @@ windowstack_t::apply(workspacestack_t stack)
     insert_container(wins, fullscreen_windows);
     insert_container(wins, m_above_windows);
     insert_container(wins, m_indicator_windows);
-    insert_container(wins, m_dock_windows);
     insert_container(wins, floating_windows);
     insert_container(wins, normal_windows);
+    insert_container(wins, m_dock_windows);
     insert_container(wins, m_below_windows);
     insert_container(wins, m_desktop_windows);
 

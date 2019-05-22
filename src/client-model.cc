@@ -138,7 +138,7 @@ client_model_t::focus(client_ptr_t client, bool ignore_unwind)
     if (m_focused_client && m_focused_client != client)
         m_focused_client->focused = false;
 
-    m_windowstack.apply(m_current_workspace->get_stack());
+    m_windowstack.apply(m_current_workspace);
     m_focused_client = client;
     m_processes.relayer_process(client);
 }
@@ -313,7 +313,7 @@ client_model_t::set_fullscreen(client_ptr_t client, clientaction_t action)
     default: break;
     }
 
-    m_windowstack.apply(client_user_workspace(client)->get_stack());
+    m_windowstack.apply(client_user_workspace(client));
 }
 
 void
