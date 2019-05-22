@@ -17,8 +17,8 @@ enum class layer_t
 };
 
 // Forward decl
-struct client_t;
-typedef client_t* client_ptr_t;
+typedef struct client_t* client_ptr_t;
+typedef struct user_workspace_t* user_workspace_ptr_t;
 
 
 struct windowstack_window_t
@@ -60,7 +60,9 @@ public:
     windowstack_t& lower_window(x_data::window_t);
 
     ::std::list<x_data::window_t> get_all_of_type(layer_t);
-    void apply(workspacestack_t);
+
+    void apply(user_workspace_ptr_t);
+    void apply(workspacestack_t, bool = false);
 
 private:
     ::std::unordered_map<x_data::window_t, layer_t> m_win_layers;

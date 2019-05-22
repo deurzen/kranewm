@@ -158,7 +158,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::floating:
         {
             m_clients.active_workspace()->set_layout(layout_t::floating);
-            m_windowstack.apply(m_clients.active_workspace()->get_stack());
+            m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.set_layoutsymbol(layout_t::floating).draw();
         }
@@ -167,7 +167,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             auto workspace = m_clients.active_workspace();
             workspace->set_layout(layout_t::tile).arrange();
-            m_windowstack.apply(m_clients.active_workspace()->get_stack());
+            m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.set_layoutsymbol(layout_t::tile).draw();
         }
@@ -176,7 +176,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             auto workspace = m_clients.active_workspace();
             workspace->set_layout(layout_t::deck).arrange();
-            m_windowstack.apply(m_clients.active_workspace()->get_stack());
+            m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.set_layoutsymbol(layout_t::deck).draw();
         }
@@ -185,7 +185,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             auto workspace = m_clients.active_workspace();
             workspace->set_layout(layout_t::doubledeck).arrange();
-            m_windowstack.apply(m_clients.active_workspace()->get_stack());
+            m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.set_layoutsymbol(layout_t::doubledeck).draw();
         }
@@ -194,7 +194,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             auto workspace = m_clients.active_workspace();
             workspace->set_layout(layout_t::grid).arrange();
-            m_windowstack.apply(m_clients.active_workspace()->get_stack());
+            m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.set_layoutsymbol(layout_t::grid).draw();
         }
@@ -203,7 +203,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             auto workspace = m_clients.active_workspace();
             workspace->set_layout(layout_t::monocle);
-            m_windowstack.apply(m_clients.active_workspace()->get_stack());
+            m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.set_layoutsymbol(layout_t::monocle).draw();
         }
@@ -212,7 +212,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             auto workspace = m_clients.active_workspace();
             workspace->set_layout(layout_t::pillar);
-            m_windowstack.apply(m_clients.active_workspace()->get_stack());
+            m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.set_layoutsymbol(layout_t::pillar).draw();
         }
@@ -221,7 +221,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             auto workspace = m_clients.active_workspace();
             workspace->set_layout(layout_t::toggle);
-            m_windowstack.apply(m_clients.active_workspace()->get_stack());
+            m_windowstack.apply(m_clients.active_workspace());
             workspace->arrange();
             m_sidebar.set_layoutsymbol(m_clients.active_workspace()->get_layout()).draw();
         }
@@ -416,7 +416,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
 
             client->set_float(clientaction_t::toggle).resize(client->float_dim).move(client->float_pos);
             m_clients.active_workspace()->raise_client(client);
-            m_windowstack.apply(m_clients.active_workspace()->get_stack());
+            m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
 
             if (client->floating)
@@ -609,7 +609,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
 
                 if (clients.size() && m_clients.active_workspace()->stack_focused()) {
                     m_clients.active_workspace()->raise_client(clients[0]);
-                    m_windowstack.apply(m_clients.active_workspace()->get_stack());
+                    m_windowstack.apply(m_clients.active_workspace());
                 }
 
                 m_clients.focus(m_clients.active_workspace()->get_focused());
@@ -630,7 +630,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
 
                 if (clients.size() && nmaster < clients.size() && m_clients.active_workspace()->master_focused()) {
                     m_clients.active_workspace()->raise_client(clients[nmaster]);
-                    m_windowstack.apply(m_clients.active_workspace()->get_stack());
+                    m_windowstack.apply(m_clients.active_workspace());
                 }
 
                 m_clients.focus(m_clients.active_workspace()->get_focused());
@@ -651,7 +651,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
 
                 if (clients.size() && nmaster < clients.size()  && m_clients.active_workspace()->master_focused()) {
                     m_clients.active_workspace()->raise_client(clients[nmaster]);
-                    m_windowstack.apply(m_clients.active_workspace()->get_stack());
+                    m_windowstack.apply(m_clients.active_workspace());
                 }
 
                 m_clients.focus(m_clients.active_workspace()->get_focused());
@@ -671,7 +671,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
 
                 if (clients.size()  && m_clients.active_workspace()->stack_focused()) {
                     m_clients.active_workspace()->raise_client(clients[0]);
-                    m_windowstack.apply(m_clients.active_workspace()->get_stack());
+                    m_windowstack.apply(m_clients.active_workspace());
                 }
 
                 m_clients.focus(m_clients.active_workspace()->get_focused());
