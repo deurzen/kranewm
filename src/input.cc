@@ -78,8 +78,8 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
 void
 inputhandler_t::process_key_input_global(XKeyEvent event)
 {
-    if (m_processbinds.count(processshortcut_t{event})) {
-        m_clients.jump_process(m_processbinds[processshortcut_t{event}]);
+    if (m_processbinds.count(event)) {
+        m_clients.jump_process(m_processbinds[event]);
         return;
     }
 
@@ -116,9 +116,9 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::brightnessup5:       fork_external("/usr/bin/light -A 5");                                   break;
     case keyop_t::brightnessdown15:    fork_external("/usr/bin/light -U 15");                                  break;
     case keyop_t::take_screenshot:
-        fork_external("/usr/bin/maim -m 10 $(date +/home/deurzen/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");    break;
+        fork_external("/usr/bin/maim -m 10 $(date +~/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");           break;
     case keyop_t::take_screenshot_sel:
-        fork_external("/usr/bin/maim -m 10 -s $(date +/home/deurzen/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)"); break;
+        fork_external("/usr/bin/maim -m 10 -s $(date +~/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");        break;
     case keyop_t::spawn_neomutt:       fork_external("/usr/bin/term -geometry 140x42 -e zsh -i -c neomutt");   break;
     case keyop_t::spawn_ranger:        fork_external("/usr/bin/term -geometry 140x42 -e zsh -i -c ranger");    break;
     case keyop_t::spawn_sncli:         fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c sncli");      break;
