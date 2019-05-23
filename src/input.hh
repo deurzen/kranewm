@@ -99,6 +99,7 @@ public:
               { { XK_f,            MODMASK },             keyop_t::toggle_fullscreen            },
               { { XK_e,            MODMASK },             keyop_t::spawn_neomutt                },
               { { XK_r,            MODMASK },             keyop_t::spawn_ranger                 },
+              { { XK_v,            MODMASK },             keyop_t::spawn_vifm                   },
               { { XK_w,            MODMASK },             keyop_t::spawn_qalculate              },
               { { XK_g,            MODMASK },             keyop_t::spawn_gpick                  },
               { { XK_n,            MODMASK },             keyop_t::spawn_nixnote                },
