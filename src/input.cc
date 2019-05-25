@@ -85,9 +85,9 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
 
     switch (m_keybinds[event]) {
     case keyop_t::quit: m_running = false; return;
-    case keyop_t::spawn_terminal:      fork_external("/usr/bin/urxvt -geometry 80x22");                        break;
-    case keyop_t::spawn_quickterm:     fork_external("/usr/bin/term -name \"kranewm:float\" -geometry 80x22"); break;
-    case keyop_t::spawn_quicktermtmux: fork_external("/usr/bin/term -geometry 80x22 -e tmux");                 break;
+    case keyop_t::spawn_terminal:      fork_external("/usr/local/bin/st");                                     break;
+    case keyop_t::spawn_quickterm:     fork_external("/usr/local/bin/st -n \"kranewm:float\"");                break;
+    case keyop_t::spawn_quicktermtmux: fork_external("/usr/local/bin/st -e tmux");                             break;
     case keyop_t::spawn_dmenu:         fork_external("/usr/local/bin/dmenu_run");                              break;
     case keyop_t::spawn_dmenupass:     fork_external("/usr/bin/dmenupass");                                    break;
     case keyop_t::spawn_dmenupasscopy: fork_external("/usr/bin/dmenupass --copy");                             break;
@@ -119,14 +119,14 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         fork_external("/usr/bin/maim -m 10 $(date +~/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");           break;
     case keyop_t::take_screenshot_sel:
         fork_external("/usr/bin/maim -m 10 -s $(date +~/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");        break;
-    case keyop_t::spawn_neomutt:       fork_external("/usr/bin/term -geometry 140x42 -e zsh -i -c neomutt");   break;
-    case keyop_t::spawn_ranger:        fork_external("/usr/bin/term -geometry 140x42 -e zsh -i -c ranger");    break;
-    case keyop_t::spawn_vifm:          fork_external("/usr/bin/term -geometry 140x42 -e zsh -i -c vifm");    break;
-    case keyop_t::spawn_sncli:         fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c sncli");      break;
-    case keyop_t::spawn_rtv:           fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c rtv");        break;
-    case keyop_t::spawn_irssi:         fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c irssi");      break;
-    case keyop_t::spawn_newsboat:      fork_external("/usr/bin/term -geometry 80x42 -e zsh -i -c newsboat");   break;
-    case keyop_t::spawn_sage:          fork_external("/usr/bin/term -geometry 80x22 -e zsh -i -c sage");       break;
+    case keyop_t::spawn_neomutt:       fork_external("/usr/local/bin/st -g 140x42 -e zsh -i -c neomutt");      break;
+    case keyop_t::spawn_ranger:        fork_external("/usr/local/bin/st -g 140x42 -e zsh -i -c ranger");       break;
+    case keyop_t::spawn_vifm:          fork_external("/usr/local/bin/st -e zsh -i -c vifm");                   break;
+    case keyop_t::spawn_sncli:         fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c sncli");         break;
+    case keyop_t::spawn_rtv:           fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c rtv");           break;
+    case keyop_t::spawn_irssi:         fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c irssi");         break;
+    case keyop_t::spawn_newsboat:      fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c newsboat");      break;
+    case keyop_t::spawn_sage:          fork_external("/usr/local/bin/st -g 80x22 -e zsh -i -c sage");          break;
     case keyop_t::spawn_gpick:         fork_external("gpick");                                                 break;
     case keyop_t::spawn_nixnote:       fork_external("nixnote2 show_window");                                  break;
     case keyop_t::spawn_qalculate:     fork_external("qalculate-gtk");                                         break;
