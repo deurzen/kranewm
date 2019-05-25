@@ -50,6 +50,8 @@ public:
               { { "nixnote2",            ALL,             ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
               { { "noson",               ALL,             ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
               { { "noson-gui",           ALL,             ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
+              { { "st-256color",         "kranewm:float", ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
+              { { "st-256color",         ALL,             ALL },   {  NO,  YES,   NO,   OFF,  NO,   CURRENT } },
           }) {}
 
     bool step();
