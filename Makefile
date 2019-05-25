@@ -98,7 +98,7 @@ tags:
 .PHONY: clean
 clean:
 	@echo cleaning
-	@rm -rf ./bin ./release ./obj ./tags
+	@rm -rf ./bin ./release ./obj
 
 .PHONY: cleantest
 cleantest:
