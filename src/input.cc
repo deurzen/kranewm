@@ -209,6 +209,15 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             m_sidebar.set_layoutsymbol(layout_t::pillar).draw();
         }
         break;
+    case keyop_t::column:
+        {
+            auto workspace = m_clients.active_workspace();
+            workspace->set_layout(layout_t::column);
+            m_windowstack.apply(m_clients.active_workspace());
+            m_clients.active_workspace()->arrange();
+            m_sidebar.set_layoutsymbol(layout_t::column).draw();
+        }
+        break;
     case keyop_t::monocle:
         {
             auto workspace = m_clients.active_workspace();

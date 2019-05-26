@@ -10,9 +10,10 @@ enum class layout_t : char
     deck       = 'D',
     doubledeck = '$',
     grid       = '#',
-    monocle    = 'M',
     pillar     = '|',
-    center     = 'C',
+    column     = 'C',
+    monocle    = 'M',
+    center     = '^',
 };
 
 // Forward decl
@@ -31,6 +32,7 @@ public:
     void layout_doubledeck(const user_workspace_t&) const;
     void layout_grid(const user_workspace_t&) const;
     void layout_pillar(const user_workspace_t&) const;
+    void layout_column(const user_workspace_t&) const;
     void layout_monocle(const user_workspace_t&) const;
     void layout_center(const user_workspace_t&) const;
 

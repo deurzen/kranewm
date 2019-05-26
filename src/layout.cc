@@ -355,6 +355,74 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
 }
 
 void
+layouthandler_t::layout_column(const user_workspace_t& workspace) const
+{
+    auto clients = workspace.get_all();
+    clients.erase(::std::remove_if(clients.begin(), clients.end(),
+        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+
+    if (clients.empty())
+        return;
+
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
+    unsigned nmaster = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_nmaster());
+
+    dim_t screen_dim = {
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut(),
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut()
+    };
+
+    dim_t master_dim = {
+        static_cast<int>(screen_dim.w * (nmaster < clients.size() ? workspace.get_mfactor() : 1)),
+        screen_dim.h
+    };
+
+    if (!(!nmaster || nmaster == clients.size()))
+        master_dim.w -= nmaster;
+
+    dim_t stack_dim = {
+        screen_dim.w - (nmaster > 0 ? master_dim.w : 0),
+        screen_dim.h / static_cast<int>(nmaster < clients.size() ? (clients.size() - nmaster) : 1)
+    };
+
+    pos_t master_pos = {
+        m_ewmh.get_left_strut(),
+        m_ewmh.get_top_strut()
+    };
+
+    pos_t stack_pos  = {
+        (nmaster > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut(),
+        m_ewmh.get_top_strut()
+    };
+
+    if (workspace.is_mirrored() && clients.size() > nmaster && nmaster != 0) {
+        ::std::swap(master_dim.w, stack_dim.w);
+        ::std::swap(master_pos.x, stack_pos.x);
+    }
+
+    if (nmaster)
+        master_dim.w /= nmaster;
+
+    { // tile master clients
+        for (size_t i = 0; i < nmaster; ++i) {
+            clients[i]->resize(master_dim, true).move(master_pos, true);
+            master_pos.x += master_dim.w + 1;
+        }
+    }
+
+    { // tile stack clients
+        for (size_t i = nmaster; i < clients.size() - 1; ++i) {
+            clients[i]->resize(stack_dim, true).move(stack_pos, true);
+            stack_pos.y += stack_dim.h;
+        }
+
+        if (clients.size() > nmaster)
+            clients.back()->resize({stack_dim.w,
+                screen_dim.h + m_ewmh.get_top_strut() - stack_pos.y}, true).move(stack_pos, true);
+    }
+}
+
+void
 layouthandler_t::layout_monocle(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
