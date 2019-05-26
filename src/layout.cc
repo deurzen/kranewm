@@ -269,52 +269,56 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
     auto root_attrs = x_data::get_attributes(x_data::g_root);
     unsigned nmaster = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_nmaster());
     unsigned n_stack = clients.size() - nmaster;
+    int gap_size = workspace.get_gap_size();
 
     bool has_leftstack = n_stack;
     bool has_rightstack = n_stack > 1;
 
     dim_t screen_dim = {
-        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut(),
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut()
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() -  (nmaster == clients.size() ? 1 : 2) * gap_size,
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size
     };
 
-    dim_t master_dim;
-    master_dim.w = (n_stack ? screen_dim.w * workspace.get_mfactor() : screen_dim.w);
-    master_dim.h = screen_dim.h / (nmaster > 1 ? nmaster : 1);
+    dim_t master_dim = {
+        static_cast<int>(n_stack ? screen_dim.w * workspace.get_mfactor() : screen_dim.w) - gap_size,
+        static_cast<int>(screen_dim.h / (nmaster > 1 ? nmaster : 1)) - gap_size
+    };
 
     dim_t leftstack_dim;
     if (nmaster) {
-        leftstack_dim.w = (screen_dim.w - master_dim.w) / (has_rightstack ? 2 : 1);
+        leftstack_dim.w = (screen_dim.w - master_dim.w) / (has_rightstack ? 2 : 1) - gap_size;
     } else {
-        leftstack_dim.w = screen_dim.w / (has_rightstack ? 2 : 1);
+        screen_dim.w += gap_size;
+        leftstack_dim.w = screen_dim.w / (has_rightstack ? 2 : 1) - gap_size;
     }
-    leftstack_dim.h = screen_dim.h / (has_leftstack ? ::std::ceil((float)n_stack / 2) : 1);
+    leftstack_dim.h = screen_dim.h / (has_leftstack ? ::std::ceil((float)n_stack / 2) : 1) - gap_size;
 
     dim_t rightstack_dim;
     if (nmaster) {
-        rightstack_dim.w = (screen_dim.w - master_dim.w) / (has_rightstack ? 2 : 1);
+        rightstack_dim.w = (screen_dim.w - master_dim.w) / (has_rightstack ? 2 : 1) - gap_size;
     } else {
-        rightstack_dim.w = screen_dim.w / (has_rightstack ? 2 : 1);
+        rightstack_dim.w = screen_dim.w / (has_rightstack ? 2 : 1) - gap_size;
     }
-    rightstack_dim.h = screen_dim.h / (has_rightstack ? ::std::floor((float)n_stack / 2) : 1);
+    rightstack_dim.h = screen_dim.h / (has_rightstack ? ::std::floor((float)n_stack / 2) : 1) - gap_size;
 
     pos_t leftstack_pos  = {
-        m_ewmh.get_left_strut(),
-        m_ewmh.get_top_strut()
+        m_ewmh.get_left_strut() + gap_size,
+        m_ewmh.get_top_strut() + gap_size
     };
 
     pos_t master_pos = {
-        leftstack_pos.x + leftstack_dim.w + 1,
-        m_ewmh.get_top_strut()
+        leftstack_pos.x + leftstack_dim.w + gap_size + 1,
+        m_ewmh.get_top_strut() + gap_size
     };
 
     pos_t rightstack_pos  = {
-        master_pos.x + master_dim.w + 1,
-        m_ewmh.get_top_strut()
+        master_pos.x + master_dim.w + gap_size + 1,
+        m_ewmh.get_top_strut() + gap_size
     };
 
-    if (!nmaster)
-        rightstack_pos.x = leftstack_pos.x + leftstack_dim.w + 1;
+    if (!nmaster) {
+        rightstack_pos.x = leftstack_pos.x + leftstack_dim.w + 1 + gap_size;
+    }
 
     if (workspace.is_mirrored() && clients.size() > nmaster && nmaster != 0 && has_rightstack) {
         ::std::swap(leftstack_dim.w, rightstack_dim.w);
@@ -323,13 +327,13 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
 
     if (!has_rightstack && nmaster) {
         master_pos.x = leftstack_pos.x;
-        leftstack_pos.x = m_ewmh.get_left_strut() + master_dim.w + 1;
+        leftstack_pos.x = m_ewmh.get_left_strut() + master_dim.w + 1 + 2 * gap_size;
     }
 
     { // tile master clients (center pillar)
         for (size_t i = 0; nmaster && i < nmaster - 1; ++i) {
             clients[i]->resize(master_dim, true).move(master_pos, true);
-            master_pos.y += master_dim.h;
+            master_pos.y += master_dim.h + gap_size;
         }
 
         if (nmaster)
@@ -340,7 +344,7 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
     { // tile stack clients (left pillar)
         for (size_t i = 0; i < ::std::ceil((float)n_stack / 2); ++i) {
             clients[nmaster + i]->resize(leftstack_dim, true).move(leftstack_pos, true);
-            leftstack_pos.y += leftstack_dim.h;
+            leftstack_pos.y += leftstack_dim.h + gap_size;
         }
     }
 
@@ -349,7 +353,7 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
             for (size_t i = 0; i < ::std::floor((float)n_stack / 2); ++i) {
                 clients[clients.size() - ::std::floor((float)n_stack / 2) + i]->
                     resize(rightstack_dim, true).move(rightstack_pos, true);
-                rightstack_pos.y += rightstack_dim.h;
+                rightstack_pos.y += rightstack_dim.h + gap_size;
             }
     }
 }
