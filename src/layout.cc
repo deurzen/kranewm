@@ -370,33 +370,34 @@ layouthandler_t::layout_column(const user_workspace_t& workspace) const
 
     auto root_attrs = x_data::get_attributes(x_data::g_root);
     unsigned nmaster = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_nmaster());
+    int gap_size = workspace.get_gap_size();
 
     dim_t screen_dim = {
-        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut(),
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut()
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - gap_size,
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size
     };
 
     dim_t master_dim = {
         static_cast<int>(screen_dim.w * (nmaster < clients.size() ? workspace.get_mfactor() : 1)),
-        screen_dim.h
+        screen_dim.h - gap_size
     };
 
     if (!(!nmaster || nmaster == clients.size()))
         master_dim.w -= nmaster;
 
     dim_t stack_dim = {
-        screen_dim.w - (nmaster > 0 ? master_dim.w : 0),
-        screen_dim.h / static_cast<int>(nmaster < clients.size() ? (clients.size() - nmaster) : 1)
+        screen_dim.w - (nmaster > 0 ? master_dim.w : 0) - gap_size,
+        screen_dim.h / static_cast<int>(nmaster < clients.size() ? (clients.size() - nmaster) : 1) - gap_size
     };
 
     pos_t master_pos = {
-        m_ewmh.get_left_strut(),
-        m_ewmh.get_top_strut()
+        m_ewmh.get_left_strut() + gap_size,
+        m_ewmh.get_top_strut() + gap_size
     };
 
     pos_t stack_pos  = {
-        (nmaster > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut(),
-        m_ewmh.get_top_strut()
+        (nmaster > 0 ? master_dim.w + 1: 0) + m_ewmh.get_left_strut() + gap_size,
+        m_ewmh.get_top_strut() + gap_size
     };
 
     if (workspace.is_mirrored() && clients.size() > nmaster && nmaster != 0) {
@@ -404,20 +405,21 @@ layouthandler_t::layout_column(const user_workspace_t& workspace) const
         ::std::swap(master_pos.x, stack_pos.x);
     }
 
-    if (nmaster)
-        master_dim.w /= nmaster;
+    if (nmaster) {
+        master_dim.w = master_dim.w / nmaster - gap_size;
+    }
 
     { // tile master clients
         for (size_t i = 0; i < nmaster; ++i) {
             clients[i]->resize(master_dim, true).move(master_pos, true);
-            master_pos.x += master_dim.w + 1;
+            master_pos.x += master_dim.w + gap_size + 1;
         }
     }
 
     { // tile stack clients
         for (size_t i = nmaster; i < clients.size() - 1; ++i) {
             clients[i]->resize(stack_dim, true).move(stack_pos, true);
-            stack_pos.y += stack_dim.h;
+            stack_pos.y += stack_dim.h + gap_size;
         }
 
         if (clients.size() > nmaster)
