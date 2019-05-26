@@ -137,6 +137,7 @@ public:
               { { XK_d,            MODMASK|ShiftMask },   keyop_t::deck                         },
               { { XK_g,            MODMASK|ShiftMask },   keyop_t::grid                         },
               { { XK_l,            MODMASK|ShiftMask },   keyop_t::pillar                       },
+              { { XK_h,            MODMASK|ShiftMask },   keyop_t::column                       },
               { { XK_j,            MODMASK|ShiftMask },   keyop_t::move_client_bck              },
               { { XK_k,            MODMASK|ShiftMask },   keyop_t::move_client_fwd              },
               { { XK_space,        MODMASK|ShiftMask },   keyop_t::toggle_float                 },
