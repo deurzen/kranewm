@@ -413,6 +413,9 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
                 m_clients.active_workspace()->set_gap_size(--gap_size).arrange();
         }
         break;
+    case keyop_t::reset_gap_size:
+        m_clients.active_workspace()->set_gap_size(0).arrange();
+        break;
     default: break;
     }
 }

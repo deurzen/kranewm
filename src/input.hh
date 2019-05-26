@@ -122,6 +122,7 @@ public:
               { { XK_s,            MODMASK|SECMASK },     keyop_t::mpcsingle                    },
               { { XK_Return,       MODMASK|ShiftMask },   keyop_t::spawn_quickterm              },
               { { XK_semicolon,    MODMASK|ShiftMask },   keyop_t::inc_gap_size                 },
+              { { XK_equal,        MODMASK|ShiftMask },   keyop_t::reset_gap_size               },
               { { XK_m,            MODMASK|ShiftMask },   keyop_t::mark_client                  },
               { { XK_1,            MODMASK|ShiftMask },   keyop_t::client_to_ws_1               },
               { { XK_2,            MODMASK|ShiftMask },   keyop_t::client_to_ws_2               },

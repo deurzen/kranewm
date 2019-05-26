@@ -5,7 +5,6 @@
 
 #include <unordered_map>
 
-// TODO group
 enum class keyop_t
 {
     noop,
@@ -23,7 +22,6 @@ enum class keyop_t
     spawn_7lock, spawn_sage, spawn_gpick, spawn_qalculate,
     spawn_irssi, spawn_newsboat, spawn_nixnote,
     cantatashow, rhythmboxshow,
-    jump_qutebrowser,
     rhythmboxtoggle, rhythmboxnext, rhythmboxprev, rhythmboxstop,
     mpctoggle, mpcnext, mpcprev, mpcstop, mpcrandom, mpcsingle,
     volumeup, volumedown, volumemute,
@@ -40,8 +38,10 @@ enum class keyop_t
     float_left_or_master_fwd, float_right_or_master_bck,
     mark_client, jump_to_marked_client,
     stick, maximize,
-    inc_nmaster, inc_gap_size, inc_m1weight, dec_nmaster,
-    dec_gap_size, dec_m1weight, inc_mfactor, dec_mfactor,
+    inc_nmaster, dec_nmaster,
+    inc_m1weight, dec_m1weight,
+    inc_mfactor, dec_mfactor,
+    inc_gap_size, dec_gap_size, reset_gap_size,
     floating, tile, deck, doubledeck,
     grid, pillar, column, monocle, center,
     mirror_workspace, toggle_layout,
