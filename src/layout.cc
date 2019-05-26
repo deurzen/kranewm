@@ -257,27 +257,6 @@ layouthandler_t::layout_grid(const user_workspace_t& workspace) const
 }
 
 void
-layouthandler_t::layout_monocle(const user_workspace_t& workspace) const
-{
-    auto clients = workspace.get_all();
-    clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
-
-    if (clients.empty())
-        return;
-
-    int gap_size = workspace.get_gap_size();
-
-    auto root_attrs = x_data::get_attributes(x_data::g_root);
-    dim_t screen_dim = {root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - 2 * gap_size,
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - 2 * gap_size};
-
-    for (const auto& client : clients)
-        client->resize(screen_dim, true).move({m_ewmh.get_left_strut() + gap_size,
-            m_ewmh.get_top_strut() + gap_size}, true);
-}
-
-void
 layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
@@ -373,4 +352,59 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
                 rightstack_pos.y += rightstack_dim.h;
             }
     }
+}
+
+void
+layouthandler_t::layout_monocle(const user_workspace_t& workspace) const
+{
+    auto clients = workspace.get_all();
+    clients.erase(::std::remove_if(clients.begin(), clients.end(),
+        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+
+    if (clients.empty())
+        return;
+
+    int gap_size = workspace.get_gap_size();
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
+
+    dim_t screen_dim = {
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - 2 * gap_size,
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - 2 * gap_size
+    };
+
+    for (const auto& client : clients)
+        client->resize(screen_dim, true).move({m_ewmh.get_left_strut() + gap_size,
+            m_ewmh.get_top_strut() + gap_size}, true);
+}
+
+void
+layouthandler_t::layout_center(const user_workspace_t& workspace) const
+{
+    auto clients = workspace.get_all();
+    clients.erase(::std::remove_if(clients.begin(), clients.end(),
+        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+
+    if (clients.empty())
+        return;
+
+    int gap_size = workspace.get_gap_size();
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
+
+    dim_t screen_dim = {
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut(),
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut()
+    };
+
+    dim_t center_dim = {
+        (screen_dim.w) / 2 - gap_size,
+        screen_dim.h - 3 * gap_size
+    };
+
+    pos_t center_pos = {
+        m_ewmh.get_left_strut() + screen_dim.w / 2 - center_dim.w / 2,
+        m_ewmh.get_top_strut() + screen_dim.h / 2 - center_dim.h / 2
+    };
+
+    for (const auto& client : clients)
+        client->resize(center_dim, true).move(center_pos, true);
 }

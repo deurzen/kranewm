@@ -10,8 +10,9 @@ user_workspace_t::arrange() const
     case layout_t::deck:       m_layouthandler.layout_deck(*this);       break;
     case layout_t::doubledeck: m_layouthandler.layout_doubledeck(*this); break;
     case layout_t::grid:       m_layouthandler.layout_grid(*this);       break;
-    case layout_t::monocle:    m_layouthandler.layout_monocle(*this);    break;
     case layout_t::pillar:     m_layouthandler.layout_pillar(*this);     break;
+    case layout_t::monocle:    m_layouthandler.layout_monocle(*this);    break;
+    case layout_t::center:     m_layouthandler.layout_center(*this);     break;
     default: break;
     }
 }

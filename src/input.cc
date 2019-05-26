@@ -200,6 +200,15 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             m_sidebar.set_layoutsymbol(layout_t::grid).draw();
         }
         break;
+    case keyop_t::pillar:
+        {
+            auto workspace = m_clients.active_workspace();
+            workspace->set_layout(layout_t::pillar);
+            m_windowstack.apply(m_clients.active_workspace());
+            m_clients.active_workspace()->arrange();
+            m_sidebar.set_layoutsymbol(layout_t::pillar).draw();
+        }
+        break;
     case keyop_t::monocle:
         {
             auto workspace = m_clients.active_workspace();
@@ -209,13 +218,13 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             m_sidebar.set_layoutsymbol(layout_t::monocle).draw();
         }
         break;
-    case keyop_t::pillar:
+    case keyop_t::center:
         {
             auto workspace = m_clients.active_workspace();
-            workspace->set_layout(layout_t::pillar);
+            workspace->set_layout(layout_t::center);
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
-            m_sidebar.set_layoutsymbol(layout_t::pillar).draw();
+            m_sidebar.set_layoutsymbol(layout_t::center).draw();
         }
         break;
     case keyop_t::toggle_layout:
