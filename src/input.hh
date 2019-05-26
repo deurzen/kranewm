@@ -135,6 +135,7 @@ public:
               { { XK_9,            MODMASK|ShiftMask },   keyop_t::client_to_ws_9               },
               { { XK_bracketleft,  MODMASK|ShiftMask },   keyop_t::client_to_prev_ws            },
               { { XK_bracketright, MODMASK|ShiftMask },   keyop_t::client_to_next_ws            },
+              { { XK_t,            MODMASK|ShiftMask },   keyop_t::stick                        },
               { { XK_d,            MODMASK|ShiftMask },   keyop_t::deck                         },
               { { XK_g,            MODMASK|ShiftMask },   keyop_t::grid                         },
               { { XK_l,            MODMASK|ShiftMask },   keyop_t::pillar                       },

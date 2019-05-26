@@ -173,6 +173,15 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             m_sidebar.set_layoutsymbol(layout_t::tile).draw();
         }
         break;
+    case keyop_t::stick:
+        {
+            auto workspace = m_clients.active_workspace();
+            workspace->set_layout(layout_t::stick).arrange();
+            m_windowstack.apply(m_clients.active_workspace());
+            m_clients.active_workspace()->arrange();
+            m_sidebar.set_layoutsymbol(layout_t::stick).draw();
+        }
+        break;
     case keyop_t::deck:
         {
             auto workspace = m_clients.active_workspace();

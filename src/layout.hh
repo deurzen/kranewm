@@ -7,10 +7,11 @@ enum class layout_t : char
     toggle     = '_',
     floating   = 'F',
     tile       = 'T',
+    stick      = 'S',
     deck       = 'D',
     doubledeck = '$',
     grid       = '#',
-    pillar     = '|',
+    pillar     = 'P',
     column     = 'C',
     monocle    = 'M',
     center     = '^',
@@ -28,6 +29,7 @@ public:
 
     void layout_floating(const user_workspace_t&) const;
     void layout_tile(const user_workspace_t&) const;
+    void layout_stick(const user_workspace_t&) const;
     void layout_deck(const user_workspace_t&) const;
     void layout_doubledeck(const user_workspace_t&) const;
     void layout_grid(const user_workspace_t&) const;

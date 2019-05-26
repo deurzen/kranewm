@@ -7,6 +7,7 @@ user_workspace_t::arrange() const
     switch (m_layout) {
     case layout_t::floating:   m_layouthandler.layout_floating(*this);   break;
     case layout_t::tile:       m_layouthandler.layout_tile(*this);       break;
+    case layout_t::stick:      m_layouthandler.layout_stick(*this);      break;
     case layout_t::deck:       m_layouthandler.layout_deck(*this);       break;
     case layout_t::doubledeck: m_layouthandler.layout_doubledeck(*this); break;
     case layout_t::grid:       m_layouthandler.layout_grid(*this);       break;
