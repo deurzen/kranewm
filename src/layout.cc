@@ -103,17 +103,18 @@ layouthandler_t::layout_stick(const user_workspace_t& workspace) const
     };
 
     dim_t master_dim = {
-        static_cast<int>(screen_dim.w * (nmaster < clients.size() ? workspace.get_mfactor() : 1)),
+        static_cast<int>(screen_dim.w * (nmaster < clients.size() ? workspace.get_mfactor() : 1))
+            - (nmaster == clients.size() ? 2 : 1) * gap_size,
         (nmaster > 0 ? static_cast<int>(screen_dim.h / nmaster) : 1)
     };
 
     dim_t stack_dim = {
-        screen_dim.w - (nmaster > 0 ? master_dim.w : 0),
+        screen_dim.w - (nmaster > 0 ? master_dim.w : 0) - 2 * gap_size,
         screen_dim.h / static_cast<int>(nmaster < clients.size() ? (clients.size() - nmaster) : 1)
     };
 
     pos_t master_pos = {
-        m_ewmh.get_left_strut() + gap_size,
+        m_ewmh.get_left_strut() + 2 * gap_size,
         m_ewmh.get_top_strut() + gap_size
     };
 
