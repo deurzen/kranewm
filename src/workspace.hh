@@ -153,6 +153,8 @@ public:
     user_workspace_t& move_forward();
     user_workspace_t& move_backward();
 
+    user_workspace_t& rotate_clients_forward();
+    user_workspace_t& rotate_clients_backward();
     user_workspace_t& rotate_stack_forward();
     user_workspace_t& rotate_stack_backward();
     user_workspace_t& rotate_master_forward();

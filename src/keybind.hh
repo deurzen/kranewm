@@ -36,6 +36,7 @@ enum class keyop_t
     float_shrink_left, float_shrink_right,
     float_up_or_stack_fwd, float_down_or_stack_bck,
     float_left_or_master_fwd, float_right_or_master_bck,
+    clients_fwd, clients_bck,
     mark_client, jump_to_marked_client,
     inc_nmaster, dec_nmaster,
     inc_m1weight, dec_m1weight,

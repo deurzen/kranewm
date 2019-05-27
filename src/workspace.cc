@@ -173,6 +173,28 @@ user_workspace_t::move_backward()
 
 
 user_workspace_t&
+user_workspace_t::rotate_clients_forward()
+{
+    if (!in_monocle_layout() && m_clients.size()) {
+        m_clients.rotate_group_forward(0, m_clients.size());
+        arrange();
+    }
+
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::rotate_clients_backward()
+{
+    if (!in_monocle_layout() && m_clients.size()) {
+        m_clients.rotate_group_backward(0, m_clients.size());
+        arrange();
+    }
+
+    return *this;
+}
+
+user_workspace_t&
 user_workspace_t::rotate_stack_forward()
 {
     if (!in_monocle_layout() && m_clients.size() - m_nmaster > 1) {

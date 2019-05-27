@@ -700,7 +700,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 m_clients.active_workspace()->rotate_master_backward();
                 auto clients = m_clients.active_workspace()->get_all();
 
-                if (clients.size()  && m_clients.active_workspace()->stack_focused()) {
+                if (clients.size() && m_clients.active_workspace()->stack_focused()) {
                     m_clients.active_workspace()->raise_client(clients[0]);
                     m_windowstack.apply(m_clients.active_workspace());
                 }
@@ -708,6 +708,42 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 m_clients.focus(m_clients.active_workspace()->get_focused());
                 m_clients.sync_workspace_focus();
             }
+        }
+        break;
+    case keyop_t::clients_fwd:
+        {
+            m_clients.active_workspace()->rotate_clients_forward();
+            unsigned nmaster = m_clients.active_workspace()->get_nmaster();
+            auto clients = m_clients.active_workspace()->get_all();
+
+            if (clients.size() && m_clients.active_workspace()->stack_focused()) {
+                m_clients.active_workspace()->raise_client(clients[0]);
+                m_windowstack.apply(m_clients.active_workspace());
+            } else if (clients.size() && nmaster < clients.size()  && m_clients.active_workspace()->master_focused()) {
+                m_clients.active_workspace()->raise_client(clients[nmaster]);
+                m_windowstack.apply(m_clients.active_workspace());
+            }
+
+            m_clients.focus(m_clients.active_workspace()->get_focused());
+            m_clients.sync_workspace_focus();
+        }
+        break;
+    case keyop_t::clients_bck:
+        {
+            m_clients.active_workspace()->rotate_clients_backward();
+            unsigned nmaster = m_clients.active_workspace()->get_nmaster();
+            auto clients = m_clients.active_workspace()->get_all();
+
+            if (clients.size() && m_clients.active_workspace()->stack_focused()) {
+                m_clients.active_workspace()->raise_client(clients[0]);
+                m_windowstack.apply(m_clients.active_workspace());
+            } else if (clients.size() && nmaster < clients.size()  && m_clients.active_workspace()->master_focused()) {
+                m_clients.active_workspace()->raise_client(clients[nmaster]);
+                m_windowstack.apply(m_clients.active_workspace());
+            }
+
+            m_clients.focus(m_clients.active_workspace()->get_focused());
+            m_clients.sync_workspace_focus();
         }
         break;
     case keyop_t::client_to_next_ws:
