@@ -121,7 +121,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         fork_external("/usr/bin/maim -m 1 -s $(date +~/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");         break;
     case keyop_t::spawn_neomutt:       fork_external("/usr/local/bin/st -g 140x42 -e zsh -i -c neomutt");      break;
     case keyop_t::spawn_ranger:        fork_external("/usr/local/bin/st -g 140x42 -e zsh -i -c ranger");       break;
-    case keyop_t::spawn_vifm:          fork_external("/usr/local/bin/st -e zsh -i -c vifm");                   break;
+    case keyop_t::spawn_vifm:          fork_external("/usr/local/bin/st -e zsh -i -c vifmrun");                break;
     case keyop_t::spawn_sncli:         fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c sncli");         break;
     case keyop_t::spawn_rtv:           fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c rtv");           break;
     case keyop_t::spawn_irssi:         fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c irssi");         break;
