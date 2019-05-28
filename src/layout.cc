@@ -31,8 +31,8 @@ layouthandler_t::layout_tile(const user_workspace_t& workspace) const
     int gap_size = workspace.get_gap_size();
 
     dim_t screen_dim = {
-        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - gap_size,
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - gap_size - (nmaster && nmaster != clients.size() ? 3 : 2),
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size - 2
     };
 
     dim_t master_dim = {
@@ -63,7 +63,7 @@ layouthandler_t::layout_tile(const user_workspace_t& workspace) const
     { // tile master clients
         for (size_t i = 0; nmaster && i < nmaster - 1; ++i) {
             clients[i]->resize(master_dim, true).move(master_pos, true);
-            master_pos.y += master_dim.h + gap_size;
+            master_pos.y += master_dim.h + gap_size + 1;
         }
 
         if (nmaster)
@@ -74,7 +74,7 @@ layouthandler_t::layout_tile(const user_workspace_t& workspace) const
     { // tile stack clients
         for (size_t i = nmaster; i < clients.size() - 1; ++i) {
             clients[i]->resize(stack_dim, true).move(stack_pos, true);
-            stack_pos.y += stack_dim.h + gap_size;
+            stack_pos.y += stack_dim.h + gap_size + 1;
         }
 
         if (clients.size() > nmaster)
@@ -98,8 +98,8 @@ layouthandler_t::layout_stick(const user_workspace_t& workspace) const
     int gap_size = workspace.get_gap_size();
 
     dim_t screen_dim = {
-        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - 2 * gap_size,
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - 2 * gap_size
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - 2 * gap_size - (nmaster && nmaster != clients.size() ? 3 : 2),
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - 2 * gap_size - 2
     };
 
     dim_t master_dim = {
@@ -131,7 +131,7 @@ layouthandler_t::layout_stick(const user_workspace_t& workspace) const
     { // tile master clients
         for (size_t i = 0; nmaster && i < nmaster - 1; ++i) {
             clients[i]->resize(master_dim, true).move(master_pos, true);
-            master_pos.y += master_dim.h;
+            master_pos.y += master_dim.h + 1;
         }
 
         if (nmaster)
@@ -142,7 +142,7 @@ layouthandler_t::layout_stick(const user_workspace_t& workspace) const
     { // tile stack clients
         for (size_t i = nmaster; i < clients.size() - 1; ++i) {
             clients[i]->resize(stack_dim, true).move(stack_pos, true);
-            stack_pos.y += stack_dim.h;
+            stack_pos.y += stack_dim.h + 1;
         }
 
         if (clients.size() > nmaster)
@@ -166,8 +166,8 @@ layouthandler_t::layout_deck(const user_workspace_t& workspace) const
     int gap_size = workspace.get_gap_size();
 
     dim_t screen_dim = {
-        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - gap_size,
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - gap_size - (nmaster && nmaster != clients.size() ? 3 : 2),
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size - 2
     };
 
     dim_t master_dim = {
@@ -198,7 +198,7 @@ layouthandler_t::layout_deck(const user_workspace_t& workspace) const
     { // tile master clients
         for (size_t i = 0; nmaster && i < nmaster - 1; ++i) {
             clients[i]->resize(master_dim, true).move(master_pos, true);
-            master_pos.y += master_dim.h + gap_size;
+            master_pos.y += master_dim.h + gap_size + 1;
         }
 
         if (nmaster)
@@ -226,8 +226,8 @@ layouthandler_t::layout_doubledeck(const user_workspace_t& workspace) const
     int gap_size = workspace.get_gap_size();
 
     dim_t screen_dim = {
-        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - gap_size,
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - gap_size - (nmaster && nmaster != clients.size() ? 3 : 2),
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size - 2
     };
 
     dim_t master_dim = {
@@ -275,8 +275,10 @@ layouthandler_t::layout_grid(const user_workspace_t& workspace) const
         return;
 
     auto root_attrs = x_data::get_attributes(x_data::g_root);
-    dim_t screen_dim = {root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut(),
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut()};
+    dim_t screen_dim = {
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut(),
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut()
+    };
 
     typedef ::std::deque<client_ptr_t>::reverse_iterator dcrit;
     typedef ::std::function<void(dcrit, dcrit, bool, pos_t, dim_t)> partition_func_t;
@@ -343,8 +345,9 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
     bool has_rightstack = n_stack > 1;
 
     dim_t screen_dim = {
-        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() -  (nmaster == clients.size() ? 1 : 2) * gap_size,
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - (nmaster == clients.size() ? 1 : 2)
+            * gap_size - (clients.size() > 1 && nmaster && nmaster != clients.size() ? 3 : 2),
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size - 2
     };
 
     dim_t master_dim = {
@@ -357,7 +360,7 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
         leftstack_dim.w = (screen_dim.w - master_dim.w) / (has_rightstack ? 2 : 1) - gap_size;
     } else {
         screen_dim.w += gap_size;
-        leftstack_dim.w = screen_dim.w / (has_rightstack ? 2 : 1) - gap_size;
+        leftstack_dim.w = screen_dim.w / (has_rightstack ? 2 : 1) - gap_size - (clients.size() == 1 ? 0 : 1);
     }
     leftstack_dim.h = screen_dim.h / (has_leftstack ? ::std::ceil((float)n_stack / 2) : 1) - gap_size;
 
@@ -401,7 +404,7 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
     { // tile master clients (center pillar)
         for (size_t i = 0; nmaster && i < nmaster - 1; ++i) {
             clients[i]->resize(master_dim, true).move(master_pos, true);
-            master_pos.y += master_dim.h + gap_size;
+            master_pos.y += master_dim.h + gap_size + 1;
         }
 
         if (nmaster)
@@ -410,19 +413,28 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
     }
 
     { // tile stack clients (left pillar)
-        for (size_t i = 0; i < ::std::ceil((float)n_stack / 2); ++i) {
+        for (size_t i = 0; ::std::ceil((float)n_stack / 2) && i < ::std::ceil((float)n_stack / 2) - 1; ++i) {
             clients[nmaster + i]->resize(leftstack_dim, true).move(leftstack_pos, true);
-            leftstack_pos.y += leftstack_dim.h + gap_size;
+            leftstack_pos.y += leftstack_dim.h + gap_size + 1;
         }
+
+        if (has_leftstack && ::std::ceil((float)n_stack / 2))
+            clients[nmaster + ::std::ceil((float)n_stack / 2) - 1]->resize({leftstack_dim.w,
+                screen_dim.h + m_ewmh.get_top_strut() - leftstack_pos.y}, true).move(leftstack_pos, true);
     }
 
     { // tile stack clients (right pillar)
-        if (has_rightstack)
-            for (size_t i = 0; i < ::std::floor((float)n_stack / 2); ++i) {
-                clients[clients.size() - ::std::floor((float)n_stack / 2) + i]->
-                    resize(rightstack_dim, true).move(rightstack_pos, true);
-                rightstack_pos.y += rightstack_dim.h + gap_size;
+        if (has_rightstack) {
+            for (size_t i = 0; ::std::floor((float)n_stack / 2) && i < ::std::floor((float)n_stack / 2) - 1; ++i) {
+                clients[clients.size() - ::std::floor((float)n_stack / 2) + i]->resize({screen_dim.w + m_ewmh.get_left_strut()
+                    - rightstack_pos.x + (nmaster ? 1 : 0), rightstack_dim.h}, true).move(rightstack_pos, true);
+                rightstack_pos.y += rightstack_dim.h + gap_size + 1;
             }
+
+            if (clients.size() && ::std::floor((float)n_stack / 2))
+                clients[clients.size() - 1]->resize({screen_dim.w + m_ewmh.get_left_strut() - rightstack_pos.x + (nmaster ? 1 : 0),
+                    screen_dim.h + m_ewmh.get_top_strut() - rightstack_pos.y}, true).move(rightstack_pos, true);
+        }
     }
 }
 
@@ -441,8 +453,8 @@ layouthandler_t::layout_column(const user_workspace_t& workspace) const
     int gap_size = workspace.get_gap_size();
 
     dim_t screen_dim = {
-        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - gap_size,
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - gap_size - (nmaster && nmaster != clients.size() ? 3 : 2),
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - gap_size - 2
     };
 
     dim_t master_dim = {
@@ -478,16 +490,24 @@ layouthandler_t::layout_column(const user_workspace_t& workspace) const
     }
 
     { // tile master clients
-        for (size_t i = 0; i < nmaster; ++i) {
+        for (size_t i = 0; nmaster && i < nmaster - 1; ++i) {
             clients[i]->resize(master_dim, true).move(master_pos, true);
             master_pos.x += master_dim.w + gap_size + 1;
+        }
+
+        if (nmaster) {
+            if (nmaster == clients.size())
+                clients[nmaster - 1]->resize({screen_dim.w + m_ewmh.get_left_strut() - master_pos.x,
+                    master_dim.h}, true).move(master_pos, true);
+            else
+                clients[nmaster - 1]->resize(master_dim, true).move(master_pos, true);
         }
     }
 
     { // tile stack clients
         for (size_t i = nmaster; i < clients.size() - 1; ++i) {
             clients[i]->resize(stack_dim, true).move(stack_pos, true);
-            stack_pos.y += stack_dim.h + gap_size;
+            stack_pos.y += stack_dim.h + gap_size + 1;
         }
 
         if (clients.size() > nmaster)
@@ -510,8 +530,8 @@ layouthandler_t::layout_monocle(const user_workspace_t& workspace) const
     auto root_attrs = x_data::get_attributes(x_data::g_root);
 
     dim_t screen_dim = {
-        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - 2 * gap_size,
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - 2 * gap_size
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - 2 * gap_size - 2,
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - 2 * gap_size - 2
     };
 
     for (const auto& client : clients)
@@ -533,8 +553,8 @@ layouthandler_t::layout_center(const user_workspace_t& workspace) const
     auto root_attrs = x_data::get_attributes(x_data::g_root);
 
     dim_t screen_dim = {
-        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut(),
-        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut()
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - 2,
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - 2
     };
 
     dim_t center_dim = {
