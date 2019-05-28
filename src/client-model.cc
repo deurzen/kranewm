@@ -112,6 +112,7 @@ client_model_t::unmanage_client(client_ptr_t client)
     erase_find(m_client_windows, client->frame);
     erase_find(m_client_windows, client->win);
     erase_find(m_client_workspaces, client);
+    erase_find(m_fullscreen_clients, client);
     erase_remove(m_managed_windows, client->win);
     m_processes.remove_process(client);
 
