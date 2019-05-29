@@ -483,6 +483,8 @@ layouthandler_t::layout_column(const user_workspace_t& workspace) const
     if (workspace.is_mirrored() && clients.size() > nmaster && nmaster != 0) {
         ::std::swap(master_dim.w, stack_dim.w);
         ::std::swap(master_pos.x, stack_pos.x);
+        stack_dim.w -= gap_size;
+        master_dim.w += gap_size;
     }
 
     if (nmaster) {
