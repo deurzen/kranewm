@@ -426,13 +426,13 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
     { // tile stack clients (right pillar)
         if (has_rightstack) {
             for (size_t i = 0; ::std::floor((float)n_stack / 2) && i < ::std::floor((float)n_stack / 2) - 1; ++i) {
-                clients[clients.size() - ::std::floor((float)n_stack / 2) + i]->resize({screen_dim.w + m_ewmh.get_left_strut()
-                    - rightstack_pos.x + (nmaster ? 1 : 0), rightstack_dim.h}, true).move(rightstack_pos, true);
+                clients[clients.size() - ::std::floor((float)n_stack / 2) + i]->resize(rightstack_dim,
+                    true).move(rightstack_pos, true);
                 rightstack_pos.y += rightstack_dim.h + gap_size + 1;
             }
 
             if (clients.size() && ::std::floor((float)n_stack / 2))
-                clients[clients.size() - 1]->resize({screen_dim.w + m_ewmh.get_left_strut() - rightstack_pos.x + (nmaster ? 1 : 0),
+                clients[clients.size() - 1]->resize({rightstack_dim.w,
                     screen_dim.h + m_ewmh.get_top_strut() - rightstack_pos.y}, true).move(rightstack_pos, true);
         }
     }
