@@ -167,7 +167,7 @@ sidebar_t::draw_numberclients()
 
     x_data::attributes_t root_attrs = x_data::get_attributes(x_data::g_root);
     pos_t pos = {(SIDEBAR_WIDTH - m_graphicscontext.get_font_dim().w) / 2,
-        root_attrs.h() - (m_graphicscontext.get_font_dim().h)};
+        root_attrs.h() - (m_graphicscontext.get_font_dim().h) + 2};
 
     if (m_numberclients > 9)
         m_graphicscontext.draw_string(pos, ">");
