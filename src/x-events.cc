@@ -43,10 +43,12 @@ x_events_t::register_window(x_data::window_t win)
     if (m_ewmh.check_apply_strut(win))
         m_clients.active_workspace()->arrange();
 
-    if (win.is_of_type("DESKTOP"))
-        m_windowstack.add_to_stack({win, layer_t::desktop});
-    else if (win.is_of_type("BELOW"))
+    if (win.is_of_state("BELOW"))
         m_windowstack.add_to_stack({win, layer_t::below});
+    else if (win.is_of_state("ABOVE"))
+        m_windowstack.add_to_stack({win, layer_t::above});
+    else if (win.is_of_type("DESKTOP"))
+        m_windowstack.add_to_stack({win, layer_t::desktop});
     else if (win.is_of_type("INDICATOR"))
         m_windowstack.add_to_stack({win, layer_t::indicator});
     else if (win.is_of_type("NOTIFICATION"))
