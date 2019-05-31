@@ -11,7 +11,6 @@ enum class layer_t
     desktop,
     below,
     dock,
-    indicator,
     above,
     notification
 };
@@ -70,7 +69,6 @@ private:
     ::std::list<x_data::window_t> m_desktop_windows;
     ::std::list<x_data::window_t> m_below_windows;
     ::std::list<x_data::window_t> m_dock_windows;
-    ::std::list<x_data::window_t> m_indicator_windows;
     ::std::list<x_data::window_t> m_above_windows;
     ::std::list<x_data::window_t> m_notification_windows;
 

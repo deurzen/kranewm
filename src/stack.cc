@@ -40,7 +40,6 @@ windowstack_t::add_to_stack(windowstack_window_t win)
     case layer_t::desktop:      m_desktop_windows.push_back(win.win);      break;
     case layer_t::below:        m_below_windows.push_back(win.win);        break;
     case layer_t::dock:         m_dock_windows.push_back(win.win);         break;
-    case layer_t::indicator:    m_indicator_windows.push_back(win.win);    break;
     case layer_t::above:        m_above_windows.push_back(win.win);        break;
     case layer_t::notification: m_notification_windows.push_back(win.win); break;
     }
@@ -59,7 +58,6 @@ windowstack_t::remove_from_stack(x_data::window_t win)
     case layer_t::desktop:      erase_find(m_desktop_windows, win);      break;
     case layer_t::below:        erase_find(m_below_windows, win);        break;
     case layer_t::dock:         erase_find(m_dock_windows, win);         break;
-    case layer_t::indicator:    erase_find(m_indicator_windows, win);    break;
     case layer_t::above:        erase_find(m_above_windows, win);        break;
     case layer_t::notification: erase_find(m_notification_windows, win); break;
     }
@@ -96,10 +94,6 @@ windowstack_t::raise_window(x_data::window_t win)
         m_dock_windows.remove(win);
         m_dock_windows.push_front(win);
         break;
-    case layer_t::indicator:
-        m_indicator_windows.remove(win);
-        m_indicator_windows.push_front(win);
-        break;
     case layer_t::above:
         m_above_windows.remove(win);
         m_above_windows.push_front(win);
@@ -123,7 +117,6 @@ windowstack_t::lower_window(x_data::window_t win)
     case layer_t::desktop:      splice_back(m_desktop_windows, win);      break;
     case layer_t::below:        splice_back(m_below_windows, win);        break;
     case layer_t::dock:         splice_back(m_dock_windows, win);         break;
-    case layer_t::indicator:    splice_back(m_indicator_windows, win);    break;
     case layer_t::above:        splice_back(m_above_windows, win);        break;
     case layer_t::notification: splice_back(m_notification_windows, win); break;
     }
@@ -138,7 +131,6 @@ windowstack_t::get_all_of_type(layer_t type)
     case layer_t::desktop:      return m_desktop_windows;
     case layer_t::below:        return m_below_windows;
     case layer_t::dock:         return m_dock_windows;
-    case layer_t::indicator:    return m_indicator_windows;
     case layer_t::above:        return m_above_windows;
     case layer_t::notification: return m_notification_windows;
     default: return m_notification_windows;
@@ -177,7 +169,6 @@ windowstack_t::apply(workspacestack_t stack, bool ignore_floating)
     insert_container(wins, m_above_windows);
     insert_container(wins, floating_windows);
     insert_container(wins, normal_windows);
-    insert_container(wins, m_indicator_windows);
     insert_container(wins, m_dock_windows);
     insert_container(wins, m_below_windows);
     insert_container(wins, m_desktop_windows);

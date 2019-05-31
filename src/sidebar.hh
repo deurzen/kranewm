@@ -55,15 +55,15 @@ public:
 
         for (size_t i = 0; i < m_activity_indicators.size(); ++i) {
             m_activity_indicators[i] = x_data::create_window(true);
-            m_ewmh.set_window_type_property(m_activity_indicators[i], "INDICATOR");
+            m_ewmh.set_window_type_property(m_activity_indicators[i], "DOCK");
             m_activity_indicators[i].set_border_color(SIDEBAR_WORKSPACES_COLOR);
             m_activity_indicators[i].resize({1, 1}).move({SIDEBAR_WIDTH - 2,
                 static_cast<int>((1.4f + i) * (4 + m_graphicscontext.get_font_dim().h))});
         }
 
-        m_ewmh.set_window_type_property(m_moveresizeindicator, "INDICATOR");
-        m_ewmh.set_window_type_property(m_floatingindicator, "INDICATOR");
-        m_ewmh.set_window_type_property(m_fullscreenindicator, "INDICATOR");
+        m_ewmh.set_window_type_property(m_moveresizeindicator, "DOCK");
+        m_ewmh.set_window_type_property(m_floatingindicator, "DOCK");
+        m_ewmh.set_window_type_property(m_fullscreenindicator, "DOCK");
 
         m_moveresizeindicator.set_background_color(MRIND_BORDER_COLOR);
         m_moveresizeindicator.resize({2, 5}).move({root_attrs.w() - 3, 1}).set_border_width(0);
