@@ -86,7 +86,8 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     switch (m_keybinds[event]) {
     case keyop_t::quit: m_running = false; return;
     case keyop_t::spawn_terminal:      fork_external("/usr/local/bin/st");                                     break;
-    case keyop_t::spawn_quickterm:     fork_external("/usr/local/bin/st -n \"kranewm:float\"");                break;
+    case keyop_t::spawn_termregion:    fork_external("/home/deurzen/bin/stregion");                            break;
+    case keyop_t::spawn_quickterm:     fork_external("/usr/local/bin/st -n \"kranewm:cf\"");                   break;
     case keyop_t::spawn_quicktermtmux: fork_external("/usr/local/bin/st -e tmux");                             break;
     case keyop_t::spawn_dmenu:         fork_external("/usr/local/bin/dmenu_run");                              break;
     case keyop_t::spawn_dmenupass:     fork_external("/usr/bin/dmenupass");                                    break;

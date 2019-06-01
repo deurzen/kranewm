@@ -85,7 +85,7 @@ public:
               { { XK_h,            MODMASK },             keyop_t::dec_mfactor                  },
               { { XK_i,            MODMASK },             keyop_t::inc_nmaster                  },
               { { XK_l,            MODMASK },             keyop_t::inc_mfactor                  },
-              { { XK_z,            MODMASK },             keyop_t::toggle_shade                 },
+              { { XK_z,            MODMASK },             keyop_t::spawn_termregion             },
               { { XK_x,            MODMASK },             keyop_t::toggle_iconify               },
               { { XK_m,            MODMASK },             keyop_t::monocle                      },
               { { XK_period,       MODMASK },             keyop_t::jump_stack                   },
