@@ -10,6 +10,7 @@ enum class keyop_t
     noop,
     quit, zoom, toggle_float, toggle_fullscreen,
     toggle_shade, center_client,
+    snap_north, snap_east, snap_south, snap_west,
     toggle_iconify, pop_iconified,
     deiconify_1, deiconify_2, deiconify_3,
     deiconify_4, deiconify_5, deiconify_6,

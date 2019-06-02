@@ -1,4 +1,5 @@
 #include "client.hh"
+#include "common.hh"
 #include "decoration.hh"
 #include "x-data/event.hh"
 #include "x-data/attributes.hh"
@@ -119,6 +120,19 @@ client_t::must_expect(clientexpect_t to_expect)
 }
 
 client_t&
+client_t::set_float(clientaction_t action)
+{
+    switch (action) {
+    case clientaction_t::add:    floating = true;      break;
+    case clientaction_t::remove: floating = false;     break;
+    case clientaction_t::toggle: floating = !floating; break;
+    default: break;
+    }
+
+    return *this;
+}
+
+client_t&
 client_t::move(pos_t new_pos, bool tiled)
 {
     frame.move(new_pos);
@@ -186,12 +200,16 @@ client_t::center()
 }
 
 client_t&
-client_t::set_float(clientaction_t action)
+client_t::snap(snapedge_t edge)
 {
-    switch (action) {
-    case clientaction_t::add:    floating = true;      break;
-    case clientaction_t::remove: floating = false;     break;
-    case clientaction_t::toggle: floating = !floating; break;
+    auto attrs = x_data::get_attributes(frame);
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
+
+    switch (edge) {
+    case snapedge_t::north: move({attrs.x(), SNAP_OFFSET});                              break;
+    case snapedge_t::east:  move({root_attrs.w() - attrs.w() - SNAP_OFFSET, attrs.y()}); break;
+    case snapedge_t::south: move({attrs.x(), root_attrs.h() - attrs.h() - SNAP_OFFSET}); break;
+    case snapedge_t::west:  move({SNAP_OFFSET, attrs.y()});                              break;
     default: break;
     }
 

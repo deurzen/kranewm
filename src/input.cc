@@ -478,6 +478,42 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
             }
         }
         break;
+    case keyop_t::snap_north:
+        {
+            if ((m_clients.client_user_workspace(client)->in_float_layout() || client->floating)
+                && !client->fullscreen)
+            {
+                client->snap(snapedge_t::north);
+            }
+        }
+        break;
+    case keyop_t::snap_east:
+        {
+            if ((m_clients.client_user_workspace(client)->in_float_layout() || client->floating)
+                && !client->fullscreen)
+            {
+                client->snap(snapedge_t::east);
+            }
+        }
+        break;
+    case keyop_t::snap_south:
+        {
+            if ((m_clients.client_user_workspace(client)->in_float_layout() || client->floating)
+                && !client->fullscreen)
+            {
+                client->snap(snapedge_t::south);
+            }
+        }
+        break;
+    case keyop_t::snap_west:
+        {
+            if ((m_clients.client_user_workspace(client)->in_float_layout() || client->floating)
+                && !client->fullscreen)
+            {
+                client->snap(snapedge_t::west);
+            }
+        }
+        break;
     case keyop_t::mark_client: m_clients.set_marked(client); break;
     case keyop_t::client_to_ws_1:
         {

@@ -22,6 +22,15 @@ enum class clientexpect_t : int
     iconify  = 1 << 2
 };
 
+enum class snapedge_t
+{
+    noedge,
+    north,
+    east,
+    south,
+    west
+};
+
 
 typedef struct client_t* client_ptr_t;
 typedef struct ::std::set<client_ptr_t> client_ptr_set_t;
@@ -47,6 +56,7 @@ typedef struct client_t
     void disown_child(client_ptr_t);
     bool consume_expect(clientexpect_t);
     void must_expect(clientexpect_t);
+    client_t& set_float(clientaction_t);
 
     client_t& move(pos_t, bool = false);
     client_t& resize(dim_t, bool = false);
@@ -57,7 +67,7 @@ typedef struct client_t
     client_t& unmap_children();
 
     client_t& center();
-    client_t& set_float(clientaction_t);
+    client_t& snap(snapedge_t);
 
     ::std::string       name;
     x_data::window_t    win;
