@@ -5,6 +5,7 @@
 #include <tuple>
 
 // fwd decl
+namespace x_data { class window_t; }
 
 enum autoclosemethod {
     OFF,
@@ -88,5 +89,8 @@ struct rulecomp
 
 typedef ::std::map<ruleid_t, rulespec_t, rulecomp> rules_t;
 
+extern rule_t zip_rules(rule_t, rule_t);
+extern rule_t retrieve_rule(rules_t&, x_data::window_t&);
+extern rule_t parse_global_rule(x_data::window_t&);
 
 #endif//__KRANEWM__RULE__GUARD__

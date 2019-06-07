@@ -63,7 +63,7 @@ x_events_t::register_window(x_data::window_t win)
         return;
     }
 
-    rule_t rule = retrieve_rule(win);
+    rule_t rule = retrieve_rule(m_rules, win);
     if (x_data::has_property<x_data::cardinal_t>(win, "_NET_WM_DESKTOP")) {
         rule.workspace = x_data::get_property<x_data::cardinal_t>(win, "_NET_WM_DESKTOP")().get() + 1;
         if (!range_t<unsigned>::contains(1, USER_WORKSPACES.size(), rule.workspace))
@@ -100,49 +100,6 @@ x_events_t::register_window(x_data::window_t win)
 
     m_clients.manage_client(create_client(win, rule), rule);
     m_ewmh.set_frame_extents(win);
-}
-
-rule_t
-x_events_t::retrieve_rule(x_data::window_t win)
-{
-    bool floating  = false;
-    bool center    = false;
-    bool iconify   = false;
-    bool autoclose = false;
-    bool nohint    = false;
-    unsigned workspace = 0;
-
-    ::std::string cls = win.get_class();
-    ::std::string inst = win.get_instance();
-    ::std::string title = win.get_name();
-
-    for (auto&& [rule_id,rule] : m_rules) {
-        const ::std::string& rule_cls   = ::std::get<0>(rule_id);
-        const ::std::string& rule_inst  = ::std::get<1>(rule_id);
-        const ::std::string& rule_title = ::std::get<2>(rule_id);
-
-        bool same_cls, same_inst, same_title;
-        same_cls   = !rule_cls.compare(cls)     || rule_cls.empty();
-        same_inst  = !rule_inst.compare(inst)   || rule_inst.empty();
-        same_title = !rule_title.compare(title) || rule_title.empty();
-
-        if (same_cls && same_inst && same_title) {
-            if (rule.workspace != 0)
-                workspace = rule.workspace;
-            floating = rule.floating;
-            center   = rule.center;
-            iconify  = rule.iconify;
-            nohint     = rule.nohint;
-            if (rule.autoclose != OFF) {
-                autoclose = true;
-                if (rule.autoclose == ONCE)
-                    rule.autoclose = OFF;
-            }
-            return {floating, center, false, iconify, autoclose, nohint, workspace};
-        }
-    }
-
-    return {false, false, false, false, false, false, 0};
 }
 
 void

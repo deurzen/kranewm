@@ -59,8 +59,6 @@ public:
     void register_window(x_data::window_t);
 
 private:
-    rule_t retrieve_rule(x_data::window_t);
-
     void on_button_press();
     void on_button_release();
     void on_circulate_request();
