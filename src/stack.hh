@@ -15,7 +15,7 @@ enum class layer_t
     notification
 };
 
-// Forward decl
+// fwd decls
 typedef struct client_t* client_ptr_t;
 typedef struct user_workspace_t* user_workspace_ptr_t;
 

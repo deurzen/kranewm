@@ -17,7 +17,7 @@ enum class layout_t : char
     center     = '^',
 };
 
-// Forward decl
+// fwd decls
 class user_workspace_t;
 class ewmh_t;
 

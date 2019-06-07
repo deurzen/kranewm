@@ -11,7 +11,7 @@
 #define NO  false
 #define CURRENT 0
 
-// Forward decls
+// fwd decls
 class ewmh_t;
 class sidebar_t;
 class windowstack_t;

@@ -11,7 +11,7 @@
 #define NO  false
 #define NOMASK 0
 
-// Forward decl
+// fwd decls
 class sidebar_t;
 class client_model_t;
 class windowstack_t;

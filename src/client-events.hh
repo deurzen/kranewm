@@ -1,7 +1,7 @@
 #ifndef __KRANEWM__CLIENT_EVENTS__GUARD__
 #define __KRANEWM__CLIENT_EVENTS__GUARD__
 
-// Forward decls
+// fwd decls
 class changequeue_t;
 class ewmh_t;
 class sidebar_t;
