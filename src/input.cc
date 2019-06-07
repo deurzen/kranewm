@@ -38,10 +38,17 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
         case mouseop_t::client_resize:  m_clients.start_resizing(client); break;
         case mouseop_t::client_center:
             {
-                if ((m_clients.client_user_workspace(client)->in_float_layout() || client->floating)
-                    && !client->fullscreen)
-                {
+                if (client->fullscreen)
+                    break;
+
+                if (m_clients.client_user_workspace(client)->in_float_layout() || client->floating) {
                     client->center();
+                } else if (!client->parent){
+                    client->set_float(clientaction_t::add).resize(client->float_dim).move(client->float_pos);
+                    m_clients.active_workspace()->raise_client(client);
+                    m_windowstack.apply(m_clients.active_workspace());
+                    m_clients.active_workspace()->arrange();
+                    m_sidebar.indicate_clientfloating().draw();
                 }
             }
             break;
