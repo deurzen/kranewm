@@ -41,10 +41,7 @@ retrieve_rule(rules_t& rules, x_data::window_t& win)
     ::std::string title = win.get_name();
 
     for (auto&& [rule_id,rule] : rules) {
-        const ::std::string& rule_cls   = ::std::get<0>(rule_id);
-        const ::std::string& rule_inst  = ::std::get<1>(rule_id);
-        const ::std::string& rule_title = ::std::get<2>(rule_id);
-
+        auto&[rule_cls, rule_inst, rule_title] = rule_id;
         bool same_cls, same_inst, same_title;
         same_cls   = !rule_cls.compare(cls)     || rule_cls.empty();
         same_inst  = !rule_inst.compare(inst)   || rule_inst.empty();
