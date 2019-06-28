@@ -19,11 +19,14 @@ BIN = bin/$(PROJECT)
 INSTALL = /usr/local/bin/
 TARGET ?= $(RELEASE)
 
+SANFLAGS ?= -fsanitize=undefined -fsanitize=address -fsanitize-address-use-after-scope
+
 CXXFLAGS ?= -std=c++17
 CXXFLAGS += `pkg-config --cflags x11`
 
-LDFLAGS += `pkg-config --libs x11`
+LDFLAGS = `pkg-config --libs x11`
 
-DEBUG_FLAGS = -Wall -g -DDEBUG
+DEBUG_CXXFLAGS = -Wall -g -DDEBUG ${SANFLAGS}
+DEBUG_LDFLAGS = ${SANFLAGS}
 
 CC = g++

@@ -14,7 +14,8 @@ quick_debug:
 	$(MAKE) -j39 debug_parallel
 
 debug_parallel: TARGET = $(BIN)
-debug_parallel: CXXFLAGS += $(DEBUG_FLAGS)
+debug_parallel: CXXFLAGS += $(DEBUG_CXXFLAGS)
+debug_parallel: LDFLAGS += $(DEBUG_LDFLAGS)
 debug_parallel: build
 	@echo
 	@echo -n running
