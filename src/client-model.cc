@@ -1,6 +1,8 @@
 #include "client-model.hh"
 #include "util.hh"
 
+#include "x-data/attributes.hh"
+
 
 client_ptr_t
 client_model_t::win_to_client(x_data::window_t win)
@@ -206,6 +208,22 @@ client_model_t::stop_resizing(client_ptr_t client, pos_t pos, dim_t dim)
         return;
 
     client_to_workspace(client, m_current_workspace);
+}
+
+void
+client_model_t::wedge_clients()
+{
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
+    for (auto& workspace : m_user_workspaces)
+        for (auto& client : workspace->get_all()) {
+            pos_t new_pos = client->float_pos;;
+            if (root_attrs.h() < (client->float_pos.y + client->float_dim.h))
+                new_pos.y = root_attrs.h() - client->float_dim.h;
+            if (root_attrs.w() < (client->float_pos.x + client->float_dim.w))
+                new_pos.x = root_attrs.w() - client->float_dim.w;
+            if (!(new_pos == client->float_pos))
+                client->move(new_pos);
+        }
 }
 
 void

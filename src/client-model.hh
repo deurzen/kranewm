@@ -53,6 +53,7 @@ public:
     void start_resizing(client_ptr_t);
     void stop_moving(client_ptr_t, pos_t = pos_t{});
     void stop_resizing(client_ptr_t, pos_t = pos_t{}, dim_t = dim_t{});
+    void wedge_clients();
 
     void client_to_workspace(client_ptr_t, unsigned);
     void client_to_workspace(client_ptr_t, workspace_ptr_t);

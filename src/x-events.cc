@@ -303,6 +303,11 @@ x_events_t::on_configure_notify()
     x_data::window_t win = m_current_event.get().xconfigure.window;
     client_ptr_t client = m_clients.win_to_client(win);
 
+    if (win.get() == x_data::g_root.get()) {
+        m_clients.wedge_clients();
+        m_clients.active_workspace()->arrange();
+    }
+
     if (!client || (m_x.is_valid() && m_x.moveresize()->state == moveresizestate_t::resize))
         return;
 
