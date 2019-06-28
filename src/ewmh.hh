@@ -171,7 +171,7 @@ public:
 
     Atom get_netwm_atom(netwmid_t);
 
-    void set_wm_name_property(x_data::window_t, ::std::string);
+    void set_wm_name_property(x_data::window_t, const ::std::string&);
     void set_supporting_wm_check_property(x_data::window_t, x_data::window_t);
     void set_number_of_desktops_property(unsigned&&);
     void set_current_desktop_property(unsigned&&);

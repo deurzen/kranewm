@@ -25,6 +25,11 @@ typedef class clientchange_t* clientchange_ptr_t;
 class changequeue_t
 {
 public:
+    ~changequeue_t()
+    {
+        flush();
+    }
+
     bool has_next() const;
     clientchange_ptr_t next();
 

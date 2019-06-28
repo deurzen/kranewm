@@ -32,6 +32,15 @@ public:
         m_current_workspace = m_user_workspaces.front();
     }
 
+    ~client_model_t()
+    {
+        delete m_move_workspace;
+        delete m_resize_workspace;
+
+        for (auto& workspace : m_user_workspaces)
+            delete workspace;
+    }
+
     client_ptr_t win_to_client(x_data::window_t);
     workspace_ptr_t client_workspace(client_ptr_t);
     user_workspace_ptr_t client_user_workspace(client_ptr_t);

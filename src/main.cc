@@ -9,5 +9,6 @@ main(int argc, char **argv)
     wm->setup();
     wm->run();
 
+    wm.reset();
     return 0;
 }

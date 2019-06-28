@@ -19,7 +19,7 @@ ewmh_t::get_netwm_atom(netwmid_t index)
 }
 
 void
-ewmh_t::set_wm_name_property(x_data::window_t win, ::std::string name)
+ewmh_t::set_wm_name_property(x_data::window_t win, const ::std::string& name)
 {
     x_data::replace_property<x_data::string_t>(win, {"_NET_WM_NAME", name});
 }
