@@ -1,10 +1,12 @@
 #ifndef __KRANEWM__X_MODEL__GUARD__
 #define __KRANEWM__X_MODEL__GUARD__
 
-#include "floating.hh"
-#include "constraints.hh"
 #include "x-data/window.hh"
 #include "x-data/hints.hh"
+
+// fwd decls
+typedef class client_t* client_ptr_t;
+typedef class moveresize_t* moveresize_ptr_t;
 
 
 class x_model_t

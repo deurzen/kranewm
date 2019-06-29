@@ -1,5 +1,7 @@
 #include "floating.hh"
 
+#include "client.hh"
+
 
 void
 moveresize_t::process_move_increment(pos_t pos, dim_t dim, pos_t delta)

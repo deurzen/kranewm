@@ -2,9 +2,12 @@
 #define __KRANEWM_CHANGES_GUARD__
 
 #include "client.hh"
-#include "workspace.hh"
 
 #include <queue>
+
+// fwd decls
+typedef class workspace_t* workspace_ptr_t;
+typedef class user_workspace_t* user_workspace_ptr_t;
 
 
 enum class change_t

@@ -2,6 +2,7 @@
 #define __KRANEWM_STACK_GUARD__
 
 #include "x-data/window.hh"
+
 #include <list>
 #include <unordered_map>
 

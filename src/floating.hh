@@ -1,9 +1,13 @@
 #ifndef __KRANEWM__FLOATING__GUARD__
 #define __KRANEWM__FLOATING__GUARD__
 
-#include "client.hh"
 #include "common.hh"
 #include "decoration.hh"
+
+#include "x-data/window.hh"
+
+// fwd decls
+typedef class client_t* client_ptr_t;
 
 
 enum class moveresizestate_t {

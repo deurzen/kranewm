@@ -1,4 +1,7 @@
 #include "client-model.hh"
+
+#include "changes.hh"
+#include "process.hh"
 #include "util.hh"
 
 #include "x-data/attributes.hh"

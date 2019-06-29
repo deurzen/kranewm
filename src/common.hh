@@ -1,9 +1,9 @@
 #ifndef __KRANEWM__COMMON__GUARD__
 #define __KRANEWM__COMMON__GUARD__
 
-#include <string>
-#include <map>
 #include <iostream>
+#include <map>
+#include <string>
 
 extern "C" {
 #include <X11/X.h>

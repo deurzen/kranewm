@@ -1,11 +1,14 @@
 #ifndef __KRANEWM__PROCESS__GUARD__
 #define __KRANEWM__PROCESS__GUARD__
 
-#include "client.hh"
 #include "x-data/key.hh"
 
+#include <deque>
 #include <unordered_map>
 
+// fwd decls
+typedef class client_t* client_ptr_t;
+typedef class processjump_t* processjump_ptr_t;
 
 typedef struct processjump_t
 {

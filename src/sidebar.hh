@@ -6,6 +6,7 @@
 #include "ewmh.hh"
 #include "layout.hh"
 #include "workspace.hh"
+
 #include "x-data/window.hh"
 #include "x-data/attributes.hh"
 #include "x-data/graphics.hh"

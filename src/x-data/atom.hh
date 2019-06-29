@@ -11,10 +11,10 @@ extern "C" {
 #include <X11/Xatom.h>
 }
 
-#include <vector>
-#include <string>
 #include <cstring>
 #include <map>
+#include <string>
+#include <vector>
 
 
 namespace x_data

@@ -1,5 +1,10 @@
 #include "x-model.hh"
+
+#include "client.hh"
 #include "common.hh"
+#include "constraints.hh"
+#include "floating.hh"
+
 #include "x-data/attributes.hh"
 
 

@@ -1,5 +1,8 @@
 #include "process.hh"
 
+#include "client.hh"
+
+
 void
 processjumplist_t::activate_process_name(const ::std::string& name)
 {

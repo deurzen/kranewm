@@ -1,15 +1,19 @@
 #ifndef __KRANEWM_CLIENT_MODEL_GUARD__
 #define __KRANEWM_CLIENT_MODEL_GUARD__
 
-#include "changes.hh"
 #include "stack.hh"
 #include "workspace.hh"
 #include "rule.hh"
-#include "process.hh"
+
 #include "x-data/window.hh"
 
 #include <unordered_map>
 #include <vector>
+
+// fwd decls
+class changequeue_t;
+class windowstack_t;
+class processjumplist_t;
 
 
 class client_model_t

@@ -2,6 +2,7 @@
 #define __KRANEWM_CONSTRAINTS_GUARD__
 
 #include "util.hh"
+
 #include "x-data/window.hh"
 
 

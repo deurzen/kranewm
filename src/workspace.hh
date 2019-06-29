@@ -2,9 +2,9 @@
 #define __KRANEWM_WORKSPACE_GUARD__
 
 #include "client.hh"
+#include "focus-cycle.hh"
 #include "layout.hh"
 #include "stack.hh"
-#include "focus-cycle.hh"
 
 #include <map>
 #include <string>

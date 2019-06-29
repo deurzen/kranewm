@@ -9,8 +9,8 @@ extern "C" {
 #include <X11/Xatom.h>
 }
 
-#include <vector>
 #include <cstring>
+#include <vector>
 
 
 namespace x_data

@@ -2,11 +2,11 @@
 #define __KRANEWM__UTIL__GUARD__
 
 #include <algorithm>
+#include <deque>
+#include <list>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <deque>
-#include <list>
 
 
 void die(const ::std::string&);

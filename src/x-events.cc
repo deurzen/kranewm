@@ -1,9 +1,12 @@
 #include "x-events.hh"
+
+#include "client-model.hh"
 #include "decoration.hh"
 #include "ewmh.hh"
+#include "floating.hh"
 #include "sidebar.hh"
-#include "client-model.hh"
 #include "x-model.hh"
+
 #include "x-data/attributes.hh"
 #include "x-data/request.hh"
 #include "x-data/hints.hh"

@@ -11,8 +11,8 @@ extern "C" {
 
 #include <algorithm>
 #include <cstring>
-#include <vector>
 #include <string>
+#include <vector>
 
 
 namespace x_data

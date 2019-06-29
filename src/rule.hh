@@ -4,8 +4,9 @@
 #include <map>
 #include <tuple>
 
-// fwd decl
+// fwd decls
 namespace x_data { class window_t; }
+
 
 enum autoclosemethod {
     OFF,

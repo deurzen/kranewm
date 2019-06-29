@@ -1,9 +1,12 @@
 #include "client-events.hh"
+
 #include "changes.hh"
 #include "ewmh.hh"
 #include "sidebar.hh"
+#include "floating.hh"
 #include "x-model.hh"
 #include "client-model.hh"
+
 #include "x-data/event.hh"
 #include "x-data/mouse.hh"
 

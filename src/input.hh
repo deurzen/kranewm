@@ -5,6 +5,7 @@
 #include "mousebind.hh"
 #include "keybind.hh"
 #include "process.hh"
+
 #include "x-data/event.hh"
 
 #define YES true
