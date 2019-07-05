@@ -73,7 +73,7 @@ notify-link:
 	@echo linking
 
 build: notify-build release bin obj ${OBJ_FILES} notify-link
-	${CC} ${CXXFLAGS} ${OBJ_FILES} ${LDFLAGS} -o ${TARGET}
+	${CC} ${OBJ_FILES} ${LDFLAGS} -o ${TARGET}
 
 -include $(DEPS)
 
