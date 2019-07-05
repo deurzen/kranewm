@@ -50,7 +50,7 @@ create_client(x_data::window_t win, rule_t& rule)
     frame.set_background_color(REG_COLOR);
     win.reparent({0, BORDER_HEIGHT}, frame);
 
-    rule.fullscreen = win.is_of_state("FULLSCREEN");
+    rule.fullscreen |= win.is_of_state("FULLSCREEN");
     rule.floating |= rule.fullscreen
         || sizeconstraints.is_fixed()
         || win.is_of_type("DIALOG")

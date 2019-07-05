@@ -86,6 +86,9 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
         m_changequeue.add(change_client_workspace(client, nullptr, m_current_workspace));
     }
 
+    if (rule.fullscreen)
+        set_fullscreen(client, clientaction_t::add);
+
     focus(client);
 }
 
