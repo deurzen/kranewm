@@ -121,7 +121,6 @@ public:
           m_name(_name),
           m_nmaster(1),
           m_gap_size(0),
-          m_m1weight(1),
           m_mfactor(.5f),
           m_mirrored(false),
           m_layout(layout_t::floating),
@@ -167,13 +166,11 @@ public:
     user_workspace_t& set_nmaster(unsigned);
     user_workspace_t& set_gap_size(unsigned);
     user_workspace_t& set_mfactor(float);
-    user_workspace_t& set_m1weight(unsigned);
     user_workspace_t& set_layout(layout_t);
 
     unsigned get_nmaster() const;
     unsigned get_gap_size() const;
     float get_mfactor() const;
-    unsigned get_m1weight() const;
     layout_t get_layout() const;
     const workspacestack_t& get_stack() const;
 
@@ -188,7 +185,6 @@ private:
     ::std::string    m_name;
     unsigned         m_nmaster;
     unsigned         m_gap_size;
-    unsigned         m_m1weight;
     float            m_mfactor;
     bool             m_mirrored;
     focus_cycle_t    m_clients;

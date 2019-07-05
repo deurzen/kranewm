@@ -313,13 +313,6 @@ user_workspace_t::set_mfactor(float new_mfactor)
 }
 
 user_workspace_t&
-user_workspace_t::set_m1weight(unsigned new_m1weight)
-{
-    m_m1weight = new_m1weight;
-    return *this;
-}
-
-user_workspace_t&
 user_workspace_t::set_layout(layout_t _layout)
 {
     layout_t current_layout = m_layout;
@@ -349,12 +342,6 @@ float
 user_workspace_t::get_mfactor() const
 {
     return m_mfactor;
-}
-
-unsigned
-user_workspace_t::get_m1weight() const
-{
-    return m_m1weight;
 }
 
 layout_t
