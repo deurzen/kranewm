@@ -464,6 +464,14 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 m_sidebar.indicate_clientnormal().draw();
         }
         break;
+    case keyop_t::toggle_sticky:
+        {
+            if (client->parent)
+                return;
+
+            m_clients.set_sticky(client, clientaction_t::toggle);
+        }
+        break;
     case keyop_t::toggle_fullscreen:
         {
             m_clients.set_fullscreen(client, clientaction_t::toggle);

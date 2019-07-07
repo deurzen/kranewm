@@ -117,6 +117,11 @@ client_model_t::unmanage_client(client_ptr_t client)
     workspace->remove_client(client);
     sync_workspace_focus();
 
+    if (client->stuck)
+        for (auto& workspace : m_user_workspaces)
+            if (workspace != m_current_workspace)
+                workspace->remove_client(client);
+
     erase_find(m_client_windows, client->frame);
     erase_find(m_client_windows, client->win);
     erase_find(m_client_workspaces, client);
@@ -235,7 +240,7 @@ client_model_t::wedge_clients()
 void
 client_model_t::client_to_workspace(client_ptr_t client, unsigned workspace_nr)
 {
-    if (client->parent)
+    if (client->parent || client->stuck)
         return;
 
     if (range_t<unsigned>::contains(1, USER_WORKSPACES.size(), workspace_nr))
@@ -359,6 +364,39 @@ client_model_t::set_urgent(client_ptr_t client, clientaction_t action)
         break;
     case clientaction_t::toggle:
         set_urgent(client, client->urgent
+            ? clientaction_t::remove : clientaction_t::add);
+        return;
+    default: break;
+    }
+}
+
+void
+client_model_t::set_sticky(client_ptr_t client, clientaction_t action)
+{
+    switch (action) {
+    case clientaction_t::add:
+        {
+            client->stuck = true;
+            for (auto& workspace : m_user_workspaces)
+                if (workspace != m_current_workspace) {
+                    workspace->add_client(client);
+                    m_changequeue.add(change_client_workspace(client,
+                        workspace, nullptr));
+                    sync_workspace_focus();
+            }
+        }
+        break;
+    case clientaction_t::remove:
+        {
+            client->stuck = false;
+            for (auto& workspace : m_user_workspaces)
+                if (workspace != m_current_workspace)
+                    workspace->remove_client(client);
+            m_client_workspaces[client] = m_current_workspace;
+        }
+        break;
+    case clientaction_t::toggle:
+        set_sticky(client, client->stuck
             ? clientaction_t::remove : clientaction_t::add);
         return;
     default: break;

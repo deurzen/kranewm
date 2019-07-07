@@ -48,6 +48,7 @@ typedef struct client_t
           floating(rule.floating),
           fullscreen(rule.fullscreen),
           urgent(false),
+          stuck(false),
           parent(nullptr) {}
 
     void disown_child(client_ptr_t);
@@ -79,6 +80,7 @@ typedef struct client_t
     bool                floating;
     bool                fullscreen;
     bool                urgent;
+    bool                stuck;
     client_ptr_t        parent;
     client_ptr_set_t    children;
 

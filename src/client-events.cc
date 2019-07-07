@@ -288,21 +288,23 @@ template <typename container_t>
 void
 client_events_t::map_all(const container_t container)
 {
-    for (auto& c : container) {
-        c->expect = clientexpect_t::map;
-        c->map();
-        map_all(c->children);
-    }
+    for (auto& c : container)
+        if (!c->stuck){
+            c->expect = clientexpect_t::map;
+            c->map();
+            map_all(c->children);
+        }
 }
 
 template <typename container_t>
 void
 client_events_t::unmap_all(const container_t container)
 {
-    for (auto& c : container) {
-        c->expect = clientexpect_t::withdraw;
-        m_clients.unfocus_if_focused(c);
-        c->unmap();
-        unmap_all(c->children);
-    }
+    for (auto& c : container)
+        if (!c->stuck) {
+            c->expect = clientexpect_t::withdraw;
+            m_clients.unfocus_if_focused(c);
+            c->unmap();
+            unmap_all(c->children);
+        }
 }

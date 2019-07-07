@@ -75,6 +75,7 @@ public:
 
     void set_fullscreen(client_ptr_t, clientaction_t);
     void set_urgent(client_ptr_t, clientaction_t);
+    void set_sticky(client_ptr_t, clientaction_t);
     void set_marked(client_ptr_t);
 
     void jump_marked();

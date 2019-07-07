@@ -9,7 +9,7 @@
 enum class keyop_t
 {
     noop,
-    quit, zoom, toggle_float, toggle_fullscreen,
+    quit, zoom, toggle_float, toggle_fullscreen, toggle_sticky,
     center_client, snap_north, snap_east, snap_south, snap_west,
     spawn_terminal, spawn_termregion,
     spawn_quickterm, spawn_quicktermtmux,
