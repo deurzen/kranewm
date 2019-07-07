@@ -95,6 +95,9 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
 void
 client_model_t::unmanage_client(client_ptr_t client)
 {
+    if (client->sticky)
+        set_sticky(client, clientaction_t::remove);
+
     auto workspace = client_workspace(client);
 
     if (client == m_marked_client)
@@ -116,11 +119,6 @@ client_model_t::unmanage_client(client_ptr_t client)
 
     workspace->remove_client(client);
     sync_workspace_focus();
-
-    if (client->sticky)
-        for (auto& workspace : m_user_workspaces)
-            if (workspace != m_current_workspace)
-                workspace->remove_client(client);
 
     erase_find(m_client_windows, client->frame);
     erase_find(m_client_windows, client->win);
