@@ -33,22 +33,22 @@ public:
           m_running(true),
           m_input(sidebar, clients, windowstack, processes, m_running),
           m_rules({
-              //  class                  inst          title      float center icon close nohint workspace
-              { { "Artha",               ALL,          ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
-              { { "Firefox",             ALL,          ALL },   {  NO,  YES,   NO,   OFF,  NO,   CURRENT } },
-              { { "Gimp",                ALL,          ALL },   { YES,   NO,   NO,   OFF,  NO,   4       } },
-              { { "GoldenDict",          ALL,          ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
-              { { "Gpick",               ALL,          ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
-              { { "Inkscape",            ALL,          ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
-              { { "Qalculate-gtk",       ALL,          ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
-              { { "Rhythmbox",           ALL,          ALL },   { YES,  YES,   NO,  ONCE,  NO,   CURRENT } },
-              { { "cantata",             ALL,          ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
-              { { "mate-volume-control", ALL,          ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
-              { { "nixnote2",            ALL,          ALL },   { YES,  YES,   NO,   OFF, YES,   CURRENT } },
-              { { "noson",               ALL,          ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
-              { { "noson-gui",           ALL,          ALL },   { YES,  YES,   NO,   OFF,  NO,   CURRENT } },
-              { { "st-256color",         "kranewm:f",  ALL },   { YES,   NO,   NO,   OFF,  NO,   CURRENT } },
-              { { "st-256color",         ALL,          ALL },   {  NO,  YES,   NO,   OFF,  NO,   CURRENT } },
+              //  class                  inst          title      float center close nohint workspace
+              { { "Artha",               ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
+              { { "Firefox",             ALL,          ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
+              { { "Gimp",                ALL,          ALL },   { YES,   NO,    OFF,  NO,   4       } },
+              { { "GoldenDict",          ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
+              { { "Gpick",               ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
+              { { "Inkscape",            ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
+              { { "Qalculate-gtk",       ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
+              { { "Rhythmbox",           ALL,          ALL },   { YES,  YES,   ONCE,  NO,   CURRENT } },
+              { { "cantata",             ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
+              { { "mate-volume-control", ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
+              { { "nixnote2",            ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
+              { { "noson",               ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
+              { { "noson-gui",           ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
+              { { "st-256color",         "kranewm:f",  ALL },   { YES,   NO,    OFF,  NO,   CURRENT } },
+              { { "st-256color",         ALL,          ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
           }) {}
 
     bool step();

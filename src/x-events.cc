@@ -472,9 +472,7 @@ x_events_t::on_property_notify()
         } else if ((event.atom == XA_WM_NAME || event.atom
             == x_data::get_atom("_NET_WM_NAME").get()))
         {
-            if (client->iconified)
-                ; // handle iconified
-            else if (client->shaded)
+            if (client->shaded)
                 ; // handle shaded
         }
     }
@@ -501,8 +499,7 @@ x_events_t::on_unmap_notify()
 
     x_data::sync(false);
 
-    if (client->consume_expect(clientexpect_t::iconify)
-        || client->consume_expect(clientexpect_t::withdraw))
+    if (client->consume_expect(clientexpect_t::withdraw))
     {
         return;
     }

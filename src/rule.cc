@@ -8,7 +8,6 @@ zip_rules(rule_t r1, rule_t r2)
     bool floating   = false;
     bool center     = false;
     bool fullscreen = false;
-    bool iconify    = false;
     bool autoclose  = false;
     bool nohint     = false;
     unsigned workspace = 0;
@@ -16,12 +15,11 @@ zip_rules(rule_t r1, rule_t r2)
     floating   = r1.floating   || r2.floating;
     center     = r1.center     || r2.center;
     fullscreen = r1.fullscreen || r2.fullscreen;
-    iconify    = r1.iconify    || r2.iconify;
     autoclose  = r1.autoclose  || r2.autoclose;
     nohint     = r1.nohint     || r2.nohint;
     workspace  = r1.workspace ? r1.workspace : r2.workspace;
 
-    return {floating, center, fullscreen, iconify, autoclose, nohint, workspace};
+    return {floating, center, fullscreen, autoclose, nohint, workspace};
 }
 
 rule_t
@@ -31,7 +29,6 @@ retrieve_rule(rules_t& rules, x_data::window_t& win)
 
     bool floating  = false;
     bool center    = false;
-    bool iconify   = false;
     bool autoclose = false;
     bool nohint    = false;
     unsigned workspace = 0;
@@ -52,7 +49,6 @@ retrieve_rule(rules_t& rules, x_data::window_t& win)
                 workspace = rule.workspace;
             floating = rule.floating;
             center   = rule.center;
-            iconify  = rule.iconify;
             nohint   = rule.nohint;
             if (rule.autoclose != OFF) {
                 autoclose = true;
@@ -60,14 +56,14 @@ retrieve_rule(rules_t& rules, x_data::window_t& win)
                     rule.autoclose = OFF;
             }
             return zip_rules(
-                {floating, center, false, iconify, autoclose, nohint, workspace},
+                {floating, center, false, autoclose, nohint, workspace},
                 global_rule
             );
         }
     }
 
     return zip_rules(
-        {false, false, false, false, false, false, 0},
+        {false, false, false, false, false, 0},
         global_rule
     );
 }
@@ -78,7 +74,6 @@ parse_global_rule(x_data::window_t& win)
     bool floating   = false;
     bool center     = false;
     bool fullscreen = false;
-    bool iconify    = false;
     bool autoclose  = false;
     bool nohint     = false;
     unsigned workspace = 0;
@@ -98,7 +93,6 @@ parse_global_rule(x_data::window_t& win)
                 case 'f': floating   = true; break;
                 case 'c': center     = true; break;
                 case 'F': fullscreen = true; break;
-                case 'i': iconify    = true; break;
                 case 'a': autoclose  = true; break;
                 case 'n': nohint     = true; break;
                 case 'w':
@@ -116,5 +110,5 @@ parse_global_rule(x_data::window_t& win)
         }
     }
 
-    return {floating, center, fullscreen, iconify, autoclose, nohint, workspace};
+    return {floating, center, fullscreen, autoclose, nohint, workspace};
 }
