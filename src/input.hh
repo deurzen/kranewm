@@ -43,7 +43,7 @@ public:
               { { SCROLL_UP_BUTTON,   MODMASK,  NO },  mouseop_t::goto_prev_ws   },
               { { LEFT_BUTTON,        MODMASK, YES },  mouseop_t::client_move    },
               { { RIGHT_BUTTON,       MODMASK, YES },  mouseop_t::client_resize  },
-              { { MIDDLE_BUTTON,      MODMASK, YES },  mouseop_t::client_center  },
+              { { MIDDLE_BUTTON,      MODMASK, YES },  mouseop_t::center_client  },
               { { BACKWARD_BUTTON,    MODMASK, YES },  mouseop_t::client_next_ws },
               { { FORWARD_BUTTON,     MODMASK, YES },  mouseop_t::client_prev_ws },
               { { SCROLL_DOWN_BUTTON, MODMASK, YES },  mouseop_t::goto_next_ws   },

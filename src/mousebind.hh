@@ -11,7 +11,7 @@ enum class mouseop_t
     noop,
     client_move,
     client_resize,
-    client_center,
+    center_client,
     client_next_ws,
     client_prev_ws,
     goto_next_ws,

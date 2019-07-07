@@ -289,7 +289,7 @@ void
 client_events_t::map_all(const container_t container)
 {
     for (auto& c : container)
-        if (!c->stuck){
+        if (!c->sticky){
             c->expect = clientexpect_t::map;
             c->map();
             map_all(c->children);
@@ -301,7 +301,7 @@ void
 client_events_t::unmap_all(const container_t container)
 {
     for (auto& c : container)
-        if (!c->stuck) {
+        if (!c->sticky) {
             c->expect = clientexpect_t::withdraw;
             m_clients.unfocus_if_focused(c);
             c->unmap();

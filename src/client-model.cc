@@ -117,7 +117,7 @@ client_model_t::unmanage_client(client_ptr_t client)
     workspace->remove_client(client);
     sync_workspace_focus();
 
-    if (client->stuck)
+    if (client->sticky)
         for (auto& workspace : m_user_workspaces)
             if (workspace != m_current_workspace)
                 workspace->remove_client(client);
@@ -240,7 +240,7 @@ client_model_t::wedge_clients()
 void
 client_model_t::client_to_workspace(client_ptr_t client, unsigned workspace_nr)
 {
-    if (client->parent || client->stuck)
+    if (client->parent || client->sticky)
         return;
 
     if (range_t<unsigned>::contains(1, USER_WORKSPACES.size(), workspace_nr))
@@ -376,7 +376,7 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action)
     switch (action) {
     case clientaction_t::add:
         {
-            client->stuck = true;
+            client->sticky = true;
             for (auto& workspace : m_user_workspaces)
                 if (workspace != m_current_workspace) {
                     workspace->add_client(client);
@@ -388,7 +388,7 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action)
         break;
     case clientaction_t::remove:
         {
-            client->stuck = false;
+            client->sticky = false;
             for (auto& workspace : m_user_workspaces)
                 if (workspace != m_current_workspace)
                     workspace->remove_client(client);
@@ -396,7 +396,7 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action)
         }
         break;
     case clientaction_t::toggle:
-        set_sticky(client, client->stuck
+        set_sticky(client, client->sticky
             ? clientaction_t::remove : clientaction_t::add);
         return;
     default: break;

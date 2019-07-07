@@ -36,12 +36,15 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
         switch (m_mousebinds[{event.button, event.state, true}]) {
         case mouseop_t::client_move:    m_clients.start_moving(client);   break;
         case mouseop_t::client_resize:  m_clients.start_resizing(client); break;
-        case mouseop_t::client_center:
+        case mouseop_t::center_client:
             {
                 if (client->fullscreen)
                     break;
 
-                if (m_clients.client_user_workspace(client)->in_float_layout() || client->floating) {
+                if (!client->fullscreen && (client->floating
+                    || ((!client->sticky && m_clients.client_user_workspace(client)->in_float_layout())
+                    || (client->sticky && m_clients.active_workspace()->in_float_layout()))))
+                {
                     client->center();
                 } else if (!client->parent){
                     client->set_float(clientaction_t::add).resize(client->float_dim).move(client->float_pos);
@@ -486,8 +489,9 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
         break;
     case keyop_t::center_client:
         {
-            if ((m_clients.client_user_workspace(client)->in_float_layout() || client->floating)
-                && !client->fullscreen)
+            if (!client->fullscreen && (client->floating
+                || ((!client->sticky && m_clients.client_user_workspace(client)->in_float_layout())
+                || (client->sticky && m_clients.active_workspace()->in_float_layout()))))
             {
                 client->center();
             }
@@ -495,8 +499,9 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
         break;
     case keyop_t::snap_north:
         {
-            if ((m_clients.client_user_workspace(client)->in_float_layout() || client->floating)
-                && !client->fullscreen)
+            if (!client->fullscreen && (client->floating
+                || ((!client->sticky && m_clients.client_user_workspace(client)->in_float_layout())
+                || (client->sticky && m_clients.active_workspace()->in_float_layout()))))
             {
                 client->snap(snapedge_t::north);
             }
@@ -504,8 +509,9 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
         break;
     case keyop_t::snap_east:
         {
-            if ((m_clients.client_user_workspace(client)->in_float_layout() || client->floating)
-                && !client->fullscreen)
+            if (!client->fullscreen && (client->floating
+                || ((!client->sticky && m_clients.client_user_workspace(client)->in_float_layout())
+                || (client->sticky && m_clients.active_workspace()->in_float_layout()))))
             {
                 client->snap(snapedge_t::east);
             }
@@ -513,8 +519,9 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
         break;
     case keyop_t::snap_south:
         {
-            if ((m_clients.client_user_workspace(client)->in_float_layout() || client->floating)
-                && !client->fullscreen)
+            if (!client->fullscreen && (client->floating
+                || ((!client->sticky && m_clients.client_user_workspace(client)->in_float_layout())
+                || (client->sticky && m_clients.active_workspace()->in_float_layout()))))
             {
                 client->snap(snapedge_t::south);
             }
@@ -522,8 +529,9 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
         break;
     case keyop_t::snap_west:
         {
-            if ((m_clients.client_user_workspace(client)->in_float_layout() || client->floating)
-                && !client->fullscreen)
+            if (!client->fullscreen && (client->floating
+                || ((!client->sticky && m_clients.client_user_workspace(client)->in_float_layout())
+                || (client->sticky && m_clients.active_workspace()->in_float_layout()))))
             {
                 client->snap(snapedge_t::west);
             }
