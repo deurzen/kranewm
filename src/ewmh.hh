@@ -29,7 +29,6 @@ enum netwmid_t : int
     // window states
     netwmstatefullscreen, netwmstatefirst = netwmstatefullscreen,
     netwmstatedemandsattention,
-    netwmstateshaded,
     netwmstatehidden, netwmstatelast = netwmstatehidden,
     // window types
     netwmwindowtypedesktop, netwmwindowtypefirst = netwmwindowtypedesktop,
@@ -88,7 +87,6 @@ public:
             // window states
             { netwmid_t::netwmstatefullscreen,        "_NET_WM_STATE_FULLSCREEN"          },
             { netwmid_t::netwmstatedemandsattention,  "_NET_WM_STATE_DEMANDS_ATTENTION"   },
-            { netwmid_t::netwmstateshaded,            "_NET_WM_STATE_SHADED"              },
             { netwmid_t::netwmstatehidden,            "_NET_WM_STATE_HIDDEN"              },
             // window types
             { netwmid_t::netwmwindowtypedesktop,      "_NET_WM_WINDOW_TYPE_DESKTOP"       },

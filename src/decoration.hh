@@ -7,7 +7,6 @@
 const ::std::string FONTNAME = "-*-terminus-*-*-*-*-*-*-*-*-*-*-*-*";
 
 const int BORDER_HEIGHT   = 5;
-const int SHADED_HEIGHT   = 14;
 const int ICON_WIDTH      = 250;
 const int ICON_HEIGHT     = 16;
 const int ICON_BORDER     = 1;
@@ -24,9 +23,6 @@ const unsigned long SIDEBAR_NCLIENTS_COLOR         = 0xFFFFFF;
 const unsigned long REG_COLOR = 0x404040;
 const unsigned long SEL_COLOR = 0x0000FF;
 const unsigned long URG_COLOR = 0xFF0000;
-
-const unsigned long REG_SHADE_COLOR = 0x404040;
-const unsigned long SEL_SHADE_COLOR = 0x808080;
 
 const unsigned long MRIND_BG_COLOR     = 0x000000;
 const unsigned long MRIND_BORDER_COLOR = 0xFFFFFF;

@@ -47,7 +47,6 @@ typedef struct client_t
           focused(false),
           floating(rule.floating),
           fullscreen(rule.fullscreen),
-          shaded(false),
           urgent(false),
           parent(nullptr) {}
 
@@ -79,7 +78,6 @@ typedef struct client_t
     bool                focused;
     bool                floating;
     bool                fullscreen;
-    bool                shaded;
     bool                urgent;
     client_ptr_t        parent;
     client_ptr_set_t    children;

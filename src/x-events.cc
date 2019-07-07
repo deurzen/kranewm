@@ -472,8 +472,7 @@ x_events_t::on_property_notify()
         } else if ((event.atom == XA_WM_NAME || event.atom
             == x_data::get_atom("_NET_WM_NAME").get()))
         {
-            if (client->shaded)
-                ; // handle shaded
+            // handle iconified, shaded (if ever implemented)
         }
     }
 
