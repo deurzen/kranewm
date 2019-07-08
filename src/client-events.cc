@@ -20,6 +20,7 @@ client_events_t::process_queued_changes()
         case change_t::client_destroy:    on_change_client_destroy();    break;
         case change_t::client_fullscreen: on_change_client_fullscreen(); break;
         case change_t::client_urgent:     on_change_client_urgent();     break;
+        case change_t::client_sticky:     on_change_client_sticky();     break;
         case change_t::client_workspace:  on_change_client_workspace();  break;
         case change_t::workspace_active:  on_change_workspace_active();  break;
         default: break;
@@ -40,6 +41,7 @@ client_events_t::on_change_client_focus()
     if (from) {
         m_ewmh.clear_active_window_property();
         if (from->urgent) from->frame.set_background_color(URG_COLOR);
+        else if (from->sticky) from->frame.set_background_color(REGSTICKY_COLOR);
         else from->frame.set_background_color(REG_COLOR);
 
         from->frame.grab();
@@ -51,7 +53,9 @@ client_events_t::on_change_client_focus()
 
         if (x_data::set_input_focus(to->win)) {
             m_ewmh.set_active_window_property(to->win);
-            to->frame.set_background_color(SEL_COLOR);
+            if (to->sticky) to->frame.set_background_color(SELSTICKY_COLOR);
+            else to->frame.set_background_color(SEL_COLOR);
+
             to->frame.ungrab();
 
             if (to->fullscreen)
@@ -62,7 +66,8 @@ client_events_t::on_change_client_focus()
                 m_sidebar.indicate_clientnormal().draw();
 
         } else {
-            to->frame.set_background_color(REG_COLOR);
+            if (to->sticky) to->frame.set_background_color(REGSTICKY_COLOR);
+            else to->frame.set_background_color(REG_COLOR);
             to->frame.grab();
         }
     } else
@@ -136,6 +141,30 @@ client_events_t::on_change_client_urgent()
             ? (hints.get().flags | XUrgencyHint) : (hints.get().flags & ~XUrgencyHint);
 
     x_data::set_wmhints(client->win, hints);
+}
+
+void
+client_events_t::on_change_client_sticky()
+{
+    auto change = change_client_sticky(m_current_change);
+    auto client = change->client;
+
+    if (client->sticky) {
+        if (client->focused)
+            client->frame.set_background_color(SELSTICKY_COLOR);
+        else
+            client->frame.set_background_color(REGSTICKY_COLOR);
+
+        m_sidebar.record_sticky();
+    } else {
+        if (client->focused)
+            client->frame.set_background_color(SEL_COLOR);
+        else
+            client->frame.set_background_color(REG_COLOR);
+
+        m_sidebar.erase_sticky();
+    }
+    m_sidebar.draw();
 }
 
 void

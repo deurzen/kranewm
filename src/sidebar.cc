@@ -10,6 +10,7 @@ sidebar_t::draw()
     m_graphicscontext.clear();
     draw_layoutsymbol();
     draw_workspacenumber();
+    draw_numbersticky();
     draw_numberclients();
 }
 
@@ -65,6 +66,22 @@ sidebar_t::erase_urgent(unsigned workspace)
 }
 
 sidebar_t&
+sidebar_t::record_sticky()
+{
+    ++m_numbersticky;
+    return *this;
+}
+
+sidebar_t&
+sidebar_t::erase_sticky()
+{
+    if (m_numbersticky > 0)
+        --m_numbersticky;
+    return *this;
+}
+
+
+sidebar_t&
 sidebar_t::indicate_moveresize()
 {
     m_moveresizeindicator.map();
@@ -97,7 +114,6 @@ sidebar_t::indicate_clientfloating()
 sidebar_t&
 sidebar_t::indicate_clientnormal()
 {
-
     m_floatingindicator.unmap();
     m_fullscreenindicator.unmap();
     return *this;
@@ -158,6 +174,23 @@ sidebar_t::draw_workspacenumber()
         m_graphicscontext.draw_string(current_pos, ::std::to_string(nr));
         current_pos.y += (4 + m_graphicscontext.get_font_dim().h);
     }
+}
+
+void
+sidebar_t::draw_numbersticky()
+{
+    m_graphicscontext.set_foreground(SIDEBAR_NSTICKY_COLOR);
+
+    x_data::attributes_t root_attrs = x_data::get_attributes(x_data::g_root);
+    pos_t pos = {(SIDEBAR_WIDTH - m_graphicscontext.get_font_dim().w) / 2,
+        root_attrs.h() - 2 * (m_graphicscontext.get_font_dim().h) - 2};
+
+    if (m_numbersticky == 0)
+        m_graphicscontext.draw_string(pos, " ");
+    else if (m_numbersticky > 9)
+        m_graphicscontext.draw_string(pos, ">");
+    else
+        m_graphicscontext.draw_string(pos, ::std::to_string(m_numbersticky));
 }
 
 void

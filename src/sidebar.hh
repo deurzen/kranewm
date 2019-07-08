@@ -26,6 +26,7 @@ public:
           m_graphicscontext(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_layoutsymbol(layout_t::floating),
           m_workspacenumber(0),
+          m_numbersticky(0),
           m_numberclients(0),
           m_activity_indicators(USER_WORKSPACES.size()),
           m_workspace_activity(USER_WORKSPACES.size(), 0u),
@@ -88,6 +89,9 @@ public:
     sidebar_t& record_urgent(unsigned);
     sidebar_t& erase_urgent(unsigned);
 
+    sidebar_t& record_sticky();
+    sidebar_t& erase_sticky();
+
     sidebar_t& indicate_moveresize();
     sidebar_t& indicate_nomoveresize();
 
@@ -100,6 +104,7 @@ public:
 private:
     void draw_layoutsymbol();
     void draw_workspacenumber();
+    void draw_numbersticky();
     void draw_numberclients();
 
     ewmh_t& m_ewmh;
@@ -108,6 +113,7 @@ private:
 
     layout_t m_layoutsymbol;
     unsigned m_workspacenumber;
+    unsigned m_numbersticky;
     unsigned m_numberclients;
 
     ::std::vector<x_data::window_t> m_activity_indicators;

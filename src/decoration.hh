@@ -18,11 +18,14 @@ const unsigned long SIDEBAR_BG_COLOR = 0x080808;
 const unsigned long SIDEBAR_LAYOUT_COLOR           = 0xFFFF00;
 const unsigned long SIDEBAR_WORKSPACES_COLOR       = 0xFFFFFF;
 const unsigned long SIDEBAR_ACTIVE_WORKSPACE_COLOR = 0x00FF00;
+const unsigned long SIDEBAR_NSTICKY_COLOR          = 0xFFFFFF;
 const unsigned long SIDEBAR_NCLIENTS_COLOR         = 0xFFFFFF;
 
 const unsigned long REG_COLOR = 0x404040;
 const unsigned long SEL_COLOR = 0x0000FF;
 const unsigned long URG_COLOR = 0xFF0000;
+const unsigned long SELSTICKY_COLOR = 0x7272AA;
+const unsigned long REGSTICKY_COLOR = 0x727272;
 
 const unsigned long MRIND_BG_COLOR     = 0x000000;
 const unsigned long MRIND_BORDER_COLOR = 0xFFFFFF;

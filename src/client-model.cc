@@ -399,6 +399,8 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action)
         return;
     default: break;
     }
+
+    m_changequeue.add(change_client_sticky(client));
 }
 
 void

@@ -32,6 +32,7 @@ private:
     void on_change_client_workspace();
     void on_change_client_fullscreen();
     void on_change_client_urgent();
+    void on_change_client_sticky();
 
     void on_change_workspace_active();
 
