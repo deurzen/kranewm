@@ -112,8 +112,14 @@ client_events_t::on_change_client_fullscreen()
         client->float_dim = former_state.float_dim;
         client->pos = former_state.pos;
         client->dim = former_state.dim;
-        if (m_clients.client_user_workspace(client)->in_float_layout() || client->floating)
+
+        if (client->floating
+            || ((!client->sticky && m_clients.client_user_workspace(client)->in_float_layout())
+            || (client->sticky && m_clients.active_workspace()->in_float_layout())))
+        {
             client->resize(client->float_dim).move(client->float_pos);
+        } else if (client->sticky)
+            m_clients.active_workspace()->arrange();
         else
             m_clients.client_user_workspace(client)->arrange();
     }
@@ -150,17 +156,13 @@ client_events_t::on_change_client_sticky()
     auto client = change->client;
 
     if (client->sticky) {
-        if (client->focused)
-            client->frame.set_background_color(SELSTICKY_COLOR);
-        else
-            client->frame.set_background_color(REGSTICKY_COLOR);
+        if (client->focused) client->frame.set_background_color(SELSTICKY_COLOR);
+        else client->frame.set_background_color(REGSTICKY_COLOR);
 
         m_sidebar.record_sticky();
     } else {
-        if (client->focused)
-            client->frame.set_background_color(SEL_COLOR);
-        else
-            client->frame.set_background_color(REG_COLOR);
+        if (client->focused) client->frame.set_background_color(SEL_COLOR);
+        else client->frame.set_background_color(REG_COLOR);
 
         m_sidebar.erase_sticky();
     }
