@@ -190,15 +190,23 @@ client_model_t::cycle_focus_backward()
 void
 client_model_t::start_moving(client_ptr_t client)
 {
-    if ((client_user_workspace(client)->in_float_layout() || client->floating) && !client->fullscreen)
+    if (!client->fullscreen && (client->floating
+        || ((!client->sticky && client_user_workspace(client)->in_float_layout())
+        || (client->sticky && active_workspace()->in_float_layout()))))
+    {
         client_to_workspace(client, m_move_workspace);
+    }
 }
 
 void
 client_model_t::start_resizing(client_ptr_t client)
 {
-    if ((client_user_workspace(client)->in_float_layout() || client->floating) && !client->fullscreen)
+    if (!client->fullscreen && (client->floating
+        || ((!client->sticky && client_user_workspace(client)->in_float_layout())
+        || (client->sticky && active_workspace()->in_float_layout()))))
+    {
         client_to_workspace(client, m_resize_workspace);
+    }
 }
 
 void
