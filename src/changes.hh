@@ -155,17 +155,21 @@ inline clienturgentchange_ptr_t change_client_urgent(clientchange_ptr_t change)
 
 typedef struct clientstickychange_t : clientchange_t
 {
-    explicit clientstickychange_t(client_ptr_t _client)
+    explicit clientstickychange_t(client_ptr_t _client, user_workspace_ptr_t _workspace, bool _by_user)
       : clientchange_t(change_t::client_sticky),
-        client(_client) {}
+        client(_client),
+        workspace(_workspace),
+        by_user(_by_user) {}
 
     client_ptr_t client;
+    user_workspace_ptr_t workspace;
+    bool by_user;
 
 }* clientstickychange_ptr_t;
 
-inline clientstickychange_ptr_t change_client_sticky(client_ptr_t client)
+inline clientstickychange_ptr_t change_client_sticky(client_ptr_t client, user_workspace_ptr_t workspace, bool by_user)
 {
-    return new clientstickychange_t(client);
+    return new clientstickychange_t(client, workspace, by_user);
 }
 
 inline clientstickychange_ptr_t change_client_sticky(clientchange_ptr_t change)

@@ -152,20 +152,32 @@ client_events_t::on_change_client_urgent()
 void
 client_events_t::on_change_client_sticky()
 {
-    auto change = change_client_sticky(m_current_change);
-    auto client = change->client;
+    auto change    = change_client_sticky(m_current_change);
+    auto client    = change->client;
+    auto workspace = change->workspace;
+    auto by_user   = change->by_user;
 
     if (client->sticky) {
         if (client->focused) client->frame.set_background_color(SELSTICKY_COLOR);
         else client->frame.set_background_color(REGSTICKY_COLOR);
 
         m_sidebar.record_sticky();
+        m_sidebar.erase_activity(workspace->get_number());
     } else {
         if (client->focused) client->frame.set_background_color(SEL_COLOR);
         else client->frame.set_background_color(REG_COLOR);
 
         m_sidebar.erase_sticky();
+
+        if (by_user)
+            m_sidebar.record_activity(workspace->get_number());
     }
+
+    if (workspace != m_clients.active_workspace()) {
+        m_sidebar.erase_activity(workspace->get_number());
+        m_sidebar.record_activity(m_clients.active_workspace()->get_number());
+    }
+
     m_sidebar.draw();
 }
 
@@ -185,18 +197,18 @@ client_events_t::on_change_client_workspace()
         default: break;
         }
 
-    if (from) {
+    if (from)
         switch (from->get_type()) {
         case workspacetype_t::move:   from_move_workspace(client, from);     break;
         case workspacetype_t::resize: from_resize_workspace(client, from);   break;
         case workspacetype_t::user:   from_user_workspace(client, from, to); break;
         default: break;
         }
-    } else
+    else
         client->frame.grab();
 
-    if (to)
-        to->arrange();
+    /* if (to) */
+    /*     to->arrange(); */
 }
 
 void
@@ -265,7 +277,9 @@ client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t from, 
         unmap_all(client->children);
     }
 
-    m_sidebar.erase_activity(user_workspace(from)->get_number());
+    if (!client->sticky)
+        m_sidebar.erase_activity(user_workspace(from)->get_number());
+
     for (auto& child : client->children) {
         user_workspace_ptr_t child_workspace = m_clients.client_user_workspace(child);
         m_sidebar.erase_activity(user_workspace(child_workspace)->get_number());

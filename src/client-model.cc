@@ -96,7 +96,7 @@ void
 client_model_t::unmanage_client(client_ptr_t client)
 {
     if (client->sticky)
-        set_sticky(client, clientaction_t::remove);
+        set_sticky(client, clientaction_t::remove, false);
 
     auto workspace = client_workspace(client);
 
@@ -377,7 +377,7 @@ client_model_t::set_urgent(client_ptr_t client, clientaction_t action)
 }
 
 void
-client_model_t::set_sticky(client_ptr_t client, clientaction_t action)
+client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_user)
 {
     switch (action) {
     case clientaction_t::add:
@@ -390,6 +390,7 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action)
                         workspace, nullptr));
                     sync_workspace_focus();
             }
+            m_changequeue.add(change_client_sticky(client, m_client_workspaces[client], by_user));
         }
         break;
     case clientaction_t::remove:
@@ -398,6 +399,7 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action)
             for (auto& workspace : m_user_workspaces)
                 if (workspace != m_current_workspace)
                     workspace->remove_client(client);
+            m_changequeue.add(change_client_sticky(client, m_client_workspaces[client], by_user));
             m_client_workspaces[client] = m_current_workspace;
         }
         break;
@@ -407,8 +409,6 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action)
         return;
     default: break;
     }
-
-    m_changequeue.add(change_client_sticky(client));
 }
 
 void
