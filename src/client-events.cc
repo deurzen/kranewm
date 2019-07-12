@@ -253,7 +253,7 @@ client_events_t::on_change_workspace_active()
 void
 client_events_t::from_move_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
-    map_all(client->children);
+    map_all(client->children, true);
     x_data::release_pointer();
     m_x.exit_move_resize();
 }
@@ -261,7 +261,7 @@ client_events_t::from_move_workspace(client_ptr_t client, workspace_ptr_t worksp
 void
 client_events_t::from_resize_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
-    map_all(client->children);
+    map_all(client->children, true);
     x_data::release_pointer();
     m_x.exit_move_resize();
 }
@@ -291,7 +291,7 @@ client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t from, 
 void
 client_events_t::to_move_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
-    unmap_all(client->children);
+    unmap_all(client->children, true);
     m_x.enter_move(client, x_data::pointer_position());
     x_data::confine_pointer(m_x.moveresize()->indicator);
 }
@@ -299,7 +299,7 @@ client_events_t::to_move_workspace(client_ptr_t client, workspace_ptr_t workspac
 void
 client_events_t::to_resize_workspace(client_ptr_t client, workspace_ptr_t workspace)
 {
-    unmap_all(client->children);
+    unmap_all(client->children, true);
     m_x.enter_resize(client, x_data::pointer_position());
     x_data::confine_pointer(m_x.moveresize()->indicator);
 }
@@ -331,10 +331,10 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
 
 template <typename container_t>
 void
-client_events_t::map_all(const container_t container)
+client_events_t::map_all(const container_t container, bool sticky_also)
 {
     for (auto& c : container)
-        if (!c->sticky){
+        if (sticky_also || !c->sticky){
             c->expect = clientexpect_t::map;
             c->map();
             map_all(c->children);
@@ -343,10 +343,10 @@ client_events_t::map_all(const container_t container)
 
 template <typename container_t>
 void
-client_events_t::unmap_all(const container_t container)
+client_events_t::unmap_all(const container_t container, bool sticky_also)
 {
     for (auto& c : container)
-        if (!c->sticky) {
+        if (sticky_also || !c->sticky) {
             c->expect = clientexpect_t::withdraw;
             m_clients.unfocus_if_focused(c);
             c->unmap();

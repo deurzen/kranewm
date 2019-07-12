@@ -59,15 +59,17 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
     m_processes.add_process(client);
 
     if (client->parent) {
-        if (is_user_workspace(client_workspace(client->parent))
-            && client_workspace(client->parent) != client_workspace(client))
-        {
-            change_active_workspace(client_user_workspace(client->parent));
-        }
-    }
+        if (!client->parent->sticky) {
+            if (is_user_workspace(client_workspace(client->parent))
+                && client_workspace(client->parent) != client_workspace(client))
+            {
+                change_active_workspace(client_user_workspace(client->parent));
+            }
 
-    if (client->parent)
-        rule.workspace = m_client_workspaces[client->parent]->get_number();
+            rule.workspace = m_client_workspaces[client->parent]->get_number();
+        } else
+            rule.workspace = 0;
+    }
 
     if (rule.center)
         client->center();
@@ -88,6 +90,9 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
 
     if (rule.fullscreen)
         set_fullscreen(client, clientaction_t::add);
+
+    if (client->parent && client->parent->sticky)
+            set_sticky(client, clientaction_t::add, false);
 
     focus(client);
 }
@@ -379,6 +384,9 @@ client_model_t::set_urgent(client_ptr_t client, clientaction_t action)
 void
 client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_user)
 {
+    if (by_user && client->parent)
+        return;
+
     switch (action) {
     case clientaction_t::add:
         {
@@ -391,6 +399,9 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
                     sync_workspace_focus();
             }
             m_changequeue.add(change_client_sticky(client, m_client_workspaces[client], by_user));
+
+            for (auto& child : client->children)
+                set_sticky(child, clientaction_t::add, false);
         }
         break;
     case clientaction_t::remove:
@@ -401,6 +412,9 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
                     workspace->remove_client(client);
             m_changequeue.add(change_client_sticky(client, m_client_workspaces[client], by_user));
             m_client_workspaces[client] = m_current_workspace;
+
+            for (auto& child : client->children)
+                set_sticky(child, clientaction_t::remove, false);
         }
         break;
     case clientaction_t::toggle:
