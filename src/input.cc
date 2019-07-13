@@ -41,17 +41,11 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
                 if (client->fullscreen)
                     break;
 
-                if (!client->fullscreen && (client->floating
+                if (client->floating
                     || ((!client->sticky && m_clients.client_user_workspace(client)->in_float_layout())
-                    || (client->sticky && m_clients.active_workspace()->in_float_layout()))))
+                    || (client->sticky && m_clients.active_workspace()->in_float_layout())))
                 {
                     client->center();
-                } else if (!client->parent){
-                    client->set_float(clientaction_t::add).resize(client->float_dim).move(client->float_pos);
-                    m_clients.active_workspace()->raise_client(client);
-                    m_windowstack.apply(m_clients.active_workspace());
-                    m_clients.active_workspace()->arrange();
-                    m_sidebar.indicate_clientfloating().draw();
                 }
             }
             break;
@@ -79,6 +73,36 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
                 unsigned workspace = m_clients.active_workspace()->get_number() - 1;
                 workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
                 m_clients.change_active_workspace(workspace, false);
+            }
+            return;
+        case mouseop_t::toggle_float:
+            {
+                if (client->fullscreen)
+                    break;
+
+                if (!client->parent) {
+                    client->set_float(clientaction_t::toggle).resize(client->float_dim).move(client->float_pos);
+                    m_clients.active_workspace()->raise_client(client);
+                    m_windowstack.apply(m_clients.active_workspace());
+                    m_clients.active_workspace()->arrange();
+
+                    if (client->floating)
+                        m_sidebar.indicate_clientfloating().draw();
+                    else
+                        m_sidebar.indicate_clientnormal().draw();
+                }
+            }
+            return;
+        case mouseop_t::toggle_fullscreen:
+            {
+                m_clients.set_fullscreen(client, clientaction_t::toggle);
+
+                if (client->fullscreen)
+                    m_sidebar.indicate_clientfullscreen().draw();
+                else if (client->floating)
+                    m_sidebar.indicate_clientfloating().draw();
+                else
+                    m_sidebar.indicate_clientnormal().draw();
             }
             return;
         default: break;

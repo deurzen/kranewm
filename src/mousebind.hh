@@ -16,6 +16,8 @@ enum class mouseop_t
     client_prev_ws,
     goto_next_ws,
     goto_prev_ws,
+    toggle_float,
+    toggle_fullscreen,
 };
 
 struct mouseshortcut_t
