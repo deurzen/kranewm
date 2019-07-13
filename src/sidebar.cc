@@ -4,7 +4,7 @@
 void
 sidebar_t::draw()
 {
-    if (!SHOW_SIDEBAR)
+    if (!m_enabled)
         return;
 
     m_graphicscontext.clear();
@@ -12,6 +12,26 @@ sidebar_t::draw()
     draw_workspacenumber();
     draw_numbersticky();
     draw_numberclients();
+}
+
+void
+sidebar_t::toggle()
+{
+    m_enabled = !m_enabled;
+    if (m_enabled) {
+        m_sidebarwin.map();
+        m_ewmh.set_strut_property(m_sidebarwin, SIDEBAR_WIDTH + 2, 0, 0, 0);
+        for (auto& ind : m_activity_indicators)
+            ind.map();
+    } else {
+        m_sidebarwin.unmap();
+        m_ewmh.check_release_strut(m_sidebarwin);
+        m_moveresizeindicator.unmap();
+        m_floatingindicator.unmap();
+        m_fullscreenindicator.unmap();
+        for (auto& ind : m_activity_indicators)
+            ind.unmap();
+    }
 }
 
 sidebar_t&

@@ -59,6 +59,7 @@ enum class keyop_t
     client_to_ws_1, client_to_ws_2, client_to_ws_3,
     client_to_ws_4, client_to_ws_5, client_to_ws_6,
     client_to_ws_7, client_to_ws_8, client_to_ws_9,
+    toggle_sidebar
 };
 
 struct keyshortcut_t

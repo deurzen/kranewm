@@ -14,14 +14,12 @@
 #include <vector>
 
 
-static const bool SHOW_SIDEBAR = true;
-
-
 class sidebar_t
 {
 public:
     explicit sidebar_t(ewmh_t& ewmh)
-        : m_ewmh(ewmh),
+        : m_enabled(true),
+          m_ewmh(ewmh),
           m_sidebarwin(x_data::create_window(true)),
           m_graphicscontext(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_layoutsymbol(layout_t::floating),
@@ -35,9 +33,6 @@ public:
           m_floatingindicator(x_data::create_window(true)),
           m_fullscreenindicator(x_data::create_window(true))
     {
-        if (!SHOW_SIDEBAR)
-            return;
-
         auto root_attrs = x_data::get_attributes(x_data::g_root);
         m_sidebarwin.set_background_color(SIDEBAR_BG_COLOR);
         m_sidebarwin.resize({SIDEBAR_WIDTH, root_attrs.get().height}).move({0, 0});
@@ -78,6 +73,7 @@ public:
     }
 
     void draw();
+    void toggle();
 
     sidebar_t& set_layoutsymbol(layout_t);
     sidebar_t& set_workspacenumber(unsigned);
@@ -107,6 +103,7 @@ private:
     void draw_numbersticky();
     void draw_numberclients();
 
+    bool m_enabled;
     ewmh_t& m_ewmh;
     x_data::window_t m_sidebarwin;
     x_data::graphicscontext_t m_graphicscontext;
