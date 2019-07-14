@@ -23,6 +23,10 @@ sidebar_t::toggle()
         m_ewmh.set_strut_property(m_sidebarwin, SIDEBAR_WIDTH + 2, 0, 0, 0);
         for (auto& ind : m_activity_indicators)
             ind.map();
+        if (m_floatingindicator_set)
+            m_floatingindicator.map();
+        else if (m_fullscreenindicator_set)
+            m_fullscreenindicator.map();
     } else {
         m_sidebarwin.unmap();
         m_ewmh.check_release_strut(m_sidebarwin);
@@ -104,13 +108,16 @@ sidebar_t::erase_sticky()
 sidebar_t&
 sidebar_t::indicate_moveresize()
 {
-    m_moveresizeindicator.map();
+    m_moveresizeindicator_set = true;
+    if (m_enabled)
+        m_moveresizeindicator.map();
     return *this;
 }
 
 sidebar_t&
 sidebar_t::indicate_nomoveresize()
 {
+    m_moveresizeindicator_set = false;
     m_moveresizeindicator.unmap();
     return *this;
 }
@@ -118,22 +125,30 @@ sidebar_t::indicate_nomoveresize()
 sidebar_t&
 sidebar_t::indicate_clientfullscreen()
 {
+    m_fullscreenindicator_set = true;
+    m_floatingindicator_set = false;
     m_floatingindicator.unmap();
-    m_fullscreenindicator.map();
+    if (m_enabled)
+        m_fullscreenindicator.map();
     return *this;
 }
 
 sidebar_t&
 sidebar_t::indicate_clientfloating()
 {
+    m_floatingindicator_set = true;
+    m_fullscreenindicator_set = false;
     m_fullscreenindicator.unmap();
-    m_floatingindicator.map();
+    if (m_enabled)
+        m_floatingindicator.map();
     return *this;
 }
 
 sidebar_t&
 sidebar_t::indicate_clientnormal()
 {
+    m_floatingindicator_set = false;
+    m_fullscreenindicator_set = false;
     m_floatingindicator.unmap();
     m_fullscreenindicator.unmap();
     return *this;

@@ -120,6 +120,9 @@ private:
     x_data::window_t m_moveresizeindicator;
     x_data::window_t m_floatingindicator;
     x_data::window_t m_fullscreenindicator;
+    bool m_moveresizeindicator_set;
+    bool m_floatingindicator_set;
+    bool m_fullscreenindicator_set;
 
 };
 

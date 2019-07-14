@@ -70,8 +70,10 @@ client_events_t::on_change_client_focus()
             else to->frame.set_background_color(REG_COLOR);
             to->frame.grab();
         }
-    } else
+    } else {
         x_data::set_input_focus();
+        m_sidebar.indicate_clientnormal();
+    }
 }
 
 void
