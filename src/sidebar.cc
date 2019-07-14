@@ -21,6 +21,7 @@ sidebar_t::toggle()
     if (m_enabled) {
         m_sidebarwin.map();
         m_ewmh.set_strut_property(m_sidebarwin, SIDEBAR_WIDTH + 2, 0, 0, 0);
+        m_ewmh.check_apply_strut(m_sidebarwin);
         for (auto& ind : m_activity_indicators)
             ind.map();
         if (m_floatingindicator_set)

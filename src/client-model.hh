@@ -66,7 +66,6 @@ public:
     void start_resizing(client_ptr_t);
     void stop_moving(client_ptr_t, pos_t = pos_t{});
     void stop_resizing(client_ptr_t, pos_t = pos_t{}, dim_t = dim_t{});
-    void wedge_clients();
 
     void client_to_workspace(client_ptr_t, unsigned);
     void client_to_workspace(client_ptr_t, workspace_ptr_t);
@@ -77,6 +76,9 @@ public:
     void set_urgent(client_ptr_t, clientaction_t);
     void set_sticky(client_ptr_t, clientaction_t, bool = true);
     void set_marked(client_ptr_t);
+
+    void wedge_clients();
+    void refullscreen_clients();
 
     void jump_marked();
     void jump_process(const ::std::string&);

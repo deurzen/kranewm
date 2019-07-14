@@ -249,6 +249,15 @@ client_model_t::wedge_clients()
 }
 
 void
+client_model_t::refullscreen_clients()
+{
+    for (auto [client,state] : m_fullscreen_clients) {
+        state.fullscreen = client->fullscreen;
+        m_changequeue.add(change_client_fullscreen(client, state));
+    }
+}
+
+void
 client_model_t::client_to_workspace(client_ptr_t client, unsigned workspace_nr)
 {
     if (client->parent || client->sticky)

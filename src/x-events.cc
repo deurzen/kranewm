@@ -43,8 +43,10 @@ x_events_t::step()
 void
 x_events_t::register_window(x_data::window_t win)
 {
-    if (m_ewmh.check_apply_strut(win))
+    if (m_ewmh.check_apply_strut(win)) {
         m_clients.active_workspace()->arrange();
+        m_clients.refullscreen_clients();
+    }
 
     if (win.is_of_state("BELOW"))
         m_windowstack.add_to_stack({win, layer_t::below});

@@ -464,6 +464,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             m_sidebar.toggle();
             m_clients.active_workspace()->arrange();
+            m_clients.refullscreen_clients();
         }
         break;
     default: break;
