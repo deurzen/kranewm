@@ -12,15 +12,15 @@
 
 static const ::std::map<unsigned, ::std::string> USER_WORKSPACES({
 //    nr   name
-    { 1,   "1:main" },
-    { 2,   "2:web"  },
-    { 3,   "3:term" },
-    { 4,   "4"      },
-    { 5,   "5"      },
-    { 6,   "6"      },
-    { 7,   "7"      },
-    { 8,   "8"      },
-    { 9,   "9"      },
+    { 1,   "main" },
+    { 2,   "web"  },
+    { 3,   "term" },
+    { 4,   ""     },
+    { 5,   ""     },
+    { 6,   ""     },
+    { 7,   ""     },
+    { 8,   ""     },
+    { 9,   ""     },
 });
 
 
@@ -90,22 +90,26 @@ private:
 }* moveresize_workspace_ptr_t;
 
 
-inline moveresize_workspace_ptr_t moveresize_workspace(workspace_ptr_t workspace)
+inline moveresize_workspace_ptr_t
+moveresize_workspace(workspace_ptr_t workspace)
 {
     return dynamic_cast<moveresize_workspace_ptr_t>(workspace);
 }
 
-inline bool is_move_workspace(workspace_ptr_t workspace)
+inline bool
+is_move_workspace(workspace_ptr_t workspace)
 {
     return workspace->get_type() == workspacetype_t::move;
 }
 
-inline bool is_resize_workspace(workspace_ptr_t workspace)
+inline bool
+is_resize_workspace(workspace_ptr_t workspace)
 {
     return workspace->get_type() == workspacetype_t::resize;
 }
 
-inline bool is_moveresize_workspace(workspace_ptr_t workspace)
+inline bool
+is_moveresize_workspace(workspace_ptr_t workspace)
 {
     return workspace->get_type() == workspacetype_t::move
         || workspace->get_type() == workspacetype_t::resize;
@@ -133,14 +137,14 @@ public:
     const ::std::deque<client_ptr_t>& get_all() const;
 
     bool empty() const;
-    bool contains(client_ptr_t client) const;
+    bool contains(client_ptr_t) const;
     bool is_mirrored() const;
 
     bool in_float_layout() const;
     bool in_monocle_layout() const;
 
     const client_ptr_t get_focused() const;
-    void set_focused(client_ptr_t client, bool = false);
+    void set_focused(client_ptr_t, bool = false);
     void unset_focused();
 
     user_workspace_t& add_client(client_ptr_t) override;
@@ -196,13 +200,15 @@ private:
 }* user_workspace_ptr_t;
 
 
-inline user_workspace_ptr_t user_workspace(workspace_ptr_t workspace)
+inline user_workspace_ptr_t
+user_workspace(workspace_ptr_t workspace)
 {
     return dynamic_cast<user_workspace_ptr_t>(workspace);
 }
 
 
-inline bool is_user_workspace(workspace_ptr_t workspace)
+inline bool
+is_user_workspace(workspace_ptr_t workspace)
 {
     return workspace->get_type() == workspacetype_t::user;
 }
