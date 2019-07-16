@@ -6,7 +6,7 @@
 
 const ::std::string FONTNAME = "-*-terminus-*-*-*-*-*-*-*-*-*-*-*-*";
 
-const int BORDER_HEIGHT   = 3;
+const int BORDER_HEIGHT   = 5;
 const int ICON_WIDTH      = 250;
 const int ICON_HEIGHT     = 16;
 const int ICON_BORDER     = 1;

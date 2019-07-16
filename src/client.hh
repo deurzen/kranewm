@@ -49,6 +49,7 @@ typedef struct client_t
           fullscreen(rule.fullscreen),
           urgent(false),
           sticky(false),
+          motioning(false),
           parent(nullptr) {}
 
     void disown_child(client_ptr_t);
@@ -81,6 +82,7 @@ typedef struct client_t
     bool                fullscreen;
     bool                urgent;
     bool                sticky;
+    bool                motioning;
     client_ptr_t        parent;
     client_ptr_set_t    children;
 

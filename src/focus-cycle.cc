@@ -171,6 +171,42 @@ focus_cycle_t::prev_focus()
     return true;
 }
 
+client_ptr_t
+focus_cycle_t::peek_next(client_ptr_t client)
+{
+    fg_it it;
+    if (!client)
+        it = m_focus;
+    else
+        it = ::std::find(m_clients.begin(), m_clients.end(), client);
+
+    if (it == m_clients.end() || m_clients.size() <= 1)
+        return nullptr;
+
+    if (it == m_clients.begin())
+        return *(m_clients.end() - 1);
+    else
+        return *(it - 1);
+}
+
+client_ptr_t
+focus_cycle_t::peek_prev(client_ptr_t client)
+{
+    fg_it it;
+    if (!client)
+        it = m_focus;
+    else
+        it = ::std::find(m_clients.begin(), m_clients.end(), client);
+
+    if (it == m_clients.end() || m_clients.size() <= 1)
+        return nullptr;
+
+    if ((it + 1) == m_clients.end())
+        return *m_clients.begin();
+    else
+        return *(it + 1);
+}
+
 void
 focus_cycle_t::rotate_group_forward(unsigned from, unsigned to)
 {

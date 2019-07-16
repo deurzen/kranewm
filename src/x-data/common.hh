@@ -8,7 +8,7 @@ extern "C" {
 }
 
 
-const long REG_WIN_SELECTION = PropertyChangeMask;
+const long REG_WIN_SELECTION = PropertyChangeMask | KeyPressMask | KeyReleaseMask;
 const long REG_FRAME_SELECTION = FocusChangeMask
     | SubstructureRedirectMask | SubstructureNotifyMask;
 

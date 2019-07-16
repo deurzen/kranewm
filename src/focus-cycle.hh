@@ -56,6 +56,9 @@ public:
     bool next_focus();
     bool prev_focus();
 
+    client_ptr_t peek_next(client_ptr_t = nullptr);
+    client_ptr_t peek_prev(client_ptr_t = nullptr);
+
     void rotate_group_forward(unsigned, unsigned);
     void rotate_group_backward(unsigned, unsigned);
 

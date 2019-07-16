@@ -28,6 +28,7 @@ x_events_t::step()
     case Expose:           on_expose();            break;
     case FocusIn:          on_focus_in();          break;
     case KeyPress:         on_key_press();         break;
+    case KeyRelease:       on_key_release();       break;
     case MapNotify:        on_map_notify();        break;
     case MapRequest:       on_map_request();       break;
     case MappingNotify:    on_mapping_notify();    break;
@@ -373,10 +374,30 @@ x_events_t::on_key_press()
 {
     XKeyEvent event = m_current_event.get().xkey;
 
+    if (event.keycode == 133 && event.state == 0) {
+        x_data::window_t win = event.window;
+        client_ptr_t client = m_clients.win_to_client(win);
+        client->motioning = true;
+        m_clients.active_workspace()->render_indicators();
+    }
+
     m_input.process_key_input_global(event);
     client_ptr_t client = m_clients.focused_client();
     if (client)
         m_input.process_key_input_client(client, event);
+}
+
+void
+x_events_t::on_key_release()
+{
+    XKeyEvent event = m_current_event.get().xkey;
+
+    if (event.keycode == 133 && event.state == 8) {
+        x_data::window_t win = event.window;
+        client_ptr_t client = m_clients.win_to_client(win);
+        client->motioning = false;
+        m_clients.active_workspace()->remove_indicators();
+    }
 }
 
 void

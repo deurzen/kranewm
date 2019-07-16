@@ -172,6 +172,9 @@ public:
     user_workspace_t& set_mfactor(float);
     user_workspace_t& set_layout(layout_t);
 
+    user_workspace_t& render_indicators(client_ptr_t = nullptr);
+    user_workspace_t& remove_indicators(client_ptr_t = nullptr);
+
     unsigned get_nmaster() const;
     unsigned get_gap_size() const;
     float get_mfactor() const;

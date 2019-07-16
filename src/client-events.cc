@@ -51,8 +51,17 @@ client_events_t::on_change_client_focus()
         if (to->urgent)
             m_clients.set_urgent(to, clientaction_t::remove);
 
+        if (from && from->motioning) {
+            from->motioning = false;
+            to->motioning = true;
+            m_clients.active_workspace()->remove_indicators(from);
+        }
+
         if (x_data::set_input_focus(to->win)) {
             m_ewmh.set_active_window_property(to->win);
+            if (to->motioning)
+                m_clients.active_workspace()->render_indicators(to);
+
             if (to->sticky) to->frame.set_background_color(SELSTICKY_COLOR);
             else to->frame.set_background_color(SEL_COLOR);
 

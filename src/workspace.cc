@@ -325,6 +325,26 @@ user_workspace_t::set_layout(layout_t _layout)
     return *this;
 }
 
+user_workspace_t&
+user_workspace_t::render_indicators(client_ptr_t client)
+{
+    auto prev = m_clients.peek_prev(client);
+    auto next = m_clients.peek_next(client);
+    if (prev) prev->frame.set_background_color(0x0000FF);
+    if (next) next->frame.set_background_color(0x00FF00);
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::remove_indicators(client_ptr_t client)
+{
+    auto prev = m_clients.peek_prev(client);
+    auto next = m_clients.peek_next(client);
+    if (prev) prev->frame.set_background_color(0x435058);
+    if (next) next->frame.set_background_color(0x435058);
+    return *this;
+}
+
 
 unsigned
 user_workspace_t::get_nmaster() const

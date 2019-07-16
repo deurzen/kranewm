@@ -65,6 +65,7 @@ private:
     void on_expose();
     void on_focus_in();
     void on_key_press();
+    void on_key_release();
     void on_map_notify();
     void on_map_request();
     void on_mapping_notify();
