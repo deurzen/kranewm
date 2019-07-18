@@ -8,10 +8,6 @@ extern "C" {
 }
 
 
-const long REG_WIN_SELECTION = PropertyChangeMask | KeyPressMask | KeyReleaseMask;
-const long REG_FRAME_SELECTION = FocusChangeMask
-    | SubstructureRedirectMask | SubstructureNotifyMask;
-
 struct pos_t
 {
     pos_t(int _x = 0, int _y = 0)

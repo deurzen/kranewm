@@ -12,6 +12,8 @@ extern "C" {
 
 const ::std::string WMNAME = "kranewm";
 
+const bool ENABLE_CLIENT_MARKING = false;
+
 const int LEFT_BUTTON        = 1;
 const int RIGHT_BUTTON       = 3;
 const int SCROLL_UP_BUTTON   = 4;
@@ -31,7 +33,7 @@ const int KB_RESIZE_INCREMENT = 15;
 const int KB_MOVE_INCREMENT   = 15;
 
 const int MAX_GAP_SIZE = 200;
-const int MAX_NMASTER = 50;
+const int MAX_NMASTER  = 50;
 
 const int MIN_WINDOW_SIZE = 50;
 const int SIDEBAR_WIDTH   = 12;

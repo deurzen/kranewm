@@ -6,6 +6,12 @@
 #include "x-data/hints.hh"
 
 
+const long REG_WIN_SELECTION = PropertyChangeMask
+    | (ENABLE_CLIENT_MARKING ? KeyPressMask | KeyReleaseMask : 0);
+const long REG_FRAME_SELECTION = FocusChangeMask
+    | SubstructureRedirectMask | SubstructureNotifyMask;
+
+
 client_ptr_t
 create_client(x_data::window_t win, rule_t& rule)
 {
