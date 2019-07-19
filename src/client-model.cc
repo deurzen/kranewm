@@ -61,6 +61,7 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
 {
     m_client_windows[client->frame] = client;
     m_client_windows[client->win]   = client;
+    m_client_contexts[client]       = m_current_context;
     m_managed_windows.push_back(client->win);
     m_processes.add_process(client);
 
@@ -98,7 +99,7 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
         set_fullscreen(client, clientaction_t::add);
 
     if (client->parent && client->parent->sticky)
-            set_sticky(client, clientaction_t::add, false);
+        set_sticky(client, clientaction_t::add, false);
 
     focus(client);
 }
@@ -133,6 +134,7 @@ client_model_t::unmanage_client(client_ptr_t client)
 
     erase_find(m_client_windows, client->frame);
     erase_find(m_client_windows, client->win);
+    erase_find(m_client_contexts, client);
     erase_find(m_client_workspaces, client);
     erase_find(m_fullscreen_clients, client);
     erase_remove(m_managed_windows, client->win);
@@ -300,42 +302,6 @@ client_model_t::client_to_workspace(client_ptr_t client, workspace_ptr_t to)
 }
 
 void
-client_model_t::client_to_context(client_ptr_t client, unsigned context_nr)
-{
-    if (client->parent)
-        return;
-
-    if (range_t<unsigned>::contains(1, CONTEXTS.size(), context_nr--)) {
-        if (!m_contexts[context_nr])
-            m_contexts[context_nr]->initialize();
-
-        client_to_context(client, m_contexts[context_nr]);
-    }
-}
-
-void
-client_model_t::client_to_context(client_ptr_t client, context_ptr_t context)
-{
-
-}
-
-void
-client_model_t::change_active_context(unsigned context_nr)
-{
-    if (range_t<unsigned>::contains(1, CONTEXTS.size(), context_nr--)) {
-        if (!*m_contexts[context_nr])
-            m_contexts[context_nr]->initialize();
-
-        change_active_context(m_contexts[context_nr]);
-    }
-}
-
-void
-client_model_t::change_active_context(context_ptr_t context)
-{
-}
-
-void
 client_model_t::change_active_workspace(unsigned workspace_nr, bool save_prev)
 {
     if (range_t<unsigned>::contains(1, USER_WORKSPACES.size(), workspace_nr))
@@ -371,7 +337,51 @@ client_model_t::change_active_workspace(user_workspace_ptr_t workspace, bool sav
 
     m_changequeue.add(change_workspace_active(m_current_workspace, workspace));
     m_current_workspace = workspace;
+    m_current_context->set_activated(workspace);
     sync_workspace_focus(true);
+}
+
+void
+client_model_t::client_to_context(client_ptr_t client, unsigned context_nr)
+{
+    if (client->parent)
+        return;
+
+    if (range_t<unsigned>::contains(1, CONTEXTS.size(), context_nr--)) {
+        if (!m_contexts[context_nr])
+            m_contexts[context_nr]->initialize();
+
+        client_to_context(client, m_contexts[context_nr]);
+    }
+}
+
+void
+client_model_t::client_to_context(client_ptr_t client, context_ptr_t context)
+{
+
+}
+
+void
+client_model_t::change_active_context(unsigned context_nr)
+{
+    if (range_t<unsigned>::contains(1, CONTEXTS.size(), context_nr--)) {
+        if (!*m_contexts[context_nr])
+            m_contexts[context_nr]->initialize();
+
+        change_active_context(m_contexts[context_nr]);
+    }
+}
+
+void
+client_model_t::change_active_context(context_ptr_t context)
+{
+    if (context == m_current_context)
+        return;
+
+    m_current_context = context;
+    m_user_workspaces = context->get_workspaces();
+    user_workspace_ptr_t to = context->get_activated();
+    change_active_workspace(to, false);
 }
 
 void
