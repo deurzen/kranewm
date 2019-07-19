@@ -78,6 +78,7 @@ public:
 
 private:
     void draw_layoutsymbol();
+    void draw_clientstate();
     void draw_workspacenumbers();
     void draw_numbersticky();
     void draw_numberclients();

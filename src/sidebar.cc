@@ -17,6 +17,7 @@ sidebar_t::draw()
 
     m_graphicscontext.clear();
     draw_layoutsymbol();
+    draw_clientstate();
     draw_workspacenumbers();
     draw_numbersticky();
     draw_numberclients();
@@ -69,6 +70,22 @@ sidebar_t::draw_layoutsymbol()
 
     m_graphicscontext.draw_string(pos,
         ::std::string(1, static_cast<char>(m_context->get_activated()->get_layout())));
+}
+
+void
+sidebar_t::draw_clientstate()
+{
+    auto client = m_context->get_activated()->get_focused();
+    if (client && client->fullscreen) {
+        m_floatingindicator.unmap();
+        m_fullscreenindicator.map();
+    } else if (client && client->floating) {
+        m_floatingindicator.map();
+        m_fullscreenindicator.unmap();
+    } else {
+        m_floatingindicator.unmap();
+        m_fullscreenindicator.unmap();
+    }
 }
 
 void
