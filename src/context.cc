@@ -1,6 +1,16 @@
 #include "context.hh"
 
 void
+context_t::initialize()
+{
+    for (auto&& [nr,name] : USER_WORKSPACES)
+        m_workspaces.push_back(new user_workspace_t{nr, name.c_str(), m_ewmh});
+
+    m_activated = m_workspaces.front();
+    m_is_initialized = true;
+}
+
+void
 context_t::arrange() const
 {
     for (auto& workspace : m_workspaces)

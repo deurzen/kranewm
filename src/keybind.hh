@@ -53,12 +53,21 @@ enum class keyop_t
     activate_ws_1, activate_ws_2, activate_ws_3,
     activate_ws_4, activate_ws_5, activate_ws_6,
     activate_ws_7, activate_ws_8, activate_ws_9,
-    toggle_workspace,
     activate_next_ws, activate_prev_ws,
+    toggle_workspace,
+    activate_cx_1, activate_cx_2, activate_cx_3,
+    activate_cx_4, activate_cx_5, activate_cx_6,
+    activate_cx_7, activate_cx_8, activate_cx_9,
+    activate_next_cx, activate_prev_cx,
+    toggle_context,
     client_to_next_ws, client_to_prev_ws,
     client_to_ws_1, client_to_ws_2, client_to_ws_3,
     client_to_ws_4, client_to_ws_5, client_to_ws_6,
     client_to_ws_7, client_to_ws_8, client_to_ws_9,
+    client_to_next_cx, client_to_prev_cx,
+    client_to_cx_1, client_to_cx_2, client_to_cx_3,
+    client_to_cx_4, client_to_cx_5, client_to_cx_6,
+    client_to_cx_7, client_to_cx_8, client_to_cx_9,
     toggle_sidebar
 };
 

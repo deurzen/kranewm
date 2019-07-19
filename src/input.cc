@@ -191,6 +191,29 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             m_clients.change_active_workspace(workspace, false);
         }
         break;
+    case keyop_t::activate_cx_1: m_clients.change_active_context(1); break;
+    case keyop_t::activate_cx_2: m_clients.change_active_context(2); break;
+    case keyop_t::activate_cx_3: m_clients.change_active_context(3); break;
+    case keyop_t::activate_cx_4: m_clients.change_active_context(4); break;
+    case keyop_t::activate_cx_5: m_clients.change_active_context(5); break;
+    case keyop_t::activate_cx_6: m_clients.change_active_context(6); break;
+    case keyop_t::activate_cx_7: m_clients.change_active_context(7); break;
+    case keyop_t::activate_cx_8: m_clients.change_active_context(8); break;
+    case keyop_t::activate_cx_9: m_clients.change_active_context(9); break;
+    case keyop_t::activate_next_cx:
+        {
+            unsigned context = m_clients.active_context()->get_letter() - 'a' + 1;
+            context %= CONTEXTS.size();
+            m_clients.change_active_context(context + 1);
+        }
+        break;
+    case keyop_t::activate_prev_cx:
+        {
+            unsigned context = m_clients.active_context()->get_letter() - 'a';
+            context = (context == 0) ? CONTEXTS.size() : context;
+            m_clients.change_active_context(context);
+        }
+        break;
     case keyop_t::floating:
         {
             m_clients.active_workspace()->set_layout(layout_t::floating);
@@ -620,6 +643,60 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
     case keyop_t::client_to_ws_9:
         {
             m_clients.client_to_workspace(client, 9);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_cx_1:
+        {
+            m_clients.client_to_context(client, 1);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_cx_2:
+        {
+            m_clients.client_to_context(client, 2);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_cx_3:
+        {
+            m_clients.client_to_context(client, 3);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_cx_4:
+        {
+            m_clients.client_to_context(client, 4);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_cx_5:
+        {
+            m_clients.client_to_context(client, 5);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_cx_6:
+        {
+            m_clients.client_to_context(client, 6);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_cx_7:
+        {
+            m_clients.client_to_context(client, 7);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_cx_8:
+        {
+            m_clients.client_to_context(client, 8);
+            m_clients.active_workspace()->arrange();
+        }
+        break;
+    case keyop_t::client_to_cx_9:
+        {
+            m_clients.client_to_context(client, 9);
             m_clients.active_workspace()->arrange();
         }
         break;

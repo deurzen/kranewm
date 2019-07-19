@@ -25,7 +25,7 @@ public:
         : m_changequeue(changequeue),
           m_windowstack(windowstack),
           m_processes(processes),
-          m_current_context(new context_t{'a', CONTEXTS.at('a'), ewmh}),
+          m_current_context(new context_t{'a', CONTEXTS.at('a'), ewmh, true}),
           m_current_workspace(m_current_context->get_activated()),
           m_move_workspace(new moveresize_workspace_t{workspacetype_t::move}),
           m_resize_workspace(new moveresize_workspace_t{workspacetype_t::resize}),
@@ -34,6 +34,10 @@ public:
           m_focused_client(nullptr)
     {
         m_contexts.push_back(m_current_context);
+        for (size_t i = 1; i < CONTEXTS.size(); ++i) {
+            char lt = 'a' + static_cast<char>(i);
+            m_contexts.push_back(new context_t{lt, CONTEXTS.at(lt), ewmh});
+        }
     }
 
     ~client_model_t()
@@ -50,6 +54,7 @@ public:
     user_workspace_ptr_t client_user_workspace(client_ptr_t);
 
     user_workspace_ptr_t active_workspace() const;
+    context_ptr_t active_context() const;
     client_ptr_t focused_client() const;
 
     void manage_client(client_ptr_t, rule_t);

@@ -43,6 +43,12 @@ client_model_t::active_workspace() const
     return m_current_workspace;
 }
 
+context_ptr_t
+client_model_t::active_context() const
+{
+    return m_current_context;
+}
+
 client_ptr_t
 client_model_t::focused_client() const
 {
@@ -270,6 +276,7 @@ client_model_t::client_to_workspace(client_ptr_t client, unsigned workspace_nr)
 void
 client_model_t::client_to_workspace(client_ptr_t client, workspace_ptr_t to)
 {
+
     auto from = client_workspace(client);
 
     if (from == to)
@@ -290,6 +297,43 @@ client_model_t::client_to_workspace(client_ptr_t client, workspace_ptr_t to)
         (is_user_workspace(from) ? to : nullptr)));
 
     sync_workspace_focus();
+}
+
+void
+client_model_t::client_to_context(client_ptr_t client, unsigned context_nr)
+{
+    if (client->parent)
+        return;
+
+    if (range_t<unsigned>::contains(1, CONTEXTS.size(), context_nr)) {
+        if (!m_contexts[context_nr])
+            m_contexts[context_nr]->initialize();
+
+        client_to_context(client, m_contexts[context_nr]);
+    }
+}
+
+void
+client_model_t::client_to_context(client_ptr_t client, context_ptr_t context)
+{
+
+}
+
+void
+client_model_t::change_active_context(unsigned context_nr)
+{
+    if (range_t<unsigned>::contains(1, CONTEXTS.size(), context_nr)) {
+        if (!m_contexts[context_nr])
+            m_contexts[context_nr]->initialize();
+
+        change_active_context(m_contexts[context_nr]);
+    }
+}
+
+void
+client_model_t::change_active_context(context_ptr_t)
+{
+
 }
 
 void

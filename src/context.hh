@@ -25,14 +25,15 @@ typedef class context_t* context_ptr_t;
 typedef class context_t
 {
 public:
-    context_t(char letter, const ::std::string name, ewmh_t& ewmh)
-        : m_letter(letter),
-          m_name(name)
+    context_t(char letter, const ::std::string name, ewmh_t& ewmh, bool initialize = false)
+        : m_ewmh(ewmh),
+          m_letter(letter),
+          m_name(name),
+          m_is_initialized(initialize),
+          m_activated(nullptr)
     {
-        for (auto&& [nr,name] : USER_WORKSPACES)
-            m_workspaces.push_back(new user_workspace_t{nr, name.c_str(), ewmh});
-
-        m_activated = m_workspaces.front();
+        if (initialize)
+            context_t::initialize();
     }
 
     ~context_t()
@@ -40,6 +41,13 @@ public:
         for (auto& workspace : m_workspaces)
             delete workspace;
     }
+
+    explicit operator bool() const
+    {
+        return m_is_initialized;
+    }
+
+    void initialize();
 
     void arrange() const;
 
@@ -73,10 +81,12 @@ public:
     context_t& set_all_layout(layout_t);
 
 private:
+    ewmh_t& m_ewmh;
     char m_letter;
     ::std::string m_name;
-    ::std::vector<user_workspace_ptr_t> m_workspaces;
+    bool m_is_initialized;
 
+    ::std::vector<user_workspace_ptr_t> m_workspaces;
     user_workspace_ptr_t m_activated;
 
 }* context_ptr_t;
