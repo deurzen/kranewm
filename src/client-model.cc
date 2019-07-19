@@ -305,7 +305,7 @@ client_model_t::client_to_context(client_ptr_t client, unsigned context_nr)
     if (client->parent)
         return;
 
-    if (range_t<unsigned>::contains(1, CONTEXTS.size(), context_nr)) {
+    if (range_t<unsigned>::contains(1, CONTEXTS.size(), context_nr--)) {
         if (!m_contexts[context_nr])
             m_contexts[context_nr]->initialize();
 
@@ -322,8 +322,8 @@ client_model_t::client_to_context(client_ptr_t client, context_ptr_t context)
 void
 client_model_t::change_active_context(unsigned context_nr)
 {
-    if (range_t<unsigned>::contains(1, CONTEXTS.size(), context_nr)) {
-        if (!m_contexts[context_nr])
+    if (range_t<unsigned>::contains(1, CONTEXTS.size(), context_nr--)) {
+        if (!*m_contexts[context_nr])
             m_contexts[context_nr]->initialize();
 
         change_active_context(m_contexts[context_nr]);
@@ -331,9 +331,8 @@ client_model_t::change_active_context(unsigned context_nr)
 }
 
 void
-client_model_t::change_active_context(context_ptr_t)
+client_model_t::change_active_context(context_ptr_t context)
 {
-
 }
 
 void
