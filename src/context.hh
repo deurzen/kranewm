@@ -63,15 +63,6 @@ public:
     context_t& add_workspace(user_workspace_ptr_t);
     context_t& remove_workspace(user_workspace_ptr_t);
 
-    context_t& next();
-    context_t& prev();
-
-    context_t& move_up();
-    context_t& move_down();
-
-    context_t& rotate_forward();
-    context_t& rotate_backward();
-
     context_t& add_all_client(client_ptr_t);
     context_t& remove_all_client(client_ptr_t);
 

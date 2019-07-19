@@ -80,62 +80,6 @@ context_t::remove_workspace(user_workspace_ptr_t workspace)
 
 
 context_t&
-context_t::next()
-{
-    unsigned workspace = m_activated->get_number();
-    workspace %= m_workspaces.size();
-    m_activated = m_workspaces[workspace];
-    return *this;
-}
-
-context_t&
-context_t::prev()
-{
-    unsigned workspace = m_activated->get_number() - 1;
-    workspace = (workspace == 0) ? m_workspaces.size() : workspace;
-    m_activated = m_workspaces[workspace];
-    return *this;
-}
-
-context_t&
-context_t::move_up()
-{
-
-    return *this;
-}
-
-context_t&
-context_t::move_down()
-{
-
-    return *this;
-}
-
-
-context_t&
-context_t::rotate_forward()
-{
-    if (m_workspaces.size() > 1) {
-        auto from_it = m_workspaces.begin();
-        auto to_it   = m_workspaces.end() - 1; // TODO check
-        ::std::rotate(from_it, from_it + 1, to_it);
-    }
-    return *this;
-}
-
-context_t&
-context_t::rotate_backward()
-{ // TODO check/rewrite
-    if (m_workspaces.size() > 1) {
-        auto from_it = m_workspaces.rbegin();
-        auto to_it   = m_workspaces.rend() - 1;
-        ::std::rotate(from_it, from_it + 1, to_it);
-    }
-    return *this;
-}
-
-
-context_t&
 context_t::add_all_client(client_ptr_t client)
 {
     for (auto& workspace : m_workspaces)
