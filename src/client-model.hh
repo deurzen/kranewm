@@ -50,6 +50,7 @@ public:
     }
 
     client_ptr_t win_to_client(x_data::window_t);
+    context_ptr_t client_context(client_ptr_t);
     workspace_ptr_t client_workspace(client_ptr_t);
     user_workspace_ptr_t client_user_workspace(client_ptr_t);
 

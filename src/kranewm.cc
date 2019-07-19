@@ -50,10 +50,6 @@ kranewm_t::setup()
         [=](x_data::window_t win) { m_events.register_window(win); });
 
     m_changes.process_queued_changes();
-
-    m_sidebar.set_layoutsymbol(m_clients.active_workspace()->get_layout());
-    m_sidebar.set_workspacenumber(m_clients.active_workspace()->get_number());
-    m_sidebar.set_numberclients(m_clients.active_workspace()->get_all().size());
     m_sidebar.draw();
 
     x_data::sync(true);

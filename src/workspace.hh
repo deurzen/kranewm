@@ -124,6 +124,7 @@ public:
           m_number(_number),
           m_name(_name),
           m_nmaster(1),
+          m_nurgent(0),
           m_gap_size(0),
           m_mfactor(.5f),
           m_mirrored(false),
@@ -178,6 +179,11 @@ public:
     layout_t get_layout() const;
     const workspacestack_t& get_stack() const;
 
+    unsigned get_nurgent() const;
+    bool is_urgent() const;
+    void record_urgent();
+    void erase_urgent();
+
     bool is_master(client_ptr_t);
     bool is_stack(client_ptr_t);
 
@@ -188,6 +194,7 @@ private:
     unsigned         m_number;
     ::std::string    m_name;
     unsigned         m_nmaster;
+    unsigned         m_nurgent;
     unsigned         m_gap_size;
     float            m_mfactor;
     bool             m_mirrored;

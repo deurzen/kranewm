@@ -1,5 +1,6 @@
 #include "context.hh"
 
+
 void
 context_t::initialize()
 {
@@ -126,4 +127,29 @@ context_t::set_all_layout(layout_t layout)
     for (auto& workspace : m_workspaces)
         workspace->set_layout(layout);
     return *this;
+}
+
+unsigned
+context_t::get_nsticky() const
+{
+    return m_nsticky;
+}
+
+unsigned
+context_t::get_nnonsticky(unsigned workspace_nr) const
+{
+    return m_workspaces[workspace_nr]->get_all().size() - m_nsticky;
+}
+
+void
+context_t::record_sticky()
+{
+    ++m_nsticky;
+}
+
+void
+context_t::erase_sticky()
+{
+    if (m_nsticky)
+        --m_nsticky;
 }

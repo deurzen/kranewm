@@ -16,6 +16,15 @@ client_model_t::win_to_client(x_data::window_t win)
     return nullptr;
 }
 
+context_ptr_t
+client_model_t::client_context(client_ptr_t client)
+{
+    if (m_client_contexts.find(client) != m_client_contexts.end())
+        return m_client_contexts[client];
+
+    return nullptr;
+}
+
 workspace_ptr_t
 client_model_t::client_workspace(client_ptr_t client)
 {
@@ -460,7 +469,8 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
                         workspace, nullptr));
                     sync_workspace_focus();
             }
-            m_changequeue.add(change_client_sticky(client, m_client_workspaces[client], by_user));
+
+            m_changequeue.add(change_client_sticky(client, m_client_contexts[client]));
 
             for (auto& child : client->children)
                 set_sticky(child, clientaction_t::add, false);
@@ -472,7 +482,8 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
             for (auto& workspace : m_user_workspaces)
                 if (workspace != m_current_workspace)
                     workspace->remove_client(client);
-            m_changequeue.add(change_client_sticky(client, m_client_workspaces[client], by_user));
+
+            m_changequeue.add(change_client_sticky(client, m_client_contexts[client]));
             m_client_workspaces[client] = m_current_workspace;
 
             for (auto& child : client->children)

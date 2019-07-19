@@ -6,6 +6,7 @@
 #include <queue>
 
 // fwd decls
+typedef class context_t* context_ptr_t;
 typedef class workspace_t* workspace_ptr_t;
 typedef class user_workspace_t* user_workspace_ptr_t;
 
@@ -155,21 +156,19 @@ inline clienturgentchange_ptr_t change_client_urgent(clientchange_ptr_t change)
 
 typedef struct clientstickychange_t : clientchange_t
 {
-    explicit clientstickychange_t(client_ptr_t _client, user_workspace_ptr_t _workspace, bool _by_user)
+    explicit clientstickychange_t(client_ptr_t _client, context_ptr_t _context)
       : clientchange_t(change_t::client_sticky),
         client(_client),
-        workspace(_workspace),
-        by_user(_by_user) {}
+        context(_context) {}
 
     client_ptr_t client;
-    user_workspace_ptr_t workspace;
-    bool by_user;
+    context_ptr_t context;
 
 }* clientstickychange_ptr_t;
 
-inline clientstickychange_ptr_t change_client_sticky(client_ptr_t client, user_workspace_ptr_t workspace, bool by_user)
+inline clientstickychange_ptr_t change_client_sticky(client_ptr_t client, context_ptr_t context)
 {
-    return new clientstickychange_t(client, workspace, by_user);
+    return new clientstickychange_t(client, context);
 }
 
 inline clientstickychange_ptr_t change_client_sticky(clientchange_ptr_t change)

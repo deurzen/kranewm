@@ -1,12 +1,13 @@
 #ifndef __KRANEWM__CLIENT_EVENTS__GUARD__
 #define __KRANEWM__CLIENT_EVENTS__GUARD__
 
+#include "sidebar.hh"
+#include "client-model.hh"
+
 // fwd decls
 class changequeue_t;
 class ewmh_t;
-class sidebar_t;
 class x_model_t;
-class client_model_t;
 typedef class clientchange_t* clientchange_ptr_t;
 typedef class client_t* client_ptr_t;
 typedef class workspace_t* workspace_ptr_t;
@@ -22,7 +23,10 @@ public:
           m_ewmh(ewmh),
           m_sidebar(sidebar),
           m_x(x),
-          m_clients(clients) {}
+          m_clients(clients)
+    {
+        m_sidebar.set_context(m_clients.active_context());
+    }
 
     void process_queued_changes();
 

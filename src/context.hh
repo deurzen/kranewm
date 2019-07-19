@@ -30,6 +30,7 @@ public:
           m_letter(letter),
           m_name(name),
           m_is_initialized(initialize),
+          m_nsticky(0),
           m_activated(nullptr)
     {
         if (initialize)
@@ -71,11 +72,18 @@ public:
     context_t& set_all_mfactor(float);
     context_t& set_all_layout(layout_t);
 
+    unsigned get_nsticky() const;
+    unsigned get_nnonsticky(unsigned) const;
+    void record_sticky();
+    void erase_sticky();
+
 private:
     ewmh_t& m_ewmh;
+
     char m_letter;
     ::std::string m_name;
     bool m_is_initialized;
+    unsigned m_nsticky;
 
     ::std::vector<user_workspace_ptr_t> m_workspaces;
     user_workspace_ptr_t m_activated;

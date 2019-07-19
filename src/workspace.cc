@@ -356,6 +356,31 @@ user_workspace_t::get_stack() const
     return m_stack;
 }
 
+unsigned
+user_workspace_t::get_nurgent() const
+{
+    return m_nurgent;
+}
+
+bool
+user_workspace_t::is_urgent() const
+{
+    return m_nurgent > 0;
+}
+
+void
+user_workspace_t::record_urgent()
+{
+    ++m_nurgent;
+}
+
+void
+user_workspace_t::erase_urgent()
+{
+    if (m_nurgent)
+        --m_nurgent;
+}
+
 bool
 user_workspace_t::is_master(client_ptr_t client)
 {

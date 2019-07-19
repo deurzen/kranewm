@@ -13,6 +13,8 @@
 
 #include <vector>
 
+// fwd decls
+typedef class context_t* context_ptr_t;
 
 class sidebar_t
 {
@@ -22,13 +24,8 @@ public:
           m_ewmh(ewmh),
           m_sidebarwin(x_data::create_window(true)),
           m_graphicscontext(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
-          m_layoutsymbol(layout_t::floating),
-          m_workspacenumber(0),
-          m_numbersticky(0),
-          m_numberclients(0),
+          m_context(nullptr),
           m_activity_indicators(USER_WORKSPACES.size()),
-          m_workspace_activity(USER_WORKSPACES.size(), 0u),
-          m_workspace_urgent(USER_WORKSPACES.size(), 0u),
           m_moveresizeindicator(x_data::create_window(true)),
           m_floatingindicator(x_data::create_window(true)),
           m_fullscreenindicator(x_data::create_window(true))
@@ -72,34 +69,16 @@ public:
         m_fullscreenindicator.resize({1, 1}).move({SIDEBAR_WIDTH - 2, 1});
     }
 
+    void set_context(context_ptr_t);
+
     void draw();
     void toggle();
-
-    sidebar_t& set_layoutsymbol(layout_t);
-    sidebar_t& set_workspacenumber(unsigned);
-    sidebar_t& set_numberclients(unsigned);
-
-    sidebar_t& record_activity(unsigned);
-    sidebar_t& erase_activity(unsigned);
-
-    sidebar_t& record_urgent(unsigned);
-    sidebar_t& erase_urgent(unsigned);
-
-    sidebar_t& record_sticky();
-    sidebar_t& erase_sticky();
-
-    sidebar_t& indicate_moveresize();
-    sidebar_t& indicate_nomoveresize();
-
-    sidebar_t& indicate_clientfullscreen();
-    sidebar_t& indicate_clientfloating();
-    sidebar_t& indicate_clientnormal();
 
     x_data::window_t get_win() const;
 
 private:
     void draw_layoutsymbol();
-    void draw_workspacenumber();
+    void draw_workspacenumbers();
     void draw_numbersticky();
     void draw_numberclients();
 
@@ -107,22 +86,12 @@ private:
     ewmh_t& m_ewmh;
     x_data::window_t m_sidebarwin;
     x_data::graphicscontext_t m_graphicscontext;
-
-    layout_t m_layoutsymbol;
-    unsigned m_workspacenumber;
-    unsigned m_numbersticky;
-    unsigned m_numberclients;
+    context_ptr_t m_context;
 
     ::std::vector<x_data::window_t> m_activity_indicators;
-    ::std::vector<int> m_workspace_activity;
-    ::std::vector<int> m_workspace_urgent;
-
     x_data::window_t m_moveresizeindicator;
     x_data::window_t m_floatingindicator;
     x_data::window_t m_fullscreenindicator;
-    bool m_moveresizeindicator_set;
-    bool m_floatingindicator_set;
-    bool m_fullscreenindicator_set;
 
 };
 

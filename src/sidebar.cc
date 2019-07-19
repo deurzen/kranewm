@@ -1,5 +1,13 @@
 #include "sidebar.hh"
 
+#include "context.hh"
+
+
+void
+sidebar_t::set_context(context_ptr_t context)
+{
+    m_context = context;
+}
 
 void
 sidebar_t::draw()
@@ -9,7 +17,7 @@ sidebar_t::draw()
 
     m_graphicscontext.clear();
     draw_layoutsymbol();
-    draw_workspacenumber();
+    draw_workspacenumbers();
     draw_numbersticky();
     draw_numberclients();
 }
@@ -24,10 +32,15 @@ sidebar_t::toggle()
         m_ewmh.check_apply_strut(m_sidebarwin);
         for (auto& ind : m_activity_indicators)
             ind.map();
-        if (m_floatingindicator_set)
+        if (m_context->get_activated()->get_focused()
+            && m_context->get_activated()->get_focused()->floating)
+        {
             m_floatingindicator.map();
-        else if (m_fullscreenindicator_set)
+        } else if (m_context->get_activated()->get_focused()
+            && m_context->get_activated()->get_focused()->fullscreen)
+        {
             m_fullscreenindicator.map();
+        }
     } else {
         m_sidebarwin.unmap();
         m_ewmh.check_release_strut(m_sidebarwin);
@@ -37,122 +50,6 @@ sidebar_t::toggle()
         for (auto& ind : m_activity_indicators)
             ind.unmap();
     }
-}
-
-sidebar_t&
-sidebar_t::set_layoutsymbol(layout_t layout)
-{
-    m_layoutsymbol = layout;
-    return *this;
-}
-
-sidebar_t&
-sidebar_t::set_workspacenumber(unsigned workspace)
-{
-    m_workspacenumber = workspace;
-    return *this;
-}
-
-sidebar_t&
-sidebar_t::set_numberclients(unsigned n)
-{
-    m_numberclients = n;
-    return *this;
-}
-
-sidebar_t&
-sidebar_t::record_activity(unsigned workspace)
-{
-    ++m_workspace_activity[workspace - 1];
-    return *this;
-}
-
-sidebar_t&
-sidebar_t::erase_activity(unsigned workspace)
-{
-    if (m_workspace_activity[workspace - 1] > 0)
-        --m_workspace_activity[workspace - 1];
-    return *this;
-}
-
-sidebar_t&
-sidebar_t::record_urgent(unsigned workspace)
-{
-    ++m_workspace_urgent[workspace - 1];
-    return *this;
-}
-
-sidebar_t&
-sidebar_t::erase_urgent(unsigned workspace)
-{
-    if (m_workspace_urgent[workspace - 1] > 0)
-        --m_workspace_urgent[workspace - 1];
-    return *this;
-}
-
-sidebar_t&
-sidebar_t::record_sticky()
-{
-    ++m_numbersticky;
-    return *this;
-}
-
-sidebar_t&
-sidebar_t::erase_sticky()
-{
-    if (m_numbersticky > 0)
-        --m_numbersticky;
-    return *this;
-}
-
-
-sidebar_t&
-sidebar_t::indicate_moveresize()
-{
-    m_moveresizeindicator_set = true;
-    if (m_enabled)
-        m_moveresizeindicator.map();
-    return *this;
-}
-
-sidebar_t&
-sidebar_t::indicate_nomoveresize()
-{
-    m_moveresizeindicator_set = false;
-    m_moveresizeindicator.unmap();
-    return *this;
-}
-
-sidebar_t&
-sidebar_t::indicate_clientfullscreen()
-{
-    m_fullscreenindicator_set = true;
-    m_floatingindicator_set = false;
-    m_floatingindicator.unmap();
-    if (m_enabled)
-        m_fullscreenindicator.map();
-    return *this;
-}
-
-sidebar_t&
-sidebar_t::indicate_clientfloating()
-{
-    m_floatingindicator_set = true;
-    m_fullscreenindicator_set = false;
-    m_fullscreenindicator.unmap();
-    if (m_enabled)
-        m_floatingindicator.map();
-    return *this;
-}
-
-sidebar_t&
-sidebar_t::indicate_clientnormal()
-{
-    m_floatingindicator_set = false;
-    m_fullscreenindicator_set = false;
-    m_floatingindicator.unmap();
-    m_fullscreenindicator.unmap();
-    return *this;
 }
 
 x_data::window_t
@@ -170,18 +67,19 @@ sidebar_t::draw_layoutsymbol()
     pos_t pos = {(SIDEBAR_WIDTH - m_graphicscontext.get_font_dim().w) / 2,
         4 + m_graphicscontext.get_font_dim().h};
 
-    m_graphicscontext.draw_string(pos, ::std::string(1, static_cast<char>(m_layoutsymbol)));
+    m_graphicscontext.draw_string(pos,
+        ::std::string(1, static_cast<char>(m_context->get_activated()->get_layout())));
 }
 
 void
-sidebar_t::draw_workspacenumber()
+sidebar_t::draw_workspacenumbers()
 {
     m_graphicscontext.set_foreground(SIDEBAR_WORKSPACES_COLOR);
     pos_t current_pos = {(SIDEBAR_WIDTH - m_graphicscontext.get_font_dim().w) / 2,
         2 * (4 + m_graphicscontext.get_font_dim().h)};
 
-    for (size_t i = 0; i < m_activity_indicators.size(); ++i) {
-        if (m_workspace_activity[i]) {
+    for (size_t i = 0; i < m_context->get_workspaces().size(); ++i) {
+        if (m_context->get_nnonsticky(i)) {
             m_sidebarwin.lower();
             m_activity_indicators[i].map();
         } else
@@ -189,8 +87,8 @@ sidebar_t::draw_workspacenumber()
     }
 
     for (auto& [nr,_] : USER_WORKSPACES) {
-        if (nr == m_workspacenumber) {
-            unsigned long color = m_workspace_urgent[nr - 1]
+        if (nr == m_context->get_activated()->get_number()) {
+            unsigned long color = m_context->get_workspaces()[nr - 1]->is_urgent()
                 ? URG_COLOR
                 : SIDEBAR_ACTIVE_WORKSPACE_COLOR;
 
@@ -198,7 +96,7 @@ sidebar_t::draw_workspacenumber()
             m_activity_indicators[nr - 1].set_border_color(color);
             m_activity_indicators[nr - 1].set_background_color(color);
         } else {
-            unsigned long color = m_workspace_urgent[nr - 1]
+            unsigned long color = m_context->get_workspaces()[nr - 1]->is_urgent()
                 ? URG_COLOR
                 : SIDEBAR_WORKSPACES_COLOR;
 
@@ -221,12 +119,13 @@ sidebar_t::draw_numbersticky()
     pos_t pos = {(SIDEBAR_WIDTH - m_graphicscontext.get_font_dim().w) / 2,
         root_attrs.h() - 2 * (m_graphicscontext.get_font_dim().h) - 2};
 
-    if (m_numbersticky == 0)
+    unsigned nsticky = m_context->get_nsticky();
+    if (nsticky == 0)
         m_graphicscontext.draw_string(pos, " ");
-    else if (m_numbersticky > 9)
+    else if (nsticky > 9)
         m_graphicscontext.draw_string(pos, ">");
     else
-        m_graphicscontext.draw_string(pos, ::std::to_string(m_numbersticky));
+        m_graphicscontext.draw_string(pos, ::std::to_string(nsticky));
 }
 
 void
@@ -238,8 +137,9 @@ sidebar_t::draw_numberclients()
     pos_t pos = {(SIDEBAR_WIDTH - m_graphicscontext.get_font_dim().w) / 2,
         root_attrs.h() - (m_graphicscontext.get_font_dim().h) + 2};
 
-    if (m_numberclients > 9)
+    unsigned nclients = m_context->get_nnonsticky(m_context->get_activated()->get_number() - 1);
+    if (nclients > 9)
         m_graphicscontext.draw_string(pos, ">");
     else
-        m_graphicscontext.draw_string(pos, ::std::to_string(m_numberclients));
+        m_graphicscontext.draw_string(pos, ::std::to_string(nclients));
 }

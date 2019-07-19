@@ -184,14 +184,7 @@ x_events_t::on_client_message()
                         return;
 
                     m_clients.set_fullscreen(client, static_cast<clientaction_t>(event.data.l[0]));
-
-                    if (client->fullscreen)
-                        m_sidebar.indicate_clientfullscreen().draw();
-                    else if (client->floating)
-                        m_sidebar.indicate_clientfloating().draw();
-                    else
-                        m_sidebar.indicate_clientnormal().draw();
-
+                    m_sidebar.draw();
                 } else if ((Atom)event.data.l[property]
                     == m_ewmh.get_netwm_atom(netwmid_t::netwmstatedemandsattention))
                 {
@@ -343,12 +336,11 @@ x_events_t::on_destroy_notify()
     x_data::select_input(client->frame, 0);
 
     if (client->urgent)
-        m_sidebar.erase_urgent(m_clients.client_user_workspace(client)->get_number());
+        m_clients.client_user_workspace(client)->erase_urgent();
 
-    m_sidebar.erase_activity(m_clients.client_user_workspace(client)->get_number());
     m_clients.unmanage_client(client);
     m_clients.active_workspace()->arrange();
-    m_sidebar.set_numberclients(m_clients.active_workspace()->get_all().size()).draw();
+    m_sidebar.draw();
     m_ewmh.unregister_from_list(client->win);
 }
 

@@ -57,14 +57,7 @@ client_events_t::on_change_client_focus()
             else to->frame.set_background_color(SEL_COLOR);
 
             to->frame.ungrab();
-
-            if (to->fullscreen)
-                m_sidebar.indicate_clientfullscreen().draw();
-            else if (to->floating)
-                m_sidebar.indicate_clientfloating().draw();
-            else
-                m_sidebar.indicate_clientnormal().draw();
-
+            m_sidebar.draw();
         } else {
             if (to->sticky) to->frame.set_background_color(REGSTICKY_COLOR);
             else to->frame.set_background_color(REG_COLOR);
@@ -72,7 +65,7 @@ client_events_t::on_change_client_focus()
         }
     } else {
         x_data::set_input_focus();
-        m_sidebar.indicate_clientnormal();
+        m_sidebar.draw();
     }
 }
 
@@ -89,7 +82,7 @@ client_events_t::on_change_client_destroy()
     }
 
     if (!m_clients.focused_client())
-        m_sidebar.indicate_clientnormal().draw();
+        m_sidebar.draw();
 
     delete client;
 }
@@ -136,10 +129,12 @@ client_events_t::on_change_client_urgent()
     if (client->focused) {
         client->urgent = false;
         client->frame.set_background_color(SEL_COLOR);
-        m_sidebar.erase_urgent(m_clients.client_user_workspace(client)->get_number()).draw();
+        m_clients.client_user_workspace(client)->erase_urgent();
+        m_sidebar.draw();
     } else if (client->urgent) {
         client->frame.set_background_color(URG_COLOR);
-        m_sidebar.record_urgent(m_clients.client_user_workspace(client)->get_number()).draw();
+        m_clients.client_user_workspace(client)->record_urgent();
+        m_sidebar.draw();
     } else
         client->frame.set_background_color(REG_COLOR);
 
@@ -156,28 +151,16 @@ client_events_t::on_change_client_sticky()
 {
     auto change    = change_client_sticky(m_current_change);
     auto client    = change->client;
-    auto workspace = change->workspace;
-    auto by_user   = change->by_user;
+    auto context   = change->context;
 
     if (client->sticky) {
         if (client->focused) client->frame.set_background_color(SELSTICKY_COLOR);
         else client->frame.set_background_color(REGSTICKY_COLOR);
-
-        m_sidebar.record_sticky();
-        m_sidebar.erase_activity(workspace->get_number());
+        context->record_sticky();
     } else {
         if (client->focused) client->frame.set_background_color(SEL_COLOR);
         else client->frame.set_background_color(REG_COLOR);
-
-        m_sidebar.erase_sticky();
-
-        if (by_user)
-            m_sidebar.record_activity(workspace->get_number());
-    }
-
-    if (workspace != m_clients.active_workspace()) {
-        m_sidebar.erase_activity(workspace->get_number());
-        m_sidebar.record_activity(m_clients.active_workspace()->get_number());
+        context->erase_sticky();
     }
 
     m_sidebar.draw();
@@ -242,13 +225,7 @@ client_events_t::on_change_workspace_active()
     unmap_all(from->get_all());
 
     to->arrange();
-
-    if (!m_clients.focused_client())
-        m_sidebar.indicate_clientnormal();
-
-    m_sidebar.set_layoutsymbol(to->get_layout());
-    m_sidebar.set_workspacenumber(to->get_number());
-    m_sidebar.set_numberclients(to->get_all().size()).draw();
+    m_sidebar.draw();
 }
 
 
@@ -277,14 +254,6 @@ client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t from, 
         client->unmap();
         m_clients.unfocus_if_focused(client);
         unmap_all(client->children);
-    }
-
-    if (!client->sticky)
-        m_sidebar.erase_activity(user_workspace(from)->get_number());
-
-    for (auto& child : client->children) {
-        user_workspace_ptr_t child_workspace = m_clients.client_user_workspace(child);
-        m_sidebar.erase_activity(user_workspace(child_workspace)->get_number());
     }
 
     m_sidebar.draw();
@@ -319,14 +288,6 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
     }
 
     m_ewmh.set_wm_desktop_property(client->win, user_workspace(to)->get_number() - 1);
-    m_sidebar.set_numberclients(m_clients.active_workspace()->get_all().size());
-
-    m_sidebar.record_activity(user_workspace(to)->get_number());
-    for (auto& child : client->children) {
-        user_workspace_ptr_t child_workspace = m_clients.client_user_workspace(child);
-        m_sidebar.erase_activity(user_workspace(child_workspace)->get_number());
-    }
-
     m_sidebar.draw();
 }
 
