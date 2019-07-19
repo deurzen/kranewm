@@ -2,6 +2,7 @@
 #define __KRANEWM_CLIENT_MODEL_GUARD__
 
 #include "stack.hh"
+#include "context.hh"
 #include "workspace.hh"
 #include "rule.hh"
 
@@ -24,16 +25,15 @@ public:
         : m_changequeue(changequeue),
           m_windowstack(windowstack),
           m_processes(processes),
-          m_current_workspace(nullptr),
+          m_current_context(new context_t{'a', CONTEXTS.at('a'), ewmh}),
+          m_current_workspace(m_current_context->get_activated()),
           m_move_workspace(new moveresize_workspace_t{workspacetype_t::move}),
           m_resize_workspace(new moveresize_workspace_t{workspacetype_t::resize}),
+          m_user_workspaces(m_current_context->get_workspaces()),
           m_marked_client(nullptr),
           m_focused_client(nullptr)
     {
-        for (auto&& [nr,name] : USER_WORKSPACES)
-            m_user_workspaces.push_back(new user_workspace_t{nr, name.c_str(), ewmh});
-
-        m_current_workspace = m_user_workspaces.front();
+        m_contexts.push_back(m_current_context);
     }
 
     ~client_model_t()
@@ -41,8 +41,8 @@ public:
         delete m_move_workspace;
         delete m_resize_workspace;
 
-        for (auto& workspace : m_user_workspaces)
-            delete workspace;
+        for (auto& context : m_contexts)
+            delete context;
     }
 
     client_ptr_t win_to_client(x_data::window_t);
@@ -72,6 +72,11 @@ public:
     void change_active_workspace(unsigned, bool = true);
     void change_active_workspace(user_workspace_ptr_t = nullptr, bool = true);
 
+    void client_to_context(client_ptr_t, unsigned);
+    void client_to_context(client_ptr_t, context_ptr_t);
+    void change_active_context(unsigned);
+    void change_active_context(context_ptr_t = nullptr);
+
     void set_fullscreen(client_ptr_t, clientaction_t);
     void set_urgent(client_ptr_t, clientaction_t);
     void set_sticky(client_ptr_t, clientaction_t, bool = true);
@@ -90,15 +95,18 @@ private:
     windowstack_t& m_windowstack;
     processjumplist_t& m_processes;
 
+    context_ptr_t m_current_context;
     user_workspace_ptr_t m_current_workspace;
 
     moveresize_workspace_ptr_t m_move_workspace;
     moveresize_workspace_ptr_t m_resize_workspace;
 
     ::std::vector<x_data::window_t> m_managed_windows;
-    ::std::vector<user_workspace_ptr_t> m_user_workspaces;
+    ::std::vector<context_ptr_t> m_contexts;
+    ::std::vector<user_workspace_ptr_t>& m_user_workspaces;
 
     ::std::unordered_map<x_data::window_t, client_ptr_t> m_client_windows;
+    ::std::unordered_map<client_ptr_t, context_ptr_t> m_client_contexts;
     ::std::unordered_map<client_ptr_t, user_workspace_ptr_t> m_client_workspaces;
 
     ::std::unordered_map<client_ptr_t, client_t> m_fullscreen_clients;
