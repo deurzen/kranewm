@@ -31,39 +31,11 @@ release:
 	@[ -d release ] || mkdir release
 
 
-include test/config.mk
-
-test: test/bin test/obj ${TEST_OBJ_FILES}
-	${CC} ${CXXFLAGS} ${TEST_OBJ_FILES} ${LDFLAGS} -o ${TESTTARGET}
-	@echo
-	@echo running tests
-	@echo
-	@./test/bin/tests
-
-test/obj/%.o: test/obj
-
-test/obj/%.o: test/%.cc
-	${CC} ${CXXFLAGS} -MMD -c $< -o $@
-
-test/run:
-	@echo running tests
-	@echo
-	@./test/bin/tests
-
--include test/config.mk
-
-
 bin:
 	@[ -d bin ] || mkdir bin
 
-test/bin:
-	@[ -d test/bin ] || mkdir test/bin
-
 obj:
 	@[ -d obj ] || mkdir obj
-
-test/obj:
-	@[ -d test/obj ] || mkdir test/obj
 
 notify-build:
 	@echo building
@@ -100,8 +72,3 @@ tags:
 clean:
 	@echo cleaning
 	@rm -rf ./bin ./release ./obj
-
-.PHONY: cleantest
-cleantest:
-	@echo cleaning tests
-	@rm -rf ./test/bin ./test/obj
