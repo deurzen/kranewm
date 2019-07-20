@@ -52,7 +52,7 @@ public:
             m_ewmh.set_window_type_property(m_activity_indicators[i], "DOCK");
             m_activity_indicators[i].set_border_color(SIDEBAR_WORKSPACES_COLOR);
             m_activity_indicators[i].resize({1, 1}).move({SIDEBAR_WIDTH - 2,
-                static_cast<int>((1.4f + i) * (4 + m_graphicscontext.get_font_dim().h))});
+                static_cast<int>((2.4f + i) * (4 + m_graphicscontext.get_font_dim().h))});
         }
 
         m_ewmh.set_window_type_property(m_moveresizeindicator, "DOCK");
@@ -78,6 +78,7 @@ public:
 
 private:
     void draw_layoutsymbol();
+    void draw_contextletter();
     void draw_clientstate();
     void draw_workspacenumbers();
     void draw_numbersticky();

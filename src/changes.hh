@@ -21,6 +21,7 @@ enum class change_t
     client_sticky,
     client_workspace,
     workspace_active,
+    context_active,
 };
 
 
@@ -225,6 +226,30 @@ inline workspaceactivechange_ptr_t change_workspace_active(user_workspace_ptr_t 
 inline workspaceactivechange_ptr_t change_workspace_active(clientchange_ptr_t change)
 {
     return dynamic_cast<workspaceactivechange_ptr_t>(change);
+}
+
+
+
+typedef struct contextactivechange_t : clientchange_t
+{
+    explicit contextactivechange_t(context_ptr_t _from, context_ptr_t _to)
+      : clientchange_t(change_t::context_active),
+        from(_from),
+        to(_to) {}
+
+    context_ptr_t from;
+    context_ptr_t to;
+
+}* contextactivechange_ptr_t;
+
+inline contextactivechange_ptr_t change_context_active(context_ptr_t from, context_ptr_t to)
+{
+    return new contextactivechange_t(from, to);
+}
+
+inline contextactivechange_ptr_t change_context_active(clientchange_ptr_t change)
+{
+    return dynamic_cast<contextactivechange_ptr_t>(change);
 }
 
 #endif//__KRANEWM_CHANGES_GUARD__

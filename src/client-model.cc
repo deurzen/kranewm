@@ -94,7 +94,7 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
         client->win.force_close();
 
     if (!rule.nohint && rule.workspace) {
-        auto workspace = m_user_workspaces[rule.workspace - 1];
+        auto workspace = (*m_user_workspaces)[rule.workspace - 1];
         m_client_workspaces[client] = workspace;
         workspace->add_client(client);
         m_changequeue.add(change_client_workspace(client, nullptr, workspace));
@@ -253,7 +253,7 @@ void
 client_model_t::wedge_clients()
 {
     auto root_attrs = x_data::get_attributes(x_data::g_root);
-    for (auto& workspace : m_user_workspaces)
+    for (auto& workspace : *m_user_workspaces)
         for (auto& client : workspace->get_all()) {
             pos_t new_pos = client->float_pos;;
             if (root_attrs.h() < (client->float_pos.y + client->float_dim.h))
@@ -281,7 +281,7 @@ client_model_t::client_to_workspace(client_ptr_t client, unsigned workspace_nr)
         return;
 
     if (range_t<unsigned>::contains(1, USER_WORKSPACES.size(), workspace_nr))
-        client_to_workspace(client, m_user_workspaces[workspace_nr - 1]);
+        client_to_workspace(client, (*m_user_workspaces)[workspace_nr - 1]);
 }
 
 void
@@ -314,7 +314,7 @@ void
 client_model_t::change_active_workspace(unsigned workspace_nr, bool save_prev)
 {
     if (range_t<unsigned>::contains(1, USER_WORKSPACES.size(), workspace_nr))
-        change_active_workspace(m_user_workspaces[workspace_nr - 1], save_prev);
+        change_active_workspace((*m_user_workspaces)[workspace_nr - 1], save_prev);
 }
 
 void
@@ -387,10 +387,10 @@ client_model_t::change_active_context(context_ptr_t context)
     if (context == m_current_context)
         return;
 
-    m_current_context = context;
     m_user_workspaces = context->get_workspaces();
-    user_workspace_ptr_t to = context->get_activated();
-    change_active_workspace(to, false);
+    m_changequeue.add(change_context_active(m_current_context, context));
+    m_current_context = context;
+    change_active_workspace(context->get_activated(), false);
 }
 
 void
@@ -462,7 +462,7 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
     case clientaction_t::add:
         {
             client->sticky = true;
-            for (auto& workspace : m_user_workspaces)
+            for (auto& workspace : *m_user_workspaces)
                 if (workspace != m_current_workspace) {
                     workspace->add_client(client);
                     m_changequeue.add(change_client_workspace(client,
@@ -479,7 +479,7 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
     case clientaction_t::remove:
         {
             client->sticky = false;
-            for (auto& workspace : m_user_workspaces)
+            for (auto& workspace : *m_user_workspaces)
                 if (workspace != m_current_workspace)
                     workspace->remove_client(client);
 

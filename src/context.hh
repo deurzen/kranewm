@@ -53,7 +53,7 @@ public:
     void arrange() const;
 
     char get_letter() const;
-    ::std::vector<user_workspace_ptr_t>& get_workspaces();
+    const ::std::vector<user_workspace_ptr_t>* get_workspaces();
 
     bool empty() const;
     bool contains(client_ptr_t) const;

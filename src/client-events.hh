@@ -39,6 +39,7 @@ private:
     void on_change_client_sticky();
 
     void on_change_workspace_active();
+    void on_change_context_active();
 
     void from_move_workspace(client_ptr_t, workspace_ptr_t);
     void from_resize_workspace(client_ptr_t, workspace_ptr_t);

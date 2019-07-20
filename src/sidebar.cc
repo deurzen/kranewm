@@ -17,6 +17,7 @@ sidebar_t::draw()
 
     m_graphicscontext.clear();
     draw_layoutsymbol();
+    draw_contextletter();
     draw_clientstate();
     draw_workspacenumbers();
     draw_numbersticky();
@@ -64,12 +65,21 @@ void
 sidebar_t::draw_layoutsymbol()
 {
     m_graphicscontext.set_foreground(SIDEBAR_LAYOUT_COLOR);
-
     pos_t pos = {(SIDEBAR_WIDTH - m_graphicscontext.get_font_dim().w) / 2,
         4 + m_graphicscontext.get_font_dim().h};
 
     m_graphicscontext.draw_string(pos,
         ::std::string(1, static_cast<char>(m_context->get_activated()->get_layout())));
+}
+
+void
+sidebar_t::draw_contextletter()
+{
+    m_graphicscontext.set_foreground(SIDEBAR_CONTEXT_COLOR);
+    pos_t pos = {(SIDEBAR_WIDTH - m_graphicscontext.get_font_dim().w) / 2,
+        2 * (4 + m_graphicscontext.get_font_dim().h)};
+
+    m_graphicscontext.draw_string(pos, ::std::string(1, m_context->get_letter()));
 }
 
 void
@@ -93,9 +103,9 @@ sidebar_t::draw_workspacenumbers()
 {
     m_graphicscontext.set_foreground(SIDEBAR_WORKSPACES_COLOR);
     pos_t current_pos = {(SIDEBAR_WIDTH - m_graphicscontext.get_font_dim().w) / 2,
-        2 * (4 + m_graphicscontext.get_font_dim().h)};
+        3 * (4 + m_graphicscontext.get_font_dim().h)};
 
-    for (size_t i = 0; i < m_context->get_workspaces().size(); ++i) {
+    for (size_t i = 0; i < (*m_context->get_workspaces()).size(); ++i) {
         if (m_context->get_nnonsticky(i)) {
             m_sidebarwin.lower();
             m_activity_indicators[i].map();
@@ -105,7 +115,7 @@ sidebar_t::draw_workspacenumbers()
 
     for (auto& [nr,_] : USER_WORKSPACES) {
         if (nr == m_context->get_activated()->get_number()) {
-            unsigned long color = m_context->get_workspaces()[nr - 1]->is_urgent()
+            unsigned long color = (*m_context->get_workspaces())[nr - 1]->is_urgent()
                 ? URG_COLOR
                 : SIDEBAR_ACTIVE_WORKSPACE_COLOR;
 
@@ -113,7 +123,7 @@ sidebar_t::draw_workspacenumbers()
             m_activity_indicators[nr - 1].set_border_color(color);
             m_activity_indicators[nr - 1].set_background_color(color);
         } else {
-            unsigned long color = m_context->get_workspaces()[nr - 1]->is_urgent()
+            unsigned long color = (*m_context->get_workspaces())[nr - 1]->is_urgent()
                 ? URG_COLOR
                 : SIDEBAR_WORKSPACES_COLOR;
 

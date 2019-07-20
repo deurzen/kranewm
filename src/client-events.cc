@@ -23,6 +23,7 @@ client_events_t::process_queued_changes()
         case change_t::client_sticky:     on_change_client_sticky();     break;
         case change_t::client_workspace:  on_change_client_workspace();  break;
         case change_t::workspace_active:  on_change_workspace_active();  break;
+        case change_t::context_active:    on_change_context_active();    break;
         default: break;
         }
 
@@ -225,6 +226,17 @@ client_events_t::on_change_workspace_active()
     unmap_all(from->get_all());
 
     to->arrange();
+    m_sidebar.draw();
+}
+
+void
+client_events_t::on_change_context_active()
+{
+    auto change = change_context_active(m_current_change);
+    auto from   = change->from;
+    auto to     = change->to;
+
+    m_sidebar.set_context(to);
     m_sidebar.draw();
 }
 

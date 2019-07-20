@@ -109,7 +109,7 @@ private:
 
     ::std::vector<x_data::window_t> m_managed_windows;
     ::std::vector<context_ptr_t> m_contexts;
-    ::std::vector<user_workspace_ptr_t>& m_user_workspaces;
+    const ::std::vector<user_workspace_ptr_t>* m_user_workspaces;
 
     ::std::unordered_map<x_data::window_t, client_ptr_t> m_client_windows;
     ::std::unordered_map<client_ptr_t, context_ptr_t> m_client_contexts;

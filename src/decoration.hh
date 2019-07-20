@@ -15,7 +15,8 @@ const int ICON_ROW_LENGTH = 50;
 const unsigned long SIDEBAR_FG_COLOR = 0xFFFFFF;
 const unsigned long SIDEBAR_BG_COLOR = 0x080808;
 
-const unsigned long SIDEBAR_LAYOUT_COLOR           = 0x7FB069;
+const unsigned long SIDEBAR_LAYOUT_COLOR           = 0x61E8E1;
+const unsigned long SIDEBAR_CONTEXT_COLOR          = 0x7FB069;
 const unsigned long SIDEBAR_WORKSPACES_COLOR       = 0xFFFFFF;
 const unsigned long SIDEBAR_ACTIVE_WORKSPACE_COLOR = 0xF4D35E;
 const unsigned long SIDEBAR_NSTICKY_COLOR          = 0xCB904D;

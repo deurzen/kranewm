@@ -24,10 +24,10 @@ context_t::get_letter() const
     return m_letter;
 }
 
-::std::vector<user_workspace_ptr_t>&
+const ::std::vector<user_workspace_ptr_t>*
 context_t::get_workspaces()
 {
-    return m_workspaces;
+    return &m_workspaces;
 }
 
 
