@@ -16,6 +16,8 @@ enum class mouseop_t
     client_prev_ws,
     goto_next_ws,
     goto_prev_ws,
+    goto_next_cx,
+    goto_prev_cx,
     toggle_float,
     toggle_fullscreen,
 };

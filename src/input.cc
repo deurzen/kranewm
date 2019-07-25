@@ -25,6 +25,20 @@ inputhandler_t::process_mouse_input_global(XButtonEvent event)
                     m_clients.change_active_workspace(workspace, false);
                 }
                 return;
+            case mouseop_t::goto_next_cx:
+                {
+                    unsigned context = m_clients.active_context()->get_letter() - 'a' + 1;
+                    context %= CONTEXTS.size();
+                    m_clients.change_active_context(context + 1);
+                }
+                return;
+            case mouseop_t::goto_prev_cx:
+                {
+                    unsigned context = m_clients.active_context()->get_letter() - 'a';
+                    context = (context == 0) ? CONTEXTS.size() : context;
+                    m_clients.change_active_context(context);
+                }
+                return;
             default: break;
         }
 }
@@ -60,6 +74,20 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
                 unsigned workspace = m_clients.active_workspace()->get_number();
                 workspace %= USER_WORKSPACES.size();
                 m_clients.change_active_workspace(workspace + 1, false);
+            }
+            return;
+        case mouseop_t::goto_next_cx:
+            {
+                unsigned context = m_clients.active_context()->get_letter() - 'a' + 1;
+                context %= CONTEXTS.size();
+                m_clients.change_active_context(context + 1);
+            }
+            return;
+        case mouseop_t::goto_prev_cx:
+            {
+                unsigned context = m_clients.active_context()->get_letter() - 'a';
+                context = (context == 0) ? CONTEXTS.size() : context;
+                m_clients.change_active_context(context);
             }
             return;
         case mouseop_t::client_prev_ws:
