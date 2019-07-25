@@ -116,6 +116,7 @@ private:
     ::std::unordered_map<client_ptr_t, user_workspace_ptr_t> m_client_workspaces;
 
     ::std::unordered_map<client_ptr_t, client_t> m_fullscreen_clients;
+    ::std::vector<client_ptr_t> m_sticky_clients;
 
     client_ptr_t m_marked_client;
     client_ptr_t m_focused_client;

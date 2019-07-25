@@ -387,6 +387,17 @@ client_model_t::change_active_context(context_ptr_t context)
     if (context == m_current_context)
         return;
 
+    for (auto& client : m_sticky_clients) {
+        context_ptr_t current_client_context = client_context(client);
+        if (current_client_context == m_current_context) {
+            client->expect = clientexpect_t::withdraw;
+            client->unmap();
+        } else if (current_client_context == context) {
+            client->expect = clientexpect_t::map;
+            client->map();
+        }
+    }
+
     m_user_workspaces = context->get_workspaces();
     m_changequeue.add(change_context_active(m_current_context, context));
     m_current_context = context;
@@ -471,6 +482,7 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
             }
 
             m_changequeue.add(change_client_sticky(client, m_client_contexts[client]));
+            m_sticky_clients.push_back(client);
 
             for (auto& child : client->children)
                 set_sticky(child, clientaction_t::add, false);
@@ -485,6 +497,7 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
 
             m_changequeue.add(change_client_sticky(client, m_client_contexts[client]));
             m_client_workspaces[client] = m_current_workspace;
+            erase_remove(m_sticky_clients, client);
 
             for (auto& child : client->children)
                 set_sticky(child, clientaction_t::remove, false);
