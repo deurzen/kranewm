@@ -35,7 +35,7 @@ public:
           m_rules({
               //  class                  inst          title      float center close nohint workspace
               { { "Artha",               ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
-              { { "Firefox",             ALL,          ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
+              { { "firefox",             ALL,          ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
               { { "Gimp",                ALL,          ALL },   { YES,   NO,    OFF,  NO,   4       } },
               { { "GoldenDict",          ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
               { { "Gpick",               ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
