@@ -58,7 +58,7 @@ client_events_t::on_change_client_focus()
             else to->frame.set_background_color(SEL_COLOR);
 
             to->frame.ungrab();
-            m_sidebar.draw();
+            m_sidebar.draw_clientstate();
         } else {
             if (to->sticky) to->frame.set_background_color(REGSTICKY_COLOR);
             else to->frame.set_background_color(REG_COLOR);
@@ -66,7 +66,7 @@ client_events_t::on_change_client_focus()
         }
     } else {
         x_data::set_input_focus();
-        m_sidebar.draw();
+        m_sidebar.draw_clientstate();
     }
 }
 
@@ -164,7 +164,9 @@ client_events_t::on_change_client_sticky()
         context->erase_sticky();
     }
 
-    m_sidebar.draw();
+    m_sidebar.draw_numbersticky();
+    m_sidebar.draw_numberclients();
+    m_sidebar.draw_workspacenumbers();
 }
 
 void
@@ -192,9 +194,6 @@ client_events_t::on_change_client_workspace()
         }
     else
         client->frame.grab();
-
-    /* if (to) */
-    /*     to->arrange(); */
 }
 
 void
@@ -233,7 +232,6 @@ void
 client_events_t::on_change_context_active()
 {
     auto change = change_context_active(m_current_change);
-    auto from   = change->from;
     auto to     = change->to;
 
     m_sidebar.set_context(to);

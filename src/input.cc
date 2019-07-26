@@ -113,7 +113,7 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
                     m_clients.active_workspace()->raise_client(client);
                     m_windowstack.apply(m_clients.active_workspace());
                     m_clients.active_workspace()->arrange();
-                    m_sidebar.draw();
+                    m_sidebar.draw_clientstate();
                 }
             }
             return;

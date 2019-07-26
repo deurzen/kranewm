@@ -51,8 +51,8 @@ public:
             m_activity_indicators[i] = x_data::create_window(true);
             m_ewmh.set_window_type_property(m_activity_indicators[i], "DOCK");
             m_activity_indicators[i].set_border_color(SIDEBAR_WORKSPACES_COLOR);
-            m_activity_indicators[i].resize({1, 1}).move({SIDEBAR_WIDTH - 2,
-                static_cast<int>((2.4f + i) * (4 + m_graphicscontext.get_font_dim().h))});
+            m_activity_indicators[i].resize({1, 1}).reparent({SIDEBAR_WIDTH - 3,
+                static_cast<int>((2.4f + i) * (4 + m_graphicscontext.get_font_dim().h))}, m_sidebarwin);
         }
 
         m_ewmh.set_window_type_property(m_moveresizeindicator, "DOCK");
@@ -60,13 +60,14 @@ public:
         m_ewmh.set_window_type_property(m_fullscreenindicator, "DOCK");
 
         m_moveresizeindicator.set_background_color(MRIND_BORDER_COLOR);
-        m_moveresizeindicator.resize({2, 5}).move({root_attrs.w() - 3, 1}).set_border_width(0);
+        m_moveresizeindicator.set_border_width(0);
+        m_moveresizeindicator.resize({2, 5}).reparent({root_attrs.w() - 3, 1}, m_sidebarwin);
 
         m_floatingindicator.set_background_color(FLIND_BG_COLOR).set_border_color(FLIND_BORDER_COLOR);
-        m_floatingindicator.resize({1, 1}).move({SIDEBAR_WIDTH - 2, 1});
+        m_floatingindicator.resize({1, 1}).reparent({SIDEBAR_WIDTH - 3, 1}, m_sidebarwin);
 
         m_fullscreenindicator.set_background_color(FSIND_BG_COLOR).set_border_color(FSIND_BORDER_COLOR);
-        m_fullscreenindicator.resize({1, 1}).move({SIDEBAR_WIDTH - 2, 1});
+        m_fullscreenindicator.resize({1, 1}).reparent({SIDEBAR_WIDTH - 3, 1}, m_sidebarwin);
     }
 
     void set_context(context_ptr_t);
@@ -74,9 +75,6 @@ public:
     void draw();
     void toggle();
 
-    x_data::window_t get_win() const;
-
-private:
     void draw_layoutsymbol();
     void draw_contextletter();
     void draw_clientstate();
@@ -84,6 +82,9 @@ private:
     void draw_numbersticky();
     void draw_numberclients();
 
+    x_data::window_t get_win() const;
+
+private:
     bool m_enabled;
     ewmh_t& m_ewmh;
     x_data::window_t m_sidebarwin;
