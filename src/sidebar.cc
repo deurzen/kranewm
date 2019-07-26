@@ -50,6 +50,8 @@ sidebar_t::draw_layoutsymbol()
     pos_t pos = {(SIDEBAR_WIDTH - m_layoutsymbolgc.get_font_dim().w) / 2,
         4 + m_layoutsymbolgc.get_font_dim().h};
 
+    m_layoutsymbolgc.clear({pos.x, pos.y - 4});
+    m_layoutsymbolgc.clear({pos.x, pos.y + 4});
     m_layoutsymbolgc.clear();
     m_layoutsymbolgc.draw_string(pos,
         ::std::string(1, static_cast<char>(m_context->get_activated()->get_layout())));
