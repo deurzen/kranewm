@@ -319,10 +319,11 @@ client_model_t::change_active_workspace(unsigned workspace_nr, bool save_prev)
 void
 client_model_t::change_active_workspace(user_workspace_ptr_t workspace, bool save_prev)
 {
-    static user_workspace_ptr_t prev_workspace = nullptr;
-
-    if ((!workspace && !(workspace = prev_workspace)) || m_current_workspace == workspace)
+    if ((!workspace && !(workspace = m_current_context->get_previous()))
+        || m_current_workspace == workspace)
+    {
         return;
+    }
 
     if (m_move_workspace->is_set())
         stop_moving(m_move_workspace->get());
@@ -333,12 +334,12 @@ client_model_t::change_active_workspace(user_workspace_ptr_t workspace, bool sav
     { // do not save successive {next,prev}-ws
         static bool prev_ignored = false;
         if (!prev_ignored) {
-            prev_workspace = m_current_workspace;
+            m_current_context->set_previous(m_current_workspace);
             prev_ignored = true;
         }
 
         if (!workspace || save_prev) {
-            prev_workspace = m_current_workspace;
+            m_current_context->set_previous(m_current_workspace);
             prev_ignored = false;
         }
     }

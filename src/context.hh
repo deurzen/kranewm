@@ -31,6 +31,7 @@ public:
           m_name(name),
           m_is_initialized(initialize),
           m_nsticky(0),
+          m_previous(nullptr),
           m_activated(nullptr)
     {
         if (initialize)
@@ -58,7 +59,9 @@ public:
     bool empty() const;
     bool contains(client_ptr_t) const;
 
+    const user_workspace_ptr_t get_previous() const;
     const user_workspace_ptr_t get_activated() const;
+    void set_previous(user_workspace_ptr_t);
     void set_activated(user_workspace_ptr_t);
 
     context_t& add_workspace(user_workspace_ptr_t);
@@ -86,6 +89,7 @@ private:
     unsigned m_nsticky;
 
     ::std::vector<user_workspace_ptr_t> m_workspaces;
+    user_workspace_ptr_t m_previous;
     user_workspace_ptr_t m_activated;
 
 }* context_ptr_t;

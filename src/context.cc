@@ -58,10 +58,24 @@ context_t::get_activated() const
     return m_activated;
 }
 
+const user_workspace_ptr_t
+context_t::get_previous() const
+{
+    return m_previous;
+}
+
 void
 context_t::set_activated(user_workspace_ptr_t workspace)
 {
-    m_activated = workspace;
+    if (m_workspaces[workspace->get_number() - 1] == workspace)
+        m_activated = workspace;
+}
+
+void
+context_t::set_previous(user_workspace_ptr_t workspace)
+{
+    if (m_workspaces[workspace->get_number() - 1] == workspace)
+        m_previous = workspace;
 }
 
 
