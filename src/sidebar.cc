@@ -61,6 +61,8 @@ sidebar_t::draw_contextletter()
     pos_t pos = {(SIDEBAR_WIDTH - m_contextlettergc.get_font_dim().w) / 2,
         2 * (4 + m_contextlettergc.get_font_dim().h)};
 
+    m_contextlettergc.clear({pos.x, pos.y - 4});
+    m_contextlettergc.clear({pos.x, pos.y + 4});
     m_contextlettergc.clear();
     m_contextlettergc.draw_string(pos, ::std::string(1, m_context->get_letter()));
 }
@@ -140,16 +142,15 @@ sidebar_t::draw_numbersticky()
 void
 sidebar_t::draw_numberclients()
 {
-    /* m_numberclientsgc.clear(); */
     x_data::attributes_t root_attrs = x_data::get_attributes(x_data::g_root);
-    pos_t pos = {(SIDEBAR_WIDTH - m_numberstickygc.get_font_dim().w) / 2,
-        root_attrs.h() - (m_numberstickygc.get_font_dim().h) + 2};
+    pos_t pos = {(SIDEBAR_WIDTH - m_numberclientsgc.get_font_dim().w) / 2,
+        root_attrs.h() - (m_numberclientsgc.get_font_dim().h) + 2};
 
     unsigned nclients = m_context->get_nnonsticky(m_context->get_activated()->get_number() - 1);
     m_numberclientsgc.clear();
 
     if (nclients > 9)
-        m_numberstickygc.draw_string(pos, ">");
+        m_numberclientsgc.draw_string(pos, ">");
     else
-        m_numberstickygc.draw_string(pos, ::std::to_string(nclients));
+        m_numberclientsgc.draw_string(pos, ::std::to_string(nclients));
 }
