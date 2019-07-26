@@ -255,7 +255,7 @@ client_model_t::wedge_clients()
     auto root_attrs = x_data::get_attributes(x_data::g_root);
     for (auto& workspace : *m_user_workspaces)
         for (auto& client : workspace->get_all()) {
-            pos_t new_pos = client->float_pos;;
+            pos_t new_pos = client->float_pos;
             if (root_attrs.h() < (client->float_pos.y + client->float_dim.h))
                 new_pos.y = root_attrs.h() - client->float_dim.h;
             if (root_attrs.w() < (client->float_pos.x + client->float_dim.w))
@@ -287,7 +287,6 @@ client_model_t::client_to_workspace(client_ptr_t client, unsigned workspace_nr)
 void
 client_model_t::client_to_workspace(client_ptr_t client, workspace_ptr_t to)
 {
-
     auto from = client_workspace(client);
 
     if (from == to)
@@ -366,9 +365,7 @@ client_model_t::client_to_context(client_ptr_t client, unsigned context_nr)
 
 void
 client_model_t::client_to_context(client_ptr_t client, context_ptr_t context)
-{
-
-}
+{}
 
 void
 client_model_t::change_active_context(unsigned context_nr)
