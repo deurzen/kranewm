@@ -120,7 +120,7 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
         case mouseop_t::toggle_fullscreen:
             {
                 m_clients.set_fullscreen(client, clientaction_t::toggle);
-                m_sidebar.draw();
+                m_sidebar.draw_clientstate();
             }
             return;
         default: break;
@@ -237,7 +237,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             m_clients.active_workspace()->set_layout(layout_t::floating);
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
-            m_sidebar.draw();
+            m_sidebar.draw_layoutsymbol();
         }
         break;
     case keyop_t::tile:
@@ -246,7 +246,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             workspace->set_layout(layout_t::tile).arrange();
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
-            m_sidebar.draw();
+            m_sidebar.draw_layoutsymbol();
         }
         break;
     case keyop_t::stick:
@@ -255,7 +255,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             workspace->set_layout(layout_t::stick).arrange();
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
-            m_sidebar.draw();
+            m_sidebar.draw_layoutsymbol();
         }
         break;
     case keyop_t::deck:
@@ -264,7 +264,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             workspace->set_layout(layout_t::deck).arrange();
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
-            m_sidebar.draw();
+            m_sidebar.draw_layoutsymbol();
         }
         break;
     case keyop_t::doubledeck:
@@ -273,7 +273,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             workspace->set_layout(layout_t::doubledeck).arrange();
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
-            m_sidebar.draw();
+            m_sidebar.draw_layoutsymbol();
         }
         break;
     case keyop_t::grid:
@@ -282,7 +282,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             workspace->set_layout(layout_t::grid).arrange();
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
-            m_sidebar.draw();
+            m_sidebar.draw_layoutsymbol();
         }
         break;
     case keyop_t::pillar:
@@ -291,7 +291,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             workspace->set_layout(layout_t::pillar);
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
-            m_sidebar.draw();
+            m_sidebar.draw_layoutsymbol();
         }
         break;
     case keyop_t::column:
@@ -300,7 +300,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             workspace->set_layout(layout_t::column);
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
-            m_sidebar.draw();
+            m_sidebar.draw_layoutsymbol();
         }
         break;
     case keyop_t::monocle:
@@ -309,7 +309,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             workspace->set_layout(layout_t::monocle);
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
-            m_sidebar.draw();
+            m_sidebar.draw_layoutsymbol();
         }
         break;
     case keyop_t::center:
@@ -318,7 +318,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             workspace->set_layout(layout_t::center);
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
-            m_sidebar.draw();
+            m_sidebar.draw_layoutsymbol();
         }
         break;
     case keyop_t::toggle_layout:
@@ -327,7 +327,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             workspace->set_layout(layout_t::toggle);
             m_windowstack.apply(m_clients.active_workspace());
             workspace->arrange();
-            m_sidebar.draw();
+            m_sidebar.draw_layoutsymbol();
         }
         break;
     case keyop_t::mirror_workspace: m_clients.active_workspace()->mirror().arrange();                   break;
@@ -532,7 +532,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
             m_clients.active_workspace()->raise_client(client);
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
-            m_sidebar.draw();
+            m_sidebar.draw_clientstate();
         }
         break;
     case keyop_t::toggle_sticky:
@@ -546,7 +546,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
     case keyop_t::toggle_fullscreen:
         {
             m_clients.set_fullscreen(client, clientaction_t::toggle);
-            m_sidebar.draw();
+            m_sidebar.draw_clientstate();
         }
         break;
     case keyop_t::center_client:

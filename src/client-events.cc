@@ -82,9 +82,7 @@ client_events_t::on_change_client_destroy()
         m_x.exit_move_resize();
     }
 
-    if (!m_clients.focused_client())
-        m_sidebar.draw();
-
+    m_sidebar.draw();
     delete client;
 }
 
@@ -131,11 +129,11 @@ client_events_t::on_change_client_urgent()
         client->urgent = false;
         client->frame.set_background_color(SEL_COLOR);
         m_clients.client_user_workspace(client)->erase_urgent();
-        m_sidebar.draw();
+        m_sidebar.draw_workspacenumbers();
     } else if (client->urgent) {
         client->frame.set_background_color(URG_COLOR);
         m_clients.client_user_workspace(client)->record_urgent();
-        m_sidebar.draw();
+        m_sidebar.draw_workspacenumbers();
     } else
         client->frame.set_background_color(REG_COLOR);
 
@@ -266,7 +264,9 @@ client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t from, 
         unmap_all(client->children);
     }
 
-    m_sidebar.draw();
+    m_sidebar.draw_workspacenumbers();
+    m_sidebar.draw_numbersticky();
+    m_sidebar.draw_numberclients();
 }
 
 void
@@ -298,7 +298,9 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
     }
 
     m_ewmh.set_wm_desktop_property(client->win, user_workspace(to)->get_number() - 1);
-    m_sidebar.draw();
+    m_sidebar.draw_workspacenumbers();
+    m_sidebar.draw_numbersticky();
+    m_sidebar.draw_numberclients();
 }
 
 

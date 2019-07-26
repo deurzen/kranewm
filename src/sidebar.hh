@@ -22,9 +22,13 @@ public:
     explicit sidebar_t(ewmh_t& ewmh)
         : m_enabled(true),
           m_ewmh(ewmh),
-          m_sidebarwin(x_data::create_window(true)),
-          m_graphicscontext(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_context(nullptr),
+          m_sidebarwin(x_data::create_window(true)),
+          m_layoutsymbolgc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
+          m_contextlettergc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
+          m_workspacenumbersgc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
+          m_numberstickygc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
+          m_numberclientsgc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_activity_indicators(USER_WORKSPACES.size()),
           m_moveresizeindicator(x_data::create_window(true)),
           m_floatingindicator(x_data::create_window(true)),
@@ -44,15 +48,23 @@ public:
 
         m_sidebarwin.map();
 
-        m_graphicscontext.set_foreground(SIDEBAR_FG_COLOR);
-        m_graphicscontext.set_background(SIDEBAR_BG_COLOR);
+        m_layoutsymbolgc.set_foreground(SIDEBAR_LAYOUT_COLOR);
+        m_layoutsymbolgc.set_background(SIDEBAR_BG_COLOR);
+        m_contextlettergc.set_foreground(SIDEBAR_CONTEXT_COLOR);
+        m_contextlettergc.set_background(SIDEBAR_BG_COLOR);
+        m_workspacenumbersgc.set_foreground(SIDEBAR_WORKSPACES_COLOR);
+        m_workspacenumbersgc.set_background(SIDEBAR_BG_COLOR);
+        m_numberstickygc.set_foreground(SIDEBAR_NSTICKY_COLOR);
+        m_numberstickygc.set_background(SIDEBAR_BG_COLOR);
+        m_numberclientsgc.set_foreground(SIDEBAR_NCLIENTS_COLOR);
+        m_numberclientsgc.set_background(SIDEBAR_BG_COLOR);
 
         for (size_t i = 0; i < m_activity_indicators.size(); ++i) {
             m_activity_indicators[i] = x_data::create_window(true);
             m_ewmh.set_window_type_property(m_activity_indicators[i], "DOCK");
             m_activity_indicators[i].set_border_color(SIDEBAR_WORKSPACES_COLOR);
             m_activity_indicators[i].resize({1, 1}).reparent({SIDEBAR_WIDTH - 3,
-                static_cast<int>((2.4f + i) * (4 + m_graphicscontext.get_font_dim().h))}, m_sidebarwin);
+                static_cast<int>((2.4f + i) * (4 + m_workspacenumbersgc.get_font_dim().h))}, m_sidebarwin);
         }
 
         m_ewmh.set_window_type_property(m_moveresizeindicator, "DOCK");
@@ -87,9 +99,13 @@ public:
 private:
     bool m_enabled;
     ewmh_t& m_ewmh;
-    x_data::window_t m_sidebarwin;
-    x_data::graphicscontext_t m_graphicscontext;
     context_ptr_t m_context;
+    x_data::window_t m_sidebarwin;
+    x_data::graphicscontext_t m_layoutsymbolgc;
+    x_data::graphicscontext_t m_contextlettergc;
+    x_data::graphicscontext_t m_workspacenumbersgc;
+    x_data::graphicscontext_t m_numberstickygc;
+    x_data::graphicscontext_t m_numberclientsgc;
 
     ::std::vector<x_data::window_t> m_activity_indicators;
     x_data::window_t m_moveresizeindicator;

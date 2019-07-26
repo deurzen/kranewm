@@ -13,7 +13,9 @@ namespace x_data
     public:
         graphicscontext_t(window_t _win, const ::std::string& fontname, int line_width)
             : win(_win),
-              font_dim{12, 6}
+              font_dim({12, 6}),
+              pos({}),
+              line_width(line_width)
         {
             XGCValues values;
             values.function           = GXor;
@@ -44,7 +46,7 @@ namespace x_data
             if (!(font = XLoadQueryFont(g_dpy, fontname.c_str())))
                 font = XLoadQueryFont(g_dpy, "fixed");
 
-            font_dim.w  = font->per_char->width;
+            font_dim.w = font->per_char->width;
             font_dim.h = font->per_char->ascent + font->per_char->descent;
 
             XSetFont(g_dpy, gc, font->fid);
@@ -64,12 +66,16 @@ namespace x_data
         void set_background(unsigned long);
 
         void clear();
+        void clear(pos_t);
+        void clear_window();
         void draw_string(pos_t, const ::std::string&);
 
     private:
         window_t win;
         GC gc;
         dim_t font_dim;
+        pos_t pos;
+        int line_width;
 
     };
 }

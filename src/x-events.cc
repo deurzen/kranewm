@@ -184,7 +184,6 @@ x_events_t::on_client_message()
                         return;
 
                     m_clients.set_fullscreen(client, static_cast<clientaction_t>(event.data.l[0]));
-                    m_sidebar.draw();
                 } else if ((Atom)event.data.l[property]
                     == m_ewmh.get_netwm_atom(netwmid_t::netwmstatedemandsattention))
                 {
@@ -340,7 +339,6 @@ x_events_t::on_destroy_notify()
 
     m_clients.unmanage_client(client);
     m_clients.active_workspace()->arrange();
-    m_sidebar.draw();
     m_ewmh.unregister_from_list(client->win);
 }
 
