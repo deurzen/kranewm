@@ -24,9 +24,7 @@ kranewm_t::init()
 void
 kranewm_t::setup()
 {
-    signal(SIGCHLD, SIG_IGN); // prevent zombies
     check_otherwm(); // make sure another wm is not already running
-
     x_data::select_input(x_data::g_root, ButtonPressMask | PointerMotionMask
         | StructureNotifyMask | SubstructureNotifyMask | SubstructureRedirectMask);
 

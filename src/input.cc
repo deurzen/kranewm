@@ -947,7 +947,11 @@ void
 inputhandler_t::fork_external(::std::string&& command)
 {
     if (!fork()) {
+        if (x_data::g_dpy)
+            close(x_data::connection_number());
+
+        setsid();
         execl("/bin/sh", "/bin/sh", "-c", ("exec " + command).c_str(), NULL);
-        exit(1);
+        exit(EXIT_SUCCESS);
     }
 }

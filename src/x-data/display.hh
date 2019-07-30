@@ -30,10 +30,11 @@ namespace x_data
 
     };
 
-    inline display_t::operator Display*() const { return dpy; }
-
     extern display_t g_dpy;
     extern window_t g_root;
+
+    inline int connection_number() { return XConnectionNumber(g_dpy); }
+    inline display_t::operator Display*() const { return dpy; }
 }
 
 #endif//__KRANEWM__X_DATA__DISPLAY__GUARD__
