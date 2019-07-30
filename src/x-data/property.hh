@@ -94,7 +94,8 @@ namespace x_data
 
         if (XGetWindowProperty(g_dpy, win, prop.get_id(),
             0L, prop.size(), False, prop.type(),
-            &_a, &_i, &n, &_ul, &ucp) == Success && ucp) {
+            &_a, &_i, &n, &_ul, &ucp) == Success && ucp)
+        {
             prop.set_data(ucp, n);
             XFree(ucp);
         }
