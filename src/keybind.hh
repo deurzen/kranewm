@@ -16,7 +16,7 @@ enum class keyop_t
     spawn_dmenupass, spawn_dmenupasscopy, spawn_dmenu,
     spawn_browser, spawn_sec_browser,
     spawn_neomutt, spawn_ranger, spawn_vifm,
-    spawn_sncli, spawn_rtv,
+    spawn_anki, spawn_sncli, spawn_rtv,
     spawn_7lock, spawn_sage, spawn_gpick, spawn_qalculate,
     spawn_irssi, spawn_newsboat, spawn_nixnote,
     cantatashow, rhythmboxshow,

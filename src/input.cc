@@ -181,6 +181,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::spawn_newsboat:      fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c newsboat");      break;
     case keyop_t::spawn_sage:          fork_external("/usr/local/bin/st -g 80x22 -e zsh -i -c sage");          break;
     case keyop_t::spawn_gpick:         fork_external("gpick");                                                 break;
+    case keyop_t::spawn_anki:          fork_external("anki");                                                  break;
     case keyop_t::spawn_nixnote:       fork_external("nixnote2 show_window");                                  break;
     case keyop_t::spawn_qalculate:     fork_external("qalculate-gtk");                                         break;
     case keyop_t::spawn_7lock:         fork_external("systemctl suspend");                                     break;

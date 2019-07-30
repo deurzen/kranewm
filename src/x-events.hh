@@ -45,6 +45,7 @@ public:
               { { "cantata",             ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
               { { "mate-volume-control", ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
               { { "nixnote2",            ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
+              { { "Anki",                ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
               { { "noson",               ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
               { { "noson-gui",           ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
               { { "st-256color",         "kranewm:f",  ALL },   { YES,   NO,    OFF,  NO,   CURRENT } },

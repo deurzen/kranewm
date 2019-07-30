@@ -176,6 +176,7 @@ public:
               { { XK_w,            MODMASK|ControlMask }, keyop_t::spawn_sage                   },
               { { XK_F1,           MODMASK|ControlMask }, keyop_t::spawn_7lock                  },
               { { XK_g,            MODMASK|ControlMask }, keyop_t::spawn_gpick                  },
+              { { XK_a,            MODMASK|ControlMask }, keyop_t::spawn_anki                   },
               { { XK_comma,        MODMASK|ControlMask }, keyop_t::clients_bck                  },
               { { XK_semicolon,    MODMASK|ControlMask }, keyop_t::clients_fwd                  },
               { { XK_1,            MODMASK|ControlMask }, keyop_t::activate_cx_1                },
