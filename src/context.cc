@@ -78,6 +78,30 @@ context_t::set_previous(user_workspace_ptr_t workspace)
         m_previous = workspace;
 }
 
+const client_ptr_t
+context_t::get_marked() const
+{
+    return m_marked;
+}
+
+const client_ptr_t
+context_t::get_jumped_from() const
+{
+    return m_jumped_from;
+}
+
+void
+context_t::set_marked(client_ptr_t client)
+{
+    m_marked = client;
+}
+
+void
+context_t::set_jumped_from(client_ptr_t client)
+{
+    m_jumped_from = client;
+}
+
 
 context_t&
 context_t::add_workspace(user_workspace_ptr_t workspace)

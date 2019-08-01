@@ -121,8 +121,8 @@ client_model_t::unmanage_client(client_ptr_t client)
 
     auto workspace = client_workspace(client);
 
-    if (client == m_marked_client)
-        m_marked_client = nullptr;
+    if (client == m_current_context->get_marked())
+        m_current_context->set_marked(nullptr);
 
     if (client->parent) {
         focus(client->parent);
@@ -512,29 +512,27 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
 void
 client_model_t::set_marked(client_ptr_t client)
 {
-    m_marked_client = client;
+    m_current_context->set_marked(client);
 }
 
 void
 client_model_t::jump_marked()
 {
-    static client_ptr_t prev_focused_client = nullptr;
-
-    if (!m_marked_client)
+    if (!m_current_context->get_marked())
         return;
 
-    client_ptr_t to_jump_to = m_marked_client;
-    if (m_marked_client == m_focused_client && prev_focused_client
-        && m_client_workspaces.find(prev_focused_client) != m_client_workspaces.end())
+    client_ptr_t to_jump_to = m_current_context->get_marked();
+    if (to_jump_to == m_focused_client && m_current_context->get_jumped_from()
+        && m_client_workspaces.find(m_current_context->get_jumped_from()) != m_client_workspaces.end())
     {
-        to_jump_to = prev_focused_client;
+        to_jump_to = m_current_context->get_jumped_from();
     }
 
     if (to_jump_to == m_focused_client)
         return;
 
-    if (m_marked_client != m_focused_client)
-        prev_focused_client = m_focused_client;
+    if (m_current_context->get_marked() != m_focused_client)
+        m_current_context->set_jumped_from(m_focused_client);
 
     if (!is_user_workspace(client_workspace(to_jump_to)))
         return;

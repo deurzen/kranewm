@@ -30,7 +30,6 @@ public:
           m_move_workspace(new moveresize_workspace_t{workspacetype_t::move}),
           m_resize_workspace(new moveresize_workspace_t{workspacetype_t::resize}),
           m_user_workspaces(m_current_context->get_workspaces()),
-          m_marked_client(nullptr),
           m_focused_client(nullptr)
     {
         m_contexts.push_back(m_current_context);
@@ -118,7 +117,6 @@ private:
     ::std::unordered_map<client_ptr_t, client_t> m_fullscreen_clients;
     ::std::vector<client_ptr_t> m_sticky_clients;
 
-    client_ptr_t m_marked_client;
     client_ptr_t m_focused_client;
 
 };

@@ -32,7 +32,9 @@ public:
           m_is_initialized(initialize),
           m_nsticky(0),
           m_previous(nullptr),
-          m_activated(nullptr)
+          m_activated(nullptr),
+          m_marked(nullptr),
+          m_jumped_from(nullptr)
     {
         if (initialize)
             context_t::initialize();
@@ -64,6 +66,11 @@ public:
     void set_previous(user_workspace_ptr_t);
     void set_activated(user_workspace_ptr_t);
 
+    const client_ptr_t get_marked() const;
+    const client_ptr_t get_jumped_from() const;
+    void set_marked(client_ptr_t);
+    void set_jumped_from(client_ptr_t);
+
     context_t& add_workspace(user_workspace_ptr_t);
     context_t& remove_workspace(user_workspace_ptr_t);
 
@@ -91,6 +98,9 @@ private:
     ::std::vector<user_workspace_ptr_t> m_workspaces;
     user_workspace_ptr_t m_previous;
     user_workspace_ptr_t m_activated;
+
+    client_ptr_t m_marked;
+    client_ptr_t m_jumped_from;
 
 }* context_ptr_t;
 
