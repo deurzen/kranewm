@@ -116,6 +116,9 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
 void
 client_model_t::unmanage_client(client_ptr_t client)
 {
+    if (client->iconified)
+        set_iconified(client, clientaction_t::remove, false);
+
     if (client->sticky)
         set_sticky(client, clientaction_t::remove, false);
 
@@ -462,7 +465,7 @@ client_model_t::set_urgent(client_ptr_t client, clientaction_t action)
 }
 
 void
-client_model_t::set_iconified(client_ptr_t client, clientaction_t action)
+client_model_t::set_iconified(client_ptr_t client, clientaction_t action, bool by_user)
 {
     switch (action) {
     case clientaction_t::add:
@@ -471,7 +474,9 @@ client_model_t::set_iconified(client_ptr_t client, clientaction_t action)
             client->iconified = true;
             workspace->add_icon(client);
             workspace->remove_client(client);
-            m_changequeue.add(change_client_iconify(client));
+
+            if (by_user)
+                m_changequeue.add(change_client_iconify(client));
         }
         break;
     case clientaction_t::remove:
@@ -480,7 +485,9 @@ client_model_t::set_iconified(client_ptr_t client, clientaction_t action)
             client->iconified = false;
             workspace->add_client(client);
             workspace->remove_icon(client);
-            m_changequeue.add(change_client_iconify(client));
+
+            if (by_user)
+                m_changequeue.add(change_client_iconify(client));
         }
         break;
     case clientaction_t::toggle:
