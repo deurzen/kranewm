@@ -178,7 +178,6 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::spawn_sncli:         fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c sncli");         break;
     case keyop_t::spawn_rtv:           fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c rtv");           break;
     case keyop_t::spawn_irssi:         fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c irssi");         break;
-    case keyop_t::spawn_newsboat:      fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c newsboat");      break;
     case keyop_t::spawn_sage:          fork_external("/usr/local/bin/st -g 80x22 -e zsh -i -c sage");          break;
     case keyop_t::spawn_gpick:         fork_external("gpick");                                                 break;
     case keyop_t::spawn_anki:          fork_external("anki");                                                  break;
@@ -187,6 +186,13 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::spawn_7lock:         fork_external("systemctl suspend");                                     break;
 
 
+    case keyop_t::pop_deiconify:
+        {
+            auto icons = m_clients.active_workspace()->get_icons();
+            if (!icons.empty())
+                m_clients.set_iconified(icons.front(), clientaction_t::remove);
+        }
+        break;
     case keyop_t::activate_ws_1: m_clients.change_active_workspace(1); break;
     case keyop_t::activate_ws_2: m_clients.change_active_workspace(2); break;
     case keyop_t::activate_ws_3: m_clients.change_active_workspace(3); break;
@@ -600,7 +606,8 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
             }
         }
         break;
-    case keyop_t::mark_client: m_clients.set_marked(client); break;
+    case keyop_t::mark_client:    m_clients.set_marked(client);                         break;
+    case keyop_t::iconify_client: m_clients.set_iconified(client, clientaction_t::add); break;
     case keyop_t::client_to_ws_1:
         {
             m_clients.client_to_workspace(client, 1);

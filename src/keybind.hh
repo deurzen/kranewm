@@ -28,6 +28,7 @@ enum class keyop_t
     brightnessup5, brightnessdown5,
     take_screenshot, take_screenshot_sel,
     kill_client, move_client_fwd, move_client_bck,
+    iconify_client, pop_deiconify,
     float_grow_up, float_grow_down,
     float_grow_left, float_grow_right,
     float_shrink_up, float_shrink_down,

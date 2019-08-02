@@ -31,6 +31,12 @@ user_workspace_t::get_all() const
     return m_clients.get_all();
 }
 
+const ::std::deque<client_ptr_t>&
+user_workspace_t::get_icons() const
+{
+    return m_icons.get_all();
+}
+
 bool
 user_workspace_t::empty() const
 {
@@ -108,6 +114,20 @@ user_workspace_t::remove_client(client_ptr_t client)
         [=](client_ptr_t child) { m_stack.remove(child); });
     m_stack.remove(client);
 
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::add_icon(client_ptr_t client)
+{
+    m_icons.add(client);
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::remove_icon(client_ptr_t client)
+{
+    m_icons.remove(client);
     return *this;
 }
 

@@ -462,6 +462,36 @@ client_model_t::set_urgent(client_ptr_t client, clientaction_t action)
 }
 
 void
+client_model_t::set_iconified(client_ptr_t client, clientaction_t action)
+{
+    switch (action) {
+    case clientaction_t::add:
+        {
+            auto workspace = client_user_workspace(client);
+            client->iconified = true;
+            workspace->add_icon(client);
+            workspace->remove_client(client);
+            m_changequeue.add(change_client_iconify(client));
+        }
+        break;
+    case clientaction_t::remove:
+        {
+            auto workspace = client_user_workspace(client);
+            client->iconified = false;
+            workspace->add_client(client);
+            workspace->remove_icon(client);
+            m_changequeue.add(change_client_iconify(client));
+        }
+        break;
+    case clientaction_t::toggle:
+        set_iconified(client, client->iconified
+            ? clientaction_t::remove : clientaction_t::add);
+        return;
+    default: break;
+    }
+}
+
+void
 client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_user)
 {
     if (by_user && client->parent)

@@ -102,6 +102,22 @@ client_t::consume_expect(clientexpect_t occurred)
         switch (expect) {
         case clientexpect_t::map:      win.set_state(NormalState);    break;
         case clientexpect_t::withdraw: win.set_state(WithdrawnState); break;
+        case clientexpect_t::iconify:
+            {
+                win.set_state(IconicState);
+                win.unmap();
+                expect = clientexpect_t::iconify_set;
+            }
+            return true;
+        case clientexpect_t::iconify_set: break;
+        case clientexpect_t::deiconify:
+            {
+                win.set_state(NormalState);
+                win.map();
+                expect = clientexpect_t::deiconify_set;
+            }
+            return true;
+        case clientexpect_t::deiconify_set: break;
         default: break;
         }
 

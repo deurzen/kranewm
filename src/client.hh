@@ -16,9 +16,13 @@ enum class clientaction_t : int
 
 enum class clientexpect_t : int
 {
-    noeffect = 0,
-    map      = 1 << 0,
-    withdraw = 1 << 1
+    noeffect      = 0,
+    map           = 1 << 0,
+    withdraw      = 1 << 1,
+    iconify       = 1 << 2,
+    iconify_set   = 1 << 3,
+    deiconify     = 1 << 4,
+    deiconify_set = 1 << 5
 };
 
 enum class snapedge_t
@@ -48,6 +52,7 @@ typedef struct client_t
           floating(rule.floating),
           fullscreen(rule.fullscreen),
           urgent(false),
+          iconified(false),
           sticky(false),
           parent(nullptr) {}
 
@@ -80,6 +85,7 @@ typedef struct client_t
     bool                floating;
     bool                fullscreen;
     bool                urgent;
+    bool                iconified;
     bool                sticky;
     client_ptr_t        parent;
     client_ptr_set_t    children;

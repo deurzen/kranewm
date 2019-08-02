@@ -20,6 +20,7 @@ client_events_t::process_queued_changes()
         case change_t::client_destroy:    on_change_client_destroy();    break;
         case change_t::client_fullscreen: on_change_client_fullscreen(); break;
         case change_t::client_urgent:     on_change_client_urgent();     break;
+        case change_t::client_iconify:    on_change_client_iconify();    break;
         case change_t::client_sticky:     on_change_client_sticky();     break;
         case change_t::client_workspace:  on_change_client_workspace();  break;
         case change_t::workspace_active:  on_change_workspace_active();  break;
@@ -143,6 +144,25 @@ client_events_t::on_change_client_urgent()
             ? (hints.get().flags | XUrgencyHint) : (hints.get().flags & ~XUrgencyHint);
 
     x_data::set_wmhints(client->win, hints);
+}
+
+void
+client_events_t::on_change_client_iconify()
+{
+    auto change = change_client_iconify(m_current_change);
+    auto client = change->client;
+
+    if (client->iconified) {
+        client->expect = clientexpect_t::iconify;
+        client->unmap();
+    } else {
+        client->expect = clientexpect_t::deiconify;
+        client->map();
+    }
+
+    m_clients.client_user_workspace(client)->arrange();
+    m_clients.sync_workspace_focus();
+    m_sidebar.draw();
 }
 
 void

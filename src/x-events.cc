@@ -385,21 +385,17 @@ x_events_t::on_map_request()
             m_clients.stop_resizing(client, attrs, attrs);
         }
 
+        if (win == client->frame)
+            client->consume_expect(clientexpect_t::deiconify);
+        else if (win == client->win)
+            client->consume_expect(clientexpect_t::deiconify_set);
+
         return;
     }
 
     register_window(win);
     win.map();
     m_ewmh.register_to_list(win);
-}
-
-void
-x_events_t::on_mapping_notify()
-{
-    XMappingEvent event = m_current_event.get().xmapping;
-    if (event.request == MappingKeyboard) {
-        x_data::refresh_keyboard_mapping(event);
-    }
 }
 
 void
@@ -417,10 +413,25 @@ x_events_t::on_map_notify()
             m_clients.stop_moving(client, attrs);
             m_clients.stop_resizing(client, attrs, attrs);
         }
+
+        if (win == client->frame)
+            client->consume_expect(clientexpect_t::deiconify);
+        else if (win == client->win)
+            client->consume_expect(clientexpect_t::deiconify_set);
+
         return;
     }
 
     register_window(win);
+}
+
+void
+x_events_t::on_mapping_notify()
+{
+    XMappingEvent event = m_current_event.get().xmapping;
+    if (event.request == MappingKeyboard) {
+        x_data::refresh_keyboard_mapping(event);
+    }
 }
 
 void
@@ -490,7 +501,9 @@ x_events_t::on_unmap_notify()
 
     x_data::sync(false);
 
-    if (client->consume_expect(clientexpect_t::withdraw))
+    if (client->consume_expect(clientexpect_t::withdraw)
+        || (win == client->frame && client->consume_expect(clientexpect_t::iconify))
+        || (win == client->win && client->consume_expect(clientexpect_t::iconify_set)))
     {
         return;
     }

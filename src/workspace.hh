@@ -136,6 +136,7 @@ public:
 
     unsigned get_number() const;
     const ::std::deque<client_ptr_t>& get_all() const;
+    const ::std::deque<client_ptr_t>& get_icons() const;
 
     bool empty() const;
     bool contains(client_ptr_t) const;
@@ -150,6 +151,8 @@ public:
 
     user_workspace_t& add_client(client_ptr_t) override;
     user_workspace_t& remove_client(client_ptr_t) override;
+    user_workspace_t& add_icon(client_ptr_t);
+    user_workspace_t& remove_icon(client_ptr_t);
     user_workspace_t& raise_client(client_ptr_t);
 
     user_workspace_t& forward();
@@ -199,6 +202,7 @@ private:
     float            m_mfactor;
     bool             m_mirrored;
     focus_cycle_t    m_clients;
+    focus_cycle_t    m_icons;
     workspacestack_t m_stack;
     layout_t         m_layout;
     layout_t         m_previous_layout;
