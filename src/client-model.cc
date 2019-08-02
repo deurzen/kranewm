@@ -557,12 +557,16 @@ client_model_t::jump_process(const ::std::string& name)
         client = process->prev;
 
     if (!client || !client_workspace(client)
-            || !is_user_workspace(client_workspace(client)))
+        || !is_user_workspace(client_workspace(client)))
     {
         return;
     }
 
     process->prev = focused_client();
+
+    auto context = client_context(client);
+    if (context != active_context())
+        change_active_context(context);
 
     auto workspace = client_user_workspace(client);
     if (workspace != active_workspace())

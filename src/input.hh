@@ -33,7 +33,7 @@ public:
           m_processbinds({
               //  keysym  mask                 class
               { { XK_b,   MODMASK           }, "qutebrowser" },
-              { { XK_b,   MODMASK|ShiftMask }, "Firefox"     },
+              { { XK_b,   MODMASK|ShiftMask }, "firefox"     },
           }),
           m_mousebinds({
               //  keysym              mask                 client  operation
