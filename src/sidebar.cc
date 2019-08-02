@@ -1,6 +1,7 @@
 #include "sidebar.hh"
 
 #include "context.hh"
+#include "iconification.hh"
 
 
 void
@@ -19,6 +20,7 @@ sidebar_t::draw()
     draw_contextletter();
     draw_clientstate();
     draw_workspacenumbers();
+    draw_icons();
     draw_numbersticky();
     draw_numberclients();
 }
@@ -119,6 +121,24 @@ sidebar_t::draw_workspacenumbers()
 
         m_workspacenumbersgc.clear(current_pos);
         m_workspacenumbersgc.draw_string(current_pos, ::std::to_string(nr));
+        current_pos.y += (4 + m_workspacenumbersgc.get_font_dim().h);
+    }
+}
+
+void
+sidebar_t::draw_icons()
+{
+    pos_t current_pos = {(SIDEBAR_WIDTH - m_workspacenumbersgc.get_font_dim().w) / 2,
+        14 * (4 + m_workspacenumbersgc.get_font_dim().h)};
+
+    auto icons = m_context->get_activated()->get_icons();
+    for (unsigned i = 0; i < icons.size() + 1; ++i) {
+        m_iconsgc.clear({current_pos.x,
+            current_pos.y + static_cast<int>(i * (4 + m_workspacenumbersgc.get_font_dim().h))});
+    }
+
+    for (size_t i = 0; i < icons.size(); ++i) {
+        m_iconsgc.draw_string(current_pos, ::std::to_string(i));
         current_pos.y += (4 + m_workspacenumbersgc.get_font_dim().h);
     }
 }
