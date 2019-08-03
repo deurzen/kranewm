@@ -193,6 +193,69 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
                 m_clients.set_iconified(icons.back(), clientaction_t::remove);
         }
         break;
+    case keyop_t::deiconify_client_1:
+        {
+            auto icons = m_clients.active_workspace()->get_icons();
+            if (!icons.empty())
+                m_clients.set_iconified(icons.front(), clientaction_t::remove);
+        }
+        break;
+    case keyop_t::deiconify_client_2:
+        {
+            auto icons = m_clients.active_workspace()->get_icons();
+            if (icons.size() > 1)
+                m_clients.set_iconified(icons[1], clientaction_t::remove);
+        }
+        break;
+    case keyop_t::deiconify_client_3:
+        {
+            auto icons = m_clients.active_workspace()->get_icons();
+            if (icons.size() > 2)
+                m_clients.set_iconified(icons[2], clientaction_t::remove);
+        }
+        break;
+    case keyop_t::deiconify_client_4:
+        {
+            auto icons = m_clients.active_workspace()->get_icons();
+            if (icons.size() > 3)
+                m_clients.set_iconified(icons[3], clientaction_t::remove);
+        }
+        break;
+    case keyop_t::deiconify_client_5:
+        {
+            auto icons = m_clients.active_workspace()->get_icons();
+            if (icons.size() > 4)
+                m_clients.set_iconified(icons[4], clientaction_t::remove);
+        }
+        break;
+    case keyop_t::deiconify_client_6:
+        {
+            auto icons = m_clients.active_workspace()->get_icons();
+            if (icons.size() > 5)
+                m_clients.set_iconified(icons[5], clientaction_t::remove);
+        }
+        break;
+    case keyop_t::deiconify_client_7:
+        {
+            auto icons = m_clients.active_workspace()->get_icons();
+            if (icons.size() > 6)
+                m_clients.set_iconified(icons[6], clientaction_t::remove);
+        }
+        break;
+    case keyop_t::deiconify_client_8:
+        {
+            auto icons = m_clients.active_workspace()->get_icons();
+            if (icons.size() > 7)
+                m_clients.set_iconified(icons[7], clientaction_t::remove);
+        }
+        break;
+    case keyop_t::deiconify_client_9:
+        {
+            auto icons = m_clients.active_workspace()->get_icons();
+            if (icons.size() > 8)
+                m_clients.set_iconified(icons[8], clientaction_t::remove);
+        }
+        break;
     case keyop_t::activate_ws_1: m_clients.change_active_workspace(1); break;
     case keyop_t::activate_ws_2: m_clients.change_active_workspace(2); break;
     case keyop_t::activate_ws_3: m_clients.change_active_workspace(3); break;
