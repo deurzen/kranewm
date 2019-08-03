@@ -190,7 +190,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             auto icons = m_clients.active_workspace()->get_icons();
             if (!icons.empty())
-                m_clients.set_iconified(icons.front(), clientaction_t::remove);
+                m_clients.set_iconified(icons.back(), clientaction_t::remove);
         }
         break;
     case keyop_t::activate_ws_1: m_clients.change_active_workspace(1); break;
