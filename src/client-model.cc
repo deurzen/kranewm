@@ -467,6 +467,9 @@ client_model_t::set_urgent(client_ptr_t client, clientaction_t action)
 void
 client_model_t::set_iconified(client_ptr_t client, clientaction_t action, bool by_user)
 {
+    if (client->sticky)
+        return;
+
     switch (action) {
     case clientaction_t::add:
         {
