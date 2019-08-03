@@ -6,6 +6,7 @@
 
 #include "x-data/window.hh"
 
+
 enum class applicationtype_t {
     other,
     terminal,
@@ -22,9 +23,8 @@ enum class applicationtype_t {
     utility,
 };
 
-
 static const ::std::map<applicationtype_t, char> ICON_CHARACTERS({
-//    type                             name
+//    type                               name
     { applicationtype_t::other,          'o' },
     { applicationtype_t::terminal,       't' },
     { applicationtype_t::browser,        'b' },
@@ -86,6 +86,5 @@ static const ::std::map<::std::string, applicationtype_t> APPLICATION_TYPES({
     { "Qalculate-gtk",        applicationtype_t::utility },
     { "calligrasheets",       applicationtype_t::utility },
 });
-
 
 #endif//__KRANEWM_ICONIFICATION_GUARD__
