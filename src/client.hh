@@ -20,9 +20,7 @@ enum class clientexpect_t : int
     map           = 1 << 0,
     withdraw      = 1 << 1,
     iconify       = 1 << 2,
-    iconify_set   = 1 << 3,
-    deiconify     = 1 << 4,
-    deiconify_set = 1 << 5
+    deiconify     = 1 << 3
 };
 
 enum class snapedge_t

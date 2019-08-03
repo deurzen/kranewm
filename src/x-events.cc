@@ -389,8 +389,6 @@ x_events_t::on_map_request()
 
         if (win == client->frame)
             client->consume_expect(clientexpect_t::deiconify);
-        else if (win == client->win)
-            client->consume_expect(clientexpect_t::deiconify_set);
 
         return;
     }
@@ -418,8 +416,6 @@ x_events_t::on_map_notify()
 
         if (win == client->frame)
             client->consume_expect(clientexpect_t::deiconify);
-        else if (win == client->win)
-            client->consume_expect(clientexpect_t::deiconify_set);
 
         return;
     }
@@ -504,8 +500,7 @@ x_events_t::on_unmap_notify()
     x_data::sync(false);
 
     if (client->consume_expect(clientexpect_t::withdraw)
-        || (win == client->frame && client->consume_expect(clientexpect_t::iconify))
-        || (win == client->win && client->consume_expect(clientexpect_t::iconify_set)))
+        || (win == client->frame && client->consume_expect(clientexpect_t::iconify)))
     {
         return;
     }

@@ -105,19 +105,19 @@ client_t::consume_expect(clientexpect_t occurred)
         case clientexpect_t::iconify:
             {
                 win.set_state(IconicState);
+                x_data::select_input(frame, NONSUBSTR_FRAME_SELECTION);
                 win.unmap();
-                expect = clientexpect_t::iconify_set;
+                x_data::select_input(frame, REG_FRAME_SELECTION);
             }
-            return true;
-        case clientexpect_t::iconify_set: break;
+            break;
         case clientexpect_t::deiconify:
             {
                 win.set_state(NormalState);
+                x_data::select_input(frame, NONSUBSTR_FRAME_SELECTION);
                 win.map();
-                expect = clientexpect_t::deiconify_set;
+                x_data::select_input(frame, REG_FRAME_SELECTION);
             }
-            return true;
-        case clientexpect_t::deiconify_set: break;
+            break;
         default: break;
         }
 

@@ -11,6 +11,8 @@ extern "C" {
 const long REG_WIN_SELECTION = PropertyChangeMask;
 const long REG_FRAME_SELECTION = FocusChangeMask
     | SubstructureRedirectMask | SubstructureNotifyMask;
+const long NONSUBSTR_FRAME_SELECTION = (REG_FRAME_SELECTION & ~SubstructureRedirectMask)
+    & ~SubstructureNotifyMask;
 
 struct pos_t
 {
