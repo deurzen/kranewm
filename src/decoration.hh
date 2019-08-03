@@ -7,10 +7,6 @@
 const ::std::string FONTNAME = "-*-terminus-*-*-*-*-*-*-*-*-*-*-*-*";
 
 const int BORDER_HEIGHT   = 3;
-const int ICON_WIDTH      = 250;
-const int ICON_HEIGHT     = 16;
-const int ICON_BORDER     = 1;
-const int ICON_ROW_LENGTH = 50;
 
 const unsigned long SIDEBAR_FG_COLOR = 0xF5E2BD;
 const unsigned long SIDEBAR_BG_COLOR = 0x080808;
@@ -25,7 +21,7 @@ const unsigned long SIDEBAR_LAYOUT_COLOR           = 0x7E99A8;
 const unsigned long SIDEBAR_CONTEXT_COLOR          = 0xB0BC98;
 const unsigned long SIDEBAR_WORKSPACES_COLOR       = SIDEBAR_FG_COLOR;
 const unsigned long SIDEBAR_ICONS_COLOR            = SIDEBAR_FG_COLOR;
-const unsigned long SIDEBAR_ICONNUMBERS_COLOR      = SIDEBAR_FG_COLOR;
+const unsigned long SIDEBAR_ICONNUMBERS_COLOR      = SIDEBAR_LAYOUT_COLOR;
 const unsigned long SIDEBAR_ACTIVE_WORKSPACE_COLOR = SEL_COLOR;
 const unsigned long SIDEBAR_NSTICKY_COLOR          = SELSTICKY_COLOR;
 const unsigned long SIDEBAR_NCLIENTS_COLOR         = SIDEBAR_WORKSPACES_COLOR;

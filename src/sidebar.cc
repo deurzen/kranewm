@@ -3,6 +3,8 @@
 #include "context.hh"
 #include "iconification.hh"
 
+#include <algorithm>
+
 
 void
 sidebar_t::set_context(context_ptr_t context)
@@ -132,13 +134,31 @@ sidebar_t::draw_icons()
         14 * (4 + m_workspacenumbersgc.get_font_dim().h)};
 
     auto icons = m_context->get_activated()->get_icons();
-    for (unsigned i = 0; i < icons.size() + 1; ++i) {
+    for (unsigned i = 0; i < 16; ++i) {
         m_iconsgc.clear({current_pos.x,
-            current_pos.y + static_cast<int>(i * (4 + m_workspacenumbersgc.get_font_dim().h))});
+            current_pos.y + static_cast<int>(i * (4 + m_workspacenumbersgc.get_font_dim().h)) - 2});
+        m_iconsgc.clear({current_pos.x,
+            current_pos.y + static_cast<int>(i * (4 + m_workspacenumbersgc.get_font_dim().h)) + 2});
     }
 
-    for (size_t i = 0; i < icons.size(); ++i) {
-        m_iconsgc.draw_string(current_pos, ::std::to_string(i));
+    for (size_t i = 0; i < ::std::min(icons.size(), static_cast<size_t>(10)); ++i) {
+        if (i == 0 || i == 2 || i == 4 || i == 6 || i == 8) {
+            m_iconnumbersgc.draw_string(current_pos, ::std::to_string(i + 1));
+            current_pos.y += (4 + m_workspacenumbersgc.get_font_dim().h);
+        } else if (i == 9) {
+            for (size_t j = 0; j < 3; ++j) {
+                m_iconnumbersgc.draw_string({current_pos.x, current_pos.y - 5}, ".");
+                current_pos.y += (m_workspacenumbersgc.get_font_dim().h - 4);
+            }
+            break;
+        }
+
+        ::std::string cls = icons[i]->win.get_class();
+        char icon_char = ICON_CHARACTERS.at(applicationtype_t::other);
+        if (APPLICATION_TYPES.count(cls))
+            icon_char = ICON_CHARACTERS.at(APPLICATION_TYPES.at(cls));
+
+        m_iconsgc.draw_string(current_pos, ::std::string(1, icon_char));
         current_pos.y += (4 + m_workspacenumbersgc.get_font_dim().h);
     }
 }

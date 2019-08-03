@@ -191,6 +191,8 @@ x_events_t::on_client_message()
                         return;
                     m_clients.set_urgent(client, static_cast<clientaction_t>(event.data.l[0]));
                 }
+
+                m_sidebar.draw_clientstate();
             }
         }
         break;

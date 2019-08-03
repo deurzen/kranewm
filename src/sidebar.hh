@@ -28,6 +28,7 @@ public:
           m_contextlettergc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_workspacenumbersgc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_iconsgc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
+          m_iconnumbersgc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_numberstickygc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_numberclientsgc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_activity_indicators(USER_WORKSPACES.size()),
@@ -57,6 +58,8 @@ public:
         m_workspacenumbersgc.set_background(SIDEBAR_BG_COLOR);
         m_iconsgc.set_foreground(SIDEBAR_ICONS_COLOR);
         m_iconsgc.set_background(SIDEBAR_BG_COLOR);
+        m_iconnumbersgc.set_foreground(SIDEBAR_ICONNUMBERS_COLOR);
+        m_iconnumbersgc.set_background(SIDEBAR_BG_COLOR);
         m_numberstickygc.set_foreground(SIDEBAR_NSTICKY_COLOR);
         m_numberstickygc.set_background(SIDEBAR_BG_COLOR);
         m_numberclientsgc.set_foreground(SIDEBAR_NCLIENTS_COLOR);
@@ -109,6 +112,7 @@ private:
     x_data::graphicscontext_t m_contextlettergc;
     x_data::graphicscontext_t m_workspacenumbersgc;
     x_data::graphicscontext_t m_iconsgc;
+    x_data::graphicscontext_t m_iconnumbersgc;
     x_data::graphicscontext_t m_numberstickygc;
     x_data::graphicscontext_t m_numberclientsgc;
 
