@@ -336,13 +336,14 @@ user_workspace_t&
 user_workspace_t::set_layout(layout_t _layout)
 {
     layout_t current_layout = m_layout;
-    if (_layout == layout_t::toggle) {
-        if (_layout != m_layout)
-            m_layout = m_previous_layout;
-    } else
+    if (_layout == layout_t::toggle)
+        m_layout = m_previous_layout;
+    else
         m_layout = _layout;
 
-    m_previous_layout = current_layout;
+    if (_layout != m_layout)
+        m_previous_layout = current_layout;
+
     return *this;
 }
 
