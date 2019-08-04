@@ -4,7 +4,6 @@
 #include "stack.hh"
 #include "context.hh"
 #include "workspace.hh"
-#include "rule.hh"
 
 #include "x-data/window.hh"
 
@@ -15,6 +14,7 @@
 class changequeue_t;
 class windowstack_t;
 class processjumplist_t;
+class rule_t;
 
 
 class client_model_t
@@ -48,7 +48,7 @@ public:
             delete context;
     }
 
-    client_ptr_t win_to_client(x_data::window_t);
+    client_ptr_t win_client(x_data::window_t);
     context_ptr_t client_context(client_ptr_t);
     workspace_ptr_t client_workspace(client_ptr_t);
     user_workspace_ptr_t client_user_workspace(client_ptr_t);

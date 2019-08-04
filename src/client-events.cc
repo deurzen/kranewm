@@ -228,7 +228,7 @@ client_events_t::on_change_workspace_active()
         x_data::event_t event;
         while (x_data::typed_event(event, UnmapNotify)) {
             x_data::window_t win = event.get().xunmap.window;
-            client_ptr_t client = m_clients.win_to_client(win);
+            client_ptr_t client = m_clients.win_client(win);
 
             if (client && !client->consume_expect(clientexpect_t::withdraw)) {
                 client->unmap();

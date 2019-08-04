@@ -87,7 +87,7 @@ x_events_t::register_window(x_data::window_t win)
         }
 
         client_ptr_t client;
-        if ((client = m_clients.win_to_client(parent))) {
+        if ((client = m_clients.win_client(parent))) {
             rule.floating = true;
             client_ptr_t child_client = create_client(win, rule);
             child_client->parent = client;
@@ -121,7 +121,7 @@ x_events_t::on_button_press()
             win = subwin;
     }
 
-    client_ptr_t client = m_clients.win_to_client(win);
+    client_ptr_t client = m_clients.win_client(win);
     if (client) {
         m_clients.focus(client);
         m_input.process_mouse_input_client(client, event);
@@ -158,7 +158,7 @@ x_events_t::on_client_message()
 {
     XClientMessageEvent event = m_current_event.get().xclient;
     x_data::window_t win = event.window;
-    client_ptr_t client = m_clients.win_to_client(win);
+    client_ptr_t client = m_clients.win_client(win);
 
     if (!client)
         return;
@@ -210,7 +210,7 @@ void
 x_events_t::on_configure_request()
 {
     x_data::window_t win = m_current_event.get().xconfigurerequest.window;
-    client_ptr_t client = m_clients.win_to_client(win);
+    client_ptr_t client = m_clients.win_client(win);
 
     if (!client) {
         int perm_flags = CWX | CWY | CWWidth | CWHeight;
@@ -300,7 +300,7 @@ void
 x_events_t::on_configure_notify()
 {
     x_data::window_t win = m_current_event.get().xconfigure.window;
-    client_ptr_t client = m_clients.win_to_client(win);
+    client_ptr_t client = m_clients.win_client(win);
 
     if (win.get() == x_data::g_root.get()) {
         m_clients.wedge_clients();
@@ -324,7 +324,7 @@ void
 x_events_t::on_destroy_notify()
 {
     x_data::window_t win = m_current_event.get().xdestroywindow.window;
-    client_ptr_t client = m_clients.win_to_client(win);
+    client_ptr_t client = m_clients.win_client(win);
 
     if (!client) {
         if (m_ewmh.check_release_strut(win))
@@ -375,7 +375,7 @@ void
 x_events_t::on_map_request()
 {
     x_data::window_t win = m_current_event.get().xmaprequest.window;
-    client_ptr_t client = m_clients.win_to_client(win);
+    client_ptr_t client = m_clients.win_client(win);
 
     if (client) {
         if (!client->consume_expect(clientexpect_t::map)
@@ -402,7 +402,7 @@ void
 x_events_t::on_map_notify()
 {
     x_data::window_t win = m_current_event.get().xmap.window;
-    client_ptr_t client = m_clients.win_to_client(win);
+    client_ptr_t client = m_clients.win_client(win);
 
     if (client) {
         if (!client->consume_expect(clientexpect_t::map)
@@ -460,7 +460,7 @@ x_events_t::on_property_notify()
 {
     auto event = m_current_event.get().xproperty;
     x_data::window_t win = event.window;
-    client_ptr_t client = m_clients.win_to_client(win);
+    client_ptr_t client = m_clients.win_client(win);
 
     if (client && event.state == PropertyNewValue) {
         if (event.atom == XA_WM_NORMAL_HINTS) {
@@ -490,7 +490,7 @@ void
 x_events_t::on_unmap_notify()
 {
     x_data::window_t win = m_current_event.get().xunmap.window;
-    client_ptr_t client = m_clients.win_to_client(win);
+    client_ptr_t client = m_clients.win_client(win);
 
     if (!client) {
         m_windowstack.remove_from_stack(win);
