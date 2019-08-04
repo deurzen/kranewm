@@ -95,7 +95,7 @@ sidebar_t::draw_workspacenumbers()
     pos_t current_pos = {(SIDEBAR_WIDTH - m_workspacenumbersgc.get_font_dim().w) / 2,
         3 * (4 + m_workspacenumbersgc.get_font_dim().h)};
 
-    for (size_t i = 0; i < (*m_context->get_workspaces()).size(); ++i) {
+    for (::std::size_t i = 0; i < (*m_context->get_workspaces()).size(); ++i) {
         if (m_context->get_nnonsticky(i))
             m_activity_indicators[i].map();
         else
@@ -134,19 +134,19 @@ sidebar_t::draw_icons()
         14 * (4 + m_workspacenumbersgc.get_font_dim().h)};
 
     auto icons = m_context->get_activated()->get_icons();
-    for (unsigned i = 0; i < 16; ++i) {
+    for (::std::size_t i = 0; i < 16; ++i) {
         m_iconsgc.clear({current_pos.x,
             current_pos.y + static_cast<int>(i * (4 + m_workspacenumbersgc.get_font_dim().h)) - 2});
         m_iconsgc.clear({current_pos.x,
             current_pos.y + static_cast<int>(i * (4 + m_workspacenumbersgc.get_font_dim().h)) + 2});
     }
 
-    for (size_t i = 0; i < ::std::min(icons.size(), static_cast<size_t>(10)); ++i) {
+    for (::std::size_t i = 0; i < ::std::min(icons.size(), static_cast<::std::size_t>(10)); ++i) {
         if (i == 0 || i == 2 || i == 4 || i == 6 || i == 8) {
             m_iconnumbersgc.draw_string(current_pos, ::std::to_string(i + 1));
             current_pos.y += (4 + m_workspacenumbersgc.get_font_dim().h);
         } else if (i == 9) {
-            for (size_t j = 0; j < 3; ++j) {
+            for (::std::size_t j = 0; j < 3; ++j) {
                 m_iconnumbersgc.draw_string({current_pos.x, current_pos.y - 5}, ".");
                 current_pos.y += (m_workspacenumbersgc.get_font_dim().h - 4);
             }
@@ -170,7 +170,7 @@ sidebar_t::draw_numbersticky()
     pos_t pos = {(SIDEBAR_WIDTH - m_numberstickygc.get_font_dim().w) / 2,
         root_attrs.h() - 2 * (m_numberstickygc.get_font_dim().h) - 2};
 
-    unsigned nsticky = m_context->get_nsticky();
+    ::std::size_t nsticky = m_context->get_nsticky();
     m_numberstickygc.clear();
 
     if (nsticky == 0)
@@ -188,7 +188,7 @@ sidebar_t::draw_numberclients()
     pos_t pos = {(SIDEBAR_WIDTH - m_numberclientsgc.get_font_dim().w) / 2,
         root_attrs.h() - (m_numberclientsgc.get_font_dim().h) + 2};
 
-    unsigned nclients = m_context->get_nnonsticky(m_context->get_activated()->get_number() - 1);
+    ::std::size_t nclients = m_context->get_nnonsticky(m_context->get_activated()->get_number() - 1);
     m_numberclientsgc.clear();
 
     if (nclients > 9)

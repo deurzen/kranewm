@@ -10,7 +10,7 @@ zip_rules(rule_t r1, rule_t r2)
     bool fullscreen = false;
     bool autoclose  = false;
     bool nohint     = false;
-    unsigned workspace = 0;
+    ::std::size_t workspace = 0;
 
     floating   = r1.floating   || r2.floating;
     center     = r1.center     || r2.center;
@@ -31,7 +31,7 @@ retrieve_rule(rules_t& rules, x_data::window_t& win)
     bool center    = false;
     bool autoclose = false;
     bool nohint    = false;
-    unsigned workspace = 0;
+    ::std::size_t workspace = 0;
 
     ::std::string cls   = win.get_class();
     ::std::string inst  = win.get_instance();
@@ -76,7 +76,7 @@ parse_global_rule(x_data::window_t& win)
     bool fullscreen = false;
     bool autoclose  = false;
     bool nohint     = false;
-    unsigned workspace = 0;
+    ::std::size_t workspace = 0;
 
     ::std::string cls   = win.get_class();
     ::std::string inst  = win.get_instance();

@@ -68,10 +68,10 @@ namespace x_data
     public:
         atom_list_t() = default;
 
-        atom_list_t(Atom* atom_list, size_t list_len)
+        atom_list_t(Atom* atom_list, ::std::size_t list_len)
             : len(list_len)
         {
-            for (size_t i = 0; i < list_len; ++i)
+            for (::std::size_t i = 0; i < list_len; ++i)
                 val.push_back(atom_list[i]);
         }
 
@@ -79,7 +79,7 @@ namespace x_data
             : len(data_len)
         {
             Atom* atom_list = (Atom*) raw_data;
-            for (size_t i = 0; i < data_len; ++i)
+            for (::std::size_t i = 0; i < data_len; ++i)
                 val.push_back(atom_list[i]);
         }
 
@@ -93,7 +93,7 @@ namespace x_data
                 return false;
 
             bool different = false;
-            for (size_t i = 0; i < len; ++i)
+            for (::std::size_t i = 0; i < len; ++i)
                 if (val[i] != atom_list.val[i])
                     different = true;
 
@@ -109,7 +109,7 @@ namespace x_data
 
     private:
         ::std::vector<Atom> val;
-        size_t len;
+        ::std::size_t len;
 
     };
 

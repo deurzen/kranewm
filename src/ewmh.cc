@@ -67,7 +67,7 @@ ewmh_t::set_frame_extents(x_data::window_t win, bool overridden)
     };
 
     x_data::remove_property(win, "_NET_WM_FRAME_EXTENTS");
-    for (size_t i = 0; i < 4; ++i)
+    for (::std::size_t i = 0; i < 4; ++i)
         x_data::append_property<x_data::cardinal_t>(win, {"_NET_WM_FRAME_EXTENTS",
             overridden ? frame_extents_overridden[i] : frame_extents_normal[i]});
 }
@@ -121,7 +121,7 @@ void
 ewmh_t::set_desktop_viewport_property()
 {
     x_data::remove_property(x_data::g_root, "_NET_DESKTOP_VIEWPORT");
-    for (size_t i = 0; i < USER_WORKSPACES.size(); ++i) {
+    for (::std::size_t i = 0; i < USER_WORKSPACES.size(); ++i) {
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_DESKTOP_VIEWPORT", 0});
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_DESKTOP_VIEWPORT", 0});
     }
@@ -132,7 +132,7 @@ ewmh_t::set_workarea_property()
 {
     auto root_attrs = x_data::get_attributes(x_data::g_root);
     x_data::remove_property(x_data::g_root, "_NET_WORKAREA");
-    for (size_t i = 0; i < USER_WORKSPACES.size(); ++i) {
+    for (::std::size_t i = 0; i < USER_WORKSPACES.size(); ++i) {
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",
             (strut.left_window.get() != None) ? strut.left_width : SIDEBAR_WIDTH});
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",
@@ -179,7 +179,7 @@ ewmh_t::set_strut_property(x_data::window_t win, unsigned left, unsigned right,
     x_data::append_property<x_data::cardinal_t>(win, {"_NET_WM_STRUT_PARTIAL", top});
     x_data::append_property<x_data::cardinal_t>(win, {"_NET_WM_STRUT_PARTIAL", bottom});
 
-    for (size_t i = 0; i < 8; ++i)
+    for (::std::size_t i = 0; i < 8; ++i)
         x_data::append_property<x_data::cardinal_t>(win, {"_NET_WM_STRUT_PARTIAL", 0});
 }
 
@@ -201,7 +201,7 @@ ewmh_t::check_apply_strut(x_data::window_t win)
         return false;
 
     if (partial_strut_vals.size() >= 4 && strut_vals.size() == 4)
-        for (size_t i = 0; i < 4; ++i)
+        for (::std::size_t i = 0; i < 4; ++i)
             if (strut_vals[i] == 0)
                 strut_vals[i] = partial_strut_vals[i];
 

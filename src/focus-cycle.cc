@@ -138,7 +138,7 @@ focus_cycle_t::unset()
     m_has_focus = false;
 }
 
-unsigned
+::std::size_t
 focus_cycle_t::index_of(client_ptr_t client)
 {
     fg_it it = ::std::find(m_clients.begin(), m_clients.end(), client);
@@ -172,13 +172,13 @@ focus_cycle_t::prev_focus()
 }
 
 void
-focus_cycle_t::rotate_group_forward(unsigned from, unsigned to)
+focus_cycle_t::rotate_group_forward(::std::size_t from, ::std::size_t to)
 {
     if (from > to || from > m_clients.size() || to > m_clients.size())
         return;
 
-    ::std::map<client_ptr_t, unsigned> floating_clients;
-    unsigned index = 0;
+    ::std::map<client_ptr_t, ::std::size_t> floating_clients;
+    ::std::size_t index = 0;
     for (auto& client : get_all()) {
         if (client->floating)
             floating_clients[client] = index;
@@ -207,13 +207,13 @@ focus_cycle_t::rotate_group_forward(unsigned from, unsigned to)
 }
 
 void
-focus_cycle_t::rotate_group_backward(unsigned from, unsigned to)
+focus_cycle_t::rotate_group_backward(::std::size_t from, ::std::size_t to)
 {
     if (from > to || from > m_clients.size() || to > m_clients.size())
         return;
 
-    ::std::map<client_ptr_t, unsigned> floating_clients;
-    unsigned index = 0;
+    ::std::map<client_ptr_t, ::std::size_t> floating_clients;
+    ::std::size_t index = 0;
     for (auto& client : get_all()) {
         if (client->floating)
             floating_clients[client] = index;

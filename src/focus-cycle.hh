@@ -7,7 +7,7 @@
 
 class focus_cycle_t
 {
-    static const unsigned MAX_STACK_SIZE = 50;
+    static const ::std::size_t MAX_STACK_SIZE = 50;
 
     typedef ::std::deque<client_ptr_t>::iterator fg_it;
     typedef ::std::deque<client_ptr_t>::reverse_iterator fg_rit;
@@ -28,7 +28,7 @@ class focus_cycle_t
         void erase(client_ptr_t);
 
     private:
-        const size_t max_stack_size;
+        const ::std::size_t max_stack_size;
         ::std::deque<client_ptr_t> stack;
 
     };
@@ -51,13 +51,13 @@ public:
     bool set(fg_sz);
     void unset();
 
-    unsigned index_of(client_ptr_t);
+    ::std::size_t index_of(client_ptr_t);
 
     bool next_focus();
     bool prev_focus();
 
-    void rotate_group_forward(unsigned, unsigned);
-    void rotate_group_backward(unsigned, unsigned);
+    void rotate_group_forward(::std::size_t, ::std::size_t);
+    void rotate_group_backward(::std::size_t, ::std::size_t);
 
     ::std::pair<client_ptr_t, client_ptr_t> move_focus_forward();
     ::std::pair<client_ptr_t, client_ptr_t> move_focus_backward();

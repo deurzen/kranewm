@@ -71,7 +71,7 @@ x_events_t::register_window(x_data::window_t win)
     rule_t rule = retrieve_rule(m_rules, win);
     if (x_data::has_property<x_data::cardinal_t>(win, "_NET_WM_DESKTOP")) {
         rule.workspace = x_data::get_property<x_data::cardinal_t>(win, "_NET_WM_DESKTOP")().get() + 1;
-        if (!range_t<unsigned>::contains(1, USER_WORKSPACES.size(), rule.workspace))
+        if (!range_t<::std::size_t>::contains(1, USER_WORKSPACES.size(), rule.workspace))
             rule.workspace = 0;
     }
 

@@ -65,7 +65,7 @@ public:
         m_numberclientsgc.set_foreground(SIDEBAR_NCLIENTS_COLOR);
         m_numberclientsgc.set_background(SIDEBAR_BG_COLOR);
 
-        for (size_t i = 0; i < m_activity_indicators.size(); ++i) {
+        for (::std::size_t i = 0; i < m_activity_indicators.size(); ++i) {
             m_activity_indicators[i] = x_data::create_window(true);
             m_ewmh.set_window_type_property(m_activity_indicators[i], "DOCK");
             m_activity_indicators[i].set_border_color(SIDEBAR_WORKSPACES_COLOR);

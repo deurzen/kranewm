@@ -19,7 +19,7 @@ user_workspace_t::arrange() const
     }
 }
 
-unsigned
+::std::size_t
 user_workspace_t::get_number() const
 {
     return m_number;
@@ -288,7 +288,7 @@ user_workspace_t&
 user_workspace_t::jump_pane()
 {
     static client_ptr_t master_client, stack_client;
-    unsigned i = m_clients.index_of(m_clients.get());
+    ::std::size_t i = m_clients.index_of(m_clients.get());
 
     if (!(m_nmaster == 0 || m_nmaster >= m_clients.size())) {
         if (master_client && m_clients.index_of(master_client) >= m_nmaster)
@@ -300,7 +300,7 @@ user_workspace_t::jump_pane()
         if (i >= m_nmaster) {
             stack_client = m_clients.get();
             if (!m_clients.set(master_client))
-                m_clients.set(static_cast<unsigned>(0u));
+                m_clients.set(static_cast<::std::size_t>(0u));
         } else {
             master_client = m_clients.get();
             if (!m_clients.set(stack_client))
@@ -312,14 +312,14 @@ user_workspace_t::jump_pane()
 }
 
 user_workspace_t&
-user_workspace_t::set_nmaster(unsigned new_nmaster)
+user_workspace_t::set_nmaster(::std::size_t new_nmaster)
 {
     m_nmaster = new_nmaster;
     return *this;
 }
 
 user_workspace_t&
-user_workspace_t::set_gap_size(unsigned new_gap_size)
+user_workspace_t::set_gap_size(::std::size_t new_gap_size)
 {
     m_gap_size = new_gap_size;
     return *this;
@@ -348,13 +348,13 @@ user_workspace_t::set_layout(layout_t _layout)
 }
 
 
-unsigned
+::std::size_t
 user_workspace_t::get_nmaster() const
 {
     return m_nmaster;
 }
 
-unsigned
+::std::size_t
 user_workspace_t::get_gap_size() const
 {
     return m_gap_size;
@@ -378,7 +378,7 @@ user_workspace_t::get_stack() const
     return m_stack;
 }
 
-unsigned
+::std::size_t
 user_workspace_t::get_nurgent() const
 {
     return m_nurgent;
@@ -406,14 +406,14 @@ user_workspace_t::erase_urgent()
 bool
 user_workspace_t::is_master(client_ptr_t client)
 {
-    unsigned index = m_clients.index_of(client);
+    ::std::size_t index = m_clients.index_of(client);
     return index < m_nmaster;
 }
 
 bool
 user_workspace_t::is_stack(client_ptr_t client)
 {
-    unsigned index = m_clients.index_of(client);
+    ::std::size_t index = m_clients.index_of(client);
     return index >= m_nmaster && m_nmaster <= m_clients.size();
 }
 

@@ -13,28 +13,28 @@ inputhandler_t::process_mouse_input_global(XButtonEvent event)
         switch (m_mousebinds[{event.button, event.state, false}]) {
             case mouseop_t::goto_next_ws:
                 {
-                    unsigned workspace = m_clients.active_workspace()->get_number();
+                    ::std::size_t workspace = m_clients.active_workspace()->get_number();
                     workspace %= USER_WORKSPACES.size();
                     m_clients.change_active_workspace(workspace + 1, false);
                 }
                 return;
             case mouseop_t::goto_prev_ws:
                 {
-                    unsigned workspace = m_clients.active_workspace()->get_number() - 1;
+                    ::std::size_t workspace = m_clients.active_workspace()->get_number() - 1;
                     workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
                     m_clients.change_active_workspace(workspace, false);
                 }
                 return;
             case mouseop_t::goto_next_cx:
                 {
-                    unsigned context = m_clients.active_context()->get_letter() - 'a' + 1;
+                    ::std::size_t context = m_clients.active_context()->get_letter() - 'a' + 1;
                     context %= CONTEXTS.size();
                     m_clients.change_active_context(context + 1);
                 }
                 return;
             case mouseop_t::goto_prev_cx:
                 {
-                    unsigned context = m_clients.active_context()->get_letter() - 'a';
+                    ::std::size_t context = m_clients.active_context()->get_letter() - 'a';
                     context = (context == 0) ? CONTEXTS.size() : context;
                     m_clients.change_active_context(context);
                 }
@@ -65,40 +65,40 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
             break;
         case mouseop_t::client_next_ws:
             {
-                unsigned workspace = m_clients.active_workspace()->get_number();
+                ::std::size_t workspace = m_clients.active_workspace()->get_number();
                 workspace %= USER_WORKSPACES.size();
                 m_clients.client_to_workspace(client, workspace + 1);
             } // fallthrough
         case mouseop_t::goto_next_ws:
             {
-                unsigned workspace = m_clients.active_workspace()->get_number();
+                ::std::size_t workspace = m_clients.active_workspace()->get_number();
                 workspace %= USER_WORKSPACES.size();
                 m_clients.change_active_workspace(workspace + 1, false);
             }
             return;
         case mouseop_t::goto_next_cx:
             {
-                unsigned context = m_clients.active_context()->get_letter() - 'a' + 1;
+                ::std::size_t context = m_clients.active_context()->get_letter() - 'a' + 1;
                 context %= CONTEXTS.size();
                 m_clients.change_active_context(context + 1);
             }
             return;
         case mouseop_t::goto_prev_cx:
             {
-                unsigned context = m_clients.active_context()->get_letter() - 'a';
+                ::std::size_t context = m_clients.active_context()->get_letter() - 'a';
                 context = (context == 0) ? CONTEXTS.size() : context;
                 m_clients.change_active_context(context);
             }
             return;
         case mouseop_t::client_prev_ws:
             {
-                unsigned workspace = m_clients.active_workspace()->get_number() - 1;
+                ::std::size_t workspace = m_clients.active_workspace()->get_number() - 1;
                 workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
                 m_clients.client_to_workspace(client, workspace);
             } // fallthrough
         case mouseop_t::goto_prev_ws:
             {
-                unsigned workspace = m_clients.active_workspace()->get_number() - 1;
+                ::std::size_t workspace = m_clients.active_workspace()->get_number() - 1;
                 workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
                 m_clients.change_active_workspace(workspace, false);
             }
@@ -273,14 +273,14 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::activate_ws_9:   m_clients.change_active_workspace(9); break;
     case keyop_t::activate_next_ws:
         {
-            unsigned workspace = m_clients.active_workspace()->get_number();
+            ::std::size_t workspace = m_clients.active_workspace()->get_number();
             workspace %= USER_WORKSPACES.size();
             m_clients.change_active_workspace(workspace + 1, false);
         }
         break;
     case keyop_t::activate_prev_ws:
         {
-            unsigned workspace = m_clients.active_workspace()->get_number() - 1;
+            ::std::size_t workspace = m_clients.active_workspace()->get_number() - 1;
             workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
             m_clients.change_active_workspace(workspace, false);
         }
@@ -296,14 +296,14 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::activate_cx_9: m_clients.change_active_context(9); break;
     case keyop_t::activate_next_cx:
         {
-            unsigned context = m_clients.active_context()->get_letter() - 'a' + 1;
+            ::std::size_t context = m_clients.active_context()->get_letter() - 'a' + 1;
             context %= CONTEXTS.size();
             m_clients.change_active_context(context + 1);
         }
         break;
     case keyop_t::activate_prev_cx:
         {
-            unsigned context = m_clients.active_context()->get_letter() - 'a';
+            ::std::size_t context = m_clients.active_context()->get_letter() - 'a';
             context = (context == 0) ? CONTEXTS.size() : context;
             m_clients.change_active_context(context);
         }
@@ -429,7 +429,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::jump_stack:
         {
             auto clients = m_clients.active_workspace()->get_all();
-            unsigned nmaster = m_clients.active_workspace()->get_nmaster();
+            ::std::size_t nmaster = m_clients.active_workspace()->get_nmaster();
             if (!clients.empty() && nmaster < clients.size()) {
                 m_clients.active_workspace()->set_focused(clients[nmaster]);
                 m_clients.sync_workspace_focus();
@@ -548,14 +548,14 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         break;
     case keyop_t::inc_nmaster:
         {
-            unsigned nmaster = m_clients.active_workspace()->get_nmaster();
+            ::std::size_t nmaster = m_clients.active_workspace()->get_nmaster();
             if (nmaster < MAX_NMASTER)
                 m_clients.active_workspace()->set_nmaster(++nmaster).arrange();
         }
         break;
     case keyop_t::dec_nmaster:
         {
-            unsigned nmaster = m_clients.active_workspace()->get_nmaster();
+            ::std::size_t nmaster = m_clients.active_workspace()->get_nmaster();
             if (nmaster > 0)
                 m_clients.active_workspace()->set_nmaster(--nmaster).arrange();
         }
@@ -909,7 +909,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 client->move(pos);
             } else {
                 m_clients.active_workspace()->rotate_stack_backward();
-                unsigned nmaster = m_clients.active_workspace()->get_nmaster();
+                ::std::size_t nmaster = m_clients.active_workspace()->get_nmaster();
                 auto clients = m_clients.active_workspace()->get_all();
 
                 if (clients.size() && nmaster < clients.size() && m_clients.active_workspace()->master_focused()) {
@@ -930,7 +930,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
                 client->move(pos);
             } else {
                 m_clients.active_workspace()->rotate_stack_forward();
-                unsigned nmaster = m_clients.active_workspace()->get_nmaster();
+                ::std::size_t nmaster = m_clients.active_workspace()->get_nmaster();
                 auto clients = m_clients.active_workspace()->get_all();
 
                 if (clients.size() && nmaster < clients.size()  && m_clients.active_workspace()->master_focused()) {
@@ -966,7 +966,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
     case keyop_t::clients_fwd:
         {
             m_clients.active_workspace()->rotate_clients_forward();
-            unsigned nmaster = m_clients.active_workspace()->get_nmaster();
+            ::std::size_t nmaster = m_clients.active_workspace()->get_nmaster();
             auto clients = m_clients.active_workspace()->get_all();
 
             if (clients.size() && m_clients.active_workspace()->stack_focused()) {
@@ -984,7 +984,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
     case keyop_t::clients_bck:
         {
             m_clients.active_workspace()->rotate_clients_backward();
-            unsigned nmaster = m_clients.active_workspace()->get_nmaster();
+            ::std::size_t nmaster = m_clients.active_workspace()->get_nmaster();
             auto clients = m_clients.active_workspace()->get_all();
 
             if (clients.size() && m_clients.active_workspace()->stack_focused()) {
@@ -1001,7 +1001,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
         break;
     case keyop_t::client_to_next_ws:
         {
-            unsigned workspace = m_clients.active_workspace()->get_number();
+            ::std::size_t workspace = m_clients.active_workspace()->get_number();
             workspace %= USER_WORKSPACES.size();
             m_clients.client_to_workspace(client, workspace + 1);
             m_clients.active_workspace()->arrange();
@@ -1009,7 +1009,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
         break;
     case keyop_t::client_to_prev_ws:
         {
-            unsigned workspace = m_clients.active_workspace()->get_number() - 1;
+            ::std::size_t workspace = m_clients.active_workspace()->get_number() - 1;
             workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
             m_clients.client_to_workspace(client, workspace);
             m_clients.active_workspace()->arrange();

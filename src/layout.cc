@@ -27,7 +27,7 @@ layouthandler_t::layout_tile(const user_workspace_t& workspace) const
         return;
 
     auto root_attrs = x_data::get_attributes(x_data::g_root);
-    unsigned nmaster = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_nmaster());
+    ::std::size_t nmaster = ::std::min(static_cast<::std::size_t>(clients.size()), workspace.get_nmaster());
     int gap_size = workspace.get_gap_size();
 
     dim_t screen_dim = {
@@ -61,7 +61,7 @@ layouthandler_t::layout_tile(const user_workspace_t& workspace) const
     }
 
     { // tile master clients
-        for (size_t i = 0; nmaster && i < nmaster - 1; ++i) {
+        for (::std::size_t i = 0; nmaster && i < nmaster - 1; ++i) {
             clients[i]->resize(master_dim, true).move(master_pos, true);
             master_pos.y += master_dim.h + gap_size + 1;
         }
@@ -72,7 +72,7 @@ layouthandler_t::layout_tile(const user_workspace_t& workspace) const
     }
 
     { // tile stack clients
-        for (size_t i = nmaster; i < clients.size() - 1; ++i) {
+        for (::std::size_t i = nmaster; i < clients.size() - 1; ++i) {
             clients[i]->resize(stack_dim, true).move(stack_pos, true);
             stack_pos.y += stack_dim.h + gap_size + 1;
         }
@@ -94,7 +94,7 @@ layouthandler_t::layout_stick(const user_workspace_t& workspace) const
         return;
 
     auto root_attrs = x_data::get_attributes(x_data::g_root);
-    unsigned nmaster = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_nmaster());
+    ::std::size_t nmaster = ::std::min(static_cast<::std::size_t>(clients.size()), workspace.get_nmaster());
     int gap_size = workspace.get_gap_size();
 
     dim_t screen_dim = {
@@ -129,7 +129,7 @@ layouthandler_t::layout_stick(const user_workspace_t& workspace) const
     }
 
     { // tile master clients
-        for (size_t i = 0; nmaster && i < nmaster - 1; ++i) {
+        for (::std::size_t i = 0; nmaster && i < nmaster - 1; ++i) {
             clients[i]->resize(master_dim, true).move(master_pos, true);
             master_pos.y += master_dim.h + 1;
         }
@@ -140,7 +140,7 @@ layouthandler_t::layout_stick(const user_workspace_t& workspace) const
     }
 
     { // tile stack clients
-        for (size_t i = nmaster; i < clients.size() - 1; ++i) {
+        for (::std::size_t i = nmaster; i < clients.size() - 1; ++i) {
             clients[i]->resize(stack_dim, true).move(stack_pos, true);
             stack_pos.y += stack_dim.h + 1;
         }
@@ -162,7 +162,7 @@ layouthandler_t::layout_deck(const user_workspace_t& workspace) const
         return;
 
     auto root_attrs = x_data::get_attributes(x_data::g_root);
-    unsigned nmaster = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_nmaster());
+    ::std::size_t nmaster = ::std::min(static_cast<::std::size_t>(clients.size()), workspace.get_nmaster());
     int gap_size = workspace.get_gap_size();
 
     dim_t screen_dim = {
@@ -196,7 +196,7 @@ layouthandler_t::layout_deck(const user_workspace_t& workspace) const
     }
 
     { // tile master clients
-        for (size_t i = 0; nmaster && i < nmaster - 1; ++i) {
+        for (::std::size_t i = 0; nmaster && i < nmaster - 1; ++i) {
             clients[i]->resize(master_dim, true).move(master_pos, true);
             master_pos.y += master_dim.h + gap_size + 1;
         }
@@ -207,7 +207,7 @@ layouthandler_t::layout_deck(const user_workspace_t& workspace) const
     }
 
     // tile stack clients
-    for (size_t i = nmaster; i < clients.size(); ++i)
+    for (::std::size_t i = nmaster; i < clients.size(); ++i)
         clients[i]->resize(stack_dim, true).move(stack_pos, true);
 }
 
@@ -222,7 +222,7 @@ layouthandler_t::layout_doubledeck(const user_workspace_t& workspace) const
         return;
 
     auto root_attrs = x_data::get_attributes(x_data::g_root);
-    unsigned nmaster = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_nmaster());
+    ::std::size_t nmaster = ::std::min(static_cast<::std::size_t>(clients.size()), workspace.get_nmaster());
     int gap_size = workspace.get_gap_size();
 
     dim_t screen_dim = {
@@ -256,11 +256,11 @@ layouthandler_t::layout_doubledeck(const user_workspace_t& workspace) const
     }
 
     // tile master clients
-    for (size_t i = 0; i < nmaster; ++i)
+    for (::std::size_t i = 0; i < nmaster; ++i)
         clients[i]->resize(master_dim, true).move(master_pos, true);
 
     // tile stack clients
-    for (size_t i = nmaster; i < clients.size(); ++i)
+    for (::std::size_t i = nmaster; i < clients.size(); ++i)
         clients[i]->resize(stack_dim, true).move(stack_pos, true);
 }
 
@@ -337,8 +337,8 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
         return;
 
     auto root_attrs = x_data::get_attributes(x_data::g_root);
-    unsigned nmaster = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_nmaster());
-    unsigned n_stack = clients.size() - nmaster;
+    ::std::size_t nmaster = ::std::min(static_cast<::std::size_t>(clients.size()), workspace.get_nmaster());
+    ::std::size_t n_stack = clients.size() - nmaster;
     int gap_size = workspace.get_gap_size();
 
     bool has_leftstack = n_stack;
@@ -402,7 +402,7 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
     }
 
     { // tile master clients (center pillar)
-        for (size_t i = 0; nmaster && i < nmaster - 1; ++i) {
+        for (::std::size_t i = 0; nmaster && i < nmaster - 1; ++i) {
             clients[i]->resize(master_dim, true).move(master_pos, true);
             master_pos.y += master_dim.h + gap_size + 1;
         }
@@ -413,7 +413,7 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
     }
 
     { // tile stack clients (left pillar)
-        for (size_t i = 0; ::std::ceil((float)n_stack / 2) && i < ::std::ceil((float)n_stack / 2) - 1; ++i) {
+        for (::std::size_t i = 0; ::std::ceil((float)n_stack / 2) && i < ::std::ceil((float)n_stack / 2) - 1; ++i) {
             clients[nmaster + i]->resize(leftstack_dim, true).move(leftstack_pos, true);
             leftstack_pos.y += leftstack_dim.h + gap_size + 1;
         }
@@ -425,7 +425,7 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
 
     { // tile stack clients (right pillar)
         if (has_rightstack) {
-            for (size_t i = 0; ::std::floor((float)n_stack / 2) && i < ::std::floor((float)n_stack / 2) - 1; ++i) {
+            for (::std::size_t i = 0; ::std::floor((float)n_stack / 2) && i < ::std::floor((float)n_stack / 2) - 1; ++i) {
                 clients[clients.size() - ::std::floor((float)n_stack / 2) + i]->resize(rightstack_dim,
                     true).move(rightstack_pos, true);
                 rightstack_pos.y += rightstack_dim.h + gap_size + 1;
@@ -449,7 +449,7 @@ layouthandler_t::layout_column(const user_workspace_t& workspace) const
         return;
 
     auto root_attrs = x_data::get_attributes(x_data::g_root);
-    unsigned nmaster = ::std::min(static_cast<unsigned>(clients.size()), workspace.get_nmaster());
+    ::std::size_t nmaster = ::std::min(static_cast<::std::size_t>(clients.size()), workspace.get_nmaster());
     int gap_size = workspace.get_gap_size();
 
     dim_t screen_dim = {
@@ -492,7 +492,7 @@ layouthandler_t::layout_column(const user_workspace_t& workspace) const
     }
 
     { // tile master clients
-        for (size_t i = 0; nmaster && i < nmaster - 1; ++i) {
+        for (::std::size_t i = 0; nmaster && i < nmaster - 1; ++i) {
             clients[i]->resize(master_dim, true).move(master_pos, true);
             master_pos.x += master_dim.w + gap_size + 1;
         }
@@ -507,7 +507,7 @@ layouthandler_t::layout_column(const user_workspace_t& workspace) const
     }
 
     { // tile stack clients
-        for (size_t i = nmaster; i < clients.size() - 1; ++i) {
+        for (::std::size_t i = nmaster; i < clients.size() - 1; ++i) {
             clients[i]->resize(stack_dim, true).move(stack_pos, true);
             stack_pos.y += stack_dim.h + gap_size + 1;
         }

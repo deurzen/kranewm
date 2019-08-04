@@ -77,13 +77,13 @@ public:
     context_t& add_all_client(client_ptr_t);
     context_t& remove_all_client(client_ptr_t);
 
-    context_t& set_all_nmaster(unsigned);
-    context_t& set_all_gap_size(unsigned);
+    context_t& set_all_nmaster(::std::size_t);
+    context_t& set_all_gap_size(::std::size_t);
     context_t& set_all_mfactor(float);
     context_t& set_all_layout(layout_t);
 
-    unsigned get_nsticky() const;
-    unsigned get_nnonsticky(unsigned) const;
+    ::std::size_t get_nsticky() const;
+    ::std::size_t get_nnonsticky(::std::size_t) const;
     void record_sticky();
     void erase_sticky();
 
@@ -93,7 +93,7 @@ private:
     char m_letter;
     ::std::string m_name;
     bool m_is_initialized;
-    unsigned m_nsticky;
+    ::std::size_t m_nsticky;
 
     ::std::vector<user_workspace_ptr_t> m_workspaces;
     user_workspace_ptr_t m_previous;

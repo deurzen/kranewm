@@ -55,7 +55,7 @@ namespace x_data
     public:
         string_list_t() = default;
 
-        string_list_t(char** c_str_list, size_t list_length)
+        string_list_t(char** c_str_list, ::std::size_t list_length)
             : val(c_str_list, c_str_list + list_length),
               len(list_length) {}
 
@@ -98,7 +98,7 @@ namespace x_data
 
     private:
         ::std::vector<char*> val;
-        size_t len;
+        ::std::size_t len;
 
     };
 }

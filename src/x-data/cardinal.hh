@@ -57,10 +57,10 @@ namespace x_data
     public:
         cardinal_list_t() = default;
 
-        cardinal_list_t(unsigned long* card_list, size_t list_len)
+        cardinal_list_t(unsigned long* card_list, ::std::size_t list_len)
             : len(list_len)
         {
-            for (size_t i = 0; i < list_len; ++i)
+            for (::std::size_t i = 0; i < list_len; ++i)
                 val.push_back(card_list[i]);
         }
 
@@ -68,7 +68,7 @@ namespace x_data
             : len(data_len)
         {
             unsigned long* card_list = (unsigned long*) raw_data;
-            for (size_t i = 0; i < data_len; ++i)
+            for (::std::size_t i = 0; i < data_len; ++i)
                 val.push_back(card_list[i]);
         }
 
@@ -82,7 +82,7 @@ namespace x_data
                 return false;
 
             bool different = false;
-            for (size_t i = 0; i < len; ++i)
+            for (::std::size_t i = 0; i < len; ++i)
                 if (val[i] != card_list.val[i])
                     different = true;
 
@@ -98,7 +98,7 @@ namespace x_data
 
     private:
         ::std::vector<unsigned long> val;
-        size_t len;
+        ::std::size_t len;
 
     };
 }

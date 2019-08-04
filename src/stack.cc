@@ -147,7 +147,7 @@ void
 windowstack_t::apply(workspacestack_t stack, bool ignore_floating)
 {
     auto workspace_clients = stack.get_clients();
-    size_t n = m_win_layers.size() + workspace_clients.size();
+    ::std::size_t n = m_win_layers.size() + workspace_clients.size();
 
     ::std::vector<Window> wins;
     wins.reserve(n);

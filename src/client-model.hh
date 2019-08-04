@@ -35,7 +35,7 @@ public:
           m_focused_client(nullptr)
     {
         m_contexts.push_back(m_current_context);
-        for (size_t i = 1; i < CONTEXTS.size(); ++i) {
+        for (::std::size_t i = 1; i < CONTEXTS.size(); ++i) {
             char lt = 'a' + static_cast<char>(i);
             m_contexts.push_back(new context_t{lt, CONTEXTS.at(lt), ewmh});
         }
@@ -74,14 +74,14 @@ public:
     void stop_moving(client_ptr_t, pos_t = pos_t{});
     void stop_resizing(client_ptr_t, pos_t = pos_t{}, dim_t = dim_t{});
 
-    void client_to_workspace(client_ptr_t, unsigned);
+    void client_to_workspace(client_ptr_t, ::std::size_t);
     void client_to_workspace(client_ptr_t, workspace_ptr_t);
-    void change_active_workspace(unsigned, bool = true);
+    void change_active_workspace(::std::size_t, bool = true);
     void change_active_workspace(user_workspace_ptr_t = nullptr, bool = true);
 
-    void client_to_context(client_ptr_t, unsigned);
+    void client_to_context(client_ptr_t, ::std::size_t);
     void client_to_context(client_ptr_t, context_ptr_t);
-    void change_active_context(unsigned);
+    void change_active_context(::std::size_t);
     void change_active_context(context_ptr_t = nullptr);
 
     void set_fullscreen(client_ptr_t, clientaction_t);
@@ -93,8 +93,8 @@ public:
     void wedge_clients();
     void refullscreen_clients();
 
-    void save_profile(size_t);
-    void apply_profile(size_t);
+    void save_profile(::std::size_t);
+    void apply_profile(::std::size_t);
 
     void jump_marked();
     void jump_process(const ::std::string&);

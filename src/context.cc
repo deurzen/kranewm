@@ -136,7 +136,7 @@ context_t::remove_all_client(client_ptr_t client)
 
 
 context_t&
-context_t::set_all_nmaster(unsigned nmaster)
+context_t::set_all_nmaster(::std::size_t nmaster)
 {
     for (auto& workspace : m_workspaces)
         workspace->set_nmaster(nmaster);
@@ -144,7 +144,7 @@ context_t::set_all_nmaster(unsigned nmaster)
 }
 
 context_t&
-context_t::set_all_gap_size(unsigned gap_size)
+context_t::set_all_gap_size(::std::size_t gap_size)
 {
     for (auto& workspace : m_workspaces)
         workspace->set_gap_size(gap_size);
@@ -167,14 +167,14 @@ context_t::set_all_layout(layout_t layout)
     return *this;
 }
 
-unsigned
+::std::size_t
 context_t::get_nsticky() const
 {
     return m_nsticky;
 }
 
-unsigned
-context_t::get_nnonsticky(unsigned workspace_nr) const
+::std::size_t
+context_t::get_nnonsticky(::std::size_t workspace_nr) const
 {
     return m_workspaces[workspace_nr]->get_all().size() - m_nsticky;
 }

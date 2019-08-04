@@ -14,7 +14,7 @@ profile_t::save(const ::std::deque<client_ptr_t>& clients)
 void
 profile_t::apply(const ::std::deque<client_ptr_t>& clients)
 {
-    for (size_t i = 0; i < ::std::min(m_geometries.size(), clients.size()); ++i) {
+    for (::std::size_t i = 0; i < ::std::min(m_geometries.size(), clients.size()); ++i) {
         clients[i]->float_pos = m_geometries[i].first;
         clients[i]->float_dim = m_geometries[i].second;
     }

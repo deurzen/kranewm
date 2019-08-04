@@ -10,7 +10,7 @@
 #include <string>
 
 
-static const ::std::map<unsigned, ::std::string> USER_WORKSPACES({
+static const ::std::map<::std::size_t, ::std::string> USER_WORKSPACES({
 //    nr   name
     { 1,   "main" },
     { 2,   "web"  },
@@ -119,7 +119,7 @@ is_moveresize_workspace(workspace_ptr_t workspace)
 typedef class user_workspace_t : public workspace_t
 {
 public:
-    user_workspace_t(unsigned _number, ::std::string&& _name, ewmh_t& ewmh)
+    user_workspace_t(::std::size_t _number, ::std::string&& _name, ewmh_t& ewmh)
         : workspace_t(workspacetype_t::user),
           m_number(_number),
           m_name(_name),
@@ -134,7 +134,7 @@ public:
 
     void arrange() const override;
 
-    unsigned get_number() const;
+    ::std::size_t get_number() const;
     const ::std::deque<client_ptr_t>& get_all() const;
     const ::std::deque<client_ptr_t>& get_icons() const;
 
@@ -171,18 +171,18 @@ public:
     user_workspace_t& mirror();
     user_workspace_t& jump_pane();
 
-    user_workspace_t& set_nmaster(unsigned);
-    user_workspace_t& set_gap_size(unsigned);
+    user_workspace_t& set_nmaster(::std::size_t);
+    user_workspace_t& set_gap_size(::std::size_t);
     user_workspace_t& set_mfactor(float);
     user_workspace_t& set_layout(layout_t);
 
-    unsigned get_nmaster() const;
-    unsigned get_gap_size() const;
+    ::std::size_t get_nmaster() const;
+    ::std::size_t get_gap_size() const;
     float get_mfactor() const;
     layout_t get_layout() const;
     const workspacestack_t& get_stack() const;
 
-    unsigned get_nurgent() const;
+    ::std::size_t get_nurgent() const;
     bool is_urgent() const;
     void record_urgent();
     void erase_urgent();
@@ -194,11 +194,11 @@ public:
     bool stack_focused();
 
 private:
-    unsigned         m_number;
+    ::std::size_t    m_number;
     ::std::string    m_name;
-    unsigned         m_nmaster;
-    unsigned         m_nurgent;
-    unsigned         m_gap_size;
+    ::std::size_t    m_nmaster;
+    ::std::size_t    m_nurgent;
+    ::std::size_t    m_gap_size;
     float            m_mfactor;
     bool             m_mirrored;
     focus_cycle_t    m_clients;

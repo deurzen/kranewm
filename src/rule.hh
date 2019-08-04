@@ -18,7 +18,7 @@ enum autoclosemethod {
 struct rulespec_t
 {
     rulespec_t(bool _floating, bool _center, autoclosemethod _autoclose,
-        bool _nohint, unsigned _workspace)
+        bool _nohint, ::std::size_t _workspace)
         : floating(_floating),
           center(_center),
           autoclose(_autoclose),
@@ -29,13 +29,13 @@ struct rulespec_t
     bool center;
     autoclosemethod autoclose;
     bool nohint;
-    unsigned workspace;
+    ::std::size_t workspace;
 };
 
 struct rule_t
 {
     rule_t(bool _floating, bool _center, bool _fullscreen,
-        bool _autoclose, bool _nohint, unsigned _workspace)
+        bool _autoclose, bool _nohint, ::std::size_t _workspace)
         : floating(_floating),
           center(_center),
           fullscreen(_fullscreen),
@@ -48,7 +48,7 @@ struct rule_t
     bool fullscreen;
     bool autoclose;
     bool nohint;
-    unsigned workspace;
+    ::std::size_t workspace;
 };
 
 inline bool

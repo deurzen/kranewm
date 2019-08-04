@@ -278,25 +278,25 @@ client_model_t::refullscreen_clients()
 }
 
 void
-client_model_t::save_profile(size_t profile_index)
+client_model_t::save_profile(::std::size_t profile_index)
 {
     m_profiles[profile_index].save(m_current_workspace->get_all());
 }
 
 void
-client_model_t::apply_profile(size_t profile_index)
+client_model_t::apply_profile(::std::size_t profile_index)
 {
     m_profiles[profile_index].apply(m_current_workspace->get_all());
     m_current_workspace->arrange();
 }
 
 void
-client_model_t::client_to_workspace(client_ptr_t client, unsigned workspace_nr)
+client_model_t::client_to_workspace(client_ptr_t client, ::std::size_t workspace_nr)
 {
     if (client->parent || client->sticky)
         return;
 
-    if (range_t<unsigned>::contains(1, USER_WORKSPACES.size(), workspace_nr))
+    if (range_t<::std::size_t>::contains(1, USER_WORKSPACES.size(), workspace_nr))
         client_to_workspace(client, (*m_user_workspaces)[workspace_nr - 1]);
 }
 
@@ -326,9 +326,9 @@ client_model_t::client_to_workspace(client_ptr_t client, workspace_ptr_t to)
 }
 
 void
-client_model_t::change_active_workspace(unsigned workspace_nr, bool save_prev)
+client_model_t::change_active_workspace(::std::size_t workspace_nr, bool save_prev)
 {
-    if (range_t<unsigned>::contains(1, USER_WORKSPACES.size(), workspace_nr))
+    if (range_t<::std::size_t>::contains(1, USER_WORKSPACES.size(), workspace_nr))
         change_active_workspace((*m_user_workspaces)[workspace_nr - 1], save_prev);
 }
 
@@ -367,12 +367,12 @@ client_model_t::change_active_workspace(user_workspace_ptr_t workspace, bool sav
 }
 
 void
-client_model_t::client_to_context(client_ptr_t client, unsigned context_nr)
+client_model_t::client_to_context(client_ptr_t client, ::std::size_t context_nr)
 {
     if (client->parent)
         return;
 
-    if (range_t<unsigned>::contains(1, CONTEXTS.size(), context_nr--)) {
+    if (range_t<::std::size_t>::contains(1, CONTEXTS.size(), context_nr--)) {
         if (!*m_contexts[context_nr])
             m_contexts[context_nr]->initialize();
 
@@ -391,9 +391,9 @@ client_model_t::client_to_context(client_ptr_t client, context_ptr_t context)
 }
 
 void
-client_model_t::change_active_context(unsigned context_nr)
+client_model_t::change_active_context(::std::size_t context_nr)
 {
-    if (range_t<unsigned>::contains(1, CONTEXTS.size(), context_nr--)) {
+    if (range_t<::std::size_t>::contains(1, CONTEXTS.size(), context_nr--)) {
         if (!*m_contexts[context_nr])
             m_contexts[context_nr]->initialize();
 
