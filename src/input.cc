@@ -256,15 +256,21 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
                 m_clients.set_iconified(icons[8], clientaction_t::remove);
         }
         break;
-    case keyop_t::activate_ws_1: m_clients.change_active_workspace(1); break;
-    case keyop_t::activate_ws_2: m_clients.change_active_workspace(2); break;
-    case keyop_t::activate_ws_3: m_clients.change_active_workspace(3); break;
-    case keyop_t::activate_ws_4: m_clients.change_active_workspace(4); break;
-    case keyop_t::activate_ws_5: m_clients.change_active_workspace(5); break;
-    case keyop_t::activate_ws_6: m_clients.change_active_workspace(6); break;
-    case keyop_t::activate_ws_7: m_clients.change_active_workspace(7); break;
-    case keyop_t::activate_ws_8: m_clients.change_active_workspace(8); break;
-    case keyop_t::activate_ws_9: m_clients.change_active_workspace(9); break;
+    case keyop_t::save_profile_1:  m_clients.save_profile(0);            break;
+    case keyop_t::save_profile_2:  m_clients.save_profile(1);            break;
+    case keyop_t::save_profile_3:  m_clients.save_profile(2);            break;
+    case keyop_t::apply_profile_1: m_clients.apply_profile(0);           break;
+    case keyop_t::apply_profile_2: m_clients.apply_profile(1);           break;
+    case keyop_t::apply_profile_3: m_clients.apply_profile(2);           break;
+    case keyop_t::activate_ws_1:   m_clients.change_active_workspace(1); break;
+    case keyop_t::activate_ws_2:   m_clients.change_active_workspace(2); break;
+    case keyop_t::activate_ws_3:   m_clients.change_active_workspace(3); break;
+    case keyop_t::activate_ws_4:   m_clients.change_active_workspace(4); break;
+    case keyop_t::activate_ws_5:   m_clients.change_active_workspace(5); break;
+    case keyop_t::activate_ws_6:   m_clients.change_active_workspace(6); break;
+    case keyop_t::activate_ws_7:   m_clients.change_active_workspace(7); break;
+    case keyop_t::activate_ws_8:   m_clients.change_active_workspace(8); break;
+    case keyop_t::activate_ws_9:   m_clients.change_active_workspace(9); break;
     case keyop_t::activate_next_ws:
         {
             unsigned workspace = m_clients.active_workspace()->get_number();

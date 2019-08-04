@@ -4,6 +4,7 @@
 #include "stack.hh"
 #include "context.hh"
 #include "workspace.hh"
+#include "profile.hh"
 
 #include "x-data/window.hh"
 
@@ -30,6 +31,7 @@ public:
           m_move_workspace(new moveresize_workspace_t{workspacetype_t::move}),
           m_resize_workspace(new moveresize_workspace_t{workspacetype_t::resize}),
           m_user_workspaces(m_current_context->get_workspaces()),
+          m_profiles(3, profile_t{}),
           m_focused_client(nullptr)
     {
         m_contexts.push_back(m_current_context);
@@ -91,6 +93,9 @@ public:
     void wedge_clients();
     void refullscreen_clients();
 
+    void save_profile(size_t);
+    void apply_profile(size_t);
+
     void jump_marked();
     void jump_process(const ::std::string&);
 
@@ -117,6 +122,8 @@ private:
 
     ::std::unordered_map<client_ptr_t, client_t> m_fullscreen_clients;
     ::std::vector<client_ptr_t> m_sticky_clients;
+
+    ::std::vector<profile_t> m_profiles;
 
     client_ptr_t m_focused_client;
 

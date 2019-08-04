@@ -32,6 +32,8 @@ enum class keyop_t
     deiconify_client_1, deiconify_client_2, deiconify_client_3,
     deiconify_client_4, deiconify_client_5, deiconify_client_6,
     deiconify_client_7, deiconify_client_8, deiconify_client_9,
+    save_profile_1, save_profile_2, save_profile_3,
+    apply_profile_1, apply_profile_2, apply_profile_3,
     float_grow_up, float_grow_down,
     float_grow_left, float_grow_right,
     float_shrink_up, float_shrink_down,

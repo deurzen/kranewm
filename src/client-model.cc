@@ -278,6 +278,19 @@ client_model_t::refullscreen_clients()
 }
 
 void
+client_model_t::save_profile(size_t profile_index)
+{
+    m_profiles[profile_index].save(m_current_workspace->get_all());
+}
+
+void
+client_model_t::apply_profile(size_t profile_index)
+{
+    m_profiles[profile_index].apply(m_current_workspace->get_all());
+    m_current_workspace->arrange();
+}
+
+void
 client_model_t::client_to_workspace(client_ptr_t client, unsigned workspace_nr)
 {
     if (client->parent || client->sticky)
