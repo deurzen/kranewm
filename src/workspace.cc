@@ -341,7 +341,7 @@ user_workspace_t::set_layout(layout_t _layout)
     else
         m_layout = _layout;
 
-    if (_layout != m_layout)
+    if (_layout != current_layout)
         m_previous_layout = current_layout;
 
     return *this;
