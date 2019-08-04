@@ -360,7 +360,7 @@ client_model_t::client_to_context(client_ptr_t client, unsigned context_nr)
         return;
 
     if (range_t<unsigned>::contains(1, CONTEXTS.size(), context_nr--)) {
-        if (!m_contexts[context_nr])
+        if (!*m_contexts[context_nr])
             m_contexts[context_nr]->initialize();
 
         client_to_context(client, m_contexts[context_nr]);
@@ -369,7 +369,13 @@ client_model_t::client_to_context(client_ptr_t client, unsigned context_nr)
 
 void
 client_model_t::client_to_context(client_ptr_t client, context_ptr_t context)
-{}
+{
+    if (context == m_current_context)
+        return;
+
+    auto workspace = client_user_workspace(client);
+    client_to_workspace(client, context->get_workspaces()->at(workspace->get_number() - 1));
+}
 
 void
 client_model_t::change_active_context(unsigned context_nr)
