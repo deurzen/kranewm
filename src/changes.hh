@@ -19,6 +19,7 @@ enum class change_t
     client_fullscreen,
     client_urgent,
     client_iconify,
+    client_disown,
     client_sticky,
     client_workspace,
     workspace_active,
@@ -174,6 +175,28 @@ inline clienticonifychange_ptr_t change_client_iconify(client_ptr_t client)
 inline clienticonifychange_ptr_t change_client_iconify(clientchange_ptr_t change)
 {
     return dynamic_cast<clienticonifychange_ptr_t>(change);
+}
+
+
+
+typedef struct clientdisownchange_t : clientchange_t
+{
+    explicit clientdisownchange_t(client_ptr_t _client)
+      : clientchange_t(change_t::client_disown),
+        client(_client) {}
+
+    client_ptr_t client;
+
+}* clientdisownchange_ptr_t;
+
+inline clientdisownchange_ptr_t change_client_disown(client_ptr_t client)
+{
+    return new clientdisownchange_t(client);
+}
+
+inline clientdisownchange_ptr_t change_client_disown(clientchange_ptr_t change)
+{
+    return dynamic_cast<clientdisownchange_ptr_t>(change);
 }
 
 

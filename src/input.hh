@@ -113,6 +113,7 @@ public:
               { { XK_g,            MODMASK },             keyop_t::center                       },
               { { XK_minus,        MODMASK },             keyop_t::dec_gap_size                 },
               { { XK_equal,        MODMASK },             keyop_t::inc_gap_size                 },
+              { { XK_F1,           MODMASK },             keyop_t::disown_client                },
               { { XK_F10,          MODMASK },             keyop_t::apply_profile_1              },
               { { XK_F11,          MODMASK },             keyop_t::apply_profile_2              },
               { { XK_F12,          MODMASK },             keyop_t::apply_profile_3              },

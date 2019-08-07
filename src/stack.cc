@@ -152,12 +152,15 @@ windowstack_t::apply(workspacestack_t stack, bool ignore_floating)
     ::std::vector<Window> wins;
     wins.reserve(n);
 
+    ::std::list<x_data::window_t> disowned_windows;
     ::std::list<x_data::window_t> fullscreen_windows;
     ::std::list<x_data::window_t> floating_windows;
     ::std::list<x_data::window_t> normal_windows;
 
     for (auto&& client : reverse(workspace_clients))
-        if (client->fullscreen)
+        if (client->disowned)
+            disowned_windows.push_back(client->frame);
+        else if (client->fullscreen)
             fullscreen_windows.push_back(client->frame);
         else if (client->floating && !ignore_floating)
             floating_windows.push_back(client->frame);
@@ -167,6 +170,7 @@ windowstack_t::apply(workspacestack_t stack, bool ignore_floating)
     insert_container(wins, m_notification_windows);
     insert_container(wins, fullscreen_windows);
     insert_container(wins, m_above_windows);
+    insert_container(wins, disowned_windows);
     insert_container(wins, floating_windows);
     insert_container(wins, normal_windows);
     insert_container(wins, m_dock_windows);

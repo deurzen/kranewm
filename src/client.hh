@@ -51,6 +51,7 @@ typedef struct client_t
           fullscreen(rule.fullscreen),
           urgent(false),
           iconified(false),
+          disowned(false),
           sticky(false),
           parent(nullptr) {}
 
@@ -84,6 +85,7 @@ typedef struct client_t
     bool                fullscreen;
     bool                urgent;
     bool                iconified;
+    bool                disowned;
     bool                sticky;
     client_ptr_t        parent;
     client_ptr_set_t    children;

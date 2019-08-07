@@ -521,6 +521,42 @@ client_model_t::set_iconified(client_ptr_t client, clientaction_t action, bool b
 }
 
 void
+client_model_t::set_disowned(client_ptr_t client, clientaction_t action, bool by_user)
+{
+    switch (action) {
+    case clientaction_t::add:
+        {
+            auto workspace = client_user_workspace(client);
+            client->disowned = true;
+            workspace->remove_client(client);
+            workspace->add_disowned(client);
+            m_windowstack.apply(workspace);
+
+            if (by_user)
+                m_changequeue.add(change_client_disown(client));
+        }
+        break;
+    case clientaction_t::remove:
+        {
+            auto workspace = client_user_workspace(client);
+            client->disowned = false;
+            workspace->remove_disowned(client);
+            workspace->add_client(client);
+            m_windowstack.apply(workspace);
+
+            if (by_user)
+                m_changequeue.add(change_client_disown(client));
+        }
+        break;
+    case clientaction_t::toggle:
+        set_disowned(client, client->iconified
+            ? clientaction_t::remove : clientaction_t::add);
+        return;
+    default: break;
+    }
+}
+
+void
 client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_user)
 {
     if (by_user && client->parent)

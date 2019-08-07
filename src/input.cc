@@ -677,6 +677,14 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
         break;
     case keyop_t::mark_client:    m_clients.set_marked(client);                         break;
     case keyop_t::iconify_client: m_clients.set_iconified(client, clientaction_t::add); break;
+    case keyop_t::disown_client:
+        {
+            if (client->fullscreen)
+                m_clients.set_fullscreen(client, clientaction_t::remove);
+
+            m_clients.set_disowned(client, clientaction_t::add);
+        }
+        break;
     case keyop_t::client_to_ws_1:
         {
             m_clients.client_to_workspace(client, 1);

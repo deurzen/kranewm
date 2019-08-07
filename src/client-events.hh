@@ -37,6 +37,7 @@ private:
     void on_change_client_fullscreen();
     void on_change_client_urgent();
     void on_change_client_iconify();
+    void on_change_client_disown();
     void on_change_client_sticky();
 
     void on_change_workspace_active();
