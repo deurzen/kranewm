@@ -103,7 +103,7 @@ client_events_t::on_change_client_fullscreen()
         client->move({m_ewmh.get_left_strut(), -BORDER_HEIGHT - 1}, true);
     } else {
         m_ewmh.set_window_state_property(client->win);
-        client->floating = former_state.floating;
+        client->floating = former_state.floating || client->disowned;
         client->float_pos = former_state.float_pos;
         client->float_dim = former_state.float_dim;
         client->pos = former_state.pos;

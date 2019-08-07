@@ -526,6 +526,9 @@ client_model_t::set_disowned(client_ptr_t client, clientaction_t action, bool by
     switch (action) {
     case clientaction_t::add:
         {
+            if (client->fullscreen)
+                set_fullscreen(client, clientaction_t::remove);
+
             auto workspace = client_user_workspace(client);
             client->disowned = true;
             workspace->remove_client(client);
