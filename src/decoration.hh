@@ -14,6 +14,7 @@ const unsigned long SIDEBAR_BG_COLOR = 0x080808;
 const unsigned long REG_COLOR = 0x333333;
 const unsigned long SEL_COLOR = 0xDEB477;
 const unsigned long URG_COLOR = 0xDD614A;
+const unsigned long DIS_COLOR = 0x000000;
 const unsigned long SELSTICKY_COLOR = 0xD3A26D;
 const unsigned long REGSTICKY_COLOR = 0x444444;
 

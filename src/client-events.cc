@@ -43,7 +43,8 @@ client_events_t::on_change_client_focus()
 
     if (from) {
         m_ewmh.clear_active_window_property();
-        if (from->urgent) from->frame.set_background_color(URG_COLOR);
+        if (from->disowned) from->frame.set_background_color(DIS_COLOR);
+        else if (from->urgent) from->frame.set_background_color(URG_COLOR);
         else if (from->sticky) from->frame.set_background_color(REGSTICKY_COLOR);
         else from->frame.set_background_color(REG_COLOR);
 
