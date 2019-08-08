@@ -181,17 +181,19 @@ inline clienticonifychange_ptr_t change_client_iconify(clientchange_ptr_t change
 
 typedef struct clientdisownchange_t : clientchange_t
 {
-    explicit clientdisownchange_t(client_ptr_t _client)
+    explicit clientdisownchange_t(client_ptr_t _client, client_t _former_state)
       : clientchange_t(change_t::client_disown),
-        client(_client) {}
+        client(_client),
+        former_state(_former_state) {}
 
     client_ptr_t client;
+    client_t former_state;
 
 }* clientdisownchange_ptr_t;
 
-inline clientdisownchange_ptr_t change_client_disown(client_ptr_t client)
+inline clientdisownchange_ptr_t change_client_disown(client_ptr_t client, client_t former_state)
 {
-    return new clientdisownchange_t(client);
+    return new clientdisownchange_t(client, former_state);
 }
 
 inline clientdisownchange_ptr_t change_client_disown(clientchange_ptr_t change)

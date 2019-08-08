@@ -171,17 +171,20 @@ client_events_t::on_change_client_disown()
 {
     auto change = change_client_disown(m_current_change);
     auto client = change->client;
+    auto former_state = change->former_state;
 
     if (client->disowned) {
-        client->resize(client->float_dim).move(client->float_pos);
+        client->set_float(clientaction_t::add).resize(client->float_dim).move(client->float_pos);
         m_clients.active_workspace()->raise_client(client);
         m_clients.active_workspace()->arrange();
-        m_sidebar.draw_clientstate();
     } else {
-
+        client->floating = former_state.floating;
+        if (client->sticky)
+            m_clients.active_workspace()->arrange();
+        else
+            m_clients.client_user_workspace(client)->arrange();
     }
 
-    m_clients.client_user_workspace(client)->arrange();
     m_clients.sync_workspace_focus();
     m_sidebar.draw();
 }

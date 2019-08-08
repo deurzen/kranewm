@@ -123,6 +123,12 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
                 m_sidebar.draw_clientstate();
             }
             return;
+        case mouseop_t::toggle_disown:
+            {
+                m_clients.set_disowned(client, clientaction_t::toggle);
+                m_sidebar.draw_clientstate();
+            }
+            return;
         default: break;
         }
 }

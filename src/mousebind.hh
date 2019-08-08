@@ -20,6 +20,7 @@ enum class mouseop_t
     goto_prev_cx,
     toggle_float,
     toggle_fullscreen,
+    toggle_disown,
 };
 
 struct mouseshortcut_t

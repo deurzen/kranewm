@@ -119,6 +119,9 @@ client_model_t::unmanage_client(client_ptr_t client)
     if (client->iconified)
         set_iconified(client, clientaction_t::remove, false);
 
+    if (client->disowned)
+        set_disowned(client, clientaction_t::remove, false);
+
     if (client->sticky)
         set_sticky(client, clientaction_t::remove, false);
 
@@ -149,6 +152,7 @@ client_model_t::unmanage_client(client_ptr_t client)
     erase_find(m_client_contexts, client);
     erase_find(m_client_workspaces, client);
     erase_find(m_fullscreen_clients, client);
+    erase_find(m_disowned_clients, client);
     erase_remove(m_managed_windows, client->win);
     m_processes.remove_process(client);
 
@@ -526,6 +530,9 @@ client_model_t::set_disowned(client_ptr_t client, clientaction_t action, bool by
     switch (action) {
     case clientaction_t::add:
         {
+            if (m_disowned_clients.count(client) || client->sticky)
+                return;
+
             if (client->fullscreen)
                 set_fullscreen(client, clientaction_t::remove);
 
@@ -534,13 +541,17 @@ client_model_t::set_disowned(client_ptr_t client, clientaction_t action, bool by
             workspace->remove_client(client);
             workspace->add_disowned(client);
             m_windowstack.apply(workspace);
+            m_disowned_clients[client] = *client;
 
             if (by_user)
-                m_changequeue.add(change_client_disown(client));
+                m_changequeue.add(change_client_disown(client, m_disowned_clients[client]));
         }
         break;
     case clientaction_t::remove:
         {
+            if (!m_disowned_clients.count(client))
+                return;
+
             auto workspace = client_user_workspace(client);
             client->disowned = false;
             workspace->remove_disowned(client);
@@ -548,11 +559,13 @@ client_model_t::set_disowned(client_ptr_t client, clientaction_t action, bool by
             m_windowstack.apply(workspace);
 
             if (by_user)
-                m_changequeue.add(change_client_disown(client));
+                m_changequeue.add(change_client_disown(client, m_disowned_clients[client]));
+
+            erase_find(m_disowned_clients, client);
         }
         break;
     case clientaction_t::toggle:
-        set_disowned(client, client->iconified
+        set_disowned(client, client->disowned
             ? clientaction_t::remove : clientaction_t::add);
         return;
     default: break;
