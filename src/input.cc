@@ -262,6 +262,13 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
                 m_clients.set_iconified(icons[8], clientaction_t::remove);
         }
         break;
+    case keyop_t::pop_reclaim_client:
+        {
+            auto disowned = m_clients.active_workspace()->get_disowned();
+            if (!disowned.empty())
+                m_clients.set_disowned(disowned.back(), clientaction_t::remove);
+        }
+        break;
     case keyop_t::save_profile_1:  m_clients.save_profile(0);            break;
     case keyop_t::save_profile_2:  m_clients.save_profile(1);            break;
     case keyop_t::save_profile_3:  m_clients.save_profile(2);            break;
