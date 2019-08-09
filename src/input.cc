@@ -105,7 +105,7 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
             return;
         case mouseop_t::toggle_float:
             {
-                if (client->fullscreen)
+                if (client->fullscreen || client->disowned)
                     break;
 
                 if (!client->parent) {
@@ -614,7 +614,7 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
     case keyop_t::move_client_bck: m_clients.active_workspace()->move_backward(); break;
     case keyop_t::toggle_float:
         {
-            if (client->parent || client->fullscreen)
+            if (client->parent || client->fullscreen || client->disowned)
                 return;
 
             client->set_float(clientaction_t::toggle).resize(client->float_dim).move(client->float_pos);

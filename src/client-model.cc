@@ -434,7 +434,7 @@ client_model_t::set_fullscreen(client_ptr_t client, clientaction_t action)
     switch (action) {
     case clientaction_t::add:
         {
-            if (m_fullscreen_clients.count(client))
+            if (client->disowned || m_fullscreen_clients.count(client))
                 return;
 
             client->fullscreen = true;
