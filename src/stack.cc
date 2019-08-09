@@ -170,8 +170,8 @@ windowstack_t::apply(workspacestack_t stack, bool ignore_floating)
     insert_container(wins, m_notification_windows);
     insert_container(wins, fullscreen_windows);
     insert_container(wins, m_above_windows);
-    insert_container(wins, disowned_windows);
     insert_container(wins, floating_windows);
+    insert_container(wins, disowned_windows);
     insert_container(wins, normal_windows);
     insert_container(wins, m_dock_windows);
     insert_container(wins, m_below_windows);
