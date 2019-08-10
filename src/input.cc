@@ -323,7 +323,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         break;
     case keyop_t::floating:
         {
-            m_clients.active_workspace()->set_layout(layout_t::floating);
+            m_clients.active_workspace()->set_layout(layouttype_t::floating);
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.draw_layoutsymbol();
@@ -332,7 +332,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::tile:
         {
             auto workspace = m_clients.active_workspace();
-            workspace->set_layout(layout_t::tile).arrange();
+            workspace->set_layout(layouttype_t::tile).arrange();
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.draw_layoutsymbol();
@@ -341,7 +341,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::stick:
         {
             auto workspace = m_clients.active_workspace();
-            workspace->set_layout(layout_t::stick).arrange();
+            workspace->set_layout(layouttype_t::stick).arrange();
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.draw_layoutsymbol();
@@ -350,7 +350,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::deck:
         {
             auto workspace = m_clients.active_workspace();
-            workspace->set_layout(layout_t::deck).arrange();
+            workspace->set_layout(layouttype_t::deck).arrange();
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.draw_layoutsymbol();
@@ -359,7 +359,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::doubledeck:
         {
             auto workspace = m_clients.active_workspace();
-            workspace->set_layout(layout_t::doubledeck).arrange();
+            workspace->set_layout(layouttype_t::doubledeck).arrange();
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.draw_layoutsymbol();
@@ -368,7 +368,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::grid:
         {
             auto workspace = m_clients.active_workspace();
-            workspace->set_layout(layout_t::grid).arrange();
+            workspace->set_layout(layouttype_t::grid).arrange();
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.draw_layoutsymbol();
@@ -377,7 +377,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::pillar:
         {
             auto workspace = m_clients.active_workspace();
-            workspace->set_layout(layout_t::pillar);
+            workspace->set_layout(layouttype_t::pillar);
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.draw_layoutsymbol();
@@ -386,7 +386,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::column:
         {
             auto workspace = m_clients.active_workspace();
-            workspace->set_layout(layout_t::column);
+            workspace->set_layout(layouttype_t::column);
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.draw_layoutsymbol();
@@ -395,7 +395,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::monocle:
         {
             auto workspace = m_clients.active_workspace();
-            workspace->set_layout(layout_t::monocle);
+            workspace->set_layout(layouttype_t::monocle);
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.draw_layoutsymbol();
@@ -404,7 +404,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::center:
         {
             auto workspace = m_clients.active_workspace();
-            workspace->set_layout(layout_t::center);
+            workspace->set_layout(layouttype_t::center);
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.draw_layoutsymbol();
@@ -413,7 +413,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::toggle_layout:
         {
             auto workspace = m_clients.active_workspace();
-            workspace->set_layout(layout_t::toggle);
+            workspace->set_layout(layouttype_t::toggle);
             m_windowstack.apply(m_clients.active_workspace());
             workspace->arrange();
             m_sidebar.draw_layoutsymbol();

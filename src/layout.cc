@@ -8,6 +8,17 @@
 #include <cmath>
 
 
+bool
+layoutsetting_t::evaluate(const user_workspace_t& workspace) const
+{
+    ::std::size_t nstack = ::std::max(static_cast<::std::size_t>(0),
+        workspace.get_all().size() - workspace.get_nmaster());
+
+    return m_nclients_op(workspace.get_all().size(), m_nclients)
+        && m_nmaster_op(workspace.get_nmaster(), m_nmaster)
+        && m_nstack_op(nstack, m_nstack);
+}
+
 void
 layouthandler_t::layout_floating(const user_workspace_t& workspace) const
 {

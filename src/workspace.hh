@@ -128,7 +128,7 @@ public:
           m_gap_size(0),
           m_mfactor(.5f),
           m_mirrored(false),
-          m_layout(layout_t::floating),
+          m_layout(layouttype_t::floating),
           m_previous_layout(m_layout),
           m_layouthandler(layouthandler_t{ewmh}) {}
 
@@ -177,12 +177,12 @@ public:
     user_workspace_t& set_nmaster(::std::size_t);
     user_workspace_t& set_gap_size(::std::size_t);
     user_workspace_t& set_mfactor(float);
-    user_workspace_t& set_layout(layout_t);
+    user_workspace_t& set_layout(layouttype_t);
 
     ::std::size_t get_nmaster() const;
     ::std::size_t get_gap_size() const;
     float get_mfactor() const;
-    layout_t get_layout() const;
+    layouttype_t get_layout() const;
     const workspacestack_t& get_stack() const;
 
     ::std::size_t get_nurgent() const;
@@ -208,8 +208,8 @@ private:
     focus_cycle_t    m_icons;
     focus_cycle_t    m_disowned;
     workspacestack_t m_stack;
-    layout_t         m_layout;
-    layout_t         m_previous_layout;
+    layouttype_t         m_layout;
+    layouttype_t         m_previous_layout;
     layouthandler_t  m_layouthandler;
 
 }* user_workspace_ptr_t;

@@ -160,7 +160,7 @@ context_t::set_all_mfactor(float mfactor)
 }
 
 context_t&
-context_t::set_all_layout(layout_t layout)
+context_t::set_all_layout(layouttype_t layout)
 {
     for (auto& workspace : m_workspaces)
         workspace->set_layout(layout);

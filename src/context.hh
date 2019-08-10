@@ -80,7 +80,7 @@ public:
     context_t& set_all_nmaster(::std::size_t);
     context_t& set_all_gap_size(::std::size_t);
     context_t& set_all_mfactor(float);
-    context_t& set_all_layout(layout_t);
+    context_t& set_all_layout(layouttype_t);
 
     ::std::size_t get_nsticky() const;
     ::std::size_t get_nnonsticky(::std::size_t) const;

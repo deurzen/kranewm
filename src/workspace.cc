@@ -5,16 +5,16 @@ void
 user_workspace_t::arrange() const
 {
     switch (m_layout) {
-    case layout_t::floating:   m_layouthandler.layout_floating(*this);   break;
-    case layout_t::tile:       m_layouthandler.layout_tile(*this);       break;
-    case layout_t::stick:      m_layouthandler.layout_stick(*this);      break;
-    case layout_t::deck:       m_layouthandler.layout_deck(*this);       break;
-    case layout_t::doubledeck: m_layouthandler.layout_doubledeck(*this); break;
-    case layout_t::grid:       m_layouthandler.layout_grid(*this);       break;
-    case layout_t::pillar:     m_layouthandler.layout_pillar(*this);     break;
-    case layout_t::column:     m_layouthandler.layout_column(*this);     break;
-    case layout_t::monocle:    m_layouthandler.layout_monocle(*this);    break;
-    case layout_t::center:     m_layouthandler.layout_center(*this);     break;
+    case layouttype_t::floating:   m_layouthandler.layout_floating(*this);   break;
+    case layouttype_t::tile:       m_layouthandler.layout_tile(*this);       break;
+    case layouttype_t::stick:      m_layouthandler.layout_stick(*this);      break;
+    case layouttype_t::deck:       m_layouthandler.layout_deck(*this);       break;
+    case layouttype_t::doubledeck: m_layouthandler.layout_doubledeck(*this); break;
+    case layouttype_t::grid:       m_layouthandler.layout_grid(*this);       break;
+    case layouttype_t::pillar:     m_layouthandler.layout_pillar(*this);     break;
+    case layouttype_t::column:     m_layouthandler.layout_column(*this);     break;
+    case layouttype_t::monocle:    m_layouthandler.layout_monocle(*this);    break;
+    case layouttype_t::center:     m_layouthandler.layout_center(*this);     break;
     default: break;
     }
 }
@@ -64,13 +64,13 @@ user_workspace_t::is_mirrored() const
 bool
 user_workspace_t::in_float_layout() const
 {
-    return m_layout == layout_t::floating;
+    return m_layout == layouttype_t::floating;
 }
 
 bool
 user_workspace_t::in_monocle_layout() const
 {
-    return m_layout == layout_t::monocle;
+    return m_layout == layouttype_t::monocle;
 }
 
 const
@@ -355,10 +355,10 @@ user_workspace_t::set_mfactor(float new_mfactor)
 }
 
 user_workspace_t&
-user_workspace_t::set_layout(layout_t _layout)
+user_workspace_t::set_layout(layouttype_t _layout)
 {
-    layout_t current_layout = m_layout;
-    if (_layout == layout_t::toggle)
+    layouttype_t current_layout = m_layout;
+    if (_layout == layouttype_t::toggle)
         m_layout = m_previous_layout;
     else
         m_layout = _layout;
@@ -388,7 +388,7 @@ user_workspace_t::get_mfactor() const
     return m_mfactor;
 }
 
-layout_t
+layouttype_t
 user_workspace_t::get_layout() const
 {
     return m_layout;
