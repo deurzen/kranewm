@@ -4,19 +4,12 @@
 void
 user_workspace_t::arrange() const
 {
-    switch (m_layout) {
-    case layouttype_t::floating:   m_layouthandler.layout_floating(*this);   break;
-    case layouttype_t::tile:       m_layouthandler.layout_tile(*this);       break;
-    case layouttype_t::stick:      m_layouthandler.layout_stick(*this);      break;
-    case layouttype_t::deck:       m_layouthandler.layout_deck(*this);       break;
-    case layouttype_t::doubledeck: m_layouthandler.layout_doubledeck(*this); break;
-    case layouttype_t::grid:       m_layouthandler.layout_grid(*this);       break;
-    case layouttype_t::pillar:     m_layouthandler.layout_pillar(*this);     break;
-    case layouttype_t::column:     m_layouthandler.layout_column(*this);     break;
-    case layouttype_t::monocle:    m_layouthandler.layout_monocle(*this);    break;
-    case layouttype_t::center:     m_layouthandler.layout_center(*this);     break;
-    default: break;
-    }
+    if (m_layout == layouttype_t::floating) {
+        for (auto& client : m_clients.get_all())
+            if (!client->fullscreen)
+                client->resize(client->float_dim, true).move(client->float_pos, true);
+    } else
+        m_layouthandler.get_layout(m_layout).apply(*this);
 }
 
 ::std::size_t
