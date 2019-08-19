@@ -21,6 +21,7 @@ class sidebar_t
 public:
     explicit sidebar_t(ewmh_t& ewmh)
         : m_enabled(true),
+          m_popped(false),
           m_ewmh(ewmh),
           m_context(nullptr),
           m_sidebarwin(x_data::create_window(true)),
@@ -31,10 +32,12 @@ public:
           m_iconnumbersgc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_numberstickygc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_numberclientsgc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
-          m_activity_indicators(USER_WORKSPACES.size()),
           m_moveresizeindicator(x_data::create_window(true)),
           m_floatingindicator(x_data::create_window(true)),
-          m_fullscreenindicator(x_data::create_window(true))
+          m_fullscreenindicator(x_data::create_window(true)),
+          m_activity_indicators(USER_WORKSPACES.size()),
+          m_workspace_popups(USER_WORKSPACES.size()),
+          m_icon_popups(9)
     {
         auto root_attrs = x_data::get_attributes(x_data::g_root);
         m_sidebarwin.set_background_color(SIDEBAR_BG_COLOR);
@@ -65,6 +68,10 @@ public:
         m_numberclientsgc.set_foreground(SIDEBAR_NCLIENTS_COLOR);
         m_numberclientsgc.set_background(SIDEBAR_BG_COLOR);
 
+        m_ewmh.set_window_type_property(m_moveresizeindicator, "DOCK");
+        m_ewmh.set_window_type_property(m_floatingindicator, "DOCK");
+        m_ewmh.set_window_type_property(m_fullscreenindicator, "DOCK");
+
         for (::std::size_t i = 0; i < m_activity_indicators.size(); ++i) {
             m_activity_indicators[i] = x_data::create_window(true);
             m_ewmh.set_window_type_property(m_activity_indicators[i], "DOCK");
@@ -73,9 +80,21 @@ public:
                 static_cast<int>((2.4f + i) * (4 + m_workspacenumbersgc.get_font_dim().h))}, m_sidebarwin);
         }
 
-        m_ewmh.set_window_type_property(m_moveresizeindicator, "DOCK");
-        m_ewmh.set_window_type_property(m_floatingindicator, "DOCK");
-        m_ewmh.set_window_type_property(m_fullscreenindicator, "DOCK");
+        for (::std::size_t i = 0; i < m_workspace_popups.size(); ++i) {
+            m_workspace_popups[i] = x_data::create_window(true);
+            m_ewmh.set_window_type_property(m_workspace_popups[i], "DOCK");
+            m_workspace_popups[i].set_border_color(SIDEBAR_WORKSPACES_COLOR);
+            m_workspace_popups[i].resize({SIDEBAR_WIDTH, m_workspacenumbersgc.get_font_dim().h}).move({SIDEBAR_WIDTH + 2,
+                static_cast<int>((2.4f + i) * (4 + m_workspacenumbersgc.get_font_dim().h))}).map();
+        }
+
+        for (::std::size_t i = 0; i < m_icon_popups.size(); ++i) {
+            m_icon_popups[i] = x_data::create_window(true);
+            m_ewmh.set_window_type_property(m_icon_popups[i], "DOCK");
+            m_icon_popups[i].set_border_color(SIDEBAR_WORKSPACES_COLOR);
+            m_icon_popups[i].resize({SIDEBAR_WIDTH, m_iconnumbersgc.get_font_dim().h}).move({SIDEBAR_WIDTH + 2,
+                static_cast<int>((2.4f + i) * (4 + m_iconnumbersgc.get_font_dim().h))}).map();
+        }
 
         m_moveresizeindicator.set_background_color(MRIND_BORDER_COLOR);
         m_moveresizeindicator.set_border_width(0);
@@ -92,6 +111,7 @@ public:
 
     void draw();
     void toggle();
+    void pop();
 
     void draw_layoutsymbol();
     void draw_contextletter();
@@ -105,6 +125,8 @@ public:
 
 private:
     bool m_enabled;
+    bool m_popped;
+
     ewmh_t& m_ewmh;
     context_ptr_t m_context;
     x_data::window_t m_sidebarwin;
@@ -116,10 +138,13 @@ private:
     x_data::graphicscontext_t m_numberstickygc;
     x_data::graphicscontext_t m_numberclientsgc;
 
-    ::std::vector<x_data::window_t> m_activity_indicators;
     x_data::window_t m_moveresizeindicator;
     x_data::window_t m_floatingindicator;
     x_data::window_t m_fullscreenindicator;
+
+    ::std::vector<x_data::window_t> m_activity_indicators;
+    ::std::vector<x_data::window_t> m_workspace_popups;
+    ::std::vector<x_data::window_t> m_icon_popups;
 
 };
 

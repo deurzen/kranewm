@@ -41,6 +41,14 @@ sidebar_t::toggle()
     }
 }
 
+void
+sidebar_t::pop()
+{
+    m_popped = !m_popped;
+    draw_workspacenumbers();
+    draw_icons();
+}
+
 x_data::window_t
 sidebar_t::get_win() const
 {
@@ -102,7 +110,7 @@ sidebar_t::draw_workspacenumbers()
             m_activity_indicators[i].unmap();
     }
 
-    for (auto& [nr,_] : USER_WORKSPACES) {
+    for (auto& [nr,name] : USER_WORKSPACES) {
         if (nr == m_context->get_activated()->get_number()) {
             unsigned long color = (*m_context->get_workspaces())[nr - 1]->is_urgent()
                 ? URG_COLOR
@@ -123,6 +131,14 @@ sidebar_t::draw_workspacenumbers()
 
         m_workspacenumbersgc.clear(current_pos);
         m_workspacenumbersgc.draw_string(current_pos, ::std::to_string(nr));
+
+        if (m_popped) {
+            m_workspace_popups[nr - 1].resize({m_workspacenumbersgc.get_font_dim().h,
+                m_workspacenumbersgc.get_font_dim().h * static_cast<int>(name.size())}).map();
+        } else {
+            m_workspace_popups[nr - 1].unmap();
+        }
+
         current_pos.y += (4 + m_workspacenumbersgc.get_font_dim().h);
     }
 }
