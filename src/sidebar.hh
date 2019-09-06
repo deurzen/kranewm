@@ -84,8 +84,8 @@ public:
             m_workspace_popups[i] = x_data::create_window(true);
             m_ewmh.set_window_type_property(m_workspace_popups[i], "DOCK");
             m_workspace_popups[i].set_border_color(SIDEBAR_WORKSPACES_COLOR);
-            m_workspace_popups[i].resize({SIDEBAR_WIDTH, m_workspacenumbersgc.get_font_dim().h}).move({SIDEBAR_WIDTH + 2,
-                static_cast<int>((2.4f + i) * (4 + m_workspacenumbersgc.get_font_dim().h))}).map();
+            m_workspace_popups[i].resize({SIDEBAR_WIDTH, m_workspacenumbersgc.get_font_dim().h + 2}).move({SIDEBAR_WIDTH + 2,
+                static_cast<int>((2.4f + i) * (4 + m_workspacenumbersgc.get_font_dim().h - 1))}).map();
         }
 
         for (::std::size_t i = 0; i < m_icon_popups.size(); ++i) {

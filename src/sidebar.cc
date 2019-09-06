@@ -133,7 +133,7 @@ sidebar_t::draw_workspacenumbers()
         m_workspacenumbersgc.draw_string(current_pos, ::std::to_string(nr));
 
         if (m_popped) {
-            m_workspace_popups[nr - 1].resize({m_workspacenumbersgc.get_font_dim().h,
+            m_workspace_popups[nr - 1].resize({name.size() * m_workspacenumbersgc.get_font_dim().w + 2,
                 m_workspacenumbersgc.get_font_dim().h * static_cast<int>(name.size())}).map();
         } else {
             m_workspace_popups[nr - 1].unmap();
