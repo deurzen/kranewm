@@ -171,9 +171,10 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::volumeup:            fork_external("amixer -D pulse sset Master 5%+");                       break;
     case keyop_t::volumedown:          fork_external("amixer -D pulse sset Master 5%-");                       break;
     case keyop_t::volumemute:          fork_external("amixer -D pulse set Master 1+ toggle");                  break;
-    case keyop_t::brightnessup15:      fork_external("/usr/bin/light -A 15");                                  break;
-    case keyop_t::brightnessup5:       fork_external("/usr/bin/light -A 5");                                   break;
-    case keyop_t::brightnessdown15:    fork_external("/usr/bin/light -U 15");                                  break;
+    case keyop_t::brightnessup15:      fork_external("/usr/bin/xbacklight -inc 10");                           break;
+    case keyop_t::brightnessup5:       fork_external("/usr/bin/xbacklight -inc 5");                            break;
+    case keyop_t::brightnessdown15:    fork_external("/usr/bin/xbacklight -dec 10");                           break;
+    case keyop_t::brightnessdown5:     fork_external("/usr/bin/xbacklight -dec 5");                            break;
     case keyop_t::take_screenshot:
         fork_external("/usr/bin/maim -m 1 $(date +~/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");            break;
     case keyop_t::take_screenshot_sel:
