@@ -552,6 +552,7 @@ layouthandler_t::layout_center(const user_workspace_t& workspace) const
         return;
 
     int gap_size = workspace.get_gap_size();
+    float mfactor = workspace.get_mfactor();
     auto root_attrs = x_data::get_attributes(x_data::g_root);
 
     dim_t screen_dim = {
@@ -560,7 +561,7 @@ layouthandler_t::layout_center(const user_workspace_t& workspace) const
     };
 
     dim_t center_dim = {
-        (screen_dim.w) / 2 - gap_size,
+        (int)((screen_dim.w) * (mfactor > 0 ? mfactor : 1.0)) - gap_size,
         screen_dim.h - 3 * gap_size
     };
 
