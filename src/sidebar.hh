@@ -38,6 +38,7 @@ public:
     {
         auto root_attrs = x_data::get_attributes(x_data::g_root);
         m_sidebarwin.set_background_color(SIDEBAR_BG_COLOR);
+        m_sidebarwin.set_border_color(SIDEBAR_BG_COLOR);
         m_sidebarwin.resize({SIDEBAR_WIDTH, root_attrs.get().height}).move({0, 0});
         x_data::select_input(m_sidebarwin, ExposureMask);
 

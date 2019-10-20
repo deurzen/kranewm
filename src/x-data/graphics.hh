@@ -18,7 +18,7 @@ namespace x_data
               line_width(line_width)
         {
             XGCValues values;
-            values.function           = GXor;
+            values.function           = GXcopy;
             values.plane_mask         = AllPlanes;
             values.foreground         = 0xFFFFFF;
             values.background         = 0x000000;
