@@ -13,7 +13,7 @@ enum class keyop_t
     center_client, snap_north, snap_east, snap_south, snap_west,
     spawn_terminal, spawn_termregion,
     spawn_quickterm, spawn_quicktermtmux,
-    spawn_dmenupass, spawn_dmenupasscopy, spawn_dmenu,
+    spawn_dmenupass, spawn_dmenupasscopy, spawn_dmenunotify, spawn_dmenu,
     spawn_browser, spawn_sec_browser,
     spawn_neomutt, spawn_ranger, spawn_vifm,
     spawn_anki, spawn_sncli, spawn_rtv,

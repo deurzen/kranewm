@@ -150,6 +150,7 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::spawn_dmenu:         fork_external("/usr/local/bin/dmenu_run");                              break;
     case keyop_t::spawn_dmenupass:     fork_external("/usr/bin/dmenupass");                                    break;
     case keyop_t::spawn_dmenupasscopy: fork_external("/usr/bin/dmenupass --copy");                             break;
+    case keyop_t::spawn_dmenunotify:   fork_external("/usr/bin/dmenunotify");                                  break;
     case keyop_t::spawn_browser:       fork_external("/usr/bin/qutebrowser");                                  break;
     case keyop_t::spawn_sec_browser:   fork_external("/usr/bin/firefox");                                      break;
     case keyop_t::audioplay: // fallthrough
@@ -176,9 +177,11 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::brightnessdown15:    fork_external("/usr/bin/xbacklight -dec 10");                           break;
     case keyop_t::brightnessdown5:     fork_external("/usr/bin/xbacklight -dec 5");                            break;
     case keyop_t::take_screenshot:
-        fork_external("/usr/bin/maim -m 1 $(date +~/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");            break;
+        fork_external("/usr/bin/maim -m 1 $(date +/home/deurzen/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");
+        break;
     case keyop_t::take_screenshot_sel:
-        fork_external("/usr/bin/maim -m 1 -s $(date +~/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");         break;
+        fork_external("/usr/bin/maim -m 1 -s $(date +/home/deurzen/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");
+        break;
     case keyop_t::spawn_neomutt:       fork_external("/usr/local/bin/st -g 140x42 -e zsh -i -c neomutt");      break;
     case keyop_t::spawn_ranger:        fork_external("/usr/local/bin/st -g 140x42 -e zsh -i -c ranger");       break;
     case keyop_t::spawn_vifm:          fork_external("/usr/local/bin/st -e zsh -i -c vifmrun");                break;

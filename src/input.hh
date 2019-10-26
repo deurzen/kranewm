@@ -183,6 +183,7 @@ public:
               { { XK_i,            MODMASK|ControlMask }, keyop_t::spawn_irssi                  },
               { { XK_n,            MODMASK|ControlMask }, keyop_t::spawn_nixnote                },
               { { XK_p,            MODMASK|ControlMask }, keyop_t::spawn_dmenupasscopy          },
+              { { XK_o,            MODMASK|ControlMask }, keyop_t::spawn_dmenunotify            },
               { { XK_w,            MODMASK|ControlMask }, keyop_t::spawn_sage                   },
               { { XK_g,            MODMASK|ControlMask }, keyop_t::spawn_gpick                  },
               { { XK_a,            MODMASK|ControlMask }, keyop_t::spawn_anki                   },
