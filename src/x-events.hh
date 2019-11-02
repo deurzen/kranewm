@@ -43,6 +43,7 @@ public:
               { { "Qalculate-gtk",       ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
               { { "Rhythmbox",           ALL,          ALL },   { YES,  YES,   ONCE,  NO,   CURRENT } },
               { { "cantata",             ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
+              { { "feh",                 ALL,          ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
               { { "firefox",             ALL,          ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
               { { "gnucash",             ALL,          ALL },   { YES,   NO,    OFF,  NO,   5       } },
               { { "mate-volume-control", ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
