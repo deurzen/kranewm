@@ -5,16 +5,18 @@ void
 user_workspace_t::arrange() const
 {
     switch (m_layout) {
-    case layout_t::floating:   m_layouthandler.layout_floating(*this);   break;
-    case layout_t::tile:       m_layouthandler.layout_tile(*this);       break;
-    case layout_t::stick:      m_layouthandler.layout_stick(*this);      break;
-    case layout_t::deck:       m_layouthandler.layout_deck(*this);       break;
-    case layout_t::doubledeck: m_layouthandler.layout_doubledeck(*this); break;
-    case layout_t::grid:       m_layouthandler.layout_grid(*this);       break;
-    case layout_t::pillar:     m_layouthandler.layout_pillar(*this);     break;
-    case layout_t::column:     m_layouthandler.layout_column(*this);     break;
-    case layout_t::monocle:    m_layouthandler.layout_monocle(*this);    break;
-    case layout_t::center:     m_layouthandler.layout_center(*this);     break;
+    case layout_t::floating:    m_layouthandler.layout_floating(*this);    break;
+    case layout_t::tile:        m_layouthandler.layout_tile(*this);        break;
+    case layout_t::stick:       m_layouthandler.layout_stick(*this);       break;
+    case layout_t::deck:        m_layouthandler.layout_deck(*this);        break;
+    case layout_t::doubledeck:  m_layouthandler.layout_doubledeck(*this);  break;
+    case layout_t::sdeck:       m_layouthandler.layout_sdeck(*this);       break;
+    case layout_t::sdoubledeck: m_layouthandler.layout_sdoubledeck(*this); break;
+    case layout_t::grid:        m_layouthandler.layout_grid(*this);        break;
+    case layout_t::pillar:      m_layouthandler.layout_pillar(*this);      break;
+    case layout_t::column:      m_layouthandler.layout_column(*this);      break;
+    case layout_t::monocle:     m_layouthandler.layout_monocle(*this);     break;
+    case layout_t::center:      m_layouthandler.layout_center(*this);      break;
     default: break;
     }
 }

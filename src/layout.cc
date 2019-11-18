@@ -265,6 +265,121 @@ layouthandler_t::layout_doubledeck(const user_workspace_t& workspace) const
 }
 
 void
+layouthandler_t::layout_sdeck(const user_workspace_t& workspace) const
+{
+    auto clients = workspace.get_all();
+    clients.erase(::std::remove_if(clients.begin(), clients.end(),
+        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+
+    if (clients.empty())
+        return;
+
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
+    ::std::size_t nmaster = ::std::min(static_cast<::std::size_t>(clients.size()), workspace.get_nmaster());
+    int gap_size = workspace.get_gap_size();
+
+    dim_t screen_dim = {
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - 2 * gap_size - (nmaster && nmaster != clients.size() ? 3 : 2),
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - 2 * gap_size - 2
+    };
+
+    dim_t master_dim = {
+        static_cast<int>(screen_dim.w * (nmaster < clients.size() ? workspace.get_mfactor() : 1))
+            - (nmaster == clients.size() ? 2 : 1) * gap_size,
+        (nmaster > 0 ? static_cast<int>(screen_dim.h / nmaster) : 1)
+    };
+
+    dim_t stack_dim = {
+        screen_dim.w - (nmaster > 0 ? master_dim.w : 0) - 2 * gap_size,
+        screen_dim.h
+    };
+
+    pos_t master_pos = {
+        m_ewmh.get_left_strut() + 2 * gap_size,
+        m_ewmh.get_top_strut() + gap_size
+    };
+
+    pos_t stack_pos  = {
+        master_pos.x + (nmaster > 0 ? master_dim.w + 1: 0),
+        m_ewmh.get_top_strut() + gap_size
+    };
+
+    if (workspace.is_mirrored() && clients.size() > nmaster && nmaster != 0) {
+        ::std::swap(master_dim.w, stack_dim.w);
+        ::std::swap(master_pos.x, stack_pos.x);
+    }
+
+    { // tile master clients
+        for (::std::size_t i = 0; nmaster && i < nmaster - 1; ++i) {
+            clients[i]->resize(master_dim, true).move(master_pos, true);
+            master_pos.y += master_dim.h + 1;
+        }
+
+        if (nmaster)
+            clients[nmaster - 1]->resize({master_dim.w,
+                screen_dim.h + m_ewmh.get_top_strut() + gap_size - master_pos.y}, true).move(master_pos, true);
+    }
+
+    // tile stack clients
+    for (::std::size_t i = nmaster; i < clients.size(); ++i)
+        clients[i]->resize(stack_dim, true).move(stack_pos, true);
+}
+
+void
+layouthandler_t::layout_sdoubledeck(const user_workspace_t& workspace) const
+{
+    auto clients = workspace.get_all();
+    clients.erase(::std::remove_if(clients.begin(), clients.end(),
+        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+
+    if (clients.empty())
+        return;
+
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
+    ::std::size_t nmaster = ::std::min(static_cast<::std::size_t>(clients.size()), workspace.get_nmaster());
+    int gap_size = workspace.get_gap_size();
+
+    dim_t screen_dim = {
+        root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - 2 * gap_size - (nmaster && nmaster != clients.size() ? 3 : 2),
+        root_attrs.h() - m_ewmh.get_top_strut() - m_ewmh.get_bottom_strut() - 2 * gap_size - 2
+    };
+
+    dim_t master_dim = {
+        static_cast<int>(screen_dim.w * (nmaster < clients.size() ? workspace.get_mfactor() : 1))
+            - (nmaster == clients.size() ? 2 : 1) * gap_size,
+        screen_dim.h
+    };
+
+    dim_t stack_dim = {
+        screen_dim.w - (nmaster > 0 ? master_dim.w : 0) - 2 * gap_size,
+        screen_dim.h
+    };
+
+    pos_t master_pos = {
+        m_ewmh.get_left_strut() + 2 * gap_size,
+        m_ewmh.get_top_strut() + gap_size
+    };
+
+    pos_t stack_pos  = {
+        master_pos.x + (nmaster > 0 ? master_dim.w + 1: 0),
+        m_ewmh.get_top_strut() + gap_size
+    };
+
+    if (workspace.is_mirrored() && clients.size() > nmaster && nmaster != 0) {
+        ::std::swap(master_dim.w, stack_dim.w);
+        ::std::swap(master_pos.x, stack_pos.x);
+    }
+
+    // tile master clients
+    for (::std::size_t i = 0; i < nmaster; ++i)
+        clients[i]->resize(master_dim, true).move(master_pos, true);
+
+    // tile stack clients
+    for (::std::size_t i = nmaster; i < clients.size(); ++i)
+        clients[i]->resize(stack_dim, true).move(stack_pos, true);
+}
+
+void
 layouthandler_t::layout_grid(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();

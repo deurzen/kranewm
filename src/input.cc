@@ -188,7 +188,6 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
     case keyop_t::spawn_sncli:         fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c sncli");         break;
     case keyop_t::spawn_rtv:           fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c rtv");           break;
     case keyop_t::spawn_irssi:         fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c irssi");         break;
-    case keyop_t::spawn_sage:          fork_external("/usr/local/bin/st -g 80x22 -e zsh -i -c sage");          break;
     case keyop_t::spawn_gpick:         fork_external("gpick");                                                 break;
     case keyop_t::spawn_anki:          fork_external("anki");                                                  break;
     case keyop_t::spawn_nixnote:       fork_external("nixnote2 show_window");                                  break;
@@ -364,6 +363,24 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
         {
             auto workspace = m_clients.active_workspace();
             workspace->set_layout(layout_t::doubledeck).arrange();
+            m_windowstack.apply(m_clients.active_workspace());
+            m_clients.active_workspace()->arrange();
+            m_sidebar.draw_layoutsymbol();
+        }
+        break;
+    case keyop_t::sdoubledeck:
+        {
+            auto workspace = m_clients.active_workspace();
+            workspace->set_layout(layout_t::sdoubledeck).arrange();
+            m_windowstack.apply(m_clients.active_workspace());
+            m_clients.active_workspace()->arrange();
+            m_sidebar.draw_layoutsymbol();
+        }
+        break;
+    case keyop_t::sdeck:
+        {
+            auto workspace = m_clients.active_workspace();
+            workspace->set_layout(layout_t::sdeck).arrange();
             m_windowstack.apply(m_clients.active_workspace());
             m_clients.active_workspace()->arrange();
             m_sidebar.draw_layoutsymbol();

@@ -4,17 +4,19 @@
 
 enum class layout_t : char
 {// name         symbol
-    toggle     = '_',
-    floating   = 'F',
-    tile       = 'T',
-    stick      = 'S',
-    deck       = 'D',
-    doubledeck = '$',
-    grid       = '#',
-    pillar     = 'P',
-    column     = 'C',
-    monocle    = 'M',
-    center     = '^',
+    toggle      = '_',
+    floating    = 'F',
+    tile        = 'T',
+    stick       = 'S',
+    deck        = 'D',
+    doubledeck  = '$',
+    sdeck       = '@',
+    sdoubledeck = '%',
+    grid        = '#',
+    pillar      = 'P',
+    column      = 'C',
+    monocle     = 'M',
+    center      = '^',
 };
 
 // fwd decls
@@ -32,6 +34,8 @@ public:
     void layout_stick(const user_workspace_t&) const;
     void layout_deck(const user_workspace_t&) const;
     void layout_doubledeck(const user_workspace_t&) const;
+    void layout_sdeck(const user_workspace_t&) const;
+    void layout_sdoubledeck(const user_workspace_t&) const;
     void layout_grid(const user_workspace_t&) const;
     void layout_pillar(const user_workspace_t&) const;
     void layout_column(const user_workspace_t&) const;
