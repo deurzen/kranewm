@@ -1,6 +1,8 @@
 #include "input.hh"
 #include "sidebar.hh"
 #include "client-model.hh"
+#include "ipc.hh"
+
 #include "x-data/window.hh"
 
 #include <unistd.h>
@@ -1048,6 +1050,42 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
             workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
             m_clients.client_to_workspace(client, workspace);
             m_clients.active_workspace()->arrange();
+        }
+        break;
+    default: break;
+    }
+}
+
+void
+inputhandler_t::process_ipc_global(ipcop_t op)
+{
+    switch (op) {
+    case ipcop_t::goto_next_ws:
+        {
+            ::std::size_t workspace = m_clients.active_workspace()->get_number();
+            workspace %= USER_WORKSPACES.size();
+            m_clients.change_active_workspace(workspace + 1, false);
+        }
+        break;
+    case ipcop_t::goto_prev_ws:
+        {
+            ::std::size_t workspace = m_clients.active_workspace()->get_number() - 1;
+            workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
+            m_clients.change_active_workspace(workspace, false);
+        }
+        break;
+    case ipcop_t::goto_next_cx:
+        {
+            ::std::size_t context = m_clients.active_context()->get_letter() - 'a' + 1;
+            context %= CONTEXTS.size();
+            m_clients.change_active_context(context + 1);
+        }
+        break;
+    case ipcop_t::goto_prev_cx:
+        {
+            ::std::size_t context = m_clients.active_context()->get_letter() - 'a';
+            context = (context == 0) ? CONTEXTS.size() : context;
+            m_clients.change_active_context(context);
         }
         break;
     default: break;

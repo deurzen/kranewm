@@ -5,6 +5,7 @@
 #include "mousebind.hh"
 #include "keybind.hh"
 #include "process.hh"
+#include "ipc.hh"
 
 #include "x-data/event.hh"
 
@@ -238,6 +239,8 @@ public:
 
     void process_key_input_global(XKeyEvent);
     void process_key_input_client(client_ptr_t, XKeyEvent);
+
+    void process_ipc_global(ipcop_t);
 
 private:
     void fork_external(::std::string&&);
