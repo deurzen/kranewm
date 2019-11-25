@@ -13,6 +13,7 @@
 
 // fwd decls
 class ewmh_t;
+class ipc_t;
 class sidebar_t;
 class windowstack_t;
 class processjumplist_t;
@@ -23,9 +24,10 @@ class x_model_t;
 class x_events_t
 {
 public:
-    explicit x_events_t(ewmh_t& ewmh, sidebar_t& sidebar, windowstack_t& windowstack,
+    explicit x_events_t(ewmh_t& ewmh, ipc_t& ipc, sidebar_t& sidebar, windowstack_t& windowstack,
         processjumplist_t& processes,  client_model_t& clients, x_model_t& x)
         : m_ewmh(ewmh),
+          m_ipc(ipc),
           m_sidebar(sidebar),
           m_windowstack(windowstack),
           m_clients(clients),
@@ -76,6 +78,7 @@ private:
     void on_unmap_notify();
 
     ewmh_t& m_ewmh;
+    ipc_t& m_ipc;
     sidebar_t& m_sidebar;
     windowstack_t& m_windowstack;
     client_model_t& m_clients;

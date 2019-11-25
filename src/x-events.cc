@@ -3,6 +3,7 @@
 #include "client-model.hh"
 #include "decoration.hh"
 #include "ewmh.hh"
+#include "ipc.hh"
 #include "floating.hh"
 #include "sidebar.hh"
 #include "x-model.hh"
@@ -484,6 +485,9 @@ x_events_t::on_property_notify()
         m_ewmh.check_apply_strut(event.window);
         m_clients.active_workspace()->arrange();
     }
+
+    if ((win.get() == x_data::g_root.get()) && m_ipc.assert_target(m_current_event))
+        ; // handle ipc request
 }
 
 void

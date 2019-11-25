@@ -5,6 +5,7 @@
 #include "x-data/error.hh"
 
 #include "ewmh.hh"
+#include "ipc.hh"
 #include "sidebar.hh"
 #include "stack.hh"
 #include "x-model.hh"
@@ -22,11 +23,12 @@ class kranewm_t
 public:
     kranewm_t()
         : m_ewmh(),
+          m_ipc(),
           m_sidebar(m_ewmh),
           m_x(),
           m_changequeue(),
           m_clients(m_changequeue, m_ewmh, m_windowstack, m_processes),
-          m_events(m_ewmh, m_sidebar, m_windowstack, m_processes, m_clients, m_x),
+          m_events(m_ewmh, m_ipc, m_sidebar, m_windowstack, m_processes, m_clients, m_x),
           m_changes(m_changequeue, m_ewmh, m_sidebar, m_x, m_clients) {}
 
     void setup();
@@ -41,6 +43,7 @@ private:
     void check_otherwm();
 
     ewmh_t m_ewmh;
+    ipc_t m_ipc;
     sidebar_t m_sidebar;
     windowstack_t m_windowstack;
     processjumplist_t m_processes;

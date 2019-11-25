@@ -23,6 +23,7 @@ namespace x_data
     {
     public:
         static ::std::map<::std::string, Atom> g_interned_atoms;
+        static ::std::map<Atom, ::std::string> g_atom_names;
 
         atom_t() = default;
 
@@ -113,7 +114,9 @@ namespace x_data
 
     };
 
-    extern atom_t get_atom(::std::string name);
+    extern atom_t get_atom(const ::std::string& name);
+    extern void intern_atom(const ::std::string& name, atom_t atom);
+    extern const ::std::string get_atom_name(atom_t atom);
 }
 
 #endif//__KRANEWM__X_DATA__ATOM__GUARD__
