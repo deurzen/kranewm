@@ -30,5 +30,5 @@ x_data::get_atom_name(atom_t atom)
     if (atom_t::g_atom_names.count(atom) > 0)
         return atom_t::g_atom_names[atom];
 
-    return ::std::string();
+    return {};
 }
