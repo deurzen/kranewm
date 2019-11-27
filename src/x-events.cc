@@ -485,7 +485,7 @@ x_events_t::on_property_notify()
         m_clients.active_workspace()->arrange();
     }
 
-    if ((win.get() == x_data::g_root.get()) && m_ipc.assert_target(m_current_event))
+    if (IPC_ENABLED && (win.get() == x_data::g_root.get()) && m_ipc.assert_target(m_current_event))
         m_input.process_ipc_global(m_ipc.resolve_operation(m_current_event));
 }
 

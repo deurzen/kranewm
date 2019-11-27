@@ -22,6 +22,7 @@ enum class ipcop_t
 const ::std::string IPC_PREFIX = "_KRANEWM_";
 const bool IPC_ENABLED = true;
 
+
 class ipc_t
 {
 public:
@@ -38,6 +39,9 @@ public:
           {"FOCUS_WIN", {new x_data::window_t{},   ipcop_t::focus_win}},
         })
     {
+        if (!IPC_ENABLED)
+            return;
+
         x_data::replace_property<x_data::string_t>(x_data::g_root,
             {"_IPC_PREFIX", IPC_PREFIX});
 

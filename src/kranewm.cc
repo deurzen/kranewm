@@ -26,8 +26,8 @@ kranewm_t::setup()
 {
     check_otherwm(); // make sure another wm is not already running
     x_data::select_input(x_data::g_root, ButtonPressMask | PointerMotionMask
-        | StructureNotifyMask | SubstructureNotifyMask | SubstructureRedirectMask 
-        | PropertyChangeMask);
+        | StructureNotifyMask | SubstructureNotifyMask | SubstructureRedirectMask
+        | (IPC_ENABLED * PropertyChangeMask));
 
     m_ewmh.set_wm_name_property(x_data::g_root, WMNAME);
 
