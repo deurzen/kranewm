@@ -1057,8 +1057,10 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
 }
 
 void
-inputhandler_t::process_ipc_global(ipcop_t op)
+inputhandler_t::process_ipc_global(ipccommand_t command)
 {
+    auto [data,op] = command;
+
     switch (op) {
     case ipcop_t::goto_next_ws:
         {

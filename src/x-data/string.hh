@@ -43,6 +43,8 @@ namespace x_data
         inline ::std::string get()     const { return val; }
         inline const char*   get_ptr() const { return val.c_str(); }
 
+        inline void set(const ::std::string& new_val) { val = new_val; }
+
     private:
         ::std::string val;
 

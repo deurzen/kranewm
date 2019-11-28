@@ -6,7 +6,7 @@ ipc_t::assert_target(x_data::event_t event) const
     return !x_data::get_atom_name(event.get().xproperty.atom).rfind(IPC_PREFIX, 0);
 }
 
-ipcop_t
+ipccommand_t
 ipc_t::resolve_operation(x_data::event_t event) const
 {
     auto name = x_data::get_atom_name(event.get().xproperty.atom);
@@ -14,8 +14,8 @@ ipc_t::resolve_operation(x_data::event_t event) const
 
     if (supported_commands.count(name) > 0) {
         const auto [atom,op] = supported_commands.at(name);
-        return op;
+        return {{}, op};
     }
 
-    return ipcop_t::noop;
+    return {{}, ipcop_t::noop};
 }

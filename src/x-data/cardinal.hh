@@ -46,6 +46,8 @@ namespace x_data
         inline CARD32 get() const { return val; }
         inline const CARD32* get_ptr() const { return &val; }
 
+        inline void set(CARD32 new_val) { val = new_val; }
+
     private:
         CARD32 val;
 

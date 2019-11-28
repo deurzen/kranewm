@@ -240,7 +240,7 @@ public:
     void process_key_input_global(XKeyEvent);
     void process_key_input_client(client_ptr_t, XKeyEvent);
 
-    void process_ipc_global(ipcop_t);
+    void process_ipc_global(ipccommand_t);
 
 private:
     void fork_external(::std::string&&);

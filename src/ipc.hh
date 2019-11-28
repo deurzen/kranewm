@@ -19,6 +19,8 @@ enum class ipcop_t
     focus_win,
 };
 
+typedef ::std::tuple<x_data::x_type*, ipcop_t> ipccommand_t;
+
 const ::std::string IPC_PREFIX = "_KRANEWM_";
 const bool IPC_ENABLED = true;
 
@@ -65,10 +67,10 @@ public:
     }
 
     bool assert_target(x_data::event_t) const;
-    ipcop_t resolve_operation(x_data::event_t) const;
+    ipccommand_t resolve_operation(x_data::event_t) const;
 
 private:
-    ::std::map<::std::string, ::std::tuple<x_data::x_type*, ipcop_t>> supported_commands;
+    ::std::map<::std::string, ipccommand_t> supported_commands;
 
 };
 

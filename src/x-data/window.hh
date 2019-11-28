@@ -53,6 +53,8 @@ namespace x_data
         inline Window* get_ptr() { return &val; }
         inline const Window* get_const_ptr() const { return &val; }
 
+        inline void set(Window new_val) { val = new_val; }
+
         window_t& map()
         {
             XMapWindow(g_dpy, val);
