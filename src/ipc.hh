@@ -22,7 +22,7 @@ enum class ipcop_t
 typedef ::std::tuple<x_data::x_type*, ipcop_t> ipccommand_t;
 
 const ::std::string IPC_PREFIX = "_KRANEWM_";
-const bool IPC_ENABLED = true;
+const bool IPC_ENABLED = false;
 
 
 class ipc_t
@@ -35,7 +35,7 @@ public:
           {"GOTO_WS",   {new x_data::cardinal_t{}, ipcop_t::goto_ws_index}},
 
           {"NEXT_CX",   {{},                       ipcop_t::goto_next_cx}},
-          {"PREV_CX",   {{},                       ipcop_t::goto_next_cx}},
+          {"PREV_CX",   {{},                       ipcop_t::goto_prev_cx}},
           {"GOTO_CX",   {new x_data::cardinal_t{}, ipcop_t::goto_cx_index}},
 
           {"FOCUS_WIN", {new x_data::window_t{},   ipcop_t::focus_win}},
