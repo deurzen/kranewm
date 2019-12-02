@@ -133,7 +133,10 @@ sidebar_t::draw_workspacenumbers()
         m_workspacenumbersgc.draw_string(current_pos, ::std::to_string(nr));
 
         if (m_extended) {
-            m_workspace_popups[nr - 1].resize({name.size() * m_workspacenumbersgc.get_font_dim().w + 2, m_workspacenumbersgc.get_font_dim().h * static_cast<int>(name.size())}).map();
+            m_workspace_popups[nr - 1].move({SIDEBAR_WIDTH + 2,
+                current_pos.y - m_workspacenumbersgc.get_font_dim().h - 1}).resize({
+                    static_cast<int>(2.2 * name.size() * m_workspacenumbersgc.get_font_dim().w),
+                    m_workspacenumbersgc.get_font_dim().h + 2}).map();
         } else
             m_workspace_popups[nr - 1].unmap();
 
@@ -158,6 +161,11 @@ sidebar_t::draw_icons()
     for (::std::size_t i = 0; i < ::std::min(icons.size(), static_cast<::std::size_t>(10)); ++i) {
         if (i == 0 || i == 2 || i == 4 || i == 6 || i == 8) {
             m_iconnumbersgc.draw_string(current_pos, ::std::to_string(i + 1));
+
+            if (m_extended) {
+            } else
+                ; //m_icon_popups[i].unmap();
+
             current_pos.y += (4 + m_workspacenumbersgc.get_font_dim().h);
         } else if (i == 9) {
             for (::std::size_t j = 0; j < 3; ++j) {

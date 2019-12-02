@@ -21,7 +21,7 @@ class sidebar_t
 public:
     explicit sidebar_t(ewmh_t& ewmh)
         : m_enabled(true),
-          m_extended(false),
+          m_extended(true),
           m_ewmh(ewmh),
           m_context(nullptr),
           m_sidebarwin(x_data::create_window(true)),
@@ -84,13 +84,15 @@ public:
         for (::std::size_t i = 0; i < m_workspace_popups.size(); ++i) {
             m_workspace_popups[i] = x_data::create_window(true).unmap();
             m_ewmh.set_window_type_property(m_workspace_popups[i], "DOCK");
-            m_workspace_popups[i].set_border_color(SIDEBAR_WORKSPACES_COLOR);
+            m_workspace_popups[i].set_border_color(SIDEBAR_BG_COLOR);
+            m_workspace_popups[i].set_background_color(SIDEBAR_BG_COLOR);
         }
 
         for (::std::size_t i = 0; i < m_icon_popups.size(); ++i) {
             m_icon_popups[i] = x_data::create_window(true).unmap();
             m_ewmh.set_window_type_property(m_icon_popups[i], "DOCK");
-            m_icon_popups[i].set_border_color(SIDEBAR_WORKSPACES_COLOR);
+            m_icon_popups[i].set_border_color(SIDEBAR_BG_COLOR);
+            m_icon_popups[i].set_background_color(SIDEBAR_BG_COLOR);
         }
 
         m_moveresizeindicator.set_background_color(MRIND_BORDER_COLOR);
