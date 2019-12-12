@@ -48,6 +48,7 @@ static const ::std::map<::std::string, applicationtype_t> APPLICATION_TYPES({
 
     { "Chromium",             applicationtype_t::browser },
     { "firefox",              applicationtype_t::browser },
+    { "Firefox",              applicationtype_t::browser },
     { "qutebrowser",          applicationtype_t::browser },
 
     { "Thunar",               applicationtype_t::filing },

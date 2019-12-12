@@ -47,6 +47,7 @@ public:
               { { "cantata",             ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
               { { "feh",                 ALL,          ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
               { { "firefox",             ALL,          ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
+              { { "Firefox",             ALL,          ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
               { { "gnucash",             ALL,          ALL },   { YES,   NO,    OFF,  NO,         5 } },
               { { "mate-volume-control", ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
               { { "nixnote2",            ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },

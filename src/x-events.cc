@@ -52,7 +52,8 @@ x_events_t::register_window(x_data::window_t win)
         m_windowstack.add_to_stack({win, layer_t::below});
     else if (win.is_of_state("ABOVE"))
         m_windowstack.add_to_stack({win, layer_t::above});
-    else if (win.is_of_type("DESKTOP"))
+
+    if (win.is_of_type("DESKTOP"))
         m_windowstack.add_to_stack({win, layer_t::desktop});
     else if (win.is_of_type("NOTIFICATION"))
         m_windowstack.add_to_stack({win, layer_t::notification});
