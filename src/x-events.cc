@@ -48,24 +48,26 @@ x_events_t::register_window(x_data::window_t win)
         m_clients.refullscreen_clients();
     }
 
-    if (win.is_of_state("BELOW"))
-        m_windowstack.add_to_stack({win, layer_t::below});
-    else if (win.is_of_state("ABOVE"))
-        m_windowstack.add_to_stack({win, layer_t::above});
-
-    if (win.is_of_type("DESKTOP"))
-        m_windowstack.add_to_stack({win, layer_t::desktop});
-    else if (win.is_of_type("NOTIFICATION"))
-        m_windowstack.add_to_stack({win, layer_t::notification});
-    else if (win.is_of_type("DOCK")) {
-        m_windowstack.add_to_stack({win, layer_t::dock});
+    if (win.is_of_type("DOCK")) {
         m_ewmh.set_frame_extents(win, true);
+        m_windowstack.add_to_stack({win, layer_t::dock});
+        m_windowstack.apply(m_clients.active_workspace());
         return;
     }
 
     if (!x_data::should_manage(win)) {
-        m_windowstack.add_to_stack({win, layer_t::above});
         m_ewmh.set_frame_extents(win, true);
+
+        if (win.is_of_state("BELOW"))
+            m_windowstack.add_to_stack({win, layer_t::below});
+        else if (win.is_of_type("DESKTOP"))
+            m_windowstack.add_to_stack({win, layer_t::desktop});
+        else if (win.is_of_type("NOTIFICATION"))
+            m_windowstack.add_to_stack({win, layer_t::notification});
+        else
+            m_windowstack.add_to_stack({win, layer_t::above});
+
+        m_windowstack.apply(m_clients.active_workspace());
         return;
     }
 

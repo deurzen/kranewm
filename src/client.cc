@@ -10,8 +10,6 @@ client_ptr_t
 create_client(x_data::window_t win, rule_t& rule)
 {
     auto sizehints = x_data::get_sizehints(win);
-    if (!sizehints.get().flags)
-        sizehints.get().flags = PSize;
 
     dim_t base{}, inc{}, max{}, min{};
     range_t<float> aspect{};
@@ -60,6 +58,9 @@ create_client(x_data::window_t win, rule_t& rule)
     client_ptr_t client = new client_t(win, frame, sizeconstraints, rule);
     client->resize({dim.w, dim.h + BORDER_HEIGHT});
     client->move({pos.x, pos.y - BORDER_HEIGHT});
+
+    client->above = client->win.is_of_state("ABOVE");
+    client->below = client->win.is_of_state("BELOW");
 
     return client;
 }

@@ -27,7 +27,9 @@ enum netwmid_t : int
     netwmstate,
     netwmwindowtype,
     // window states
-    netwmstatefullscreen, netwmstatefirst = netwmstatefullscreen,
+    netwmstateabove, netwmstatefirst = netwmstateabove,
+    netwmstatefullscreen,
+    netwmstatebelow,
     netwmstatedemandsattention,
     netwmstatehidden, netwmstatelast = netwmstatehidden,
     // window types
@@ -85,7 +87,9 @@ public:
             { netwmid_t::netwmstate,                  "_NET_WM_STATE"                     },
             { netwmid_t::netwmwindowtype,             "_NET_WM_WINDOW_TYPE"               },
             // window states
+            { netwmid_t::netwmstateabove,             "_NET_WM_STATE_ABOVE"               },
             { netwmid_t::netwmstatefullscreen,        "_NET_WM_STATE_FULLSCREEN"          },
+            { netwmid_t::netwmstatebelow,             "_NET_WM_STATE_BELOW"               },
             { netwmid_t::netwmstatedemandsattention,  "_NET_WM_STATE_DEMANDS_ATTENTION"   },
             { netwmid_t::netwmstatehidden,            "_NET_WM_STATE_HIDDEN"              },
             // window types

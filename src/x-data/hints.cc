@@ -33,6 +33,10 @@ x_data::get_sizehints(window_t& win)
 {
     long _l;
     XSizeHints hints;
-    bool status = !XGetWMNormalHints(g_dpy, win.get(), &hints, &_l);
+    bool status;
+
+    if ((status = !XGetWMNormalHints(g_dpy, win.get(), &hints, &_l)))
+        hints.flags = PSize;
+
     return {hints, status};
 }

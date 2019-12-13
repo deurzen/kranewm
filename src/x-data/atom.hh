@@ -108,6 +108,8 @@ namespace x_data
         inline Atom* get() { return &val[0]; }
         inline Atom* get_ptr() { return val.data(); }
 
+        inline ::std::vector<Atom> get_all() { return val; }
+
     private:
         ::std::vector<Atom> val;
         ::std::size_t len;

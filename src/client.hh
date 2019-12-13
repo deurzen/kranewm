@@ -48,7 +48,9 @@ typedef struct client_t
           expect(clientexpect_t::noeffect),
           focused(false),
           floating(rule.floating),
+          above(false),
           fullscreen(rule.fullscreen),
+          below(false),
           urgent(false),
           iconified(false),
           disowned(false),
@@ -82,7 +84,9 @@ typedef struct client_t
     clientexpect_t      expect;
     bool                focused;
     bool                floating;
+    bool                above;
     bool                fullscreen;
+    bool                below;
     bool                urgent;
     bool                iconified;
     bool                disowned;

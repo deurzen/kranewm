@@ -153,17 +153,23 @@ x_data::window_t::set_state(long state)
 bool
 x_data::window_t::is_of_type(::std::string&& type_name)
 {
-    const auto type_atom = get_property<atom_t>(val, "_NET_WM_WINDOW_TYPE");
+    atom_list_t type_atoms = get_property<atom_list_t>(val, "_NET_WM_WINDOW_TYPE");
     const atom_t type_id = get_atom("_NET_WM_WINDOW_TYPE_" + type_name);
 
-    return type_atom.get_data().get() == type_id.get();
+    for (auto& atom : type_atoms.get_all())
+        if (atom == type_id.get()) return true;
+
+    return false;
 }
 
 bool
-x_data::window_t::is_of_state(::std::string&& type_name)
+x_data::window_t::is_of_state(::std::string&& state_name)
 {
-    const auto state_atom = get_property<atom_t>(val, "_NET_WM_STATE");
-    const atom_t state_id = get_atom("_NET_WM_STATE_" + type_name);
+    atom_list_t state_atoms = get_property<atom_list_t>(val, "_NET_WM_STATE");
+    const atom_t state_id = get_atom("_NET_WM_STATE_" + state_name);
 
-    return state_atom.get_data().get() == state_id.get();
+    for (auto& atom : state_atoms.get_all())
+        if (atom == state_id.get()) return true;
+
+    return false;
 }
