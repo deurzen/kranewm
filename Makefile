@@ -16,13 +16,16 @@ quick_debug:
 debug_parallel: TARGET = $(BIN)
 debug_parallel: CXXFLAGS += $(DEBUG_CXXFLAGS)
 debug_parallel: LDFLAGS += $(DEBUG_LDFLAGS)
-debug_parallel: build
+debug_parallel: build-core
 	@echo
 	@echo -n running
 	@./launch
 	@echo
 	@echo generating tags
 	@ctags -R --exclude=.git --c++-kinds=+p --fields=+iaS --extras=+q .
+
+build: CXXFLAGS += $(RELEASE_CXXFLAGS)
+build: build-core
 
 install:
 	install $(RELEASE) $(INSTALL)$(PROJECT)
@@ -44,7 +47,7 @@ notify-link:
 	@echo
 	@echo linking
 
-build: notify-build release bin obj ${OBJ_FILES} notify-link
+build-core: notify-build release bin obj ${OBJ_FILES} notify-link
 	${CC} ${OBJ_FILES} ${LDFLAGS} -o ${TARGET}
 
 -include $(DEPS)

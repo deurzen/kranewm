@@ -23,11 +23,12 @@ SANFLAGS ?= -fsanitize=undefined -fsanitize=address -fsanitize-address-use-after
 
 CXXFLAGS ?= -std=c++17
 CXXFLAGS += `pkg-config --cflags x11`
-CXXFLAGS += -O2
 
 LDFLAGS = `pkg-config --libs x11`
 
 DEBUG_CXXFLAGS = -Wall -g -DDEBUG ${SANFLAGS}
 DEBUG_LDFLAGS = ${SANFLAGS}
+
+RELEASE_CXXFLAGS = -O2
 
 CC = g++
