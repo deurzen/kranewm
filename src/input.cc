@@ -8,11 +8,20 @@
 #include <unistd.h>
 
 
+bool
+inputhandler_t::moves_focus(XButtonEvent event) const
+{
+    if (m_mousebinds.count({event.button, event.state, true}))
+        return (m_mousebinds.at({event.button, event.state, true}).second);
+
+    return false;
+}
+
 void
 inputhandler_t::process_mouse_input_global(XButtonEvent event)
 {
     if (m_mousebinds.count({event.button, event.state, false}))
-        switch (m_mousebinds[{event.button, event.state, false}]) {
+        switch (m_mousebinds[{event.button, event.state, false}].first) {
             case mouseop_t::goto_next_ws:
                 {
                     ::std::size_t workspace = m_clients.active_workspace()->get_number();
@@ -41,6 +50,8 @@ inputhandler_t::process_mouse_input_global(XButtonEvent event)
                     m_clients.change_active_context(context);
                 }
                 return;
+            case mouseop_t::focus_bck: m_clients.cycle_focus_backward(); return;
+            case mouseop_t::focus_fwd: m_clients.cycle_focus_forward();  return;
             default: break;
         }
 }
@@ -49,7 +60,7 @@ void
 inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent event)
 {
     if (m_mousebinds.count({event.button, event.state, true}))
-        switch (m_mousebinds[{event.button, event.state, true}]) {
+        switch (m_mousebinds[{event.button, event.state, true}].first) {
         case mouseop_t::client_move:    m_clients.start_moving(client);   break;
         case mouseop_t::client_resize:  m_clients.start_resizing(client); break;
         case mouseop_t::center_client:
@@ -139,6 +150,8 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
                 m_sidebar.draw_clientstate();
             }
             return;
+        case mouseop_t::focus_bck: m_clients.cycle_focus_backward(); return;
+        case mouseop_t::focus_fwd: m_clients.cycle_focus_forward();  return;
         default: break;
         }
 }
@@ -676,6 +689,18 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
             m_sidebar.draw_clientstate();
         }
         break;
+    case keyop_t::toggle_above:
+        {
+            m_clients.set_above(client, clientaction_t::toggle);
+            m_sidebar.draw_clientstate();
+        }
+        return;
+    case keyop_t::toggle_below:
+        {
+            m_clients.set_below(client, clientaction_t::toggle);
+            m_sidebar.draw_clientstate();
+        }
+        return;
     case keyop_t::center_client:
         {
             if (!client->fullscreen && (client->floating
@@ -1108,7 +1133,6 @@ inputhandler_t::process_ipc_global(ipccommand_t command)
     default: break;
     }
 }
-
 
 void
 inputhandler_t::fork_external(::std::string&& command)

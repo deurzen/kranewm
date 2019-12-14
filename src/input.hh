@@ -37,25 +37,31 @@ public:
               { { XK_b,   MODMASK|ShiftMask }, "firefox"     },
           }),
           m_mousebinds({
-              //  keysym              mask                 client  operation
-              { { BACKWARD_BUTTON,     NOMASK,              NO },  mouseop_t::goto_next_ws      },
-              { { FORWARD_BUTTON,      NOMASK,              NO },  mouseop_t::goto_prev_ws      },
-              { { SCROLL_DOWN_BUTTON, MODMASK,              NO },  mouseop_t::goto_next_ws      },
-              { { SCROLL_UP_BUTTON,   MODMASK,              NO },  mouseop_t::goto_prev_ws      },
-              { { SCROLL_DOWN_BUTTON, MODMASK|ControlMask,  NO },  mouseop_t::goto_next_cx      },
-              { { SCROLL_UP_BUTTON,   MODMASK|ControlMask,  NO },  mouseop_t::goto_prev_cx      },
-              { { LEFT_BUTTON,        MODMASK,             YES },  mouseop_t::client_move       },
-              { { RIGHT_BUTTON,       MODMASK,             YES },  mouseop_t::client_resize     },
-              { { MIDDLE_BUTTON,      MODMASK,             YES },  mouseop_t::center_client     },
-              { { BACKWARD_BUTTON,    MODMASK,             YES },  mouseop_t::client_next_ws    },
-              { { FORWARD_BUTTON,     MODMASK,             YES },  mouseop_t::client_prev_ws    },
-              { { SCROLL_DOWN_BUTTON, MODMASK,             YES },  mouseop_t::goto_next_ws      },
-              { { SCROLL_UP_BUTTON,   MODMASK,             YES },  mouseop_t::goto_prev_ws      },
-              { { MIDDLE_BUTTON,      MODMASK|ShiftMask,   YES },  mouseop_t::toggle_float      },
-              { { RIGHT_BUTTON,       MODMASK|ShiftMask,   YES },  mouseop_t::toggle_fullscreen },
-              { { RIGHT_BUTTON,       MODMASK|ControlMask, YES },  mouseop_t::toggle_disown     },
-              { { SCROLL_DOWN_BUTTON, MODMASK|ControlMask, YES },  mouseop_t::goto_next_cx      },
-              { { SCROLL_UP_BUTTON,   MODMASK|ControlMask, YES },  mouseop_t::goto_prev_cx      },
+              //  keysym              mask                 client    operation                      focus
+              { { BACKWARD_BUTTON,     NOMASK,              NO },  { mouseop_t::goto_next_ws,        NO } },
+              { { FORWARD_BUTTON,      NOMASK,              NO },  { mouseop_t::goto_prev_ws,        NO } },
+              { { SCROLL_DOWN_BUTTON, MODMASK,              NO },  { mouseop_t::goto_next_ws,        NO } },
+              { { SCROLL_UP_BUTTON,   MODMASK,              NO },  { mouseop_t::goto_prev_ws,        NO } },
+              { { SCROLL_DOWN_BUTTON, MODMASK|ShiftMask,    NO },  { mouseop_t::focus_fwd,           NO } },
+              { { SCROLL_UP_BUTTON,   MODMASK|ShiftMask,    NO },  { mouseop_t::focus_bck,           NO } },
+              { { SCROLL_DOWN_BUTTON, MODMASK|ControlMask,  NO },  { mouseop_t::goto_next_cx,        NO } },
+              { { SCROLL_UP_BUTTON,   MODMASK|ControlMask,  NO },  { mouseop_t::goto_prev_cx,        NO } },
+              { { LEFT_BUTTON,        MODMASK,             YES },  { mouseop_t::client_move,        YES } },
+              { { RIGHT_BUTTON,       MODMASK,             YES },  { mouseop_t::client_resize,      YES } },
+              { { MIDDLE_BUTTON,      MODMASK,             YES },  { mouseop_t::center_client,      YES } },
+              { { BACKWARD_BUTTON,    MODMASK,             YES },  { mouseop_t::client_next_ws,     YES } },
+              { { FORWARD_BUTTON,     MODMASK,             YES },  { mouseop_t::client_prev_ws,     YES } },
+              { { SCROLL_DOWN_BUTTON, MODMASK,             YES },  { mouseop_t::goto_next_ws,        NO } },
+              { { SCROLL_UP_BUTTON,   MODMASK,             YES },  { mouseop_t::goto_prev_ws,        NO } },
+              { { SCROLL_DOWN_BUTTON, MODMASK|ShiftMask,   YES },  { mouseop_t::focus_fwd,           NO } },
+              { { SCROLL_UP_BUTTON,   MODMASK|ShiftMask,   YES },  { mouseop_t::focus_bck,           NO } },
+              { { MIDDLE_BUTTON,      MODMASK|ShiftMask,   YES },  { mouseop_t::toggle_float,       YES } },
+              { { RIGHT_BUTTON,       MODMASK|ShiftMask,   YES },  { mouseop_t::toggle_fullscreen,  YES } },
+              { { SCROLL_DOWN_BUTTON, MODMASK|ControlMask, YES },  { mouseop_t::goto_next_cx,        NO } },
+              { { SCROLL_UP_BUTTON,   MODMASK|ControlMask, YES },  { mouseop_t::goto_prev_cx,        NO } },
+              { { RIGHT_BUTTON,       MODMASK|ControlMask, YES },  { mouseop_t::toggle_disown,      YES } },
+              { { SCROLL_DOWN_BUTTON, MODMASK|ControlMask, YES },  { mouseop_t::goto_next_cx,        NO } },
+              { { SCROLL_UP_BUTTON,   MODMASK|ControlMask, YES },  { mouseop_t::goto_prev_cx,        NO } },
           }),
           m_keybinds({
               //  keysym           mask                   operation
@@ -117,6 +123,8 @@ public:
               { { XK_equal,        MODMASK },             keyop_t::inc_gap_size                 },
               { { XK_F1,           MODMASK },             keyop_t::disown_client                },
               { { XK_F9,           MODMASK },             keyop_t::pop_reclaim_client           },
+              { { XK_F4,           MODMASK },             keyop_t::toggle_below                 },
+              { { XK_F5,           MODMASK },             keyop_t::toggle_above                 },
               { { XK_F10,          MODMASK },             keyop_t::apply_profile_1              },
               { { XK_F11,          MODMASK },             keyop_t::apply_profile_2              },
               { { XK_F12,          MODMASK },             keyop_t::apply_profile_3              },
@@ -233,6 +241,8 @@ public:
         for (auto&& [shortcut,_] : m_mousebinds)
             if (shortcut.mask) x_data::grab_button(shortcut.button, shortcut.mask);
     }
+
+    bool moves_focus(XButtonEvent) const;
 
     void process_mouse_input_global(XButtonEvent);
     void process_mouse_input_client(client_ptr_t, XButtonEvent);

@@ -4,11 +4,14 @@
 #include "x-data/mouse.hh"
 
 #include <unordered_map>
+#include <utility>
 
 
 enum class mouseop_t
 {
     noop,
+    focus_fwd,
+    focus_bck,
     client_move,
     client_resize,
     center_client,
@@ -52,6 +55,7 @@ namespace std
     };
 }
 
-typedef ::std::unordered_map<mouseshortcut_t, mouseop_t> mousebinds_t;
+typedef ::std::pair<mouseop_t, bool> mouseaction_t;
+typedef ::std::unordered_map<mouseshortcut_t, mouseaction_t> mousebinds_t;
 
 #endif//__KRANEWM__MOUSEBIND__GUARD__
