@@ -454,6 +454,15 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             m_sidebar.draw_layoutsymbol();
         }
         break;
+    case keyop_t::centerstack:
+        {
+            auto workspace = m_clients.active_workspace();
+            workspace->set_layout(layout_t::centerstack);
+            m_windowstack.apply(m_clients.active_workspace());
+            m_clients.active_workspace()->arrange();
+            m_sidebar.draw_layoutsymbol();
+        }
+        break;
     case keyop_t::toggle_layout:
         {
             auto workspace = m_clients.active_workspace();

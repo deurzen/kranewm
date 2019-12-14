@@ -17,6 +17,7 @@ enum class layout_t : char
     column      = 'C',
     monocle     = 'M',
     center      = '^',
+    centerstack = '&',
 };
 
 // fwd decls
@@ -41,6 +42,7 @@ public:
     void layout_column(const user_workspace_t&) const;
     void layout_monocle(const user_workspace_t&) const;
     void layout_center(const user_workspace_t&) const;
+    void layout_centerstack(const user_workspace_t&) const;
 
 private:
     ewmh_t& m_ewmh;

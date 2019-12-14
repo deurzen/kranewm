@@ -17,6 +17,7 @@ user_workspace_t::arrange() const
     case layout_t::column:      m_layouthandler.layout_column(*this);      break;
     case layout_t::monocle:     m_layouthandler.layout_monocle(*this);     break;
     case layout_t::center:      m_layouthandler.layout_center(*this);      break;
+    case layout_t::centerstack: m_layouthandler.layout_centerstack(*this); break;
     default: break;
     }
 }
