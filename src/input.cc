@@ -145,56 +145,56 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
 
     switch (m_keybinds[event]) {
     case keyop_t::quit: m_running = false; return;
-    case keyop_t::spawn_terminal:      fork_external("/usr/local/bin/st");                                     break;
-    case keyop_t::spawn_termregion:    fork_external("~/bin/stregion");                                        break;
-    case keyop_t::spawn_quickterm:     fork_external("/usr/local/bin/st -n \"kranewm:cf\"");                   break;
-    case keyop_t::spawn_quicktermtmux: fork_external("/usr/local/bin/st -e tmux");                             break;
-    case keyop_t::spawn_dmenu:         fork_external("/usr/local/bin/dmenu_run");                              break;
-    case keyop_t::spawn_dmenupass:     fork_external("/usr/bin/dmenupass");                                    break;
-    case keyop_t::spawn_dmenupasscopy: fork_external("/usr/bin/dmenupass --copy");                             break;
-    case keyop_t::spawn_dmenunotify:   fork_external("/usr/bin/dmenunotify");                                  break;
-    case keyop_t::spawn_browser:       fork_external("/usr/bin/qutebrowser");                                  break;
-    case keyop_t::spawn_sec_browser:   fork_external("/usr/bin/firefox");                                      break;
+    case keyop_t::spawn_terminal:      fork_external("/usr/bin/st");                                     break;
+    case keyop_t::spawn_termregion:    fork_external("~/bin/stregion");                                  break;
+    case keyop_t::spawn_quickterm:     fork_external("/usr/bin/st -n \"kranewm:cf\"");                   break;
+    case keyop_t::spawn_quicktermtmux: fork_external("/usr/bin/st -e tmux");                             break;
+    case keyop_t::spawn_dmenu:         fork_external("/usr/local/bin/dmenu_run");                        break;
+    case keyop_t::spawn_dmenupass:     fork_external("/usr/bin/dmenupass");                              break;
+    case keyop_t::spawn_dmenupasscopy: fork_external("/usr/bin/dmenupass --copy");                       break;
+    case keyop_t::spawn_dmenunotify:   fork_external("/usr/bin/dmenunotify");                            break;
+    case keyop_t::spawn_browser:       fork_external("/usr/bin/qutebrowser");                            break;
+    case keyop_t::spawn_sec_browser:   fork_external("/usr/bin/firefox");                                break;
     case keyop_t::audioplay: // fallthrough
-    case keyop_t::mpctoggle:           fork_external("/usr/bin/mpc toggle");                                   break;
+    case keyop_t::mpctoggle:           fork_external("/usr/bin/mpc toggle");                             break;
     case keyop_t::audionext: // fallthrough
-    case keyop_t::mpcnext:             fork_external("/usr/bin/mpc next");                                     break;
+    case keyop_t::mpcnext:             fork_external("/usr/bin/mpc next");                               break;
     case keyop_t::audioprev: // fallthrough
-    case keyop_t::mpcprev:             fork_external("/usr/bin/mpc prev");                                     break;
+    case keyop_t::mpcprev:             fork_external("/usr/bin/mpc prev");                               break;
     case keyop_t::audiostop: // fallthrough
-    case keyop_t::mpcstop:             fork_external("/usr/bin/mpc stop");                                     break;
-    case keyop_t::mpcrandom:           fork_external("/usr/bin/mpc random");                                   break;
-    case keyop_t::mpcsingle:           fork_external("/usr/bin/mpc single");                                   break;
-    case keyop_t::cantatashow:         fork_external("/usr/bin/cantata");                                      break;
-    case keyop_t::rhythmboxshow:       fork_external("/usr/bin/rhythmbox-client");                             break;
-    case keyop_t::rhythmboxtoggle:     fork_external("/usr/bin/rhythmbox-client --play-pause");                break;
-    case keyop_t::rhythmboxnext:       fork_external("/usr/bin/rhythmbox-client --next");                      break;
-    case keyop_t::rhythmboxprev:       fork_external("/usr/bin/rhythmbox-client --previous");                  break;
-    case keyop_t::rhythmboxstop:       fork_external("/usr/bin/rhythmbox-client --stop");                      break;
-    case keyop_t::volumeup:            fork_external("amixer -D pulse sset Master 5%+");                       break;
-    case keyop_t::volumedown:          fork_external("amixer -D pulse sset Master 5%-");                       break;
-    case keyop_t::volumemute:          fork_external("amixer -D pulse set Master 1+ toggle");                  break;
-    case keyop_t::brightnessup15:      fork_external("/usr/bin/xbacklight -inc 10");                           break;
-    case keyop_t::brightnessup5:       fork_external("/usr/bin/xbacklight -inc 5");                            break;
-    case keyop_t::brightnessdown15:    fork_external("/usr/bin/xbacklight -dec 10");                           break;
-    case keyop_t::brightnessdown5:     fork_external("/usr/bin/xbacklight -dec 5");                            break;
+    case keyop_t::mpcstop:             fork_external("/usr/bin/mpc stop");                               break;
+    case keyop_t::mpcrandom:           fork_external("/usr/bin/mpc random");                             break;
+    case keyop_t::mpcsingle:           fork_external("/usr/bin/mpc single");                             break;
+    case keyop_t::cantatashow:         fork_external("/usr/bin/cantata");                                break;
+    case keyop_t::rhythmboxshow:       fork_external("/usr/bin/rhythmbox-client");                       break;
+    case keyop_t::rhythmboxtoggle:     fork_external("/usr/bin/rhythmbox-client --play-pause");          break;
+    case keyop_t::rhythmboxnext:       fork_external("/usr/bin/rhythmbox-client --next");                break;
+    case keyop_t::rhythmboxprev:       fork_external("/usr/bin/rhythmbox-client --previous");            break;
+    case keyop_t::rhythmboxstop:       fork_external("/usr/bin/rhythmbox-client --stop");                break;
+    case keyop_t::volumeup:            fork_external("amixer -D pulse sset Master 5%+");                 break;
+    case keyop_t::volumedown:          fork_external("amixer -D pulse sset Master 5%-");                 break;
+    case keyop_t::volumemute:          fork_external("amixer -D pulse set Master 1+ toggle");            break;
+    case keyop_t::brightnessup15:      fork_external("/usr/bin/xbacklight -inc 10");                     break;
+    case keyop_t::brightnessup5:       fork_external("/usr/bin/xbacklight -inc 5");                      break;
+    case keyop_t::brightnessdown15:    fork_external("/usr/bin/xbacklight -dec 10");                     break;
+    case keyop_t::brightnessdown5:     fork_external("/usr/bin/xbacklight -dec 5");                      break;
     case keyop_t::take_screenshot:
         fork_external("/usr/bin/maim -m 1 $(date +/home/deurzen/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");
         break;
     case keyop_t::take_screenshot_sel:
         fork_external("/usr/bin/maim -m 1 -s $(date +/home/deurzen/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)");
         break;
-    case keyop_t::spawn_neomutt:       fork_external("/usr/local/bin/st -g 140x42 -e zsh -i -c neomutt");      break;
-    case keyop_t::spawn_ranger:        fork_external("/usr/local/bin/st -g 140x42 -e zsh -i -c ranger");       break;
-    case keyop_t::spawn_vifm:          fork_external("/usr/local/bin/st -e zsh -i -c vifmrun");                break;
-    case keyop_t::spawn_sncli:         fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c sncli");         break;
-    case keyop_t::spawn_rtv:           fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c rtv");           break;
-    case keyop_t::spawn_irssi:         fork_external("/usr/local/bin/st -g 80x42 -e zsh -i -c irssi");         break;
-    case keyop_t::spawn_gpick:         fork_external("gpick");                                                 break;
-    case keyop_t::spawn_anki:          fork_external("anki");                                                  break;
-    case keyop_t::spawn_nixnote:       fork_external("nixnote2 show_window");                                  break;
-    case keyop_t::spawn_qalculate:     fork_external("qalculate-gtk");                                         break;
-    case keyop_t::spawn_7lock:         fork_external("systemctl suspend");                                     break;
+    case keyop_t::spawn_neomutt:       fork_external("/usr/bin/st -g 140x42 -e zsh -i -c neomutt");      break;
+    case keyop_t::spawn_ranger:        fork_external("/usr/bin/st -g 140x42 -e zsh -i -c ranger");       break;
+    case keyop_t::spawn_vifm:          fork_external("/usr/bin/st -e zsh -i -c vifmrun");                break;
+    case keyop_t::spawn_sncli:         fork_external("/usr/bin/st -g 80x42 -e zsh -i -c sncli");         break;
+    case keyop_t::spawn_rtv:           fork_external("/usr/bin/st -g 80x42 -e zsh -i -c rtv");           break;
+    case keyop_t::spawn_irssi:         fork_external("/usr/bin/st -g 80x42 -e zsh -i -c irssi");         break;
+    case keyop_t::spawn_gpick:         fork_external("gpick");                                           break;
+    case keyop_t::spawn_anki:          fork_external("anki");                                            break;
+    case keyop_t::spawn_nixnote:       fork_external("nixnote2 show_window");                            break;
+    case keyop_t::spawn_qalculate:     fork_external("qalculate-gtk");                                   break;
+    case keyop_t::spawn_7lock:         fork_external("systemctl suspend");                               break;
 
 
     case keyop_t::pop_deiconify:
@@ -442,11 +442,11 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
             m_sidebar.draw_layoutsymbol();
         }
         break;
-    case keyop_t::mirror_workspace: m_clients.active_workspace()->mirror().arrange();                   break;
-    case keyop_t::focus_bck:  m_clients.cycle_focus_backward();                                         break;
-    case keyop_t::focus_fwd:  m_clients.cycle_focus_forward();                                          break;
-    case keyop_t::jump_to_marked_client: m_clients.jump_marked();                                       break;
-    case keyop_t::toggle_workspace: m_clients.change_active_workspace();                                break;
+    case keyop_t::mirror_workspace: m_clients.active_workspace()->mirror().arrange(); break;
+    case keyop_t::focus_bck:  m_clients.cycle_focus_backward();                       break;
+    case keyop_t::focus_fwd:  m_clients.cycle_focus_forward();                        break;
+    case keyop_t::jump_to_marked_client: m_clients.jump_marked();                     break;
+    case keyop_t::toggle_workspace: m_clients.change_active_workspace();              break;
     case keyop_t::zoom:
         {
             m_clients.active_workspace()->zoom();
