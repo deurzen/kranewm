@@ -180,18 +180,27 @@ x_events_t::on_client_message()
                 if (event.data.l[property] == 0)
                     continue;
 
+                if (event.data.l[0] >= static_cast<int>(netwmaction_t::netnoaction))
+                    return;
+
                 if ((Atom)event.data.l[property]
                     == m_ewmh.get_netwm_atom(netwmid_t::netwmstatefullscreen))
                 {
-                    if (event.data.l[0] >= static_cast<int>(netwmaction_t::netnoaction))
-                        return;
-
                     m_clients.set_fullscreen(client, static_cast<clientaction_t>(event.data.l[0]));
+
+                } else if ((Atom)event.data.l[property]
+                    == m_ewmh.get_netwm_atom(netwmid_t::netwmstateabove))
+                {
+                    m_clients.set_above(client, static_cast<clientaction_t>(event.data.l[0]));
+
+                } else if ((Atom)event.data.l[property]
+                    == m_ewmh.get_netwm_atom(netwmid_t::netwmstatebelow))
+                {
+                    m_clients.set_below(client, static_cast<clientaction_t>(event.data.l[0]));
+
                 } else if ((Atom)event.data.l[property]
                     == m_ewmh.get_netwm_atom(netwmid_t::netwmstatedemandsattention))
                 {
-                    if (event.data.l[0] >= static_cast<int>(netwmaction_t::netnoaction))
-                        return;
                     m_clients.set_urgent(client, static_cast<clientaction_t>(event.data.l[0]));
                 }
 

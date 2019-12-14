@@ -112,6 +112,14 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
 
                 if (!client->parent) {
                     client->set_float(clientaction_t::toggle).resize(client->float_dim).move(client->float_pos);
+
+                    if (client->floating) {
+                        if (client->above)
+                            m_clients.set_above(client, clientaction_t::remove);
+                        else if (client->below)
+                            m_clients.set_below(client, clientaction_t::remove);
+                    }
+
                     m_clients.active_workspace()->raise_client(client);
                     m_windowstack.apply(m_clients.active_workspace());
                     m_clients.active_workspace()->arrange();
@@ -639,6 +647,13 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
         {
             if (client->parent || client->fullscreen || client->disowned)
                 return;
+
+            if (client->floating) {
+                if (client->above)
+                    m_clients.set_above(client, clientaction_t::remove);
+                else if (client->below)
+                    m_clients.set_below(client, clientaction_t::remove);
+            }
 
             client->set_float(clientaction_t::toggle).resize(client->float_dim).move(client->float_pos);
             m_clients.active_workspace()->raise_client(client);

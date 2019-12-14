@@ -35,6 +35,8 @@ private:
     void on_change_client_destroy();
     void on_change_client_workspace();
     void on_change_client_fullscreen();
+    void on_change_client_above();
+    void on_change_client_below();
     void on_change_client_urgent();
     void on_change_client_iconify();
     void on_change_client_disown();

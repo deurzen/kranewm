@@ -17,6 +17,8 @@ enum class change_t
     client_focus,
     client_destroy,
     client_fullscreen,
+    client_above,
+    client_below,
     client_urgent,
     client_iconify,
     client_disown,
@@ -131,6 +133,54 @@ inline clientfullscreenchange_ptr_t change_client_fullscreen(client_ptr_t client
 inline clientfullscreenchange_ptr_t change_client_fullscreen(clientchange_ptr_t change)
 {
     return dynamic_cast<clientfullscreenchange_ptr_t>(change);
+}
+
+
+
+typedef struct clientabovechange_t : clientchange_t
+{
+    explicit clientabovechange_t(client_ptr_t _client, client_t _former_state)
+      : clientchange_t(change_t::client_above),
+        client(_client),
+        former_state(_former_state) {}
+
+    client_ptr_t client;
+    client_t former_state;
+
+}* clientabovechange_ptr_t;
+
+inline clientabovechange_ptr_t change_client_above(client_ptr_t client, client_t former_state)
+{
+    return new clientabovechange_t(client, former_state);
+}
+
+inline clientabovechange_ptr_t change_client_above(clientchange_ptr_t change)
+{
+    return dynamic_cast<clientabovechange_ptr_t>(change);
+}
+
+
+
+typedef struct clientbelowchange_t : clientchange_t
+{
+    explicit clientbelowchange_t(client_ptr_t _client, client_t _former_state)
+      : clientchange_t(change_t::client_below),
+        client(_client),
+        former_state(_former_state) {}
+
+    client_ptr_t client;
+    client_t former_state;
+
+}* clientbelowchange_ptr_t;
+
+inline clientbelowchange_ptr_t change_client_below(client_ptr_t client, client_t former_state)
+{
+    return new clientbelowchange_t(client, former_state);
+}
+
+inline clientbelowchange_ptr_t change_client_below(clientchange_ptr_t change)
+{
+    return dynamic_cast<clientbelowchange_ptr_t>(change);
 }
 
 

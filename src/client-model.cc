@@ -464,6 +464,92 @@ client_model_t::set_fullscreen(client_ptr_t client, clientaction_t action)
 }
 
 void
+client_model_t::set_above(client_ptr_t client, clientaction_t action)
+{
+    switch (action) {
+    case clientaction_t::add:
+        {
+            if (client->disowned || m_above_clients.count(client))
+                return;
+
+            if (client->fullscreen)
+                set_fullscreen(client, clientaction_t::remove);
+
+            if (client->below)
+                set_below(client, clientaction_t::remove);
+
+            client->above = true;
+            m_changequeue.add(change_client_above(client, *client));
+            m_above_clients[client] = *client;
+            m_windowstack.apply(client_user_workspace(client));
+            /* client_user_workspace(client)->raise_client(client); */
+        }
+        break;
+    case clientaction_t::remove:
+        {
+            if (!m_above_clients.count(client))
+                return;
+
+            client->above = false;
+            m_changequeue.add(change_client_above(client, m_above_clients[client]));
+            erase_find(m_above_clients, client);
+            m_windowstack.apply(client_user_workspace(client));
+        }
+        break;
+    case clientaction_t::toggle:
+        set_above(client, client->above
+            ? clientaction_t::remove : clientaction_t::add);
+        return;
+    default: break;
+    }
+
+    m_windowstack.apply(client_user_workspace(client));
+}
+
+void
+client_model_t::set_below(client_ptr_t client, clientaction_t action)
+{
+    switch (action) {
+    case clientaction_t::add:
+        {
+            if (client->disowned || m_below_clients.count(client))
+                return;
+
+            if (client->fullscreen)
+                set_fullscreen(client, clientaction_t::remove);
+
+            if (client->above)
+                set_above(client, clientaction_t::remove);
+
+            client->below = true;
+            m_changequeue.add(change_client_below(client, *client));
+            m_below_clients[client] = *client;
+            m_windowstack.apply(client_user_workspace(client));
+            /* client_user_workspace(client)->raise_client(client); */
+        }
+        break;
+    case clientaction_t::remove:
+        {
+            if (!m_below_clients.count(client))
+                return;
+
+            client->below = false;
+            m_changequeue.add(change_client_below(client, m_below_clients[client]));
+            erase_find(m_below_clients, client);
+            m_windowstack.apply(client_user_workspace(client));
+        }
+        break;
+    case clientaction_t::toggle:
+        set_below(client, client->below
+            ? clientaction_t::remove : clientaction_t::add);
+        return;
+    default: break;
+    }
+
+    m_windowstack.apply(client_user_workspace(client));
+}
+
+void
 client_model_t::set_urgent(client_ptr_t client, clientaction_t action)
 {
     switch (action) {

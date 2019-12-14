@@ -85,6 +85,8 @@ public:
     void change_active_context(context_ptr_t = nullptr);
 
     void set_fullscreen(client_ptr_t, clientaction_t);
+    void set_above(client_ptr_t, clientaction_t);
+    void set_below(client_ptr_t, clientaction_t);
     void set_urgent(client_ptr_t, clientaction_t);
     void set_iconified(client_ptr_t, clientaction_t, bool = true);
     void set_disowned(client_ptr_t, clientaction_t, bool = true);
@@ -122,6 +124,8 @@ private:
     ::std::unordered_map<client_ptr_t, user_workspace_ptr_t> m_client_workspaces;
 
     ::std::unordered_map<client_ptr_t, client_t> m_fullscreen_clients;
+    ::std::unordered_map<client_ptr_t, client_t> m_above_clients;
+    ::std::unordered_map<client_ptr_t, client_t> m_below_clients;
     ::std::unordered_map<client_ptr_t, client_t> m_disowned_clients;
     ::std::vector<client_ptr_t> m_sticky_clients;
 

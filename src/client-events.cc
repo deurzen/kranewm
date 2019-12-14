@@ -19,6 +19,8 @@ client_events_t::process_queued_changes()
         case change_t::client_focus:      on_change_client_focus();      break;
         case change_t::client_destroy:    on_change_client_destroy();    break;
         case change_t::client_fullscreen: on_change_client_fullscreen(); break;
+        case change_t::client_above:      on_change_client_above();      break;
+        case change_t::client_below:      on_change_client_below();      break;
         case change_t::client_urgent:     on_change_client_urgent();     break;
         case change_t::client_iconify:    on_change_client_iconify();    break;
         case change_t::client_disown:     on_change_client_disown();     break;
@@ -103,7 +105,13 @@ client_events_t::on_change_client_fullscreen()
             root_attrs.h() + BORDER_HEIGHT}, true);
         client->move({m_ewmh.get_left_strut(), -BORDER_HEIGHT - 1}, true);
     } else {
-        m_ewmh.set_window_state_property(client->win);
+        if (former_state.above)
+            m_ewmh.set_window_state_property(client->win, "ABOVE");
+        if (former_state.below)
+            m_ewmh.set_window_state_property(client->win, "BELOW");
+        else
+            m_ewmh.set_window_state_property(client->win);
+
         client->floating = former_state.floating || client->disowned;
         client->float_pos = former_state.float_pos;
         client->float_dim = former_state.float_dim;
@@ -116,6 +124,50 @@ client_events_t::on_change_client_fullscreen()
         {
             client->resize(client->float_dim).move(client->float_pos);
         } else if (client->sticky)
+            m_clients.active_workspace()->arrange();
+        else
+            m_clients.client_user_workspace(client)->arrange();
+    }
+}
+
+void
+client_events_t::on_change_client_above()
+{
+    auto change = change_client_above(m_current_change);
+    auto client = change->client;
+    auto former_state = change->former_state;
+
+    if (client->above) {
+        m_ewmh.set_window_state_property(client->win, "ABOVE");
+        client->set_float(clientaction_t::add).resize(client->float_dim).move(client->float_pos);
+        m_clients.active_workspace()->raise_client(client);
+        m_clients.active_workspace()->arrange();
+    } else {
+        m_ewmh.set_window_state_property(client->win);
+        client->floating = former_state.floating;
+        if (client->sticky)
+            m_clients.active_workspace()->arrange();
+        else
+            m_clients.client_user_workspace(client)->arrange();
+    }
+}
+
+void
+client_events_t::on_change_client_below()
+{
+    auto change = change_client_below(m_current_change);
+    auto client = change->client;
+    auto former_state = change->former_state;
+
+    if (client->below) {
+        m_ewmh.set_window_state_property(client->win, "BELOW");
+        client->set_float(clientaction_t::add).resize(client->float_dim).move(client->float_pos);
+        m_clients.active_workspace()->raise_client(client);
+        m_clients.active_workspace()->arrange();
+    } else {
+        m_ewmh.set_window_state_property(client->win);
+        client->floating = former_state.floating;
+        if (client->sticky)
             m_clients.active_workspace()->arrange();
         else
             m_clients.client_user_workspace(client)->arrange();
