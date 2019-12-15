@@ -12,9 +12,9 @@ bool
 inputhandler_t::moves_focus(XButtonEvent event) const
 {
     if (m_mousebinds.count({event.button, event.state, true}))
-        return (m_mousebinds.at({event.button, event.state, true}).second);
+        return !m_mousebinds.at({event.button, event.state, true}).second;
 
-    return false;
+    return true;
 }
 
 void
