@@ -33,11 +33,11 @@ public:
           m_running(running),
           m_processbinds({
               //  keysym  mask                 class
-              { { XK_b,   MODMASK           }, "qutebrowser" },
-              { { XK_b,   MODMASK|ShiftMask }, "firefox"     },
+              { { XK_b,   MODMASK           }, "Firefox"     },
+              { { XK_b,   MODMASK|ShiftMask }, "qutebrowser" },
           }),
           m_mousebinds({
-              //  keysym              mask                 client    operation                      nofocus
+              //  keysym              mask                 client    operation                  nofocus
               { { BACKWARD_BUTTON,     NOMASK,              NO },  { mouseop_t::goto_next_ws,       YES } },
               { { FORWARD_BUTTON,      NOMASK,              NO },  { mouseop_t::goto_prev_ws,       YES } },
               { { SCROLL_DOWN_BUTTON, MODMASK,              NO },  { mouseop_t::focus_bck,          YES } },
