@@ -27,11 +27,20 @@ const unsigned long SIDEBAR_ACTIVE_WORKSPACE_COLOR = SEL_COLOR;
 const unsigned long SIDEBAR_NSTICKY_COLOR          = SELSTICKY_COLOR;
 const unsigned long SIDEBAR_NCLIENTS_COLOR         = SIDEBAR_WORKSPACES_COLOR;
 
+// moveresize
 const unsigned long MRIND_BG_COLOR     = REG_COLOR;
 const unsigned long MRIND_BORDER_COLOR = SIDEBAR_FG_COLOR;
+// fullscreen
 const unsigned long FSIND_BG_COLOR     = REG_COLOR;
 const unsigned long FSIND_BORDER_COLOR = URG_COLOR;
+// floating
 const unsigned long FLIND_BG_COLOR     = REG_COLOR;
 const unsigned long FLIND_BORDER_COLOR = SIDEBAR_FG_COLOR;
+// below state
+const unsigned long BSIND_BG_COLOR     = REG_COLOR;
+const unsigned long BSIND_BORDER_COLOR = SELSTICKY_COLOR;
+// above state
+const unsigned long ASIND_BG_COLOR     = REG_COLOR;
+const unsigned long ASIND_BORDER_COLOR = DIS_COLOR;
 
 #endif//__KRANEWM__DECORATION__GUARD__

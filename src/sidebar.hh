@@ -34,7 +34,9 @@ public:
           m_activity_indicators(USER_WORKSPACES.size()),
           m_moveresizeindicator(x_data::create_window(true)),
           m_floatingindicator(x_data::create_window(true)),
-          m_fullscreenindicator(x_data::create_window(true))
+          m_fullscreenindicator(x_data::create_window(true)),
+          m_aboveindicator(x_data::create_window(true)),
+          m_belowindicator(x_data::create_window(true))
     {
         auto root_attrs = x_data::get_attributes(x_data::g_root);
         m_sidebarwin.set_background_color(SIDEBAR_BG_COLOR);
@@ -87,6 +89,12 @@ public:
 
         m_fullscreenindicator.set_background_color(FSIND_BG_COLOR).set_border_color(FSIND_BORDER_COLOR);
         m_fullscreenindicator.resize({1, 1}).reparent({SIDEBAR_WIDTH - 3, 1}, m_sidebarwin);
+
+        m_aboveindicator.set_background_color(ASIND_BG_COLOR).set_border_color(ASIND_BORDER_COLOR);
+        m_aboveindicator.resize({1, 1}).reparent({SIDEBAR_WIDTH - 3, 1}, m_sidebarwin);
+
+        m_belowindicator.set_background_color(BSIND_BG_COLOR).set_border_color(BSIND_BORDER_COLOR);
+        m_belowindicator.resize({1, 1}).reparent({SIDEBAR_WIDTH - 3, 1}, m_sidebarwin);
     }
 
     void set_context(context_ptr_t);
@@ -121,6 +129,8 @@ private:
     x_data::window_t m_moveresizeindicator;
     x_data::window_t m_floatingindicator;
     x_data::window_t m_fullscreenindicator;
+    x_data::window_t m_aboveindicator;
+    x_data::window_t m_belowindicator;
 
 };
 
