@@ -1,54 +1,26 @@
 include config.mk
 
-all: debug
-
-quick_all:
-	$(MAKE) -j39 all
+all: build
 
 quick_build:
-	$(MAKE) -j39 build
-
-debug: quick_debug
+	$(MAKE) -j$$(( 10 * $(shell nproc) )) build
 
 quick_debug:
-	$(MAKE) -j39 debug_parallel
+	$(MAKE) -j$$(( 10 * $(shell nproc) )) debug
 
-debug_parallel: TARGET = $(BIN)
-debug_parallel: CXXFLAGS += $(DEBUG_CXXFLAGS)
-debug_parallel: LDFLAGS += $(DEBUG_LDFLAGS)
-debug_parallel: build-core
-	@echo
-	@echo -n running
-	@./launch
-	@echo
-	@echo generating tags
-	@ctags -R --exclude=.git --c++-kinds=+p --fields=+iaS --extras=+q .
+debug: CXXFLAGS += $(DEBUG_CXXFLAGS)
+debug: LDFLAGS += $(DEBUG_LDFLAGS)
+debug: build-core
+	+$(MAKE) run tags
 
 build: CXXFLAGS += $(RELEASE_CXXFLAGS)
 build: build-core
 
 install:
-	install $(RELEASE) $(INSTALL)$(PROJECT)
+	install $(BIN)/$(PROJECT) $(DESTDIR)/$(PROJECT)
 
-release:
-	@[ -d release ] || mkdir release
-
-
-bin:
-	@[ -d bin ] || mkdir bin
-
-obj:
-	@[ -d obj ] || mkdir obj
-
-notify-build:
-	@echo building
-
-notify-link:
-	@echo
-	@echo linking
-
-build-core: notify-build release bin obj ${OBJ_FILES} notify-link
-	${CC} ${OBJ_FILES} ${LDFLAGS} -o ${TARGET}
+build-core: notify-build bin obj ${OBJ_FILES} notify-link
+	${CC} ${OBJ_FILES} ${LDFLAGS} -o $(BIN)/$(PROJECT)
 
 -include $(DEPS)
 
@@ -65,6 +37,19 @@ run:
 	@echo -n running
 	@./launch
 
+bin:
+	@[ -d bin ] || mkdir bin
+
+obj:
+	@[ -d obj ] || mkdir obj
+
+notify-build:
+	@echo building
+
+notify-link:
+	@echo
+	@echo linking
+
 .PHONY: tags
 tags:
 	@echo
@@ -74,4 +59,4 @@ tags:
 .PHONY: clean
 clean:
 	@echo cleaning
-	@rm -rf ./bin ./release ./obj
+	@rm -rf ./bin ./obj
