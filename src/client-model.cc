@@ -284,13 +284,13 @@ client_model_t::refullscreen_clients()
 void
 client_model_t::save_profile(::std::size_t profile_index)
 {
-    m_profiles[profile_index].save(m_current_workspace->get_all());
+    m_profiles[profile_index].save(m_current_workspace);
 }
 
 void
 client_model_t::apply_profile(::std::size_t profile_index)
 {
-    m_profiles[profile_index].apply(m_current_workspace->get_all());
+    m_profiles[profile_index].apply(m_current_workspace);
     m_current_workspace->arrange();
 }
 

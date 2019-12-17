@@ -295,12 +295,27 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
                 m_clients.set_disowned(disowned.back(), clientaction_t::remove);
         }
         break;
-    case keyop_t::save_profile_1:  m_clients.save_profile(0);            break;
-    case keyop_t::save_profile_2:  m_clients.save_profile(1);            break;
-    case keyop_t::save_profile_3:  m_clients.save_profile(2);            break;
-    case keyop_t::apply_profile_1: m_clients.apply_profile(0);           break;
-    case keyop_t::apply_profile_2: m_clients.apply_profile(1);           break;
-    case keyop_t::apply_profile_3: m_clients.apply_profile(2);           break;
+    case keyop_t::save_profile_1:  m_clients.save_profile(0); break;
+    case keyop_t::save_profile_2:  m_clients.save_profile(1); break;
+    case keyop_t::save_profile_3:  m_clients.save_profile(2); break;
+    case keyop_t::apply_profile_1:
+        {
+            m_clients.apply_profile(0);
+            m_sidebar.draw();
+        }
+        break;
+    case keyop_t::apply_profile_2:
+        {
+            m_clients.apply_profile(1);
+            m_sidebar.draw();
+        }
+        break;
+    case keyop_t::apply_profile_3:
+        {
+            m_clients.apply_profile(2);
+            m_sidebar.draw();
+        }
+        break;
     case keyop_t::activate_ws_1:   m_clients.change_active_workspace(1); break;
     case keyop_t::activate_ws_2:   m_clients.change_active_workspace(2); break;
     case keyop_t::activate_ws_3:   m_clients.change_active_workspace(3); break;
