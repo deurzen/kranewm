@@ -1,5 +1,8 @@
 #include "rule.hh"
+
+#include "common.hh"
 #include "util.hh"
+
 #include "x-data/window.hh"
 
 rule_t
@@ -83,8 +86,8 @@ parse_global_rule(x_data::window_t& win)
     ::std::string title = win.get_name();
 
     for (auto& n : {cls, inst, title}) {
-        static ::std::string::size_type prefix_len = sizeof("kranewm:");
-        if (n.find("kranewm:") == 0 && n.size() >= prefix_len) {
+        static ::std::string::size_type prefix_len = sizeof((WMNAME + ":").c_str());
+        if (n.find((WMNAME + ":").c_str()) == 0 && n.size() >= prefix_len) {
             ::std::string rule_flags = n.substr(prefix_len - 1);
             ::std::string::const_iterator it = rule_flags.begin();
 
