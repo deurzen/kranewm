@@ -118,9 +118,9 @@ is_moveresize_workspace(workspace_ptr_t workspace)
 
 typedef class user_workspace_t : public workspace_t
 {
-    friend bool operator==(const user_workspace_t& lhs, const user_workspace_t& rhs);
-
 public:
+    typedef ::std::tuple<::std::size_t, ::std::size_t, float, bool, layout_t> ws_cmp;
+
     user_workspace_t(::std::size_t _number, ::std::string&& _name, ewmh_t& ewmh)
         : workspace_t(workspacetype_t::user),
           m_number(_number),
@@ -186,6 +186,7 @@ public:
     float get_mfactor() const;
     layout_t get_layout() const;
     const workspacestack_t& get_stack() const;
+    ws_cmp tied() const;
 
     ::std::size_t get_nurgent() const;
     bool is_urgent() const;
@@ -214,12 +215,6 @@ private:
     layout_t         m_previous_layout;
     layouthandler_t  m_layouthandler;
 
-    // only to be accessed externally by operator==
-    auto tied_comparator() const
-    {
-        return ::std::tie(m_nmaster, m_gap_size, m_mfactor, m_mirrored, m_layout);
-    }
-
 }* user_workspace_ptr_t;
 
 
@@ -236,10 +231,11 @@ is_user_workspace(workspace_ptr_t workspace)
     return workspace->get_type() == workspacetype_t::user;
 }
 
+
 inline bool
 operator==(const user_workspace_t& lhs, const user_workspace_t& rhs)
 {
-    return lhs.tied_comparator() == rhs.tied_comparator();
+    return lhs.tied() == rhs.tied();
 }
 
 #endif//__KRANEWM_WORKSPACE_GUARD__

@@ -46,6 +46,12 @@ user_workspace_t::get_disowned() const
     return m_disowned.get_all();
 }
 
+user_workspace_t::ws_cmp
+user_workspace_t::tied() const
+{
+    return ::std::tie(m_nmaster, m_gap_size, m_mfactor, m_mirrored, m_layout);
+}
+
 bool
 user_workspace_t::empty() const
 {
