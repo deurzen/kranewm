@@ -118,6 +118,8 @@ is_moveresize_workspace(workspace_ptr_t workspace)
 
 typedef class user_workspace_t : public workspace_t
 {
+    friend bool operator==(const user_workspace_t& lhs, const user_workspace_t& rhs);
+
 public:
     user_workspace_t(::std::size_t _number, ::std::string&& _name, ewmh_t& ewmh)
         : workspace_t(workspacetype_t::user),
@@ -212,6 +214,12 @@ private:
     layout_t         m_previous_layout;
     layouthandler_t  m_layouthandler;
 
+    // only to be accessed externally by operator==
+    auto tied_comparator() const
+    {
+        return ::std::tie(m_nmaster, m_gap_size, m_mfactor, m_mirrored, m_layout);
+    }
+
 }* user_workspace_ptr_t;
 
 
@@ -226,6 +234,12 @@ inline bool
 is_user_workspace(workspace_ptr_t workspace)
 {
     return workspace->get_type() == workspacetype_t::user;
+}
+
+inline bool
+operator==(const user_workspace_t& lhs, const user_workspace_t& rhs)
+{
+    return lhs.tied_comparator() == rhs.tied_comparator();
 }
 
 #endif//__KRANEWM_WORKSPACE_GUARD__

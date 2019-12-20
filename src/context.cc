@@ -25,7 +25,7 @@ context_t::get_letter() const
 }
 
 const ::std::vector<user_workspace_ptr_t>*
-context_t::get_workspaces()
+context_t::get_workspaces() const
 {
     return &m_workspaces;
 }

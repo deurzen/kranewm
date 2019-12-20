@@ -56,7 +56,7 @@ public:
     void arrange() const;
 
     char get_letter() const;
-    const ::std::vector<user_workspace_ptr_t>* get_workspaces();
+    const ::std::vector<user_workspace_ptr_t>* get_workspaces() const;
 
     bool empty() const;
     bool contains(client_ptr_t) const;
@@ -103,5 +103,12 @@ private:
     client_ptr_t m_jumped_from;
 
 }* context_ptr_t;
+
+
+inline bool
+operator==(const context_t& lhs, const context_t& rhs)
+{
+    return *lhs.get_workspaces() == *rhs.get_workspaces();
+}
 
 #endif//__KRANEWM_CONTEXT_GUARD__
