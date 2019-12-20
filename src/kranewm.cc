@@ -7,6 +7,8 @@
 #include "workspace.hh"
 
 #include <csignal>
+#include <cstdlib>
+#include <sstream>
 
 
 int (*kranewm_t::m_xerrorxlib)(Display*, XErrorEvent*);
@@ -54,8 +56,16 @@ kranewm_t::setup()
     x_data::sync(true);
 
 #ifndef DEBUG
-    ::std::system("cd ~/.kranewm; ./blocking_autostart.sh");
-    ::std::system("cd ~/.kranewm; ./nonblocking_autostart.sh &");
+    { // run user-configured autostart programs
+        ::std::stringstream configdir_ss;
+        if(const char* env_xdgconf = std::getenv("XDG_CONFIG_HOME"))
+            configdir_ss << "cd " << env_xdgconf << "/" << WMNAME << ";";
+        else
+            configdir_ss << "cd ~/.config/" << WMNAME << ";";
+
+        ::std::system((configdir_ss.str() + ::std::string("./blocking_autostart")).c_str());
+        ::std::system((configdir_ss.str() + ::std::string("./nonblocking_autostart &")).c_str());
+    }
 #endif
 }
 
