@@ -139,7 +139,7 @@ sidebar_t::draw_workspacenumbers()
 
         m_workspacenumbersgc.clear(current_pos);
         m_workspacenumbersgc.draw_string(current_pos, ::std::to_string(nr));
-        current_pos.y += (4 + m_workspacenumbersgc.get_font_dim().h);
+        current_pos.y += (2 + 1.25f * m_workspacenumbersgc.get_font_dim().h);
     }
 }
 

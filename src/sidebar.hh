@@ -68,12 +68,13 @@ public:
         m_numberclientsgc.set_foreground(SIDEBAR_NCLIENTS_COLOR);
         m_numberclientsgc.set_background(SIDEBAR_BG_COLOR);
 
+        pos_t current_pos = {SIDEBAR_WIDTH - 3, 2 * (4 + m_workspacenumbersgc.get_font_dim().h) + 4};
         for (::std::size_t i = 0; i < m_activity_indicators.size(); ++i) {
             m_activity_indicators[i] = x_data::create_window(true);
             m_ewmh.set_window_type_property(m_activity_indicators[i], "DOCK");
             m_activity_indicators[i].set_border_color(SIDEBAR_WORKSPACES_COLOR);
-            m_activity_indicators[i].resize({1, 1}).reparent({SIDEBAR_WIDTH - 3,
-                static_cast<int>((2.4f + i) * (4 + m_workspacenumbersgc.get_font_dim().h))}, m_sidebarwin);
+            m_activity_indicators[i].resize({1, 1}).reparent(current_pos, m_sidebarwin);
+            current_pos.y += (2 + 1.25f * m_workspacenumbersgc.get_font_dim().h);
         }
 
         m_ewmh.set_window_type_property(m_moveresizeindicator, "DOCK");
