@@ -28,9 +28,9 @@ enum class mouseop_t
 
 enum class mousetarget_t
 {
-    root = 1,
+    client = 1,
+    root,
     sidebar,
-    client,
 };
 
 struct mouseshortcut_t

@@ -57,6 +57,31 @@ inputhandler_t::process_mouse_input_global(XButtonEvent event)
 }
 
 void
+inputhandler_t::process_mouse_input_sidebar(XButtonEvent event)
+{
+    if (m_mousebinds.count({event.button, event.state, mousetarget_t::sidebar}))
+        switch (m_mousebinds[{event.button, event.state, mousetarget_t::sidebar}].first) {
+            case mouseop_t::goto_next_ws:
+                {
+                    ::std::size_t workspace = m_clients.active_workspace()->get_number();
+                    workspace %= USER_WORKSPACES.size();
+                    m_clients.change_active_workspace(workspace + 1, false);
+                }
+                return;
+            case mouseop_t::goto_prev_ws:
+                {
+                    ::std::size_t workspace = m_clients.active_workspace()->get_number() - 1;
+                    workspace = (workspace == 0) ? USER_WORKSPACES.size() : workspace;
+                    m_clients.change_active_workspace(workspace, false);
+                }
+                return;
+            case mouseop_t::focus_bck: m_clients.cycle_focus_backward(); return;
+            case mouseop_t::focus_fwd: m_clients.cycle_focus_forward();  return;
+            default: break;
+        }
+}
+
+void
 inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent event)
 {
     if (m_mousebinds.count({event.button, event.state, mousetarget_t::client}))

@@ -118,10 +118,16 @@ x_events_t::on_button_press()
     x_data::window_t subwin = event.subwindow;
 
     if (win.get() == x_data::g_root.get()) {
-        if (subwin.get() == None)
+        if (subwin.get() == None) {
             m_input.process_mouse_input_global(event);
-        else
+            return;
+        } else
             win = subwin;
+    }
+
+    if (win.get() == m_sidebar.get_win().get()) {
+        m_input.process_mouse_input_sidebar(event);
+        return;
     }
 
     client_ptr_t client = m_clients.win_client(win);
