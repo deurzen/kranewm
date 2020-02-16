@@ -11,8 +11,8 @@
 bool
 inputhandler_t::moves_focus(XButtonEvent event) const
 {
-    if (m_mousebinds.count({event.button, event.state, true}))
-        return !m_mousebinds.at({event.button, event.state, true}).second;
+    if (m_mousebinds.count({event.button, event.state, mousetarget_t::client}))
+        return !m_mousebinds.at({event.button, event.state, mousetarget_t::client}).second;
 
     return true;
 }
@@ -20,8 +20,8 @@ inputhandler_t::moves_focus(XButtonEvent event) const
 void
 inputhandler_t::process_mouse_input_global(XButtonEvent event)
 {
-    if (m_mousebinds.count({event.button, event.state, false}))
-        switch (m_mousebinds[{event.button, event.state, false}].first) {
+    if (m_mousebinds.count({event.button, event.state, mousetarget_t::root}))
+        switch (m_mousebinds[{event.button, event.state, mousetarget_t::root}].first) {
             case mouseop_t::goto_next_ws:
                 {
                     ::std::size_t workspace = m_clients.active_workspace()->get_number();
@@ -59,8 +59,8 @@ inputhandler_t::process_mouse_input_global(XButtonEvent event)
 void
 inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent event)
 {
-    if (m_mousebinds.count({event.button, event.state, true}))
-        switch (m_mousebinds[{event.button, event.state, true}].first) {
+    if (m_mousebinds.count({event.button, event.state, mousetarget_t::client}))
+        switch (m_mousebinds[{event.button, event.state, mousetarget_t::client}].first) {
         case mouseop_t::client_move:    m_clients.start_moving(client);   break;
         case mouseop_t::client_resize:  m_clients.start_resizing(client); break;
         case mouseop_t::center_client:

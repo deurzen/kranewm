@@ -26,21 +26,28 @@ enum class mouseop_t
     toggle_disown,
 };
 
+enum class mousetarget_t
+{
+    root = 1,
+    sidebar,
+    client,
+};
+
 struct mouseshortcut_t
 {
-    mouseshortcut_t(unsigned _button , unsigned _mask, bool _on_client)
+    mouseshortcut_t(unsigned _button , unsigned _mask, mousetarget_t _target)
         : button(_button),
           mask(_mask),
-          on_client(_on_client) {}
+          target(_target) {}
 
     inline bool operator==(const mouseshortcut_t& ms) const
     {
-        return ms.button == button && ms.mask == mask && ms.on_client == on_client;
+        return ms.button == button && ms.mask == mask && ms.target == target;
     }
 
     unsigned button;
     unsigned mask;
-    bool on_client;
+    mousetarget_t target;
 };
 
 namespace std
@@ -50,7 +57,7 @@ namespace std
     {
         std::size_t operator()(const mouseshortcut_t& ms) const
         {
-            return ms.button + 10000 * ms.mask + ms.on_client;
+            return ms.button + 10000 * ms.mask + static_cast<int>(ms.target);
         }
     };
 }
