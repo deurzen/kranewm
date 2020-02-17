@@ -6,11 +6,6 @@
 #include "util.hh"
 #include "workspace.hh"
 
-#include <csignal>
-#include <cstdlib>
-#include <sstream>
-
-
 int (*kranewm_t::m_xerrorxlib)(Display*, XErrorEvent*);
 
 

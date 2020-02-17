@@ -246,6 +246,8 @@ public:
 
     bool moves_focus(XButtonEvent) const;
 
+    /* void process_input(command_t); */
+
     void process_mouse_input_global(XButtonEvent);
     void process_mouse_input_sidebar(XButtonEvent);
     void process_mouse_input_client(client_ptr_t, XButtonEvent);
