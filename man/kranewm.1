@@ -1,0 +1,12 @@
+.TH KRANEWM 1
+.SH NAME
+kranewm \- ICCCM & EWMH compliant X11 reparenting, tiling window manager
+.SH SYNOPSIS
+.B kranewm
+[\fB\-v\fR]
+.SH DESCRIPTION
+.B kranewm is a dynamic window manager for X11, implemented using Xlib. It incorporates those of the features in the ICCCM and EWMH standards personally deemed necessary and most useful for a modern window manager. Other X programs are consequently able to interact with it as they would with any other normally functioning window manager. Part of the development process and its inceptive design decisions are motivated in a thesis written towards the completion of my Bachelor's degree, though kranewm has since significantly outgrown the feature set initially proposed.
+
+Two of the traditional styles of window management are integrated: \fBstacking\fR and \fBtiling\fR. The former means that kranewm allows for users to freely reposition and resize windows as they see fit. The latter implies that predefined arrangement blueprints--often referred to as layouts--are offered. These layouts can be alternately activated, having the window manager automatically position the windows on the screen in some structured arrangement.
+
+Besides mandating window arrangement policy, kranewm also offers features related to workspace management, focus transitioning, window decorations, and program launching. It additionally contains an interactive sidebar that shows information reflecting the current state of the window manager. As kranewm aims to provide its users with the flexibility set forward by the Unix philosophy, almost all features can be disabled or customized, and all key and mouse bindings are open for modification.
