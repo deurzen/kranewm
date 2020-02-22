@@ -1,0 +1,897 @@
+#ifndef __KRANEWM_COMMANDS_GUARD__
+#define __KRANEWM_COMMANDS_GUARD__
+
+#include "floating.hh"
+#include "layout.hh"
+
+
+// fwd decls
+class client_model_t;
+class windowstack_t;
+class sidebar_t;
+class processjumplist_t;
+typedef class client_t* client_ptr_t;
+
+
+
+typedef class command_t
+{
+public:
+    virtual void execute() = 0;
+
+}* command_ptr_t;
+
+
+
+class commandfactory_t
+{
+public:
+
+private:
+
+};
+
+
+
+typedef class floatingconditionalcommand_t : command_t
+{
+public:
+    explicit floatingconditionalcommand_t(client_model_t& clients,
+        command_ptr_t truecommand, command_ptr_t falsecommand)
+        : m_clients(clients),
+          m_truecommand(truecommand),
+          m_falsecommand(falsecommand)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    command_ptr_t m_truecommand;
+    command_ptr_t m_falsecommand;
+
+}* floatingconditionalcommand_ptr_t;
+
+
+typedef class noopcommand_t : command_t
+{
+public:
+    void execute() {}
+
+}* noopcommand_ptr_t;
+
+
+
+typedef class quitcommand_t : command_t
+{
+public:
+    explicit quitcommand_t(bool& running)
+        : m_running(running)
+    {}
+
+    void execute();
+
+private:
+    bool& m_running;
+
+}* quitcommand_ptr_t;
+
+
+
+typedef class zoomcommand_t : command_t
+{
+public:
+    explicit zoomcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+
+}* zoomcommand_ptr_t;
+
+
+
+typedef class clientfloatcommand_t : command_t
+{
+public:
+    explicit clientfloatcommand_t(client_model_t& clients, windowstack_t& windowstack,
+        sidebar_t& sidebar, client_ptr_t client)
+        : m_clients(clients),
+          m_windowstack(windowstack),
+          m_sidebar(sidebar),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    windowstack_t& m_windowstack;
+    sidebar_t& m_sidebar;
+    client_ptr_t m_client;
+
+}* clientfloatcommand_ptr_t;
+
+
+
+typedef class clientfullscreencommand_t : command_t
+{
+public:
+    explicit clientfullscreencommand_t(client_model_t& clients,
+        sidebar_t& sidebar, client_ptr_t client)
+        : m_clients(clients),
+          m_sidebar(sidebar),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    sidebar_t& m_sidebar;
+    client_ptr_t m_client;
+
+}* clientfullscreencommand_ptr_t;
+
+
+
+typedef class clientstickycommand_t : command_t
+{
+public:
+    explicit clientstickycommand_t(client_model_t& clients,
+        sidebar_t& sidebar, client_ptr_t client)
+        : m_clients(clients),
+          m_sidebar(sidebar),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    sidebar_t& m_sidebar;
+    client_ptr_t m_client;
+
+}* clientstickycommand_ptr_t;
+
+
+
+typedef class clientabovecommand_t : command_t
+{
+public:
+    explicit clientabovecommand_t(client_model_t& clients,
+        sidebar_t& sidebar, client_ptr_t client)
+        : m_clients(clients),
+          m_sidebar(sidebar),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    sidebar_t& m_sidebar;
+    client_ptr_t m_client;
+
+}* clientabovecommand_ptr_t;
+
+
+
+typedef class clientbelowcommand_t : command_t
+{
+public:
+    explicit clientbelowcommand_t(client_model_t& clients,
+        sidebar_t& sidebar, client_ptr_t client)
+        : m_clients(clients),
+          m_sidebar(sidebar),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    sidebar_t& m_sidebar;
+    client_ptr_t m_client;
+
+}* clientbelowcommand_ptr_t;
+
+
+
+typedef class clientcentercommand_t : command_t
+{
+public:
+    explicit clientcentercommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientcentercommand_ptr_t;
+
+
+
+typedef class clientsnapnorthcommand_t : command_t
+{
+public:
+    explicit clientsnapnorthcommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientsnapnorthcommand_ptr_t;
+
+
+
+typedef class clientsnapeastcommand_t : command_t
+{
+public:
+    explicit clientsnapeastcommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientsnapeastcommand_ptr_t;
+
+
+
+typedef class clientsnapsouthcommand_t : command_t
+{
+public:
+    explicit clientsnapsouthcommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientsnapsouthcommand_ptr_t;
+
+
+
+typedef class clientsnapwestcommand_t : command_t
+{
+public:
+    explicit clientsnapwestcommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientsnapwestcommand_ptr_t;
+
+
+
+typedef class clientmarkcommand_t : command_t
+{
+public:
+    explicit clientmarkcommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientmarkcommand_ptr_t;
+
+
+
+typedef class clienticonifycommand_t : command_t
+{
+public:
+    explicit clienticonifycommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clienticonifycommand_ptr_t;
+
+
+
+typedef class clientdisowncommand_t : command_t
+{
+public:
+    explicit clientdisowncommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientdisowncommand_ptr_t;
+
+
+
+typedef class clientworkspacecommand_t : command_t
+{
+public:
+    explicit clientworkspacecommand_t(client_model_t& clients,
+        client_ptr_t client, unsigned number)
+        : m_clients(clients),
+          m_client(client),
+          m_number(number)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+    unsigned m_number;
+
+}* clientworkspacecommand_ptr_t;
+
+
+
+typedef class clientnextworkspacecommand_t : command_t
+{
+public:
+    explicit clientnextworkspacecommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientnextworkspacecommand_ptr_t;
+
+
+
+typedef class clientcontextcommand_t : command_t
+{
+public:
+    explicit clientcontextcommand_t(client_model_t& clients,
+        client_ptr_t client, char letter)
+        : m_clients(clients),
+          m_client(client),
+          m_letter(letter)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+    char m_letter;
+
+}* clientcontextcommand_ptr_t;
+
+
+
+typedef class clientnextcontextcommand_t : command_t
+{
+public:
+    explicit clientnextcontextcommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientnextcontextcommand_ptr_t;
+
+
+
+typedef class clientgrowcommand_t : command_t
+{
+public:
+    explicit clientgrowcommand_t(client_model_t& clients, client_ptr_t client,
+        direction_t direction, unsigned increment = KB_RESIZE_INCREMENT)
+        : m_clients(clients),
+          m_client(client),
+          m_direction(direction),
+          m_increment(increment)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+    direction_t m_direction;
+    unsigned m_increment;
+
+}* clientgrowcommand_ptr_t;
+
+
+
+typedef class clientshrinkcommand_t : command_t
+{
+public:
+    explicit clientshrinkcommand_t(client_model_t& clients, client_ptr_t client,
+        direction_t direction, unsigned increment = KB_RESIZE_INCREMENT)
+        : m_clients(clients),
+          m_client(client),
+          m_direction(direction),
+          m_increment(increment)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+    direction_t m_direction;
+    unsigned m_increment;
+
+}* clientshrinkcommand_ptr_t;
+
+
+
+typedef class clientmovecommand_t : command_t
+{
+public:
+    explicit clientmovecommand_t(client_model_t& clients, client_ptr_t client,
+        direction_t direction, unsigned increment = KB_MOVE_INCREMENT)
+        : m_clients(clients),
+          m_client(client),
+          m_direction(direction),
+          m_increment(increment)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+    direction_t m_direction;
+    unsigned m_increment;
+
+}* clientmovecommand_ptr_t;
+
+
+
+typedef class masterforwardcommand_t : command_t
+{
+public:
+    explicit masterforwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
+        : m_clients(clients),
+          m_windowstack(windowstack)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    windowstack_t& m_windowstack;
+
+}* masterforwardcommand_ptr_t;
+
+
+
+typedef class masterbackwardcommand_t : command_t
+{
+public:
+    explicit masterbackwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
+        : m_clients(clients),
+          m_windowstack(windowstack)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    windowstack_t& m_windowstack;
+
+}* masterbackwardcommand_ptr_t;
+
+
+
+typedef class stackforwardcommand_t : command_t
+{
+public:
+    explicit stackforwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
+        : m_clients(clients),
+          m_windowstack(windowstack)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    windowstack_t& m_windowstack;
+
+}* stackforwardcommand_ptr_t;
+
+
+
+typedef class stackbackwardcommand_t : command_t
+{
+public:
+    explicit stackbackwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
+        : m_clients(clients),
+          m_windowstack(windowstack)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    windowstack_t& m_windowstack;
+
+}* stackbackwardcommand_ptr_t;
+
+
+
+typedef class allforwardcommand_t : command_t
+{
+public:
+    explicit allforwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
+        : m_clients(clients),
+          m_windowstack(windowstack)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    windowstack_t& m_windowstack;
+
+}* allforwardcommand_ptr_t;
+
+
+
+typedef class allbackwardcommand_t : command_t
+{
+public:
+    explicit allbackwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
+        : m_clients(clients),
+          m_windowstack(windowstack)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    windowstack_t& m_windowstack;
+
+}* allbackwardcommand_ptr_t;
+
+
+
+typedef class clienticonifyindexcommand_t : command_t
+{
+public:
+    explicit clienticonifyindexcommand_t(client_model_t& clients, unsigned index)
+        : m_clients(clients),
+          m_index(index)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    unsigned m_index;
+
+}* clienticonifyindexcommand_ptr_t;
+
+
+
+typedef class deiconifypopcommand_t : command_t
+{
+public:
+    explicit deiconifypopcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+
+}* deiconifypopcommand_ptr_t;
+
+
+
+typedef class clientdeiconifyindexcommand_t : command_t
+{
+public:
+    explicit clientdeiconifyindexcommand_t(client_model_t& clients, unsigned index)
+        : m_clients(clients),
+          m_index(index)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    unsigned m_index;
+
+}* clientdeiconifyindexcommand_ptr_t;
+
+
+
+typedef class reclaimpopcommand_t : command_t
+{
+public:
+    explicit reclaimpopcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+
+}* reclaimpopcommand_ptr_t;
+
+
+
+typedef class profilesavecommand_t : command_t
+{
+public:
+    explicit profilesavecommand_t(client_model_t& clients, unsigned number)
+        : m_clients(clients),
+          m_number(number)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    unsigned m_number;
+
+}* profilesavecommand_ptr_t;
+
+
+
+typedef class profileloadcommand_t : command_t
+{
+public:
+    explicit profileloadcommand_t(client_model_t& clients,
+        sidebar_t& sidebar, unsigned number)
+        : m_clients(clients),
+          m_sidebar(sidebar),
+          m_number(number)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    sidebar_t& m_sidebar;
+    unsigned m_number;
+
+}* profileloadcommand_ptr_t;
+
+
+
+typedef class workspacesetcommand_t : command_t
+{
+public:
+    explicit workspacesetcommand_t(client_model_t& clients, unsigned number)
+        : m_clients(clients),
+          m_number(number)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    unsigned m_number;
+
+}* workspacesetcommand_ptr_t;
+
+
+
+typedef class nextworkspacecommand_t : command_t
+{
+public:
+    explicit nextworkspacecommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+
+}* nextworkspacecommand_ptr_t;
+
+
+
+typedef class previousworkspacecommand_t : command_t
+{
+public:
+    explicit previousworkspacecommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+
+}* previousworkspacecommand_ptr_t;
+
+
+
+typedef class workspacemirrorcommand_t : command_t
+{
+public:
+    explicit workspacemirrorcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+
+}* workspacemirrorcommand_ptr_t;
+
+
+
+typedef class contextsetcommand_t : command_t
+{
+public:
+    explicit contextsetcommand_t(client_model_t& clients, unsigned number)
+        : m_clients(clients),
+          m_number(number)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    unsigned m_number;
+
+}* contextsetcommand_ptr_t;
+
+
+
+typedef class nextcontextcommand_t : command_t
+{
+public:
+    explicit nextcontextcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+
+}* nextcontextcommand_ptr_t;
+
+
+
+typedef class previouscontextcommand_t : command_t
+{
+public:
+    explicit previouscontextcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+
+}* previouscontextcommand_ptr_t;
+
+
+
+typedef class layoutsetcommand_t : command_t
+{
+public:
+    explicit layoutsetcommand_t(client_model_t& clients, windowstack_t& windowstack,
+        sidebar_t& sidebar, layout_t layout)
+        : m_clients(clients),
+          m_windowstack(windowstack),
+          m_sidebar(sidebar),
+          m_layout(layout)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+    windowstack_t& m_windowstack;
+    sidebar_t& m_sidebar;
+    layout_t m_layout;
+
+}* layoutsetcommand_ptr_t;
+
+
+
+typedef class focusforwardcommand_t : command_t
+{
+public:
+    explicit focusforwardcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+
+}* focusforwardcommand_ptr_t;
+
+
+
+typedef class focusbackwardcommand_t : command_t
+{
+public:
+    explicit focusbackwardcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute();
+
+private:
+    client_model_t& m_clients;
+
+}* focusbackwardcommand_ptr_t;
+
+
+
+typedef class externalcommand_t : command_t
+{
+public:
+    explicit externalcommand_t(::std::string& command)
+        : m_command(command)
+    {}
+
+    void execute();
+
+private:
+    ::std::string& m_command;
+
+}* externalcommand_ptr_t;
+
+
+
+#endif//__KRANEWM_COMMANDS_GUARD__
