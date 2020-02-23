@@ -37,18 +37,20 @@ typedef class floatingconditionalcommand_t : command_t
 {
 public:
     explicit floatingconditionalcommand_t(client_model_t& clients,
-        command_ptr_t truecommand, command_ptr_t falsecommand)
+        command_ptr_t truecommand, command_ptr_t falsecommand, client_ptr_t client)
         : m_clients(clients),
           m_truecommand(truecommand),
-          m_falsecommand(falsecommand)
+          m_falsecommand(falsecommand),
+          m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
     command_ptr_t m_truecommand;
     command_ptr_t m_falsecommand;
+    client_ptr_t m_client;
 
 }* floatingconditionalcommand_ptr_t;
 
@@ -69,7 +71,7 @@ public:
         : m_running(running)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     bool& m_running;
@@ -85,7 +87,7 @@ public:
         : m_clients(clients)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -105,7 +107,7 @@ public:
           m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -127,7 +129,7 @@ public:
           m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -148,7 +150,7 @@ public:
           m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -169,7 +171,7 @@ public:
           m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -190,7 +192,7 @@ public:
           m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -209,7 +211,7 @@ public:
           m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -227,7 +229,7 @@ public:
           m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -245,7 +247,7 @@ public:
           m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -263,7 +265,7 @@ public:
           m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -281,31 +283,13 @@ public:
           m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
     client_ptr_t m_client;
 
 }* clientsnapwestcommand_ptr_t;
-
-
-
-typedef class clientmarkcommand_t : command_t
-{
-public:
-    explicit clientmarkcommand_t(client_model_t& clients, client_ptr_t client)
-        : m_clients(clients),
-          m_client(client)
-    {}
-
-    void execute();
-
-private:
-    client_model_t& m_clients;
-    client_ptr_t m_client;
-
-}* clientmarkcommand_ptr_t;
 
 
 
@@ -317,7 +301,7 @@ public:
           m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -335,13 +319,177 @@ public:
           m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
     client_ptr_t m_client;
 
 }* clientdisowncommand_ptr_t;
+
+
+
+typedef class clientkillcommand_t : command_t
+{
+public:
+    explicit clientkillcommand_t(client_ptr_t client)
+        : m_client(client)
+    {}
+
+    void execute() override;
+
+private:
+    client_ptr_t m_client;
+
+}* clientkillcommand_ptr_t;
+
+
+
+typedef class clientmoveforwardcommand_t : command_t
+{
+public:
+    explicit clientmoveforwardcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+
+}* clientmoveforwardcommand_ptr_t;
+
+
+
+typedef class clientmovebackwardcommand_t : command_t
+{
+public:
+    explicit clientmovebackwardcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+
+}* clientmovebackwardcommand_ptr_t;
+
+
+
+typedef class clientmarksetcommand_t : command_t
+{
+public:
+    explicit clientmarksetcommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientmarksetcommand_ptr_t;
+
+
+
+typedef class clientmarkjumpcommand_t : command_t
+{
+public:
+    explicit clientmarkjumpcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+
+}* clientmarkjumpcommand_ptr_t;
+
+
+
+typedef class clientmasterjumpcommand_t : command_t
+{
+public:
+    explicit clientmasterjumpcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+
+}* clientmasterjumpcommand_ptr_t;
+
+
+
+typedef class clientstackjumpcommand_t : command_t
+{
+public:
+    explicit clientstackjumpcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+
+}* clientstackjumpcommand_ptr_t;
+
+
+
+typedef class clientlastjumpcommand_t : command_t
+{
+public:
+    explicit clientlastjumpcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+
+}* clientlastjumpcommand_ptr_t;
+
+
+
+typedef class clientpanejumpcommand_t : command_t
+{
+public:
+    explicit clientpanejumpcommand_t(client_model_t& clients)
+        : m_clients(clients)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+
+}* clientpanejumpcommand_ptr_t;
+
+
+
+typedef class clientjumpindexcommand_t : command_t
+{
+public:
+    explicit clientjumpindexcommand_t(client_model_t& clients, unsigned index)
+        : m_clients(clients),
+          m_index(index)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    unsigned m_index;
+
+}* clientjumpindexcommand_ptr_t;
 
 
 
@@ -355,7 +503,7 @@ public:
           m_number(number)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -374,7 +522,7 @@ public:
           m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -384,22 +532,40 @@ private:
 
 
 
-typedef class clientcontextcommand_t : command_t
+typedef class clientpreviousworkspacecommand_t : command_t
 {
 public:
-    explicit clientcontextcommand_t(client_model_t& clients,
-        client_ptr_t client, char letter)
+    explicit clientpreviousworkspacecommand_t(client_model_t& clients, client_ptr_t client)
         : m_clients(clients),
-          m_client(client),
-          m_letter(letter)
+          m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
     client_ptr_t m_client;
-    char m_letter;
+
+}* clientpreviousworkspacecommand_ptr_t;
+
+
+
+typedef class clientcontextcommand_t : command_t
+{
+public:
+    explicit clientcontextcommand_t(client_model_t& clients,
+        client_ptr_t client, unsigned number)
+        : m_clients(clients),
+          m_client(client),
+          m_number(number)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+    unsigned m_number;
 
 }* clientcontextcommand_ptr_t;
 
@@ -413,13 +579,31 @@ public:
           m_client(client)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
     client_ptr_t m_client;
 
 }* clientnextcontextcommand_ptr_t;
+
+
+
+typedef class clientpreviouscontextcommand_t : command_t
+{
+public:
+    explicit clientpreviouscontextcommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientpreviouscontextcommand_ptr_t;
 
 
 
@@ -434,7 +618,7 @@ public:
           m_increment(increment)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -457,7 +641,7 @@ public:
           m_increment(increment)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -480,7 +664,7 @@ public:
           m_increment(increment)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -500,7 +684,7 @@ public:
           m_windowstack(windowstack)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -518,7 +702,7 @@ public:
           m_windowstack(windowstack)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -536,7 +720,7 @@ public:
           m_windowstack(windowstack)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -554,7 +738,7 @@ public:
           m_windowstack(windowstack)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -572,7 +756,7 @@ public:
           m_windowstack(windowstack)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -590,7 +774,7 @@ public:
           m_windowstack(windowstack)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -608,7 +792,7 @@ public:
           m_index(index)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -625,7 +809,7 @@ public:
         : m_clients(clients)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -642,7 +826,7 @@ public:
           m_index(index)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -659,7 +843,7 @@ public:
         : m_clients(clients)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -676,7 +860,7 @@ public:
           m_number(number)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -696,7 +880,7 @@ public:
           m_number(number)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -715,7 +899,7 @@ public:
           m_number(number)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -732,7 +916,7 @@ public:
         : m_clients(clients)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -748,7 +932,7 @@ public:
         : m_clients(clients)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -764,12 +948,83 @@ public:
         : m_clients(clients)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
 
 }* workspacemirrorcommand_ptr_t;
+
+
+
+typedef class workspacemfactorcommand_t : command_t
+{
+public:
+    explicit workspacemfactorcommand_t(client_model_t& clients, float delta = 0.05)
+        : m_clients(clients),
+          m_delta(delta)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    float m_delta;
+
+}* workspacemfactorcommand_ptr_t;
+
+
+
+typedef class workspacenmastercommand_t : command_t
+{
+public:
+    explicit workspacenmastercommand_t(client_model_t& clients, int delta = 1)
+        : m_clients(clients),
+          m_delta(delta)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    int m_delta;
+
+}* workspacenmastercommand_ptr_t;
+
+
+
+typedef class workspacegapsizecommand_t : command_t
+{
+public:
+    explicit workspacegapsizecommand_t(client_model_t& clients, int delta = 1)
+        : m_clients(clients),
+          m_delta(delta)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    int m_delta;
+
+}* workspacegapsizecommand_ptr_t;
+
+
+
+typedef class sidebarshowcommand_t : command_t
+{
+public:
+    explicit sidebarshowcommand_t(client_model_t& clients, sidebar_t& sidebar)
+        : m_clients(clients)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    sidebar_t& m_sidebar;
+
+}* sidebarshowcommand_ptr_t;
 
 
 
@@ -781,7 +1036,7 @@ public:
           m_number(number)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -798,7 +1053,7 @@ public:
         : m_clients(clients)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -814,7 +1069,7 @@ public:
         : m_clients(clients)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -834,7 +1089,7 @@ public:
           m_layout(layout)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -853,7 +1108,7 @@ public:
         : m_clients(clients)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -869,7 +1124,7 @@ public:
         : m_clients(clients)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
     client_model_t& m_clients;
@@ -881,14 +1136,14 @@ private:
 typedef class externalcommand_t : command_t
 {
 public:
-    explicit externalcommand_t(::std::string& command)
+    explicit externalcommand_t(::std::string&& command)
         : m_command(command)
     {}
 
-    void execute();
+    void execute() override;
 
 private:
-    ::std::string& m_command;
+    ::std::string&& m_command;
 
 }* externalcommand_ptr_t;
 
