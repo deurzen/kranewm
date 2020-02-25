@@ -4,6 +4,9 @@
 #include "floating.hh"
 #include "layout.hh"
 
+#include <variant>
+#include <optional>
+
 
 // fwd decls
 class client_model_t;
@@ -11,6 +14,35 @@ class windowstack_t;
 class sidebar_t;
 class processjumplist_t;
 typedef class client_t* client_ptr_t;
+typedef class command_t* command_ptr_t;
+
+
+enum class commandop_t
+{
+    noop,
+    floatingconditional,
+    quit,
+    zoom,
+    clientfloat, clientfullscreen, clientsticky, clientabove, clientbelow,
+    clientcenter, clientsnapnorth, clientsnapeast, clientsnapsouth, clientsnapwest,
+    clientkill,
+    clientmoveforward, clientmovebackward,
+    clientmarkset, clientmarkjump,
+    clientmasterjump, clientstackjump, clientlastjump, clientpanejump, clientjumpindex,
+    clientworkspace, clientnextworkspace, clientpreviousworkspace,
+    clientcontext, clientnextcontext, clientpreviouscontext,
+    clientgrow, clientshrink, clientmove, clientmovemouse, clientresizemouse,
+    masterforward, masterbackward, stackforward, stackbackward, allforward, allbackward,
+    clienticonify, clienticonifyindex, deiconifypop, clientdeiconifyindex,
+    clientdisown, reclaimpop,
+    profilesave, profileload,
+    workspaceset, nextworkspace, previousworkspace,
+    workspacemirror, workspacemfactor, workspacenmaster, workspacegapsize, workspacelayout,
+    sidebarshow,
+    contextset, nextcontext, previouscontext,
+    focusforward, focusbackward,
+    external,
+};
 
 
 
@@ -23,13 +55,48 @@ public:
 
 
 
-class commandfactory_t
+class commandbind_t
 {
 public:
+    commandbind_t(commandop_t operation)
+        : m_operation(operation),
+          m_argument(::std::nullopt)
+    {}
+
+    commandbind_t(commandop_t operation, int selector)
+        : m_operation(operation),
+          m_argument(selector)
+    {}
+
+    commandbind_t(commandop_t operation, float selector)
+        : m_operation(operation),
+          m_argument(selector)
+    {}
+
+    commandbind_t(commandop_t operation, layout_t selector)
+        : m_operation(operation),
+          m_argument(selector)
+    {}
+
+    commandbind_t(::std::string& command)
+        : m_operation(commandop_t::external),
+          m_argument(command)
+    {}
 
 private:
+    commandop_t m_operation;
+    ::std::optional<::std::variant<int, float, layout_t, ::std::string>> m_argument;
 
 };
+
+
+
+typedef class noopcommand_t : command_t
+{
+public:
+    void execute() {}
+
+}* noopcommand_ptr_t;
 
 
 
@@ -53,14 +120,6 @@ private:
     client_ptr_t m_client;
 
 }* floatingconditionalcommand_ptr_t;
-
-
-typedef class noopcommand_t : command_t
-{
-public:
-    void execute() {}
-
-}* noopcommand_ptr_t;
 
 
 
@@ -290,42 +349,6 @@ private:
     client_ptr_t m_client;
 
 }* clientsnapwestcommand_ptr_t;
-
-
-
-typedef class clienticonifycommand_t : command_t
-{
-public:
-    explicit clienticonifycommand_t(client_model_t& clients, client_ptr_t client)
-        : m_clients(clients),
-          m_client(client)
-    {}
-
-    void execute() override;
-
-private:
-    client_model_t& m_clients;
-    client_ptr_t m_client;
-
-}* clienticonifycommand_ptr_t;
-
-
-
-typedef class clientdisowncommand_t : command_t
-{
-public:
-    explicit clientdisowncommand_t(client_model_t& clients, client_ptr_t client)
-        : m_clients(clients),
-          m_client(client)
-    {}
-
-    void execute() override;
-
-private:
-    client_model_t& m_clients;
-    client_ptr_t m_client;
-
-}* clientdisowncommand_ptr_t;
 
 
 
@@ -676,6 +699,42 @@ private:
 
 
 
+typedef class clientmovemousecommand_t : command_t
+{
+public:
+    explicit clientmovemousecommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientmovemousecommand_ptr_t;
+
+
+
+typedef class clientresizemousecommand_t : command_t
+{
+public:
+    explicit clientresizemousecommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientresizemousecommand_ptr_t;
+
+
+
 typedef class masterforwardcommand_t : command_t
 {
 public:
@@ -784,6 +843,24 @@ private:
 
 
 
+typedef class clienticonifycommand_t : command_t
+{
+public:
+    explicit clienticonifycommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clienticonifycommand_ptr_t;
+
+
+
 typedef class clienticonifyindexcommand_t : command_t
 {
 public:
@@ -833,6 +910,24 @@ private:
     unsigned m_index;
 
 }* clientdeiconifyindexcommand_ptr_t;
+
+
+
+typedef class clientdisowncommand_t : command_t
+{
+public:
+    explicit clientdisowncommand_t(client_model_t& clients, client_ptr_t client)
+        : m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientdisowncommand_ptr_t;
 
 
 
@@ -1011,11 +1106,35 @@ private:
 
 
 
+typedef class workspacelayoutcommand_t : command_t
+{
+public:
+    explicit workspacelayoutcommand_t(client_model_t& clients, windowstack_t& windowstack,
+        sidebar_t& sidebar, layout_t layout)
+        : m_clients(clients),
+          m_windowstack(windowstack),
+          m_sidebar(sidebar),
+          m_layout(layout)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    windowstack_t& m_windowstack;
+    sidebar_t& m_sidebar;
+    layout_t m_layout;
+
+}* workspacelayoutcommand_ptr_t;
+
+
+
 typedef class sidebarshowcommand_t : command_t
 {
 public:
     explicit sidebarshowcommand_t(client_model_t& clients, sidebar_t& sidebar)
-        : m_clients(clients)
+        : m_clients(clients),
+          m_sidebar(sidebar)
     {}
 
     void execute() override;
@@ -1078,29 +1197,6 @@ private:
 
 
 
-typedef class layoutsetcommand_t : command_t
-{
-public:
-    explicit layoutsetcommand_t(client_model_t& clients, windowstack_t& windowstack,
-        sidebar_t& sidebar, layout_t layout)
-        : m_clients(clients),
-          m_windowstack(windowstack),
-          m_sidebar(sidebar),
-          m_layout(layout)
-    {}
-
-    void execute() override;
-
-private:
-    client_model_t& m_clients;
-    windowstack_t& m_windowstack;
-    sidebar_t& m_sidebar;
-    layout_t m_layout;
-
-}* layoutsetcommand_ptr_t;
-
-
-
 typedef class focusforwardcommand_t : command_t
 {
 public:
@@ -1137,7 +1233,7 @@ typedef class externalcommand_t : command_t
 {
 public:
     explicit externalcommand_t(::std::string&& command)
-        : m_command(command)
+        : m_command(::std::move(command))
     {}
 
     void execute() override;

@@ -1,4 +1,5 @@
 #include "input.hh"
+
 #include "sidebar.hh"
 #include "client-model.hh"
 #include "ipc.hh"

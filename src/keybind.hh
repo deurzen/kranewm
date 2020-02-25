@@ -1,86 +1,12 @@
 #ifndef __KRANEWM__KEYBIND__GUARD__
 #define __KRANEWM__KEYBIND__GUARD__
 
+#include "commands.hh"
+
 #include "x-data/key.hh"
 
 #include <unordered_map>
 
-
-enum class keyop_t
-{
-    noop,
-    quit, zoom, toggle_float,
-    toggle_fullscreen, toggle_above, toggle_below, toggle_sticky,
-    center_client, snap_north, snap_east, snap_south, snap_west,
-    spawn_terminal, spawn_termregion,
-    spawn_quickterm, spawn_quicktermtmux,
-    spawn_dmenupass, spawn_dmenupasscopy, spawn_dmenunotify, spawn_dmenu,
-    spawn_browser, spawn_sec_browser,
-    spawn_neomutt, spawn_ranger, spawn_vifm,
-    spawn_anki, spawn_sncli, spawn_rtv,
-    spawn_7lock, spawn_gpick, spawn_qalculate,
-    spawn_irssi, spawn_newsboat, spawn_nixnote,
-    cantatashow, rhythmboxshow,
-    rhythmboxtoggle, rhythmboxnext, rhythmboxprev, rhythmboxstop,
-    mpctoggle, mpcnext, mpcprev, mpcstop, mpcrandom, mpcsingle,
-    volumeup, volumedown, volumemute,
-    audioplay, audiostop, audioprev, audionext,
-    brightnessup15, brightnessdown15,
-    brightnessup5, brightnessdown5,
-    take_screenshot, take_screenshot_sel,
-    kill_client, move_client_fwd, move_client_bck,
-    iconify_client, pop_deiconify,
-    deiconify_client_1, deiconify_client_2, deiconify_client_3,
-    deiconify_client_4, deiconify_client_5, deiconify_client_6,
-    deiconify_client_7, deiconify_client_8, deiconify_client_9,
-    disown_client, pop_reclaim_client,
-    save_profile_1, save_profile_2, save_profile_3,
-    apply_profile_1, apply_profile_2, apply_profile_3,
-    float_grow_up, float_grow_down,
-    float_grow_left, float_grow_right,
-    float_shrink_up, float_shrink_down,
-    float_shrink_left, float_shrink_right,
-    float_up_or_stack_fwd, float_down_or_stack_bck,
-    float_left_or_master_fwd, float_right_or_master_bck,
-    clients_fwd, clients_bck,
-    mark_client, jump_to_marked_client,
-    inc_nmaster, dec_nmaster,
-    inc_m1weight, dec_m1weight,
-    inc_mfactor, dec_mfactor,
-    inc_gap_size, dec_gap_size, reset_gap_size,
-    floating,
-    tile, deck, doubledeck,
-    stick, sdeck, sdoubledeck,
-    grid, pillar, column, monocle,
-    center, centerstack,
-    mirror_workspace, toggle_layout,
-    jump_master, jump_stack, jump_last, jump_pane,
-    jump_client_1, jump_client_2, jump_client_3,
-    jump_client_4, jump_client_5, jump_client_6,
-    jump_client_7, jump_client_8, jump_client_9,
-    focus_fwd, focus_bck,
-    down_stack, up_stack,
-    down_master, up_master,
-    activate_ws_1, activate_ws_2, activate_ws_3,
-    activate_ws_4, activate_ws_5, activate_ws_6,
-    activate_ws_7, activate_ws_8, activate_ws_9,
-    activate_next_ws, activate_prev_ws,
-    toggle_workspace,
-    activate_cx_1, activate_cx_2, activate_cx_3,
-    activate_cx_4, activate_cx_5, activate_cx_6,
-    activate_cx_7, activate_cx_8, activate_cx_9,
-    activate_next_cx, activate_prev_cx,
-    toggle_context,
-    client_to_next_ws, client_to_prev_ws,
-    client_to_ws_1, client_to_ws_2, client_to_ws_3,
-    client_to_ws_4, client_to_ws_5, client_to_ws_6,
-    client_to_ws_7, client_to_ws_8, client_to_ws_9,
-    client_to_next_cx, client_to_prev_cx,
-    client_to_cx_1, client_to_cx_2, client_to_cx_3,
-    client_to_cx_4, client_to_cx_5, client_to_cx_6,
-    client_to_cx_7, client_to_cx_8, client_to_cx_9,
-    toggle_sidebar
-};
 
 struct keyshortcut_t
 {
@@ -113,6 +39,6 @@ namespace std
     };
 }
 
-typedef ::std::unordered_map<keyshortcut_t, keyop_t> keybinds_t;
+typedef ::std::unordered_map<keyshortcut_t, commandbind_t> keybinds_t;
 
 #endif//__KRANEWM__KEYBIND__GUARD__

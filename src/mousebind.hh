@@ -1,10 +1,13 @@
 #ifndef __KRANEWM__MOUSEBIND__GUARD__
 #define __KRANEWM__MOUSEBIND__GUARD__
 
+#include "commands.hh"
+
 #include "x-data/mouse.hh"
 
 #include <unordered_map>
 #include <utility>
+#include <variant>
 
 
 enum class mouseop_t
@@ -62,7 +65,7 @@ namespace std
     };
 }
 
-typedef ::std::pair<mouseop_t, bool> mouseaction_t;
+typedef ::std::pair<commandbind_t, bool> mouseaction_t;
 typedef ::std::unordered_map<mouseshortcut_t, mouseaction_t> mousebinds_t;
 
 #endif//__KRANEWM__MOUSEBIND__GUARD__

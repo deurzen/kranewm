@@ -343,6 +343,18 @@ clientmovecommand_t::execute()
 }
 
 void
+clientmovemousecommand_t::execute()
+{
+    m_clients.start_moving(m_client);
+}
+
+void
+clientresizemousecommand_t::execute()
+{
+    m_clients.start_resizing(m_client);
+}
+
+void
 masterforwardcommand_t::execute()
 {
     m_clients.active_workspace()->rotate_master_forward();
@@ -581,7 +593,7 @@ previouscontextcommand_t::execute()
 }
 
 void
-layoutsetcommand_t::execute()
+workspacelayoutcommand_t::execute()
 {
     m_clients.active_workspace()->set_layout(m_layout);
     m_windowstack.apply(m_clients.active_workspace());
