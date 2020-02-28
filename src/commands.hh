@@ -49,6 +49,8 @@ enum class commandop_t
 typedef class command_t
 {
 public:
+    virtual ~command_t() = default;
+
     virtual void execute() = 0;
 
 }* command_ptr_t;
@@ -57,7 +59,11 @@ public:
 
 class commandbind_t
 {
+    typedef ::std::optional<::std::variant<int, float, layout_t, ::std::string>> argtype_t;
+
 public:
+    commandbind_t() = default;
+
     commandbind_t(commandop_t operation)
         : m_operation(operation),
           m_argument(::std::nullopt)
@@ -78,20 +84,23 @@ public:
           m_argument(selector)
     {}
 
-    commandbind_t(::std::string& command)
+    commandbind_t(::std::string command)
         : m_operation(commandop_t::external),
           m_argument(command)
     {}
 
+    inline commandop_t get_op() { return m_operation; }
+    inline argtype_t get_arg() { return m_argument; }
+
 private:
     commandop_t m_operation;
-    ::std::optional<::std::variant<int, float, layout_t, ::std::string>> m_argument;
+    argtype_t m_argument;
 
 };
 
 
 
-typedef class noopcommand_t : command_t
+typedef class noopcommand_t : public command_t
 {
 public:
     void execute() {}
@@ -100,7 +109,7 @@ public:
 
 
 
-typedef class floatingconditionalcommand_t : command_t
+typedef class floatingconditionalcommand_t : public command_t
 {
 public:
     explicit floatingconditionalcommand_t(client_model_t& clients,
@@ -123,7 +132,7 @@ private:
 
 
 
-typedef class quitcommand_t : command_t
+typedef class quitcommand_t : public command_t
 {
 public:
     explicit quitcommand_t(bool& running)
@@ -139,7 +148,7 @@ private:
 
 
 
-typedef class zoomcommand_t : command_t
+typedef class zoomcommand_t : public command_t
 {
 public:
     explicit zoomcommand_t(client_model_t& clients)
@@ -155,7 +164,7 @@ private:
 
 
 
-typedef class clientfloatcommand_t : command_t
+typedef class clientfloatcommand_t : public command_t
 {
 public:
     explicit clientfloatcommand_t(client_model_t& clients, windowstack_t& windowstack,
@@ -178,7 +187,7 @@ private:
 
 
 
-typedef class clientfullscreencommand_t : command_t
+typedef class clientfullscreencommand_t : public command_t
 {
 public:
     explicit clientfullscreencommand_t(client_model_t& clients,
@@ -199,7 +208,7 @@ private:
 
 
 
-typedef class clientstickycommand_t : command_t
+typedef class clientstickycommand_t : public command_t
 {
 public:
     explicit clientstickycommand_t(client_model_t& clients,
@@ -220,7 +229,7 @@ private:
 
 
 
-typedef class clientabovecommand_t : command_t
+typedef class clientabovecommand_t : public command_t
 {
 public:
     explicit clientabovecommand_t(client_model_t& clients,
@@ -241,7 +250,7 @@ private:
 
 
 
-typedef class clientbelowcommand_t : command_t
+typedef class clientbelowcommand_t : public command_t
 {
 public:
     explicit clientbelowcommand_t(client_model_t& clients,
@@ -262,7 +271,7 @@ private:
 
 
 
-typedef class clientcentercommand_t : command_t
+typedef class clientcentercommand_t : public command_t
 {
 public:
     explicit clientcentercommand_t(client_model_t& clients, client_ptr_t client)
@@ -280,7 +289,7 @@ private:
 
 
 
-typedef class clientsnapnorthcommand_t : command_t
+typedef class clientsnapnorthcommand_t : public command_t
 {
 public:
     explicit clientsnapnorthcommand_t(client_model_t& clients, client_ptr_t client)
@@ -298,7 +307,7 @@ private:
 
 
 
-typedef class clientsnapeastcommand_t : command_t
+typedef class clientsnapeastcommand_t : public command_t
 {
 public:
     explicit clientsnapeastcommand_t(client_model_t& clients, client_ptr_t client)
@@ -316,7 +325,7 @@ private:
 
 
 
-typedef class clientsnapsouthcommand_t : command_t
+typedef class clientsnapsouthcommand_t : public command_t
 {
 public:
     explicit clientsnapsouthcommand_t(client_model_t& clients, client_ptr_t client)
@@ -334,7 +343,7 @@ private:
 
 
 
-typedef class clientsnapwestcommand_t : command_t
+typedef class clientsnapwestcommand_t : public command_t
 {
 public:
     explicit clientsnapwestcommand_t(client_model_t& clients, client_ptr_t client)
@@ -352,7 +361,7 @@ private:
 
 
 
-typedef class clientkillcommand_t : command_t
+typedef class clientkillcommand_t : public command_t
 {
 public:
     explicit clientkillcommand_t(client_ptr_t client)
@@ -368,7 +377,7 @@ private:
 
 
 
-typedef class clientmoveforwardcommand_t : command_t
+typedef class clientmoveforwardcommand_t : public command_t
 {
 public:
     explicit clientmoveforwardcommand_t(client_model_t& clients)
@@ -384,7 +393,7 @@ private:
 
 
 
-typedef class clientmovebackwardcommand_t : command_t
+typedef class clientmovebackwardcommand_t : public command_t
 {
 public:
     explicit clientmovebackwardcommand_t(client_model_t& clients)
@@ -400,7 +409,7 @@ private:
 
 
 
-typedef class clientmarksetcommand_t : command_t
+typedef class clientmarksetcommand_t : public command_t
 {
 public:
     explicit clientmarksetcommand_t(client_model_t& clients, client_ptr_t client)
@@ -418,7 +427,7 @@ private:
 
 
 
-typedef class clientmarkjumpcommand_t : command_t
+typedef class clientmarkjumpcommand_t : public command_t
 {
 public:
     explicit clientmarkjumpcommand_t(client_model_t& clients)
@@ -434,7 +443,7 @@ private:
 
 
 
-typedef class clientmasterjumpcommand_t : command_t
+typedef class clientmasterjumpcommand_t : public command_t
 {
 public:
     explicit clientmasterjumpcommand_t(client_model_t& clients)
@@ -450,7 +459,7 @@ private:
 
 
 
-typedef class clientstackjumpcommand_t : command_t
+typedef class clientstackjumpcommand_t : public command_t
 {
 public:
     explicit clientstackjumpcommand_t(client_model_t& clients)
@@ -466,7 +475,7 @@ private:
 
 
 
-typedef class clientlastjumpcommand_t : command_t
+typedef class clientlastjumpcommand_t : public command_t
 {
 public:
     explicit clientlastjumpcommand_t(client_model_t& clients)
@@ -482,7 +491,7 @@ private:
 
 
 
-typedef class clientpanejumpcommand_t : command_t
+typedef class clientpanejumpcommand_t : public command_t
 {
 public:
     explicit clientpanejumpcommand_t(client_model_t& clients)
@@ -498,7 +507,7 @@ private:
 
 
 
-typedef class clientjumpindexcommand_t : command_t
+typedef class clientjumpindexcommand_t : public command_t
 {
 public:
     explicit clientjumpindexcommand_t(client_model_t& clients, unsigned index)
@@ -516,7 +525,7 @@ private:
 
 
 
-typedef class clientworkspacecommand_t : command_t
+typedef class clientworkspacecommand_t : public command_t
 {
 public:
     explicit clientworkspacecommand_t(client_model_t& clients,
@@ -537,7 +546,7 @@ private:
 
 
 
-typedef class clientnextworkspacecommand_t : command_t
+typedef class clientnextworkspacecommand_t : public command_t
 {
 public:
     explicit clientnextworkspacecommand_t(client_model_t& clients, client_ptr_t client)
@@ -555,7 +564,7 @@ private:
 
 
 
-typedef class clientpreviousworkspacecommand_t : command_t
+typedef class clientpreviousworkspacecommand_t : public command_t
 {
 public:
     explicit clientpreviousworkspacecommand_t(client_model_t& clients, client_ptr_t client)
@@ -573,7 +582,7 @@ private:
 
 
 
-typedef class clientcontextcommand_t : command_t
+typedef class clientcontextcommand_t : public command_t
 {
 public:
     explicit clientcontextcommand_t(client_model_t& clients,
@@ -594,7 +603,7 @@ private:
 
 
 
-typedef class clientnextcontextcommand_t : command_t
+typedef class clientnextcontextcommand_t : public command_t
 {
 public:
     explicit clientnextcontextcommand_t(client_model_t& clients, client_ptr_t client)
@@ -612,7 +621,7 @@ private:
 
 
 
-typedef class clientpreviouscontextcommand_t : command_t
+typedef class clientpreviouscontextcommand_t : public command_t
 {
 public:
     explicit clientpreviouscontextcommand_t(client_model_t& clients, client_ptr_t client)
@@ -630,7 +639,7 @@ private:
 
 
 
-typedef class clientgrowcommand_t : command_t
+typedef class clientgrowcommand_t : public command_t
 {
 public:
     explicit clientgrowcommand_t(client_model_t& clients, client_ptr_t client,
@@ -653,7 +662,7 @@ private:
 
 
 
-typedef class clientshrinkcommand_t : command_t
+typedef class clientshrinkcommand_t : public command_t
 {
 public:
     explicit clientshrinkcommand_t(client_model_t& clients, client_ptr_t client,
@@ -676,7 +685,7 @@ private:
 
 
 
-typedef class clientmovecommand_t : command_t
+typedef class clientmovecommand_t : public command_t
 {
 public:
     explicit clientmovecommand_t(client_model_t& clients, client_ptr_t client,
@@ -699,7 +708,7 @@ private:
 
 
 
-typedef class clientmovemousecommand_t : command_t
+typedef class clientmovemousecommand_t : public command_t
 {
 public:
     explicit clientmovemousecommand_t(client_model_t& clients, client_ptr_t client)
@@ -717,7 +726,7 @@ private:
 
 
 
-typedef class clientresizemousecommand_t : command_t
+typedef class clientresizemousecommand_t : public command_t
 {
 public:
     explicit clientresizemousecommand_t(client_model_t& clients, client_ptr_t client)
@@ -735,7 +744,7 @@ private:
 
 
 
-typedef class masterforwardcommand_t : command_t
+typedef class masterforwardcommand_t : public command_t
 {
 public:
     explicit masterforwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
@@ -753,7 +762,7 @@ private:
 
 
 
-typedef class masterbackwardcommand_t : command_t
+typedef class masterbackwardcommand_t : public command_t
 {
 public:
     explicit masterbackwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
@@ -771,7 +780,7 @@ private:
 
 
 
-typedef class stackforwardcommand_t : command_t
+typedef class stackforwardcommand_t : public command_t
 {
 public:
     explicit stackforwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
@@ -789,7 +798,7 @@ private:
 
 
 
-typedef class stackbackwardcommand_t : command_t
+typedef class stackbackwardcommand_t : public command_t
 {
 public:
     explicit stackbackwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
@@ -807,7 +816,7 @@ private:
 
 
 
-typedef class allforwardcommand_t : command_t
+typedef class allforwardcommand_t : public command_t
 {
 public:
     explicit allforwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
@@ -825,7 +834,7 @@ private:
 
 
 
-typedef class allbackwardcommand_t : command_t
+typedef class allbackwardcommand_t : public command_t
 {
 public:
     explicit allbackwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
@@ -843,7 +852,7 @@ private:
 
 
 
-typedef class clienticonifycommand_t : command_t
+typedef class clienticonifycommand_t : public command_t
 {
 public:
     explicit clienticonifycommand_t(client_model_t& clients, client_ptr_t client)
@@ -861,7 +870,7 @@ private:
 
 
 
-typedef class clienticonifyindexcommand_t : command_t
+typedef class clienticonifyindexcommand_t : public command_t
 {
 public:
     explicit clienticonifyindexcommand_t(client_model_t& clients, unsigned index)
@@ -879,7 +888,7 @@ private:
 
 
 
-typedef class deiconifypopcommand_t : command_t
+typedef class deiconifypopcommand_t : public command_t
 {
 public:
     explicit deiconifypopcommand_t(client_model_t& clients)
@@ -895,7 +904,7 @@ private:
 
 
 
-typedef class clientdeiconifyindexcommand_t : command_t
+typedef class clientdeiconifyindexcommand_t : public command_t
 {
 public:
     explicit clientdeiconifyindexcommand_t(client_model_t& clients, unsigned index)
@@ -913,7 +922,7 @@ private:
 
 
 
-typedef class clientdisowncommand_t : command_t
+typedef class clientdisowncommand_t : public command_t
 {
 public:
     explicit clientdisowncommand_t(client_model_t& clients, client_ptr_t client)
@@ -931,7 +940,7 @@ private:
 
 
 
-typedef class reclaimpopcommand_t : command_t
+typedef class reclaimpopcommand_t : public command_t
 {
 public:
     explicit reclaimpopcommand_t(client_model_t& clients)
@@ -947,7 +956,7 @@ private:
 
 
 
-typedef class profilesavecommand_t : command_t
+typedef class profilesavecommand_t : public command_t
 {
 public:
     explicit profilesavecommand_t(client_model_t& clients, unsigned number)
@@ -965,7 +974,7 @@ private:
 
 
 
-typedef class profileloadcommand_t : command_t
+typedef class profileloadcommand_t : public command_t
 {
 public:
     explicit profileloadcommand_t(client_model_t& clients,
@@ -986,7 +995,7 @@ private:
 
 
 
-typedef class workspacesetcommand_t : command_t
+typedef class workspacesetcommand_t : public command_t
 {
 public:
     explicit workspacesetcommand_t(client_model_t& clients, unsigned number)
@@ -1004,7 +1013,7 @@ private:
 
 
 
-typedef class nextworkspacecommand_t : command_t
+typedef class nextworkspacecommand_t : public command_t
 {
 public:
     explicit nextworkspacecommand_t(client_model_t& clients)
@@ -1020,7 +1029,7 @@ private:
 
 
 
-typedef class previousworkspacecommand_t : command_t
+typedef class previousworkspacecommand_t : public command_t
 {
 public:
     explicit previousworkspacecommand_t(client_model_t& clients)
@@ -1036,7 +1045,7 @@ private:
 
 
 
-typedef class workspacemirrorcommand_t : command_t
+typedef class workspacemirrorcommand_t : public command_t
 {
 public:
     explicit workspacemirrorcommand_t(client_model_t& clients)
@@ -1052,7 +1061,7 @@ private:
 
 
 
-typedef class workspacemfactorcommand_t : command_t
+typedef class workspacemfactorcommand_t : public command_t
 {
 public:
     explicit workspacemfactorcommand_t(client_model_t& clients, float delta = 0.05)
@@ -1070,7 +1079,7 @@ private:
 
 
 
-typedef class workspacenmastercommand_t : command_t
+typedef class workspacenmastercommand_t : public command_t
 {
 public:
     explicit workspacenmastercommand_t(client_model_t& clients, int delta = 1)
@@ -1088,7 +1097,7 @@ private:
 
 
 
-typedef class workspacegapsizecommand_t : command_t
+typedef class workspacegapsizecommand_t : public command_t
 {
 public:
     explicit workspacegapsizecommand_t(client_model_t& clients, int delta = 1)
@@ -1106,7 +1115,7 @@ private:
 
 
 
-typedef class workspacelayoutcommand_t : command_t
+typedef class workspacelayoutcommand_t : public command_t
 {
 public:
     explicit workspacelayoutcommand_t(client_model_t& clients, windowstack_t& windowstack,
@@ -1129,7 +1138,7 @@ private:
 
 
 
-typedef class sidebarshowcommand_t : command_t
+typedef class sidebarshowcommand_t : public command_t
 {
 public:
     explicit sidebarshowcommand_t(client_model_t& clients, sidebar_t& sidebar)
@@ -1147,7 +1156,7 @@ private:
 
 
 
-typedef class contextsetcommand_t : command_t
+typedef class contextsetcommand_t : public command_t
 {
 public:
     explicit contextsetcommand_t(client_model_t& clients, unsigned number)
@@ -1165,7 +1174,7 @@ private:
 
 
 
-typedef class nextcontextcommand_t : command_t
+typedef class nextcontextcommand_t : public command_t
 {
 public:
     explicit nextcontextcommand_t(client_model_t& clients)
@@ -1181,7 +1190,7 @@ private:
 
 
 
-typedef class previouscontextcommand_t : command_t
+typedef class previouscontextcommand_t : public command_t
 {
 public:
     explicit previouscontextcommand_t(client_model_t& clients)
@@ -1197,7 +1206,7 @@ private:
 
 
 
-typedef class focusforwardcommand_t : command_t
+typedef class focusforwardcommand_t : public command_t
 {
 public:
     explicit focusforwardcommand_t(client_model_t& clients)
@@ -1213,7 +1222,7 @@ private:
 
 
 
-typedef class focusbackwardcommand_t : command_t
+typedef class focusbackwardcommand_t : public command_t
 {
 public:
     explicit focusbackwardcommand_t(client_model_t& clients)
@@ -1229,17 +1238,17 @@ private:
 
 
 
-typedef class externalcommand_t : command_t
+typedef class externalcommand_t : public command_t
 {
 public:
     explicit externalcommand_t(::std::string&& command)
-        : m_command(::std::move(command))
+        : m_command(command)
     {}
 
     void execute() override;
 
 private:
-    ::std::string&& m_command;
+    ::std::string m_command;
 
 }* externalcommand_ptr_t;
 

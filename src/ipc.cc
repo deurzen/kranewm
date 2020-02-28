@@ -17,5 +17,5 @@ ipc_t::resolve_operation(x_data::event_t event) const
         return {{}, op};
     }
 
-    return {{}, ipcop_t::noop};
+    return {{}, commandop_t::noop};
 }

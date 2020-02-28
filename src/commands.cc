@@ -538,7 +538,7 @@ workspacemfactorcommand_t::execute()
 {
     auto mfactor = m_clients.active_workspace()->get_mfactor();
 
-    if ((m_delta < 0 && m_factor >= .15f) || (m_Delta > 0 && mfactor <= 0.85f))
+    if ((m_delta < 0 && mfactor >= .15f) || (m_delta > 0 && mfactor <= 0.85f))
         m_clients.active_workspace()->set_mfactor(mfactor + m_delta).arrange();
 }
 

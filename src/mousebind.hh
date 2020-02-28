@@ -10,25 +10,6 @@
 #include <variant>
 
 
-enum class mouseop_t
-{
-    noop,
-    focus_fwd,
-    focus_bck,
-    client_move,
-    client_resize,
-    center_client,
-    client_next_ws,
-    client_prev_ws,
-    goto_next_ws,
-    goto_prev_ws,
-    goto_next_cx,
-    goto_prev_cx,
-    toggle_float,
-    toggle_fullscreen,
-    toggle_disown,
-};
-
 enum class mousetarget_t
 {
     client = 1,

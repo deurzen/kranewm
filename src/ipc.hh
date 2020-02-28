@@ -1,6 +1,8 @@
 #ifndef __KRANEWM__IPC__GUARD__
 #define __KRANEWM__IPC__GUARD__
 
+#include "commands.hh"
+
 #include "x-data/window.hh"
 #include "x-data/property.hh"
 #include "x-data/event.hh"
@@ -9,17 +11,7 @@
 #include <map>
 #include <tuple>
 
-enum class ipcop_t
-{
-    noop,
-    goto_next_ws, goto_prev_ws,
-    goto_ws_index,
-    goto_next_cx, goto_prev_cx,
-    goto_cx_index,
-    focus_win,
-};
-
-typedef ::std::tuple<x_data::x_type*, ipcop_t> ipccommand_t;
+typedef ::std::tuple<x_data::x_type*, commandop_t> ipccommand_t;
 
 const ::std::string IPC_PREFIX = "_KRANEWM_";
 const bool IPC_ENABLED = false;
@@ -30,15 +22,15 @@ class ipc_t
 public:
     ipc_t()
       : supported_commands({
-          {"NEXT_WS",   {{},                       ipcop_t::goto_next_ws}},
-          {"PREV_WS",   {{},                       ipcop_t::goto_prev_ws}},
-          {"GOTO_WS",   {new x_data::cardinal_t{}, ipcop_t::goto_ws_index}},
+          {"NEXT_WS",   {{},                       commandop_t::nextworkspace}},
+          {"PREV_WS",   {{},                       commandop_t::previousworkspace}},
+          /* {"GOTO_WS",   {new x_data::cardinal_t{}, commandop_t::goto_ws_index}}, */
 
-          {"NEXT_CX",   {{},                       ipcop_t::goto_next_cx}},
-          {"PREV_CX",   {{},                       ipcop_t::goto_prev_cx}},
-          {"GOTO_CX",   {new x_data::cardinal_t{}, ipcop_t::goto_cx_index}},
+          {"NEXT_CX",   {{},                       commandop_t::nextcontext}},
+          {"PREV_CX",   {{},                       commandop_t::previouscontext}},
+          /* {"GOTO_CX",   {new x_data::cardinal_t{}, commandop_t::goto_cx_index}}, */
 
-          {"FOCUS_WIN", {new x_data::window_t{},   ipcop_t::focus_win}},
+          /* {"FOCUS_WIN", {new x_data::window_t{},   commandop_t::focus_win}}, */
         })
     {
         if (!IPC_ENABLED)
