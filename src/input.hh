@@ -180,10 +180,22 @@ public:
               { { XK_Down,         MODMASK|ControlMask }, { commandop_t::clientsnapsouth }                            },
               { { XK_Left,         MODMASK|ControlMask }, { commandop_t::clientsnapwest }                             },
               { { XK_BackSpace,    MODMASK|ControlMask }, { commandop_t::clientkill }                                 },
-              /* { { XK_h,            MODMASK|ControlMask }, keyop_t::float_left_or_master_fwd     }, */
-              /* { { XK_j,            MODMASK|ControlMask }, keyop_t::float_down_or_stack_bck      }, */
-              /* { { XK_k,            MODMASK|ControlMask }, keyop_t::float_up_or_stack_fwd        }, */
-              /* { { XK_l,            MODMASK|ControlMask }, keyop_t::float_right_or_master_bck    }, */
+              { { XK_h,            MODMASK|ControlMask }, { commandop_t::floatingconditional,
+                                                              new commandbind_t{ commandop_t::clientmove, direction_t::left },
+                                                              new commandbind_t{ commandop_t::masterforward }
+                                                          } },
+              { { XK_j,            MODMASK|ControlMask }, { commandop_t::floatingconditional,
+                                                              new commandbind_t{ commandop_t::clientmove, direction_t::down },
+                                                              new commandbind_t{ commandop_t::stackbackward }
+                                                          } },
+              { { XK_k,            MODMASK|ControlMask }, { commandop_t::floatingconditional,
+                                                              new commandbind_t{ commandop_t::clientmove, direction_t::up },
+                                                              new commandbind_t{ commandop_t::stackforward }
+                                                          } },
+              { { XK_l,            MODMASK|ControlMask }, { commandop_t::floatingconditional,
+                                                              new commandbind_t{ commandop_t::clientmove, direction_t::right },
+                                                              new commandbind_t{ commandop_t::masterbackward }
+                                                          } },
               { { XK_f,            MODMASK|ControlMask }, { commandop_t::workspacelayout, layout_t::floating }        },
               { { XK_d,            MODMASK|ControlMask }, { commandop_t::workspacelayout, layout_t::doubledeck }      },
               { { XK_w,            MODMASK|ControlMask }, { commandop_t::workspacelayout, layout_t::sdoubledeck }     },

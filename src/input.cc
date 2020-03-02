@@ -95,7 +95,10 @@ inputhandler_t::create_command(commandbind_t commandbind)
 {
     switch (commandbind.get_op()) { // global commands
     case commandop_t::noop:                    break;
-    case commandop_t::floatingconditional:     break;
+    case commandop_t::floatingconditional:     return new floatingconditionalcommand_t(m_clients,
+                                                       create_command(*commandbind.get_comp1()),
+                                                       create_command(*commandbind.get_comp2()),
+                                                       m_target);
     case commandop_t::quit:                    return new quitcommand_t(m_running);
     case commandop_t::zoom:                    return new zoomcommand_t(m_clients);
     case commandop_t::clientmoveforward:       return new clientmoveforwardcommand_t(m_clients);
@@ -108,7 +111,7 @@ inputhandler_t::create_command(commandbind_t commandbind)
     case commandop_t::clientjumpindex:         return new clientjumpindexcommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
     case commandop_t::clientgrow:              return new clientgrowcommand_t(m_clients, m_target, ::std::get<direction_t>(*commandbind.get_arg()));
     case commandop_t::clientshrink:            return new clientshrinkcommand_t(m_clients, m_target, ::std::get<direction_t>(*commandbind.get_arg()));
-    case commandop_t::clientmove:              break;
+    case commandop_t::clientmove:              return new clientmovecommand_t(m_clients, m_target, ::std::get<direction_t>(*commandbind.get_arg()));
     case commandop_t::clientmovemouse:         return new clientmovemousecommand_t(m_clients, m_target);
     case commandop_t::masterforward:           return new masterforwardcommand_t(m_clients, m_windowstack);
     case commandop_t::masterbackward:          return new masterbackwardcommand_t(m_clients, m_windowstack);

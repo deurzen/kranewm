@@ -65,43 +65,61 @@ protected:
 }* command_ptr_t;
 
 
-
+typedef class commandbind_t* commandbind_ptr_t;
 class commandbind_t
 {
 public:
     typedef ::std::variant<int, float, layout_t, direction_t, ::std::string> vartype_t;
     typedef ::std::optional<vartype_t> argtype_t;
+    typedef ::std::optional<::std::pair<commandbind_ptr_t, commandbind_ptr_t>> comptype_t;
 
-    commandbind_t() = default;
+    commandbind_t()
+        : m_operation(commandop_t::noop),
+          m_argument(::std::nullopt),
+          m_composite(::std::nullopt)
+    {}
 
     commandbind_t(commandop_t operation)
         : m_operation(operation),
-          m_argument(::std::nullopt)
+          m_argument(::std::nullopt),
+          m_composite(::std::nullopt)
     {}
 
     commandbind_t(commandop_t operation, int selector)
         : m_operation(operation),
-          m_argument(selector)
+          m_argument(selector),
+          m_composite(::std::nullopt)
     {}
 
     commandbind_t(commandop_t operation, float selector)
         : m_operation(operation),
-          m_argument(selector)
+          m_argument(selector),
+          m_composite(::std::nullopt)
     {}
 
     commandbind_t(commandop_t operation, layout_t selector)
         : m_operation(operation),
-          m_argument(selector)
+          m_argument(selector),
+          m_composite(::std::nullopt)
     {}
 
     commandbind_t(commandop_t operation, direction_t selector)
         : m_operation(operation),
-          m_argument(selector)
+          m_argument(selector),
+          m_composite(::std::nullopt)
     {}
 
     commandbind_t(::std::string command)
         : m_operation(commandop_t::external),
-          m_argument(command)
+          m_argument(command),
+          m_composite(::std::nullopt)
+    {}
+
+    commandbind_t(commandop_t operation,
+        commandbind_ptr_t commandbind1, commandbind_ptr_t commandbind2)
+        : m_operation(operation),
+          m_argument(::std::nullopt),
+          m_composite({commandbind1, commandbind2})
     {}
 
 
@@ -113,9 +131,14 @@ public:
     inline commandop_t get_op() const { return m_operation; }
     inline argtype_t get_arg() const { return m_argument; }
 
+    inline commandbind_ptr_t get_comp1() const { return (*m_composite).first; }
+    inline commandbind_ptr_t get_comp2() const { return (*m_composite).second; }
+
 private:
     commandop_t m_operation;
+
     argtype_t m_argument;
+    comptype_t m_composite;
 
 };
 
@@ -162,6 +185,12 @@ public:
           m_falsecommand(falsecommand),
           m_client(client)
     {}
+
+    ~floatingconditionalcommand_t()
+    {
+        delete m_truecommand;
+        delete m_falsecommand;
+    }
 
     void execute() override;
 
