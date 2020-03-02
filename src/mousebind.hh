@@ -39,7 +39,7 @@ namespace std
     template <>
     struct hash<mouseshortcut_t>
     {
-        std::size_t operator()(const mouseshortcut_t& ms) const
+        ::std::size_t operator()(const mouseshortcut_t& ms) const
         {
             return ms.button + 10000 * ms.mask + static_cast<int>(ms.target);
         }

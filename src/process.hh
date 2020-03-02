@@ -74,7 +74,7 @@ namespace std
     template <>
     struct hash<processshortcut_t>
     {
-        std::size_t operator()(const processshortcut_t& ps) const
+        ::std::size_t operator()(const processshortcut_t& ps) const
         {
             return ps.keysym + 10000 * ps.mask;
         }

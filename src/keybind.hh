@@ -32,7 +32,7 @@ namespace std
     template <>
     struct hash<keyshortcut_t>
     {
-        std::size_t operator()(const keyshortcut_t& ks) const
+        ::std::size_t operator()(const keyshortcut_t& ks) const
         {
             return ks.keysym + 10000 * ks.mask;
         }

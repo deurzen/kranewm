@@ -106,13 +106,13 @@ struct revertible
 template <typename T>
 auto begin(revertible<T> r)
 {
-    return std::rbegin(r.iterable);
+    return ::std::rbegin(r.iterable);
 }
 
 template <typename T>
 auto end(revertible<T> r)
 {
-    return std::rend(r.iterable);
+    return ::std::rend(r.iterable);
 }
 
 template <typename T>

@@ -205,7 +205,7 @@ namespace std
     template <>
     struct hash<x_data::window_t>
     {
-        std::size_t operator()(const x_data::window_t& win) const
+        ::std::size_t operator()(const x_data::window_t& win) const
         {
             return win.get();
         }
