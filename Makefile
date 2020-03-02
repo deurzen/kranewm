@@ -34,7 +34,7 @@ obj/%.o: src/x-data/%.cc
 
 run:
 	@echo
-	@echo -n running
+	@echo running
 	@./launch
 
 bin:

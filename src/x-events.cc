@@ -387,10 +387,11 @@ x_events_t::on_key_press()
 {
     XKeyEvent event = m_current_event.get().xkey;
 
-    m_input.process_key_input_global(event);
     client_ptr_t client = m_clients.focused_client();
     if (client)
         m_input.process_key_input_client(client, event);
+    else
+        m_input.process_key_input_global(event);
 }
 
 void
