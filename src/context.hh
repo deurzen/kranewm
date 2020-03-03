@@ -78,7 +78,7 @@ public:
     context_t& remove_all_client(client_ptr_t);
 
     context_t& set_all_nmaster(::std::size_t);
-    context_t& set_all_gap_size(::std::size_t);
+    context_t& set_all_gapsize(::std::size_t);
     context_t& set_all_mfactor(float);
     context_t& set_all_layout(layout_t);
 

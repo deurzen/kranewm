@@ -125,7 +125,7 @@ public:
           m_name(_name),
           m_nmaster(1),
           m_nurgent(0),
-          m_gap_size(0),
+          m_gapsize(0),
           m_mfactor(.5f),
           m_mirrored(false),
           m_layout(layout_t::floating),
@@ -175,12 +175,12 @@ public:
     user_workspace_t& jump_pane();
 
     user_workspace_t& set_nmaster(::std::size_t);
-    user_workspace_t& set_gap_size(::std::size_t);
+    user_workspace_t& set_gapsize(::std::size_t);
     user_workspace_t& set_mfactor(float);
     user_workspace_t& set_layout(layout_t);
 
     ::std::size_t get_nmaster() const;
-    ::std::size_t get_gap_size() const;
+    ::std::size_t get_gapsize() const;
     float get_mfactor() const;
     layout_t get_layout() const;
     const workspacestack_t& get_stack() const;
@@ -201,7 +201,7 @@ private:
     ::std::string    m_name;
     ::std::size_t    m_nmaster;
     ::std::size_t    m_nurgent;
-    ::std::size_t    m_gap_size;
+    ::std::size_t    m_gapsize;
     float            m_mfactor;
     bool             m_mirrored;
     focus_cycle_t    m_clients;

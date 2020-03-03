@@ -49,7 +49,7 @@ enum class commandop_t
 typedef class command_t
 {
 public:
-    command_t(bool internable)
+    command_t(bool internable = false)
         : m_internable(internable)
     {}
 

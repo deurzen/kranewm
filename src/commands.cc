@@ -554,10 +554,12 @@ workspacenmastercommand_t::execute()
 void
 workspacegapsizecommand_t::execute()
 {
-    auto gap_size = m_clients.active_workspace()->get_gap_size();
+    auto gapsize = m_clients.active_workspace()->get_gapsize();
 
-    if ((m_delta < 0 && gap_size > 0) || (m_delta > 0 && gap_size < MAX_NMASTER))
-        m_clients.active_workspace()->set_gap_size(gap_size + m_delta).arrange();
+    if ((m_delta < 0 && gapsize > 0) || (m_delta > 0 && gapsize < MAX_NMASTER))
+        m_clients.active_workspace()->set_gapsize(gapsize + m_delta).arrange();
+    else if (m_delta == 0)
+        m_clients.active_workspace()->set_gapsize(0).arrange();
 }
 
 void

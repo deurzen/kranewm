@@ -20,7 +20,7 @@ private:
     ::std::vector<::std::pair<pos_t, dim_t>> m_geometries;
 
     ::std::size_t m_nmaster;
-    ::std::size_t m_gap_size;
+    ::std::size_t m_gapsize;
     float         m_mfactor;
     layout_t      m_layout;
     bool          m_mirrored;
