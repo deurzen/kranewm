@@ -53,7 +53,7 @@ kranewm_t::setup()
 #ifndef DEBUG
     { // run user-configured autostart programs
         ::std::stringstream configdir_ss;
-        if(const char* env_xdgconf = std::getenv("XDG_CONFIG_HOME"))
+        if(const char* env_xdgconf = ::std::getenv("XDG_CONFIG_HOME"))
             configdir_ss << "cd " << env_xdgconf << "/" << WMNAME << ";";
         else
             configdir_ss << "cd ~/.config/" << WMNAME << ";";

@@ -24,6 +24,14 @@ enum class corner_t {
     bottom_right
 };
 
+enum class direction_t {
+    no_direction,
+    up,
+    right,
+    down,
+    left
+};
+
 typedef struct moveresize_t
 {
     moveresize_t(client_ptr_t _client, moveresizestate_t _state, corner_t _grabbed_at)

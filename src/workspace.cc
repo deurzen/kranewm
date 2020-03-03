@@ -344,9 +344,9 @@ user_workspace_t::set_nmaster(::std::size_t new_nmaster)
 }
 
 user_workspace_t&
-user_workspace_t::set_gap_size(::std::size_t new_gap_size)
+user_workspace_t::set_gapsize(::std::size_t new_gapsize)
 {
-    m_gap_size = new_gap_size;
+    m_gapsize = new_gapsize;
     return *this;
 }
 
@@ -380,9 +380,9 @@ user_workspace_t::get_nmaster() const
 }
 
 ::std::size_t
-user_workspace_t::get_gap_size() const
+user_workspace_t::get_gapsize() const
 {
-    return m_gap_size;
+    return m_gapsize;
 }
 
 float

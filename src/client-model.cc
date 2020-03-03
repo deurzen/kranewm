@@ -334,6 +334,8 @@ client_model_t::change_active_workspace(::std::size_t workspace_nr, bool save_pr
 {
     if (range_t<::std::size_t>::contains(1, USER_WORKSPACES.size(), workspace_nr))
         change_active_workspace((*m_user_workspaces)[workspace_nr - 1], save_prev);
+    else
+        change_active_workspace(nullptr, save_prev);
 }
 
 void

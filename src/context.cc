@@ -144,10 +144,10 @@ context_t::set_all_nmaster(::std::size_t nmaster)
 }
 
 context_t&
-context_t::set_all_gap_size(::std::size_t gap_size)
+context_t::set_all_gapsize(::std::size_t gapsize)
 {
     for (auto& workspace : m_workspaces)
-        workspace->set_gap_size(gap_size);
+        workspace->set_gapsize(gapsize);
     return *this;
 }
 
