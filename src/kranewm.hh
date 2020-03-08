@@ -4,6 +4,7 @@
 #include "x-data/display.hh"
 #include "x-data/error.hh"
 
+#include "config.hh"
 #include "ewmh.hh"
 #include "ipc.hh"
 #include "sidebar.hh"
@@ -22,7 +23,8 @@ class kranewm_t
 {
 public:
     kranewm_t()
-        : m_ewmh(),
+        : m_config(),
+          m_ewmh(),
           m_ipc(),
           m_sidebar(m_ewmh),
           m_x(),
@@ -42,6 +44,7 @@ private:
 
     void check_otherwm();
 
+    confighandler_t m_config;
     ewmh_t m_ewmh;
     ipc_t m_ipc;
     sidebar_t m_sidebar;

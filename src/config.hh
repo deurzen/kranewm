@@ -10,36 +10,57 @@
 #include <filesystem>
 
 
+const char CONFIG_COMMENT_DELIMITER = '#';
+
+enum class configkeyword_t
+{
+    map,
+    set
+};
+
+
 class confighandler_t
 {
 public:
     confighandler_t()
-        : m_configdir(((::std::getenv("XDG_CONFIG_HOME"))
+        : m_keywords({
+              { "map", configkeyword_t::map },
+              { "set", configkeyword_t::set },
+          }),
+          m_configdir(((::std::getenv("XDG_CONFIG_HOME"))
               ? ::std::string(::std::getenv("XDG_CONFIG_HOME"))
               : "~/.config") + "/" + WMNAME + "/"),
           m_configfile("config"),
           m_autostartfile_blocking("blocking_autostart"),
           m_autostartfile_nonblocking("nonblocking_autostart")
     {
-        if (!::std::filesystem::exists(m_configdir + m_configfile))
+        if (::std::filesystem::exists(m_configdir + m_configfile) && parse_config())
             ;
 
-        if (!::std::filesystem::exists(m_configdir + m_autostartfile_blocking))
-            ;
+#ifndef DEBUG
+        if (::std::filesystem::exists(m_configdir + m_autostartfile_blocking))
+            ::std::system((m_configdir + m_autostartfile_blocking).c_str());
 
-        if (!::std::filesystem::exists(m_configdir + m_autostartfile_nonblocking))
-            ;
+        if (::std::filesystem::exists(m_configdir + m_autostartfile_nonblocking))
+            ::std::system((m_configdir + m_autostartfile_nonblocking).c_str());
+#endif
     }
 
-    bool parse_config();
-
 private:
+    bool parse_config();
+    bool parse_set(::std::stringstream&);
+    bool parse_map(::std::stringstream&);
+
+    ::std::unordered_map<::std::string, configkeyword_t> m_keywords;
+
     const ::std::string m_configdir;
     const ::std::string m_configfile;
     const ::std::string m_autostartfile_blocking;
     const ::std::string m_autostartfile_nonblocking;
 
     ::std::unordered_map<::std::string, ::std::string> m_symbols;
+    ::std::unordered_map<::std::string, ::std::string> m_mousebinds;
+    ::std::unordered_map<::std::string, ::std::string> m_keybinds;
 
 };
 

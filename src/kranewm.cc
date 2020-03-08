@@ -49,19 +49,6 @@ kranewm_t::setup()
     m_sidebar.draw();
 
     x_data::sync(true);
-
-#ifndef DEBUG
-    { // run user-configured autostart programs
-        ::std::stringstream configdir_ss;
-        if(const char* env_xdgconf = ::std::getenv("XDG_CONFIG_HOME"))
-            configdir_ss << "cd " << env_xdgconf << "/" << WMNAME << ";";
-        else
-            configdir_ss << "cd ~/.config/" << WMNAME << ";";
-
-        ::std::system((configdir_ss.str() + ::std::string("./blocking_autostart")).c_str());
-        ::std::system((configdir_ss.str() + ::std::string("./nonblocking_autostart &")).c_str());
-    }
-#endif
 }
 
 void
@@ -69,6 +56,7 @@ kranewm_t::run()
 {
     while(m_events.step())
         m_changes.process_queued_changes();
+
     x_data::sync(false);
 }
 
