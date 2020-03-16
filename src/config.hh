@@ -27,6 +27,7 @@ public:
               { "map", configkeyword_t::map },
               { "set", configkeyword_t::set },
           }),
+          m_erroneous(false),
           m_configdir(((::std::getenv("XDG_CONFIG_HOME"))
               ? ::std::string(::std::getenv("XDG_CONFIG_HOME"))
               : "~/.config") + "/" + WMNAME + "/"),
@@ -48,10 +49,14 @@ public:
 
 private:
     bool parse_config();
-    bool parse_set(::std::stringstream&);
-    bool parse_map(::std::stringstream&);
+    bool parse_set(::std::istringstream&, unsigned);
+    bool parse_map(::std::istringstream&, unsigned);
+
+    void report_error(unsigned);
 
     ::std::unordered_map<::std::string, configkeyword_t> m_keywords;
+
+    bool m_erroneous;
 
     const ::std::string m_configdir;
     const ::std::string m_configfile;

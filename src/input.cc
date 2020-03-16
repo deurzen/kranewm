@@ -22,14 +22,14 @@ void
 inputhandler_t::process_mouse_input_global(XButtonEvent event)
 {
     if (m_mousebinds.count({event.button, event.state, mousetarget_t::root}))
-        process_command(m_mousebinds[{event.button, event.state, mousetarget_t::root}].first);
+        process_command(m_mousebinds.at({event.button, event.state, mousetarget_t::root}).first);
 }
 
 void
 inputhandler_t::process_mouse_input_sidebar(XButtonEvent event)
 {
     if (m_mousebinds.count({event.button, event.state, mousetarget_t::sidebar}))
-        process_command(m_mousebinds[{event.button, event.state, mousetarget_t::sidebar}].first);
+        process_command(m_mousebinds.at({event.button, event.state, mousetarget_t::sidebar}).first);
 }
 
 void
@@ -37,7 +37,7 @@ inputhandler_t::process_mouse_input_client(client_ptr_t client, XButtonEvent eve
 {
     if (m_mousebinds.count({event.button, event.state, mousetarget_t::client})) {
         m_target = client;
-        process_command(m_mousebinds[{event.button, event.state, mousetarget_t::client}].first);
+        process_command(m_mousebinds.at({event.button, event.state, mousetarget_t::client}).first);
         m_target = nullptr;
     }
 }
@@ -46,11 +46,11 @@ void
 inputhandler_t::process_key_input_global(XKeyEvent event)
 {
     if (m_processbinds.count(event)) {
-        m_clients.jump_process(m_processbinds[event]);
+        m_clients.jump_process(m_processbinds.at(event));
         return;
     }
 
-    process_command(m_keybinds[event]);
+    process_command(m_keybinds.at(event));
 }
 
 void
@@ -72,15 +72,14 @@ inputhandler_t::process_ipc_global(ipccommand_t command)
 void
 inputhandler_t::process_command(commandbind_t commandbind)
 {
-    static ::std::unordered_map<commandbind_t, command_ptr_t> interned_commands{};
     command_ptr_t command;
 
-    if (interned_commands.count(commandbind))
-        command = interned_commands.at(commandbind);
+    if (m_interned_commands.count(commandbind))
+        command = m_interned_commands.at(commandbind);
     else {
         command = create_command(commandbind);
         if (command->is_internable()) {
-            interned_commands[commandbind] = command;
+            m_interned_commands[commandbind] = command;
         }
     }
 

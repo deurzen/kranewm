@@ -238,7 +238,8 @@ public:
               { { XK_o,            MODMASK|ShiftMask|ControlMask }, { commandop_t::clientshrink, direction_t::right } },
               { { XK_q,            MODMASK|ShiftMask|ControlMask }, { commandop_t::quit }                             },
           }),
-          m_target(nullptr)
+          m_target(nullptr),
+          m_interned_commands({})
     {
         for (auto&& [shortcut,name] : m_processbinds) {
             x_data::grab_key(shortcut.keysym, shortcut.mask);
@@ -252,9 +253,13 @@ public:
             if (shortcut.mask) x_data::grab_button(shortcut.button, shortcut.mask);
     }
 
-    bool moves_focus(XButtonEvent) const;
+    ~inputhandler_t()
+    {
+        for (auto [bind,command] : m_interned_commands)
+            delete command;
+    }
 
-    /* void process_input(command_t); */
+    bool moves_focus(XButtonEvent) const;
 
     void process_mouse_input_global(XButtonEvent);
     void process_mouse_input_sidebar(XButtonEvent);
@@ -278,6 +283,7 @@ private:
     keybinds_t m_keybinds;
 
     client_ptr_t m_target;
+    ::std::unordered_map<commandbind_t, command_ptr_t> m_interned_commands;
 
 };
 
