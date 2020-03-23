@@ -15,8 +15,11 @@ sidebar_t::set_context(context_ptr_t context)
 void
 sidebar_t::draw()
 {
-    if (!m_enabled)
+    if (!m_enabled.at(m_context->get_activated()->get_index())) {
+        unmap_sidebar();
         return;
+    } else
+        map_sidebar();
 
     draw_layoutsymbol();
     draw_contextletter();
@@ -30,14 +33,28 @@ sidebar_t::draw()
 void
 sidebar_t::toggle()
 {
-    m_enabled = !m_enabled;
-    if (m_enabled) {
-        m_sidebarwin.map();
-        m_ewmh.set_strut_property(m_sidebarwin, SIDEBAR_WIDTH + 2, 0, 0, 0);
-        m_ewmh.check_apply_strut(m_sidebarwin);
-    } else {
-        m_sidebarwin.unmap();
-        m_ewmh.check_release_strut(m_sidebarwin);
+    bool is_enabled = m_enabled.at(m_context->get_activated()->get_index());
+    m_enabled[m_context->get_activated()->get_index()] = !is_enabled;
+    is_enabled = m_enabled.at(m_context->get_activated()->get_index());
+
+    if (is_enabled)
+        map_sidebar();
+    else
+        unmap_sidebar();
+}
+
+void
+sidebar_t::toggle_all()
+{
+    bool is_enabled = m_enabled.at(m_context->get_activated()->get_index());
+
+    for (size_t i = 0; i < USER_WORKSPACES.size(); ++i) {
+        m_enabled[i] = !is_enabled;
+
+        if (m_enabled.at(i))
+            map_sidebar();
+        else
+            unmap_sidebar();
     }
 }
 
@@ -45,6 +62,12 @@ x_data::window_t
 sidebar_t::get_win() const
 {
     return m_sidebarwin;
+}
+
+x_data::window_t
+sidebar_t::get_unmappedsidebarwin() const
+{
+    return m_unmappedsidebarindicator;
 }
 
 
@@ -211,4 +234,24 @@ sidebar_t::draw_numberclients()
         m_numberclientsgc.draw_string(pos, ">");
     else
         m_numberclientsgc.draw_string(pos, ::std::to_string(nclients));
+}
+
+void
+sidebar_t::map_sidebar()
+{
+    m_sidebarwin.map();
+    m_unmappedsidebarindicator.unmap();
+    m_ewmh.set_strut_property(m_sidebarwin, SIDEBAR_WIDTH + 2, 0, 0, 0);
+    m_ewmh.check_apply_strut(m_sidebarwin);
+}
+
+void
+sidebar_t::unmap_sidebar()
+{
+    m_unmappedsidebarindicator.map();
+    m_rootworkspacenumbergc.clear();
+    m_rootworkspacenumbergc.draw_string({(SIDEBAR_WIDTH - m_numberstickygc.get_font_dim().w) / 2,
+        m_rootworkspacenumbergc.get_font_dim().h + 2}, ::std::to_string(m_context->get_activated()->get_number()));
+    m_sidebarwin.unmap();
+    m_ewmh.check_release_strut(m_sidebarwin);
 }

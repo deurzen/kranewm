@@ -375,6 +375,9 @@ x_events_t::on_expose()
     if (count == 0 && m_sidebar.get_win().get() == win.get())
         m_sidebar.draw();
 
+    if (count == 0 && m_sidebar.get_unmappedsidebarwin().get() == win.get())
+        m_sidebar.draw();
+
     x_data::sync(false);
 }
 

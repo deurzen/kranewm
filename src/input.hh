@@ -167,6 +167,7 @@ public:
               { { XK_h,            MODMASK|ShiftMask },   { commandop_t::workspacelayout, layout_t::column }          },
               { { XK_j,            MODMASK|ShiftMask },   { commandop_t::clientmovebackward }                         },
               { { XK_k,            MODMASK|ShiftMask },   { commandop_t::clientmoveforward }                          },
+              { { XK_v,            MODMASK|ShiftMask },   { commandop_t::sidebarshowall }                             },
               { { XK_space,        MODMASK|ShiftMask },   { commandop_t::clientfloat }                                },
               { { XK_p,            MODMASK|ShiftMask },   { "dmenupass" }                                             },
               { { XK_q,            MODMASK|ShiftMask },   { "firefox" }                                               },

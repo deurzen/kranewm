@@ -507,6 +507,7 @@ void
 workspacesetcommand_t::execute()
 {
     m_clients.change_active_workspace(m_number);
+    m_sidebar.draw();
 }
 
 void
@@ -516,6 +517,7 @@ nextworkspacecommand_t::execute()
 
     workspace %= USER_WORKSPACES.size();
     m_clients.change_active_workspace(workspace + 1, false);
+    m_sidebar.draw();
 }
 
 void
@@ -525,6 +527,7 @@ previousworkspacecommand_t::execute()
 
     workspace_nr = (workspace_nr == 0) ? USER_WORKSPACES.size() : workspace_nr;
     m_clients.change_active_workspace(workspace_nr, false);
+    m_sidebar.draw();
 }
 
 void
@@ -566,6 +569,14 @@ void
 sidebarshowcommand_t::execute()
 {
     m_sidebar.toggle();
+    m_clients.active_workspace()->arrange();
+    m_clients.refullscreen_clients();
+}
+
+void
+sidebarshowallcommand_t::execute()
+{
+    m_sidebar.toggle_all();
     m_clients.active_workspace()->arrange();
     m_clients.refullscreen_clients();
 }

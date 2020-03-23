@@ -28,6 +28,12 @@ user_workspace_t::get_number() const
     return m_number;
 }
 
+::std::size_t
+user_workspace_t::get_index() const
+{
+    return m_number - 1;
+}
+
 const ::std::deque<client_ptr_t>&
 user_workspace_t::get_all() const
 {

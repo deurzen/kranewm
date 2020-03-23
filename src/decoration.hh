@@ -26,6 +26,7 @@ const unsigned long SIDEBAR_ICONNUMBERS_COLOR      = SIDEBAR_LAYOUT_COLOR;
 const unsigned long SIDEBAR_ACTIVE_WORKSPACE_COLOR = SEL_COLOR;
 const unsigned long SIDEBAR_NSTICKY_COLOR          = SELSTICKY_COLOR;
 const unsigned long SIDEBAR_NCLIENTS_COLOR         = SIDEBAR_WORKSPACES_COLOR;
+const unsigned long ROOT_WORKSPACE_COLOR           = 0xFFFFFF;
 
 // moveresize
 const unsigned long MRIND_BG_COLOR     = REG_COLOR;
@@ -42,5 +43,8 @@ const unsigned long BSIND_BORDER_COLOR = SELSTICKY_COLOR;
 // above state
 const unsigned long ASIND_BG_COLOR     = REG_COLOR;
 const unsigned long ASIND_BORDER_COLOR = DIS_COLOR;
+// unmapped sidebar indicator
+const unsigned long USIND_BG_COLOR     = 0x000000;
+const unsigned long USIND_BORDER_COLOR = 0xFFFFFF;
 
 #endif//__KRANEWM__DECORATION__GUARD__

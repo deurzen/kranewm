@@ -20,10 +20,11 @@ class sidebar_t
 {
 public:
     explicit sidebar_t(ewmh_t& ewmh)
-        : m_enabled(true),
+        : m_enabled(USER_WORKSPACES.size(), true),
           m_ewmh(ewmh),
           m_context(nullptr),
           m_sidebarwin(x_data::create_window(true)),
+          m_unmappedsidebarindicator(x_data::create_window(true)),
           m_layoutsymbolgc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_contextlettergc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_workspacenumbersgc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
@@ -31,6 +32,7 @@ public:
           m_iconnumbersgc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_numberstickygc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
           m_numberclientsgc(m_sidebarwin, FONTNAME, SIDEBAR_WIDTH),
+          m_rootworkspacenumbergc(m_unmappedsidebarindicator, FONTNAME, SIDEBAR_WIDTH),
           m_activity_indicators(USER_WORKSPACES.size()),
           m_moveresizeindicator(x_data::create_window(true)),
           m_floatingindicator(x_data::create_window(true)),
@@ -44,13 +46,20 @@ public:
         m_sidebarwin.resize({SIDEBAR_WIDTH, root_attrs.get().height}).move({0, 0});
         x_data::select_input(m_sidebarwin, ExposureMask);
 
+        m_unmappedsidebarindicator.set_background_color(USIND_BG_COLOR);
+        m_unmappedsidebarindicator.set_border_color(ROOT_WORKSPACE_COLOR);
+        m_unmappedsidebarindicator.resize({SIDEBAR_WIDTH, m_rootworkspacenumbergc.get_font_dim().h + 4}).move({0, 0});
+        x_data::select_input(m_unmappedsidebarindicator, ExposureMask);
+
         m_ewmh.set_strut_property(m_sidebarwin, SIDEBAR_WIDTH + 2, 0, 0, 0);
         m_ewmh.set_window_type_property(m_sidebarwin, "DOCK");
+        m_ewmh.set_window_type_property(m_unmappedsidebarindicator, "DOCK");
 
         m_ewmh.set_wm_name_property(m_sidebarwin, WMNAME);
         m_ewmh.set_supporting_wm_check_property(x_data::g_root, m_sidebarwin);
         m_ewmh.set_supporting_wm_check_property(m_sidebarwin, m_sidebarwin);
 
+        m_unmappedsidebarindicator.map();
         m_sidebarwin.map();
 
         m_layoutsymbolgc.set_foreground(SIDEBAR_LAYOUT_COLOR);
@@ -67,6 +76,8 @@ public:
         m_numberstickygc.set_background(SIDEBAR_BG_COLOR);
         m_numberclientsgc.set_foreground(SIDEBAR_NCLIENTS_COLOR);
         m_numberclientsgc.set_background(SIDEBAR_BG_COLOR);
+        m_rootworkspacenumbergc.set_foreground(ROOT_WORKSPACE_COLOR);
+        m_rootworkspacenumbergc.set_background(USIND_BG_COLOR);
 
         pos_t current_pos = {SIDEBAR_WIDTH - 3, 2 * (4 + m_workspacenumbersgc.get_font_dim().h) + 4};
         for (::std::size_t i = 0; i < m_activity_indicators.size(); ++i) {
@@ -102,6 +113,7 @@ public:
 
     void draw();
     void toggle();
+    void toggle_all();
 
     void draw_layoutsymbol();
     void draw_contextletter();
@@ -112,12 +124,19 @@ public:
     void draw_numberclients();
 
     x_data::window_t get_win() const;
+    x_data::window_t get_unmappedsidebarwin() const;
 
 private:
-    bool m_enabled;
+    void map_sidebar();
+    void unmap_sidebar();
+
+    ::std::vector<bool> m_enabled;
     ewmh_t& m_ewmh;
     context_ptr_t m_context;
+
     x_data::window_t m_sidebarwin;
+    x_data::window_t m_unmappedsidebarindicator;
+
     x_data::graphicscontext_t m_layoutsymbolgc;
     x_data::graphicscontext_t m_contextlettergc;
     x_data::graphicscontext_t m_workspacenumbersgc;
@@ -125,6 +144,7 @@ private:
     x_data::graphicscontext_t m_iconnumbersgc;
     x_data::graphicscontext_t m_numberstickygc;
     x_data::graphicscontext_t m_numberclientsgc;
+    x_data::graphicscontext_t m_rootworkspacenumbergc;
 
     ::std::vector<x_data::window_t> m_activity_indicators;
     x_data::window_t m_moveresizeindicator;

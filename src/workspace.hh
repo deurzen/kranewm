@@ -135,6 +135,8 @@ public:
     void arrange() const override;
 
     ::std::size_t get_number() const;
+    ::std::size_t get_index() const;
+
     const ::std::deque<client_ptr_t>& get_all() const;
     const ::std::deque<client_ptr_t>& get_icons() const;
     const ::std::deque<client_ptr_t>& get_disowned() const;

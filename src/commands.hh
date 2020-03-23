@@ -38,7 +38,7 @@ enum class commandop_t
     profilesave, profileload,
     workspaceset, nextworkspace, previousworkspace,
     workspacemirror, workspacemfactor, workspacenmaster, workspacegapsize, workspacelayout,
-    sidebarshow,
+    sidebarshow, sidebarshowall,
     contextset, nextcontext, previouscontext,
     focusforward, focusbackward,
     external,
@@ -1117,9 +1117,10 @@ private:
 typedef class workspacesetcommand_t : public command_t
 {
 public:
-    explicit workspacesetcommand_t(client_model_t& clients, unsigned number)
+    explicit workspacesetcommand_t(client_model_t& clients, sidebar_t& sidebar, unsigned number)
         : command_t(true),
           m_clients(clients),
+          m_sidebar(sidebar),
           m_number(number)
     {}
 
@@ -1127,6 +1128,7 @@ public:
 
 private:
     client_model_t& m_clients;
+    sidebar_t& m_sidebar;
     unsigned m_number;
 
 }* workspacesetcommand_ptr_t;
@@ -1136,15 +1138,17 @@ private:
 typedef class nextworkspacecommand_t : public command_t
 {
 public:
-    explicit nextworkspacecommand_t(client_model_t& clients)
+    explicit nextworkspacecommand_t(client_model_t& clients, sidebar_t& sidebar)
         : command_t(true),
-          m_clients(clients)
+          m_clients(clients),
+          m_sidebar(sidebar)
     {}
 
     void execute() override;
 
 private:
     client_model_t& m_clients;
+    sidebar_t& m_sidebar;
 
 }* nextworkspacecommand_ptr_t;
 
@@ -1153,15 +1157,17 @@ private:
 typedef class previousworkspacecommand_t : public command_t
 {
 public:
-    explicit previousworkspacecommand_t(client_model_t& clients)
+    explicit previousworkspacecommand_t(client_model_t& clients, sidebar_t& sidebar)
         : command_t(true),
-          m_clients(clients)
+          m_clients(clients),
+          m_sidebar(sidebar)
     {}
 
     void execute() override;
 
 private:
     client_model_t& m_clients;
+    sidebar_t& m_sidebar;
 
 }* previousworkspacecommand_ptr_t;
 
@@ -1281,6 +1287,25 @@ private:
     sidebar_t& m_sidebar;
 
 }* sidebarshowcommand_ptr_t;
+
+
+
+typedef class sidebarshowallcommand_t : public command_t
+{
+public:
+    explicit sidebarshowallcommand_t(client_model_t& clients, sidebar_t& sidebar)
+        : command_t(true),
+          m_clients(clients),
+          m_sidebar(sidebar)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    sidebar_t& m_sidebar;
+
+}* sidebarshowallcommand_ptr_t;
 
 
 
