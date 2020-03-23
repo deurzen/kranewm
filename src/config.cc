@@ -33,7 +33,7 @@ confighandler_t::parse_config()
                 default: break;
             }
         else
-            report_error(line_nr);
+            report_syntax_error(line_nr);
     }
 
     configfile.close();
@@ -47,7 +47,7 @@ confighandler_t::parse_set(::std::istringstream& linestream, unsigned number)
     ::std::getline(linestream, option);
 
     if (option.empty() || ::std::all_of(option.begin(), option.end(), ::isspace)) {
-        report_error(number);
+        report_syntax_error(number);
         return false;
     }
 
@@ -63,7 +63,7 @@ confighandler_t::parse_map(::std::istringstream& linestream, unsigned number)
     ::std::getline(linestream, mapping);
 
     if (mapping.empty() || ::std::all_of(mapping.begin(), mapping.end(), ::isspace)) {
-        report_error(number);
+        report_syntax_error(number);
         return false;
     }
 
@@ -73,8 +73,15 @@ confighandler_t::parse_map(::std::istringstream& linestream, unsigned number)
 }
 
 void
-confighandler_t::report_error(unsigned number)
+confighandler_t::report_syntax_error(unsigned number)
 {
     ::std::cerr << "invalid syntax in config at line number " << number << ::std::endl;
+    m_erroneous = true;
+}
+
+void
+confighandler_t::report_command_error(unsigned number)
+{
+    ::std::cerr << "unsupported command in config at line number " << number << ::std::endl;
     m_erroneous = true;
 }

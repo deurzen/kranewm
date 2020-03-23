@@ -19,7 +19,7 @@ typedef class command_t* command_ptr_t;
 
 enum class commandop_t
 {
-    noop = 0,
+    noop = 0, commandfirst = noop,
     floatingconditional,
     quit,
     zoom,
@@ -42,6 +42,7 @@ enum class commandop_t
     contextset, nextcontext, previouscontext,
     focusforward, focusbackward,
     external,
+    commandlast
 };
 
 

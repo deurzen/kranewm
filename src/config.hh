@@ -3,11 +3,13 @@
 
 #include "common.hh"
 
+#include "commands.hh"
+
 #include <csignal>
 #include <cstdlib>
+#include <filesystem>
 #include <sstream>
 #include <unordered_map>
-#include <filesystem>
 
 
 const char CONFIG_COMMENT_DELIMITER = '#';
@@ -26,6 +28,9 @@ public:
         : m_keywords({
               { "map", configkeyword_t::map },
               { "set", configkeyword_t::set },
+          }),
+          m_supported_commands({
+              {},
           }),
           m_erroneous(false),
           m_configdir(((::std::getenv("XDG_CONFIG_HOME"))
@@ -52,9 +57,11 @@ private:
     bool parse_set(::std::istringstream&, unsigned);
     bool parse_map(::std::istringstream&, unsigned);
 
-    void report_error(unsigned);
+    void report_syntax_error(unsigned);
+    void report_command_error(unsigned);
 
     ::std::unordered_map<::std::string, configkeyword_t> m_keywords;
+    ::std::unordered_map<::std::string, commandop_t> m_supported_commands;
 
     bool m_erroneous;
 
