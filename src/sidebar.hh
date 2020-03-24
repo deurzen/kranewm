@@ -48,7 +48,7 @@ public:
 
         m_unmappedsidebarindicator.set_background_color(USIND_BG_COLOR);
         m_unmappedsidebarindicator.set_border_color(ROOT_WORKSPACE_COLOR);
-        m_unmappedsidebarindicator.resize({SIDEBAR_WIDTH, m_rootworkspacenumbergc.get_font_dim().h + 4}).move({0, 0});
+        m_unmappedsidebarindicator.resize({SIDEBAR_WIDTH, m_rootworkspacenumbergc.get_font_dim().h + 5}).move({0, 0});
         x_data::select_input(m_unmappedsidebarindicator, ExposureMask);
 
         m_ewmh.set_strut_property(m_sidebarwin, SIDEBAR_WIDTH + 2, 0, 0, 0);
