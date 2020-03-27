@@ -38,7 +38,7 @@ public:
               { { XK_b,   MODMASK|ShiftMask }, "qutebrowser" },
           }),
           m_mousebinds({
-              //  keysym              mask                                 target        operation                  nofocus
+              //  keysym              mask                                 target        operation                         nofocus
               { { LEFT_BUTTON,        MODMASK,              mousetarget_t::client  },  { commandop_t::clientmovemouse,          NO } },
               { { RIGHT_BUTTON,       MODMASK,              mousetarget_t::client  },  { commandop_t::clientresizemouse,        NO } },
               { { MIDDLE_BUTTON,      MODMASK,              mousetarget_t::client  },  { commandop_t::clientcenter,             NO } },
@@ -147,7 +147,7 @@ public:
               { { XK_9,            MODMASK|SECMASK },     { commandop_t::clientdeiconifyindex, 9 }                    },
               { { XK_Return,       MODMASK|ShiftMask },   { "st -n \"kranewm:cf\"" }                                  },
               { { XK_equal,        MODMASK|ShiftMask },   { commandop_t::workspacegapsize, 0 }                        },
-              { { XK_m,            MODMASK|ShiftMask },   commandop_t::clientmarkset                                  },
+              { { XK_m,            MODMASK|ShiftMask },   { commandop_t::clientmarkset }                              },
               { { XK_1,            MODMASK|ShiftMask },   { commandop_t::clientworkspace, 1 }                         },
               { { XK_2,            MODMASK|ShiftMask },   { commandop_t::clientworkspace, 2 }                         },
               { { XK_3,            MODMASK|ShiftMask },   { commandop_t::clientworkspace, 3 }                         },

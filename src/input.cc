@@ -56,6 +56,11 @@ inputhandler_t::process_key_input_global(XKeyEvent event)
 void
 inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
 {
+    if (m_processbinds.count(event)) {
+        m_clients.jump_process(m_processbinds.at(event));
+        return;
+    }
+
     m_target = client;
     process_command(m_keybinds[event]);
     m_target = nullptr;
