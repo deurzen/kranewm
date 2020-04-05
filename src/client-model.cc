@@ -339,7 +339,7 @@ client_model_t::change_active_workspace(::std::size_t workspace_nr, bool save_pr
 }
 
 void
-client_model_t::change_active_workspace(user_workspace_ptr_t workspace, bool save_prev)
+client_model_t::change_active_workspace(::std::optional<user_workspace_ptr_t> workspace, bool save_prev)
 {
     if ((!workspace && !(workspace = m_current_context->get_previous()))
         || m_current_workspace == workspace)
@@ -366,9 +366,9 @@ client_model_t::change_active_workspace(user_workspace_ptr_t workspace, bool sav
         }
     }
 
-    m_changequeue.add(change_workspace_active(m_current_workspace, workspace));
-    m_current_workspace = workspace;
-    m_current_context->set_activated(workspace);
+    m_changequeue.add(change_workspace_active(m_current_workspace, *workspace));
+    m_current_workspace = *workspace;
+    m_current_context->set_activated(*workspace);
     sync_workspace_focus(true);
 }
 
@@ -408,7 +408,7 @@ client_model_t::change_active_context(::std::size_t context_nr)
 }
 
 void
-client_model_t::change_active_context(context_ptr_t context)
+client_model_t::change_active_context(::std::optional<context_ptr_t> context)
 {
     if (context == m_current_context)
         return;
@@ -424,10 +424,10 @@ client_model_t::change_active_context(context_ptr_t context)
         }
     }
 
-    m_user_workspaces = context->get_workspaces();
-    m_changequeue.add(change_context_active(m_current_context, context));
-    m_current_context = context;
-    change_active_workspace(context->get_activated(), false);
+    m_user_workspaces = (*context)->get_workspaces();
+    m_changequeue.add(change_context_active(m_current_context, *context));
+    m_current_context = *context;
+    change_active_workspace((*context)->get_activated(), false);
 }
 
 void
@@ -451,7 +451,7 @@ client_model_t::set_fullscreen(client_ptr_t client, clientaction_t action)
                 return;
 
             client->fullscreen = false;
-            m_changequeue.add(change_client_fullscreen(client, m_fullscreen_clients[client]));
+            m_changequeue.add(change_client_fullscreen(client, m_fullscreen_clients.at(client)));
             erase_find(m_fullscreen_clients, client);
         }
         break;

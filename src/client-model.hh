@@ -77,12 +77,12 @@ public:
     void client_to_workspace(client_ptr_t, ::std::size_t);
     void client_to_workspace(client_ptr_t, workspace_ptr_t);
     void change_active_workspace(::std::size_t, bool = true);
-    void change_active_workspace(user_workspace_ptr_t = nullptr, bool = true);
+    void change_active_workspace(::std::optional<user_workspace_ptr_t> = ::std::nullopt, bool = true);
 
     void client_to_context(client_ptr_t, ::std::size_t);
     void client_to_context(client_ptr_t, context_ptr_t);
     void change_active_context(::std::size_t);
-    void change_active_context(context_ptr_t = nullptr);
+    void change_active_context(::std::optional<context_ptr_t> = ::std::nullopt);
 
     void set_fullscreen(client_ptr_t, clientaction_t);
     void set_above(client_ptr_t, clientaction_t);
