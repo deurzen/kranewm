@@ -57,6 +57,8 @@ sidebar_t::toggle_all()
             map_sidebar();
         else
             unmap_sidebar();
+
+        (*m_context->get_workspaces()).at(i)->sidebarset(m_enabled.at(i));
     }
 }
 
@@ -243,7 +245,6 @@ sidebar_t::map_sidebar()
 {
     m_sidebarwin.map();
     m_unmappedsidebarindicator.unmap();
-    m_ewmh.set_strut_property(m_sidebarwin, SIDEBAR_WIDTH + 2, 0, 0, 0);
     m_ewmh.check_apply_strut(m_sidebarwin);
 }
 
@@ -255,5 +256,4 @@ sidebar_t::unmap_sidebar()
     m_rootworkspacenumbergc.draw_string({(SIDEBAR_WIDTH - m_numberstickygc.get_font_dim().w) / 2,
         m_rootworkspacenumbergc.get_font_dim().h + 2}, ::std::to_string(m_context->get_activated()->get_number()));
     m_sidebarwin.unmap();
-    m_ewmh.check_release_strut(m_sidebarwin);
 }

@@ -152,8 +152,12 @@ client_t&
 client_t::move(pos_t new_pos, bool tiled)
 {
     frame.move(new_pos);
-    if (tiled) pos = new_pos;
-    else float_pos = new_pos;
+
+    if (tiled)
+        pos = new_pos;
+    else
+        float_pos = new_pos;
+
     update_offset(this);
     return *this;
 }
@@ -163,9 +167,14 @@ client_t::resize(dim_t new_dim, bool tiled)
 {
     if (new_dim.h > BORDER_HEIGHT)
         win.resize({new_dim.w, new_dim.h - BORDER_HEIGHT});
+
     frame.resize(new_dim);
-    if (tiled) dim = new_dim;
-    else float_dim = new_dim;
+
+    if (tiled)
+        dim = new_dim;
+    else
+        float_dim = new_dim;
+
     update_offset(this);
     return *this;
 }
@@ -192,6 +201,7 @@ client_t::map_children()
         child->expect = clientexpect_t::map;
         child->map();
     }
+
     return *this;
 }
 
@@ -203,6 +213,7 @@ client_t::unmap_children()
         child->expect = clientexpect_t::withdraw;
         child->unmap();
     }
+
     return *this;
 }
 
@@ -211,6 +222,7 @@ client_t::center()
 {
     auto attrs = x_data::get_attributes(frame);
     auto root_attrs = x_data::get_attributes(x_data::g_root);
+
     move({root_attrs.w() / 2 - attrs.w() / 2, root_attrs.h() / 2 - attrs.h() / 2});
     return *this;
 }

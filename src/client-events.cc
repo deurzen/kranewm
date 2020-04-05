@@ -105,6 +105,7 @@ client_events_t::on_change_client_fullscreen()
 
         client->resize({root_attrs.w() - (workspace->has_sidebar() ? m_ewmh.get_left_strut() : 0)
             - m_ewmh.get_right_strut() - 2, root_attrs.h() + BORDER_HEIGHT}, true);
+
         client->move({(workspace->has_sidebar() ? m_ewmh.get_left_strut() : 0),
             -BORDER_HEIGHT - 1}, true);
 
