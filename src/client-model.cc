@@ -11,7 +11,7 @@ client_ptr_t
 client_model_t::win_client(x_data::window_t win)
 {
     if (m_client_windows.find(win) != m_client_windows.end())
-        return m_client_windows[win];
+        return m_client_windows.at(win);
 
     return nullptr;
 }
@@ -20,7 +20,7 @@ context_ptr_t
 client_model_t::client_context(client_ptr_t client)
 {
     if (m_client_contexts.find(client) != m_client_contexts.end())
-        return m_client_contexts[client];
+        return m_client_contexts.at(client);
 
     return nullptr;
 }
@@ -41,7 +41,7 @@ user_workspace_ptr_t
 client_model_t::client_user_workspace(client_ptr_t client)
 {
     if (m_client_workspaces.find(client) != m_client_workspaces.end())
-        return m_client_workspaces[client];
+        return m_client_workspaces.at(client);
 
     return nullptr;
 }
@@ -82,7 +82,7 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
                 change_active_workspace(client_user_workspace(client->parent));
             }
 
-            rule.workspace = m_client_workspaces[client->parent]->get_number();
+            rule.workspace = m_client_workspaces.at(client->parent)->get_number();
         } else
             rule.workspace = 0;
     }
@@ -94,7 +94,7 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
         client->win.force_close();
 
     if (!rule.nohint && rule.workspace) {
-        auto workspace = (*m_user_workspaces)[rule.workspace - 1];
+        auto workspace = (*m_user_workspaces).at(rule.workspace - 1);
         m_client_workspaces[client] = workspace;
         workspace->add_client(client);
         m_changequeue.add(change_client_workspace(client, nullptr, workspace));
@@ -284,13 +284,13 @@ client_model_t::refullscreen_clients()
 void
 client_model_t::save_profile(::std::size_t profile_index)
 {
-    m_profiles[profile_index].save(m_current_workspace);
+    m_profiles.at(profile_index).save(m_current_workspace);
 }
 
 void
 client_model_t::apply_profile(::std::size_t profile_index)
 {
-    m_profiles[profile_index].apply(m_current_workspace);
+    m_profiles.at(profile_index).apply(m_current_workspace);
     m_current_workspace->arrange();
 }
 
@@ -301,7 +301,7 @@ client_model_t::client_to_workspace(client_ptr_t client, ::std::size_t workspace
         return;
 
     if (range_t<::std::size_t>::contains(1, USER_WORKSPACES.size(), workspace_nr))
-        client_to_workspace(client, (*m_user_workspaces)[workspace_nr - 1]);
+        client_to_workspace(client, (*m_user_workspaces).at(workspace_nr - 1));
 }
 
 void
@@ -333,9 +333,9 @@ void
 client_model_t::change_active_workspace(::std::size_t workspace_nr, bool save_prev)
 {
     if (range_t<::std::size_t>::contains(1, USER_WORKSPACES.size(), workspace_nr))
-        change_active_workspace((*m_user_workspaces)[workspace_nr - 1], save_prev);
+        change_active_workspace((*m_user_workspaces).at(workspace_nr - 1), save_prev);
     else
-        change_active_workspace(nullptr, save_prev);
+        change_active_workspace(::std::nullopt, save_prev);
 }
 
 void
@@ -379,10 +379,10 @@ client_model_t::client_to_context(client_ptr_t client, ::std::size_t context_nr)
         return;
 
     if (range_t<::std::size_t>::contains(1, CONTEXTS.size(), context_nr--)) {
-        if (!*m_contexts[context_nr])
-            m_contexts[context_nr]->initialize();
+        if (!*m_contexts.at(context_nr))
+            m_contexts.at(context_nr)->initialize();
 
-        client_to_context(client, m_contexts[context_nr]);
+        client_to_context(client, m_contexts.at(context_nr));
     }
 }
 
@@ -400,10 +400,10 @@ void
 client_model_t::change_active_context(::std::size_t context_nr)
 {
     if (range_t<::std::size_t>::contains(1, CONTEXTS.size(), context_nr--)) {
-        if (!*m_contexts[context_nr])
-            m_contexts[context_nr]->initialize();
+        if (!*m_contexts.at(context_nr))
+            m_contexts.at(context_nr)->initialize();
 
-        change_active_context(m_contexts[context_nr]);
+        change_active_context(m_contexts.at(context_nr));
     }
 }
 
@@ -493,7 +493,7 @@ client_model_t::set_above(client_ptr_t client, clientaction_t action)
                 return;
 
             client->above = false;
-            m_changequeue.add(change_client_above(client, m_above_clients[client]));
+            m_changequeue.add(change_client_above(client, m_above_clients.at(client)));
             erase_find(m_above_clients, client);
             m_windowstack.apply(client_user_workspace(client));
         }
@@ -536,7 +536,7 @@ client_model_t::set_below(client_ptr_t client, clientaction_t action)
                 return;
 
             client->below = false;
-            m_changequeue.add(change_client_below(client, m_below_clients[client]));
+            m_changequeue.add(change_client_below(client, m_below_clients.at(client)));
             erase_find(m_below_clients, client);
             m_windowstack.apply(client_user_workspace(client));
         }
@@ -632,7 +632,7 @@ client_model_t::set_disowned(client_ptr_t client, clientaction_t action, bool by
             m_disowned_clients[client] = *client;
 
             if (by_user)
-                m_changequeue.add(change_client_disown(client, m_disowned_clients[client]));
+                m_changequeue.add(change_client_disown(client, m_disowned_clients.at(client)));
         }
         break;
     case clientaction_t::remove:
@@ -647,7 +647,7 @@ client_model_t::set_disowned(client_ptr_t client, clientaction_t action, bool by
             m_windowstack.apply(workspace);
 
             if (by_user)
-                m_changequeue.add(change_client_disown(client, m_disowned_clients[client]));
+                m_changequeue.add(change_client_disown(client, m_disowned_clients.at(client)));
 
             erase_find(m_disowned_clients, client);
         }
@@ -673,12 +673,11 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
             for (auto& workspace : *m_user_workspaces)
                 if (workspace != m_current_workspace) {
                     workspace->add_client(client);
-                    m_changequeue.add(change_client_workspace(client,
-                        workspace, nullptr));
+                    m_changequeue.add(change_client_workspace(client, workspace, nullptr));
                     sync_workspace_focus();
             }
 
-            m_changequeue.add(change_client_sticky(client, m_client_contexts[client]));
+            m_changequeue.add(change_client_sticky(client, m_client_contexts.at(client)));
             m_sticky_clients.push_back(client);
 
             for (auto& child : client->children)
@@ -692,7 +691,7 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
                 if (workspace != m_current_workspace)
                     workspace->remove_client(client);
 
-            m_changequeue.add(change_client_sticky(client, m_client_contexts[client]));
+            m_changequeue.add(change_client_sticky(client, m_client_contexts.at(client)));
             m_client_workspaces[client] = m_current_workspace;
             erase_remove(m_sticky_clients, client);
 
