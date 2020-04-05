@@ -71,6 +71,12 @@ user_workspace_t::is_mirrored() const
 }
 
 bool
+user_workspace_t::has_sidebar() const
+{
+    return m_sidebarset;
+}
+
+bool
 user_workspace_t::in_float_layout() const
 {
     return m_layout == layout_t::floating;
@@ -312,6 +318,13 @@ user_workspace_t&
 user_workspace_t::mirror()
 {
     m_mirrored = !m_mirrored;
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::sidebarset(bool sidebarset)
+{
+    m_sidebarset = sidebarset;
     return *this;
 }
 

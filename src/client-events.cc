@@ -101,9 +101,13 @@ client_events_t::on_change_client_fullscreen()
     if (client->fullscreen) {
         m_ewmh.set_window_state_property(client->win, "FULLSCREEN");
         auto root_attrs = x_data::get_attributes(x_data::g_root);
-        client->resize({root_attrs.w() - m_ewmh.get_left_strut() - m_ewmh.get_right_strut() - 2,
-            root_attrs.h() + BORDER_HEIGHT}, true);
-        client->move({m_ewmh.get_left_strut(), -BORDER_HEIGHT - 1}, true);
+        auto workspace = m_clients.client_user_workspace(client);
+
+        client->resize({root_attrs.w() - (workspace->has_sidebar() ? m_ewmh.get_left_strut() : 0)
+            - m_ewmh.get_right_strut() - 2, root_attrs.h() + BORDER_HEIGHT}, true);
+        client->move({(workspace->has_sidebar() ? m_ewmh.get_left_strut() : 0),
+            -BORDER_HEIGHT - 1}, true);
+
     } else {
         if (former_state.above)
             m_ewmh.set_window_state_property(client->win, "ABOVE");

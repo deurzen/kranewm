@@ -128,6 +128,7 @@ public:
           m_gapsize(0),
           m_mfactor(.5f),
           m_mirrored(false),
+          m_sidebarset(true),
           m_layout(layout_t::floating),
           m_previous_layout(m_layout),
           m_layouthandler(layouthandler_t{ewmh}) {}
@@ -144,6 +145,7 @@ public:
     bool empty() const;
     bool contains(client_ptr_t) const;
     bool is_mirrored() const;
+    bool has_sidebar() const;
 
     bool in_float_layout() const;
     bool in_monocle_layout() const;
@@ -174,6 +176,7 @@ public:
 
     user_workspace_t& zoom();
     user_workspace_t& mirror();
+    user_workspace_t& sidebarset(bool);
     user_workspace_t& jump_pane();
 
     user_workspace_t& set_nmaster(::std::size_t);
@@ -206,6 +209,7 @@ private:
     ::std::size_t    m_gapsize;
     float            m_mfactor;
     bool             m_mirrored;
+    bool             m_sidebarset;
     focus_cycle_t    m_clients;
     focus_cycle_t    m_icons;
     focus_cycle_t    m_disowned;

@@ -237,6 +237,7 @@ clientworkspacecommand_t::execute()
 {
     m_clients.client_to_workspace(m_client, m_number);
     m_clients.active_workspace()->arrange();
+    m_clients.refullscreen_clients();
 }
 
 void
@@ -247,6 +248,7 @@ clientnextworkspacecommand_t::execute()
     workspace_nr %= USER_WORKSPACES.size();
     m_clients.client_to_workspace(m_client, workspace_nr + 1);
     m_clients.active_workspace()->arrange();
+    m_clients.refullscreen_clients();
 }
 
 void
@@ -257,6 +259,7 @@ clientpreviousworkspacecommand_t::execute()
     workspace_nr = (workspace_nr == 0) ? USER_WORKSPACES.size() : workspace_nr;
     m_clients.client_to_workspace(m_client, workspace_nr);
     m_clients.active_workspace()->arrange();
+    m_clients.refullscreen_clients();
 }
 
 void
@@ -264,6 +267,7 @@ clientcontextcommand_t::execute()
 {
     m_clients.client_to_context(m_client, m_number);
     m_clients.active_workspace()->arrange();
+    m_clients.refullscreen_clients();
 }
 
 void
@@ -274,6 +278,7 @@ clientnextcontextcommand_t::execute()
     context_nr %= CONTEXTS.size();
     m_clients.client_to_context(m_client, context_nr + 1);
     m_clients.active_context()->arrange();
+    m_clients.refullscreen_clients();
 }
 
 void
@@ -284,6 +289,7 @@ clientpreviouscontextcommand_t::execute()
     context_nr = (context_nr == 0) ? CONTEXTS.size() : context_nr;
     m_clients.client_to_context(m_client, context_nr);
     m_clients.active_context()->arrange();
+    m_clients.refullscreen_clients();
 }
 
 void

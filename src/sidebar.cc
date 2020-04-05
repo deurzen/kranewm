@@ -41,6 +41,8 @@ sidebar_t::toggle()
         map_sidebar();
     else
         unmap_sidebar();
+
+    m_context->get_activated()->sidebarset(is_enabled);
 }
 
 void
