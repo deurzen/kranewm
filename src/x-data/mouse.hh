@@ -10,6 +10,7 @@ extern "C" {
 
 namespace x_data
 {
+    extern void ungrab_grabbed_buttons();
     extern void grab_button(unsigned, unsigned);
     extern void confine_pointer(window_t);
     extern void release_pointer();

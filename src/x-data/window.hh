@@ -188,6 +188,7 @@ namespace x_data
 
     extern window_t g_root;
     extern display_t g_dpy;
+    extern unsigned g_numlockmask;
 
     extern window_t create_window(bool do_not_manage = false);
     extern ::std::vector<window_t> get_top_level_windows();
@@ -197,6 +198,7 @@ namespace x_data
     extern bool set_input_focus(window_t = None);
     extern void select_input(window_t, long);
     extern void restack_windows(Window*, int);
+    extern void update_numlockmask();
 
 }
 

@@ -9,6 +9,8 @@
 using namespace x_data;
 
 
+unsigned x_data::g_numlockmask(0);
+
 window_t
 x_data::create_window(bool do_not_manage)
 {
@@ -89,6 +91,24 @@ void
 x_data::restack_windows(Window* wins, int n)
 {
     XRestackWindows(g_dpy, wins, n);
+}
+
+void // taken from dwm/dwm.c
+x_data::update_numlockmask()
+{
+    ::std::cout << "updating numlockmask" << ::std::endl;
+    XModifierKeymap* modmap = XGetModifierMapping(g_dpy);
+
+    g_numlockmask = 0;
+    for (unsigned i = 0; i < 8; ++i)
+        for (int j = 0; j < modmap->max_keypermod; ++j)
+            if (modmap->modifiermap[i * modmap->max_keypermod + j]
+                == XKeysymToKeycode(g_dpy, XK_Num_Lock))
+            {
+                g_numlockmask = (1 << i);
+            }
+
+    XFreeModifiermap(modmap);
 }
 
 

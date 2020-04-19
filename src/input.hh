@@ -242,17 +242,15 @@ public:
           }),
           m_target(nullptr)
     {
-        for (auto&& [shortcut,name] : m_processbinds) {
-            x_data::grab_key(shortcut.keysym, shortcut.mask);
+        for (auto&& [shortcut,name] : m_processbinds)
             m_processes.activate_process_name(name);
-        }
 
-        for (auto&& [shortcut,_] : m_keybinds)
-            x_data::grab_key(shortcut.keysym, shortcut.mask);
-
-        for (auto&& [shortcut,_] : m_mousebinds)
-            if (shortcut.mask) x_data::grab_button(shortcut.button, shortcut.mask);
+        grab_keybinds();
+        grab_mousebinds();
     }
+
+    void grab_keybinds() const;
+    void grab_mousebinds() const;
 
     bool moves_focus(XButtonEvent) const;
 

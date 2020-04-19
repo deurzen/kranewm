@@ -9,6 +9,29 @@
 #include <unistd.h>
 
 
+void
+inputhandler_t::grab_keybinds() const
+{
+    x_data::ungrab_grabbed_keys();
+    x_data::update_numlockmask();
+
+    for (auto&& [shortcut,name] : m_processbinds)
+        x_data::grab_key(shortcut.keysym, shortcut.mask);
+
+    for (auto&& [shortcut,_] : m_keybinds)
+        x_data::grab_key(shortcut.keysym, shortcut.mask);
+}
+
+void
+inputhandler_t::grab_mousebinds() const
+{
+    x_data::ungrab_grabbed_buttons();
+    x_data::update_numlockmask();
+
+    for (auto&& [shortcut,_] : m_mousebinds)
+        if (shortcut.mask) x_data::grab_button(shortcut.button, shortcut.mask);
+}
+
 bool
 inputhandler_t::moves_focus(XButtonEvent event) const
 {

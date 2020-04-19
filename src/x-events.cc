@@ -132,6 +132,8 @@ x_events_t::on_button_press()
 
     client_ptr_t client = m_clients.win_client(win);
     if (client) {
+        m_input.grab_mousebinds();
+
         if (m_input.moves_focus(event))
             m_clients.focus(client);
 
@@ -453,9 +455,10 @@ void
 x_events_t::on_mapping_notify()
 {
     XMappingEvent event = m_current_event.get().xmapping;
-    if (event.request == MappingKeyboard) {
-        x_data::refresh_keyboard_mapping(event);
-    }
+
+    x_data::refresh_keyboard_mapping(event);
+    if (event.request == MappingKeyboard)
+        m_input.grab_keybinds();
 }
 
 void

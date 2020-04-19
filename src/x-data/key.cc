@@ -30,11 +30,17 @@ x_data::refresh_keyboard_mapping(XMappingEvent& event)
 }
 
 void
+x_data::ungrab_grabbed_keys()
+{
+    XUngrabKey(g_dpy, AnyKey, AnyModifier, g_root);
+}
+
+void
 x_data::grab_key(KeySym key, unsigned mask)
 {
-    static const ::std::vector<int> ignored_masks({
-        0, LockMask, Mod2Mask,
-        LockMask|Mod2Mask
+    static const ::std::vector<unsigned> ignored_masks({
+        0, LockMask, g_numlockmask,
+        LockMask|g_numlockmask
     });
 
     int code = XKeysymToKeycode(g_dpy, key);
@@ -46,9 +52,9 @@ x_data::grab_key(KeySym key, unsigned mask)
 void
 x_data::grab_keycode(int keycode, unsigned mask)
 {
-    static const ::std::vector<int> ignored_masks({
-        0, LockMask, Mod2Mask,
-        LockMask|Mod2Mask
+    static const ::std::vector<unsigned> ignored_masks({
+        0, LockMask, g_numlockmask,
+        LockMask|g_numlockmask
     });
 
     for (auto& to_ignore : ignored_masks)

@@ -5,6 +5,13 @@ using namespace x_data;
 
 window_t l_confined;
 
+
+void
+x_data::ungrab_grabbed_buttons()
+{
+    XUngrabButton(g_dpy, AnyButton, AnyModifier, g_root);
+}
+
 void
 x_data::grab_button(unsigned button, unsigned mask)
 {
