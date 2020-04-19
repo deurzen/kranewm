@@ -1,4 +1,5 @@
 #include "key.hh"
+#include "mask.hh"
 #include "display.hh"
 #include "window.hh"
 
@@ -32,13 +33,8 @@ x_data::refresh_keyboard_mapping(XMappingEvent& event)
 void
 x_data::grab_key(KeySym key, unsigned mask)
 {
-    static const ::std::vector<int> ignored_masks({
-        0, LockMask, Mod2Mask,
-        LockMask|Mod2Mask
-    });
-
     int code = XKeysymToKeycode(g_dpy, key);
-    for (auto& to_ignore : ignored_masks)
+    for (auto& to_ignore : g_ignored_masks)
         XGrabKey(g_dpy, code, mask | to_ignore, g_root,
             True, GrabModeAsync, GrabModeAsync);
 }
@@ -46,12 +42,7 @@ x_data::grab_key(KeySym key, unsigned mask)
 void
 x_data::grab_keycode(int keycode, unsigned mask)
 {
-    static const ::std::vector<int> ignored_masks({
-        0, LockMask, Mod2Mask,
-        LockMask|Mod2Mask
-    });
-
-    for (auto& to_ignore : ignored_masks)
+    for (auto& to_ignore : g_ignored_masks)
         XGrabKey(g_dpy, keycode, mask | to_ignore, g_root,
             True, GrabModeAsync, GrabModeAsync);
 }

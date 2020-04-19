@@ -1,6 +1,7 @@
 #ifndef __KRANEWM__PROCESS__GUARD__
 #define __KRANEWM__PROCESS__GUARD__
 
+#include "x-data/mask.hh"
 #include "x-data/key.hh"
 
 #include <deque>
@@ -62,7 +63,7 @@ struct processshortcut_t
 
     inline bool operator==(const processshortcut_t& ps) const
     {
-        return ps.keysym == keysym && ps.mask == mask;
+        return ps.keysym == keysym && x_data::clean_mask(ps.mask) == x_data::clean_mask(mask);
     }
 
     KeySym keysym;
@@ -76,7 +77,7 @@ namespace std
     {
         ::std::size_t operator()(const processshortcut_t& ps) const
         {
-            return ps.keysym + 10000 * ps.mask;
+            return ps.keysym + 10000 * x_data::clean_mask(ps.mask);
         }
     };
 }

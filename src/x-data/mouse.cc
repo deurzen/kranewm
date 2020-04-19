@@ -1,4 +1,5 @@
 #include "mouse.hh"
+#include "mask.hh"
 #include "display.hh"
 
 using namespace x_data;
@@ -8,12 +9,7 @@ window_t l_confined;
 void
 x_data::grab_button(unsigned button, unsigned mask)
 {
-    static const ::std::vector<int> ignored_masks({
-        0, LockMask, Mod2Mask,
-        LockMask|Mod2Mask
-    });
-
-    for (auto& to_ignore : ignored_masks)
+    for (auto& to_ignore : g_ignored_masks)
         XGrabButton(g_dpy, button, mask | to_ignore,
             g_root, True, ButtonPressMask | ButtonReleaseMask,
             GrabModeAsync, GrabModeAsync, None, None);

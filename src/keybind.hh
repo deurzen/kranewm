@@ -3,6 +3,7 @@
 
 #include "commands.hh"
 
+#include "x-data/mask.hh"
 #include "x-data/key.hh"
 
 #include <unordered_map>
@@ -20,7 +21,7 @@ struct keyshortcut_t
 
     inline bool operator==(const keyshortcut_t& ks) const
     {
-        return ks.keysym == keysym && ks.mask == mask;
+        return ks.keysym == keysym && x_data::clean_mask(ks.mask) == x_data::clean_mask(mask);
     }
 
     KeySym keysym;
@@ -34,7 +35,7 @@ namespace std
     {
         ::std::size_t operator()(const keyshortcut_t& ks) const
         {
-            return ks.keysym + 10000 * ks.mask;
+            return ks.keysym + 10000 * x_data::clean_mask(ks.mask);
         }
     };
 }

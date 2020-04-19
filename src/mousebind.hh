@@ -3,6 +3,7 @@
 
 #include "commands.hh"
 
+#include "x-data/mask.hh"
 #include "x-data/mouse.hh"
 
 #include <unordered_map>
@@ -26,7 +27,7 @@ struct mouseshortcut_t
 
     inline bool operator==(const mouseshortcut_t& ms) const
     {
-        return ms.button == button && ms.mask == mask && ms.target == target;
+        return ms.button == button && x_data::clean_mask(ms.mask) == x_data::clean_mask(mask) && ms.target == target;
     }
 
     unsigned button;
@@ -41,7 +42,7 @@ namespace std
     {
         ::std::size_t operator()(const mouseshortcut_t& ms) const
         {
-            return ms.button + 10000 * ms.mask + static_cast<int>(ms.target);
+            return ms.button + 10000 * x_data::clean_mask(ms.mask) + static_cast<int>(ms.target);
         }
     };
 }
