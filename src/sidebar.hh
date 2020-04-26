@@ -56,8 +56,10 @@ public:
         m_ewmh.set_window_type_property(m_unmappedsidebarindicator, "DOCK");
 
         m_ewmh.set_wm_name_property(m_sidebarwin, WMNAME);
+        m_ewmh.set_class_property(m_sidebarwin, WMNAME);
         m_ewmh.set_supporting_wm_check_property(x_data::g_root, m_sidebarwin);
         m_ewmh.set_supporting_wm_check_property(m_sidebarwin, m_sidebarwin);
+        m_ewmh.set_wm_pid_property(m_sidebarwin, getpid());
 
         m_unmappedsidebarindicator.map();
         m_sidebarwin.map();

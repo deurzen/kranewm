@@ -32,6 +32,8 @@ kranewm_t::setup()
         | (IPC_ENABLED * PropertyChangeMask));
 
     m_ewmh.set_wm_name_property(x_data::g_root, WMNAME);
+    m_ewmh.set_class_property(x_data::g_root, WMNAME);
+    m_ewmh.set_wm_pid_property(x_data::g_root, getpid());
 
     m_ewmh.clear_client_list_property();
     m_ewmh.set_desktop_geometry_property();

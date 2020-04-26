@@ -19,12 +19,6 @@ ewmh_t::get_netwm_atom(netwmid_t index)
 }
 
 void
-ewmh_t::set_wm_name_property(x_data::window_t win, const ::std::string& name)
-{
-    x_data::replace_property<x_data::string_t>(win, {"_NET_WM_NAME", name});
-}
-
-void
 ewmh_t::set_supporting_wm_check_property(x_data::window_t win, x_data::window_t check_win)
 {
     x_data::replace_property<x_data::window_t>(win, {"_NET_SUPPORTING_WM_CHECK", check_win});
@@ -102,9 +96,27 @@ ewmh_t::set_window_type_property(x_data::window_t win, const ::std::string& type
 }
 
 void
+ewmh_t::set_wm_name_property(x_data::window_t win, const ::std::string& name)
+{
+    x_data::replace_property<x_data::string_t>(win, {"_NET_WM_NAME", name});
+}
+
+void
+ewmh_t::set_class_property(x_data::window_t win, const ::std::string& inst, ::std::optional<const ::std::string> cls)
+{
+    x_data::replace_property<x_data::string_t>(win, {"WM_CLASS", inst + '\0' + (cls ? *cls : inst)});
+}
+
+void
 ewmh_t::set_wm_desktop_property(x_data::window_t win, unsigned workspace_nr)
 {
     x_data::replace_property<x_data::cardinal_t>(win, {"_NET_WM_DESKTOP", workspace_nr});
+}
+
+void
+ewmh_t::set_wm_pid_property(x_data::window_t win, unsigned pid)
+{
+    x_data::replace_property<x_data::cardinal_t>(win, {"_NET_WM_PID", pid});
 }
 
 void

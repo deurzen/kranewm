@@ -6,6 +6,9 @@
 
 #include <unordered_map>
 
+#include <sys/types.h>
+#include <unistd.h>
+
 
 enum netwmid_t : int
 { // NetWM atom identifiers
@@ -173,7 +176,6 @@ public:
 
     Atom get_netwm_atom(netwmid_t);
 
-    void set_wm_name_property(x_data::window_t, const ::std::string&);
     void set_supporting_wm_check_property(x_data::window_t, x_data::window_t);
     void set_number_of_desktops_property(unsigned&&);
     void set_current_desktop_property(unsigned&&);
@@ -185,7 +187,11 @@ public:
     void set_window_state_property(x_data::window_t, const ::std::string&);
     void set_window_type_property(x_data::window_t, const ::std::string&);
 
+    void set_wm_name_property(x_data::window_t, const ::std::string&);
+    void set_class_property(x_data::window_t, const ::std::string&, ::std::optional<const ::std::string> = ::std::nullopt);
+
     void set_wm_desktop_property(x_data::window_t, unsigned);
+    void set_wm_pid_property(x_data::window_t, unsigned);
 
     void set_desktop_geometry_property();
     void set_desktop_viewport_property();
