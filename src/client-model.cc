@@ -284,14 +284,23 @@ client_model_t::refullscreen_clients()
 void
 client_model_t::save_profile(::std::size_t profile_index)
 {
+    if (!range_t<::std::size_t>::contains(0, m_profiles.size() - 1, profile_index))
+        return;
+
     m_profiles.at(profile_index).save(m_current_workspace);
 }
 
 void
 client_model_t::apply_profile(::std::size_t profile_index)
 {
-    m_profiles.at(profile_index).apply(m_current_workspace);
-    m_current_workspace->arrange();
+    if (!range_t<::std::size_t>::contains(0, m_profiles.size() - 1, profile_index))
+        return;
+
+    auto profile = m_profiles.at(profile_index);
+    if (profile.is_set()) {
+        profile.apply(m_current_workspace);
+        m_current_workspace->arrange();
+    }
 }
 
 void

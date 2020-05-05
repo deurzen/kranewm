@@ -10,6 +10,7 @@ profile_t::save(const user_workspace_ptr_t workspace)
     for (auto& client : workspace->get_all())
         m_geometries.emplace_back(client->float_pos, client->float_dim);
 
+    m_set = true;
     m_nmaster = workspace->get_nmaster();
     m_gapsize = workspace->get_gapsize();
     m_mfactor = workspace->get_mfactor();
