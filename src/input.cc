@@ -99,53 +99,56 @@ command_ptr_t
 inputhandler_t::create_command(commandbind_t commandbind)
 {
     switch (commandbind.get_op()) { // global commands
-    case commandop_t::noop:                    break;
-    case commandop_t::floatingconditional:     return new floatingconditionalcommand_t(m_clients,
+    case commandop_t::noop:                       break;
+    case commandop_t::floatingconditional:        return new floatingconditionalcommand_t(m_clients,
                                                        create_command(*commandbind.get_comp1()),
                                                        create_command(*commandbind.get_comp2()),
                                                        m_target);
-    case commandop_t::quit:                    return new quitcommand_t(m_running);
-    case commandop_t::zoom:                    return new zoomcommand_t(m_clients);
-    case commandop_t::clientmoveforward:       return new clientmoveforwardcommand_t(m_clients);
-    case commandop_t::clientmovebackward:      return new clientmovebackwardcommand_t(m_clients);
-    case commandop_t::clientmarkjump:          return new clientmarkjumpcommand_t(m_clients);
-    case commandop_t::clientmasterjump:        return new clientmasterjumpcommand_t(m_clients);
-    case commandop_t::clientstackjump:         return new clientstackjumpcommand_t(m_clients);
-    case commandop_t::clientlastjump:          return new clientlastjumpcommand_t(m_clients);
-    case commandop_t::clientpanejump:          return new clientpanejumpcommand_t(m_clients);
-    case commandop_t::clientjumpindex:         return new clientjumpindexcommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
-    case commandop_t::clientgrow:              return new clientgrowcommand_t(m_clients, m_target, ::std::get<direction_t>(*commandbind.get_arg()));
-    case commandop_t::clientshrink:            return new clientshrinkcommand_t(m_clients, m_target, ::std::get<direction_t>(*commandbind.get_arg()));
-    case commandop_t::clientmove:              return new clientmovecommand_t(m_clients, m_target, ::std::get<direction_t>(*commandbind.get_arg()));
-    case commandop_t::clientmovemouse:         return new clientmovemousecommand_t(m_clients, m_target);
-    case commandop_t::masterforward:           return new masterforwardcommand_t(m_clients, m_windowstack);
-    case commandop_t::masterbackward:          return new masterbackwardcommand_t(m_clients, m_windowstack);
-    case commandop_t::stackforward:            return new stackforwardcommand_t(m_clients, m_windowstack);
-    case commandop_t::stackbackward:           return new stackbackwardcommand_t(m_clients, m_windowstack);
-    case commandop_t::allforward:              return new allforwardcommand_t(m_clients, m_windowstack);
-    case commandop_t::allbackward:             return new allbackwardcommand_t(m_clients, m_windowstack);
-    case commandop_t::clienticonifyindex:      return new clienticonifyindexcommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
-    case commandop_t::deiconifypop:            return new deiconifypopcommand_t(m_clients);
-    case commandop_t::clientdeiconifyindex:    return new clientdeiconifyindexcommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
-    case commandop_t::reclaimpop:              return new reclaimpopcommand_t(m_clients);
-    case commandop_t::profilesave:             return new profilesavecommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
-    case commandop_t::profileload:             return new profileloadcommand_t(m_clients, m_sidebar, ::std::get<int>(*commandbind.get_arg()));
-    case commandop_t::workspaceset:            return new workspacesetcommand_t(m_clients, m_sidebar, ::std::get<int>(*commandbind.get_arg()));
-    case commandop_t::nextworkspace:           return new nextworkspacecommand_t(m_clients, m_sidebar);
-    case commandop_t::previousworkspace:       return new previousworkspacecommand_t(m_clients, m_sidebar);
-    case commandop_t::workspacemirror:         return new workspacemirrorcommand_t(m_clients);
-    case commandop_t::workspacemfactor:        return new workspacemfactorcommand_t(m_clients, ::std::get<float>(*commandbind.get_arg()));
-    case commandop_t::workspacenmaster:        return new workspacenmastercommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
-    case commandop_t::workspacegapsize:        return new workspacegapsizecommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
-    case commandop_t::workspacelayout:         return new workspacelayoutcommand_t(m_clients, m_windowstack, m_sidebar, ::std::get<layout_t>(*commandbind.get_arg()));
-    case commandop_t::sidebarshow:             return new sidebarshowcommand_t(m_clients, m_sidebar);
-    case commandop_t::sidebarshowall:          return new sidebarshowallcommand_t(m_clients, m_sidebar);
-    case commandop_t::contextset:              return new contextsetcommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
-    case commandop_t::nextcontext:             return new nextcontextcommand_t(m_clients);
-    case commandop_t::previouscontext:         return new previouscontextcommand_t(m_clients);
-    case commandop_t::focusforward:            return new focusforwardcommand_t(m_clients);
-    case commandop_t::focusbackward:           return new focusbackwardcommand_t(m_clients);
-    case commandop_t::external:                return new externalcommand_t(::std::get<::std::string>(*commandbind.get_arg()));
+    case commandop_t::quit:                       return new quitcommand_t(m_running);
+    case commandop_t::zoom:                       return new zoomcommand_t(m_clients);
+    case commandop_t::clientmoveforward:          return new clientmoveforwardcommand_t(m_clients);
+    case commandop_t::clientmovebackward:         return new clientmovebackwardcommand_t(m_clients);
+    case commandop_t::clientmarkjump:             return new clientmarkjumpcommand_t(m_clients);
+    case commandop_t::clientmasterjump:           return new clientmasterjumpcommand_t(m_clients);
+    case commandop_t::clientstackjump:            return new clientstackjumpcommand_t(m_clients);
+    case commandop_t::clientlastjump:             return new clientlastjumpcommand_t(m_clients);
+    case commandop_t::clientpanejump:             return new clientpanejumpcommand_t(m_clients);
+    case commandop_t::clientjumpindex:            return new clientjumpindexcommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
+    case commandop_t::clientgrow:                 return new clientgrowcommand_t(m_clients, m_target, ::std::get<direction_t>(*commandbind.get_arg()));
+    case commandop_t::clientshrink:               return new clientshrinkcommand_t(m_clients, m_target, ::std::get<direction_t>(*commandbind.get_arg()));
+    case commandop_t::clientmove:                 return new clientmovecommand_t(m_clients, m_target, ::std::get<direction_t>(*commandbind.get_arg()));
+    case commandop_t::clientmovemouse:            return new clientmovemousecommand_t(m_clients, m_target);
+    case commandop_t::masterforward:              return new masterforwardcommand_t(m_clients, m_windowstack);
+    case commandop_t::masterbackward:             return new masterbackwardcommand_t(m_clients, m_windowstack);
+    case commandop_t::stackforward:               return new stackforwardcommand_t(m_clients, m_windowstack);
+    case commandop_t::stackbackward:              return new stackbackwardcommand_t(m_clients, m_windowstack);
+    case commandop_t::allforward:                 return new allforwardcommand_t(m_clients, m_windowstack);
+    case commandop_t::allbackward:                return new allbackwardcommand_t(m_clients, m_windowstack);
+    case commandop_t::clienticonifyindex:         return new clienticonifyindexcommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
+    case commandop_t::deiconifypop:               return new deiconifypopcommand_t(m_clients);
+    case commandop_t::clientdeiconifyindex:       return new clientdeiconifyindexcommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
+    case commandop_t::reclaimpop:                 return new reclaimpopcommand_t(m_clients);
+    case commandop_t::profilesave:                return new profilesavecommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
+    case commandop_t::profileload:                return new profileloadcommand_t(m_clients, m_sidebar, ::std::get<int>(*commandbind.get_arg()));
+    case commandop_t::workspaceset:               return new workspacesetcommand_t(m_clients, m_sidebar, ::std::get<int>(*commandbind.get_arg()));
+    case commandop_t::nextworkspace:              return new nextworkspacecommand_t(m_clients, m_sidebar);
+    case commandop_t::previousworkspace:          return new previousworkspacecommand_t(m_clients, m_sidebar);
+    case commandop_t::workspacemirror:            return new workspacemirrorcommand_t(m_clients);
+    case commandop_t::workspacemfactor:           return new workspacemfactorcommand_t(m_clients, ::std::get<float>(*commandbind.get_arg()));
+    case commandop_t::workspacenmaster:           return new workspacenmastercommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
+    case commandop_t::workspacegapsize:           return new workspacegapsizecommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
+    case commandop_t::workspacelayout:            return new workspacelayoutcommand_t(m_clients,
+                                                       m_windowstack, m_sidebar, ::std::get<layout_t>(*commandbind.get_arg()));
+    case commandop_t::workspacelayoutpreservedim: return new workspacelayoutpreservedimcommand_t(m_clients,
+                                                       m_windowstack, m_sidebar, ::std::get<layout_t>(*commandbind.get_arg()));
+    case commandop_t::sidebarshow:                return new sidebarshowcommand_t(m_clients, m_sidebar);
+    case commandop_t::sidebarshowall:             return new sidebarshowallcommand_t(m_clients, m_sidebar);
+    case commandop_t::contextset:                 return new contextsetcommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
+    case commandop_t::nextcontext:                return new nextcontextcommand_t(m_clients);
+    case commandop_t::previouscontext:            return new previouscontextcommand_t(m_clients);
+    case commandop_t::focusforward:               return new focusforwardcommand_t(m_clients);
+    case commandop_t::focusbackward:              return new focusbackwardcommand_t(m_clients);
+    case commandop_t::external:                   return new externalcommand_t(::std::get<::std::string>(*commandbind.get_arg()));
     default: break;
     }
 

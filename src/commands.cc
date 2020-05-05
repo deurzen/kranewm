@@ -621,6 +621,19 @@ workspacelayoutcommand_t::execute()
 }
 
 void
+workspacelayoutpreservedimcommand_t::execute()
+{
+    m_clients.active_workspace()->set_layout(m_layout);
+    m_windowstack.apply(m_clients.active_workspace());
+
+    for (auto& client : m_clients.active_workspace()->get_all())
+        client->resize(client->dim).move(client->pos);
+
+    m_clients.active_workspace()->arrange();
+    m_sidebar.draw_layoutsymbol();
+}
+
+void
 focusforwardcommand_t::execute()
 {
     m_clients.cycle_focus_forward();

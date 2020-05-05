@@ -37,7 +37,8 @@ enum class commandop_t
     clientdisown, reclaimpop,
     profilesave, profileload,
     workspaceset, nextworkspace, previousworkspace,
-    workspacemirror, workspacemfactor, workspacenmaster, workspacegapsize, workspacelayout,
+    workspacemirror, workspacemfactor, workspacenmaster, workspacegapsize,
+    workspacelayout, workspacelayoutpreservedim,
     sidebarshow, sidebarshowall,
     contextset, nextcontext, previouscontext,
     focusforward, focusbackward,
@@ -1268,6 +1269,30 @@ private:
     layout_t m_layout;
 
 }* workspacelayoutcommand_ptr_t;
+
+
+
+typedef class workspacelayoutpreservedimcommand_t : public command_t
+{
+public:
+    explicit workspacelayoutpreservedimcommand_t(client_model_t& clients, windowstack_t& windowstack,
+        sidebar_t& sidebar, layout_t layout)
+        : command_t(true),
+          m_clients(clients),
+          m_windowstack(windowstack),
+          m_sidebar(sidebar),
+          m_layout(layout)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    windowstack_t& m_windowstack;
+    sidebar_t& m_sidebar;
+    layout_t m_layout;
+
+}* workspacelayoutpreservedimcommand_ptr_t;
 
 
 
