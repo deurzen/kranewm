@@ -48,16 +48,19 @@ retrieve_rule(rules_t& rules, x_data::window_t& win)
         same_title = !rule_title.compare(title) || rule_title.empty();
 
         if (same_cls && same_inst && same_title) {
-            if (rule.workspace != 0)
-                workspace = rule.workspace;
-            floating = rule.floating;
-            center   = rule.center;
-            nohint   = rule.nohint;
-            if (rule.autoclose != OFF) {
+            if (rule.workspace && *rule.workspace != 0)
+                workspace = *rule.workspace;
+
+            floating = rule.floating ? *rule.floating : floating;
+            center   = rule.center   ? *rule.center   : center;
+            nohint   = rule.nohint   ? *rule.nohint   : nohint;
+
+            if (rule.autoclose && *rule.autoclose != OFF) {
                 autoclose = true;
-                if (rule.autoclose == ONCE)
-                    rule.autoclose = OFF;
+                if (*rule.autoclose == ONCE)
+                    *rule.autoclose = OFF;
             }
+
             return zip_rules(
                 {floating, center, false, autoclose, nohint, workspace},
                 global_rule
@@ -74,6 +77,7 @@ retrieve_rule(rules_t& rules, x_data::window_t& win)
 rule_t
 parse_global_rule(x_data::window_t& win)
 {
+    bool invert     = false;
     bool floating   = false;
     bool center     = false;
     bool fullscreen = false;
@@ -92,12 +96,19 @@ parse_global_rule(x_data::window_t& win)
             ::std::string::const_iterator it = rule_flags.begin();
 
             while (it < rule_flags.end()) {
+                bool set_val = true;
+                if (invert) {
+                    set_val = false;
+                    invert = false;
+                }
+
                 switch(*it) {
-                case 'f': floating   = true; break;
-                case 'c': center     = true; break;
-                case 'F': fullscreen = true; break;
-                case 'a': autoclose  = true; break;
-                case 'n': nohint     = true; break;
+                case '!': invert     = true; break;
+                case 'f': floating   = set_val; break;
+                case 'c': center     = set_val; break;
+                case 'F': fullscreen = set_val; break;
+                case 'a': autoclose  = set_val; break;
+                case 'n': nohint     = set_val; break;
                 case 'w':
                     {
                         if (it + 1 == rule_flags.end()) break;

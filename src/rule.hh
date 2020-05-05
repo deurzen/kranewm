@@ -2,6 +2,7 @@
 #define __KRANEWM__RULE__GUARD__
 
 #include <map>
+#include <optional>
 #include <tuple>
 
 // fwd decls
@@ -17,19 +18,20 @@ enum autoclosemethod {
 
 struct rulespec_t
 {
-    rulespec_t(bool _floating, bool _center, autoclosemethod _autoclose,
-        bool _nohint, ::std::size_t _workspace)
+    rulespec_t(::std::optional<bool> _floating, ::std::optional<bool> _center,
+        ::std::optional<autoclosemethod> _autoclose, ::std::optional<bool> _nohint,
+        ::std::optional<::std::size_t> _workspace)
         : floating(_floating),
           center(_center),
           autoclose(_autoclose),
           nohint(_nohint),
           workspace(_workspace) {}
 
-    bool floating;
-    bool center;
-    autoclosemethod autoclose;
-    bool nohint;
-    ::std::size_t workspace;
+    ::std::optional<bool> floating;
+    ::std::optional<bool> center;
+    ::std::optional<autoclosemethod> autoclose;
+    ::std::optional<bool> nohint;
+    ::std::optional<::std::size_t> workspace;
 };
 
 struct rule_t
@@ -54,8 +56,19 @@ struct rule_t
 inline bool
 operator<(const rulespec_t& r1, const rulespec_t& r2)
 {
-    return (r1.floating + r1.center + r1.autoclose + r1.nohint + r1.workspace)
-        == (r2.floating + r2.center + r2.autoclose + r2.nohint + r2.workspace);
+    auto zip1 = (r1.floating  ? (*r1.floating  << 0) : 0)
+              + (r1.center    ? (*r1.center    << 1) : 0)
+              + (r1.autoclose ? (*r1.autoclose << 2) : 0)
+              + (r1.nohint    ? (*r1.nohint    << 3) : 0)
+              + (r1.workspace ? (*r1.workspace << 4) : 0);
+
+    auto zip2 = (r2.floating  ? (*r2.floating  << 0) : 0)
+              + (r2.center    ? (*r2.center    << 1) : 0)
+              + (r2.autoclose ? (*r2.autoclose << 2) : 0)
+              + (r2.nohint    ? (*r2.nohint    << 3) : 0)
+              + (r2.workspace ? (*r2.workspace << 4) : 0);
+
+    return zip1 == zip2;
 }
 
 typedef ::std::tuple<::std::string, ::std::string, ::std::string> ruleid_t;

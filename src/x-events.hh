@@ -10,6 +10,7 @@
 #define YES true
 #define NO  false
 #define CURRENT 0
+#define ANY ::std::nullopt
 
 // fwd decls
 class ewmh_t;
@@ -35,25 +36,25 @@ public:
           m_running(true),
           m_input(sidebar, clients, windowstack, processes, m_running),
           m_rules({
-              //  class                  inst          title      float center close nohint workspace
-              { { "Anki",                ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
-              { { "Artha",               ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
-              { { "Gimp",                ALL,          ALL },   { YES,   NO,    OFF,  NO,         4 } },
-              { { "GoldenDict",          ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
-              { { "Gpick",               ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
-              { { "Inkscape",            ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
-              { { "Qalculate-gtk",       ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
-              { { "Rhythmbox",           ALL,          ALL },   { YES,  YES,   ONCE,  NO,   CURRENT } },
-              { { "cantata",             ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
-              { { "feh",                 ALL,          ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
-              { { "firefox",             ALL,          ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
-              { { "Firefox",             ALL,          ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
-              { { "gnucash",             ALL,          ALL },   { YES,   NO,    OFF,  NO,         5 } },
-              { { "mate-volume-control", ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
-              { { "nixnote2",            ALL,          ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
-              { { "noson",               ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
-              { { "noson-gui",           ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
-              { { "st-256color",         ALL,          ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
+              //  class                  inst  title      float center close nohint workspace
+              { { "Anki",                ALL,  ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
+              { { "Artha",               ALL,  ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
+              { { "Gimp",                ALL,  ALL },   { YES,   NO,    OFF,  NO,         4 } },
+              { { "GoldenDict",          ALL,  ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
+              { { "Gpick",               ALL,  ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
+              { { "Inkscape",            ALL,  ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
+              { { "Qalculate-gtk",       ALL,  ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
+              { { "Rhythmbox",           ALL,  ALL },   { YES,  YES,   ONCE,  NO,   CURRENT } },
+              { { "cantata",             ALL,  ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
+              { { "feh",                 ALL,  ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
+              { { "firefox",             ALL,  ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
+              { { "Firefox",             ALL,  ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
+              { { "Gnucash",             ALL,  ALL },   { YES,   NO,    OFF,  NO,         5 } },
+              { { "mate-volume-control", ALL,  ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
+              { { "nixnote2",            ALL,  ALL },   { YES,  YES,    OFF, YES,   CURRENT } },
+              { { "noson",               ALL,  ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
+              { { "noson-gui",           ALL,  ALL },   { YES,  YES,    OFF,  NO,   CURRENT } },
+              { { "st-256color",         ALL,  ALL },   {  NO,  YES,    OFF,  NO,   CURRENT } },
           }) {}
 
     bool step();
@@ -94,5 +95,6 @@ private:
 #undef YES
 #undef NO
 #undef CURRENT
+#undef ANY
 
 #endif//__KRANEWM__X_EVENTS__GUARD__
