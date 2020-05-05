@@ -71,7 +71,8 @@ typedef struct client_t
     client_t& unmap_children();
 
     client_t& center();
-    client_t& snap(snapedge_t);
+    client_t& snapmove(snapedge_t);
+    client_t& snapresize(snapedge_t);
 
     ::std::string       name;
     x_data::window_t    win;

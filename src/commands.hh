@@ -23,8 +23,9 @@ enum class commandop_t
     floatingconditional,
     quit,
     zoom,
-    clientfloat, clientfullscreen, clientsticky, clientabove, clientbelow,
-    clientcenter, clientsnapnorth, clientsnapeast, clientsnapsouth, clientsnapwest,
+    clientfloat, clientfullscreen, clientsticky, clientabove, clientbelow, clientcenter,
+    clientsnapmovenorth, clientsnapmoveeast, clientsnapmovesouth, clientsnapmovewest,
+    clientsnapresizenorth, clientsnapresizeeast, clientsnapresizesouth, clientsnapresizewest,
     clientkill,
     clientmoveforward, clientmovebackward,
     clientmarkset, clientmarkjump,
@@ -370,10 +371,10 @@ private:
 
 
 
-typedef class clientsnapnorthcommand_t : public command_t
+typedef class clientsnapmovenorthcommand_t : public command_t
 {
 public:
-    explicit clientsnapnorthcommand_t(client_model_t& clients, client_ptr_t client)
+    explicit clientsnapmovenorthcommand_t(client_model_t& clients, client_ptr_t client)
         : command_t(false),
           m_clients(clients),
           m_client(client)
@@ -385,14 +386,14 @@ private:
     client_model_t& m_clients;
     client_ptr_t m_client;
 
-}* clientsnapnorthcommand_ptr_t;
+}* clientsnapmovenorthcommand_ptr_t;
 
 
 
-typedef class clientsnapeastcommand_t : public command_t
+typedef class clientsnapmoveeastcommand_t : public command_t
 {
 public:
-    explicit clientsnapeastcommand_t(client_model_t& clients, client_ptr_t client)
+    explicit clientsnapmoveeastcommand_t(client_model_t& clients, client_ptr_t client)
         : command_t(false),
           m_clients(clients),
           m_client(client)
@@ -404,14 +405,14 @@ private:
     client_model_t& m_clients;
     client_ptr_t m_client;
 
-}* clientsnapeastcommand_ptr_t;
+}* clientsnapmoveeastcommand_ptr_t;
 
 
 
-typedef class clientsnapsouthcommand_t : public command_t
+typedef class clientsnapmovesouthcommand_t : public command_t
 {
 public:
-    explicit clientsnapsouthcommand_t(client_model_t& clients, client_ptr_t client)
+    explicit clientsnapmovesouthcommand_t(client_model_t& clients, client_ptr_t client)
         : command_t(false),
           m_clients(clients),
           m_client(client)
@@ -423,14 +424,14 @@ private:
     client_model_t& m_clients;
     client_ptr_t m_client;
 
-}* clientsnapsouthcommand_ptr_t;
+}* clientsnapmovesouthcommand_ptr_t;
 
 
 
-typedef class clientsnapwestcommand_t : public command_t
+typedef class clientsnapmovewestcommand_t : public command_t
 {
 public:
-    explicit clientsnapwestcommand_t(client_model_t& clients, client_ptr_t client)
+    explicit clientsnapmovewestcommand_t(client_model_t& clients, client_ptr_t client)
         : command_t(false),
           m_clients(clients),
           m_client(client)
@@ -442,7 +443,83 @@ private:
     client_model_t& m_clients;
     client_ptr_t m_client;
 
-}* clientsnapwestcommand_ptr_t;
+}* clientsnapmovewestcommand_ptr_t;
+
+
+
+typedef class clientsnapresizenorthcommand_t : public command_t
+{
+public:
+    explicit clientsnapresizenorthcommand_t(client_model_t& clients, client_ptr_t client)
+        : command_t(false),
+          m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientsnapresizenorthcommand_ptr_t;
+
+
+
+typedef class clientsnapresizeeastcommand_t : public command_t
+{
+public:
+    explicit clientsnapresizeeastcommand_t(client_model_t& clients, client_ptr_t client)
+        : command_t(false),
+          m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientsnapresizeeastcommand_ptr_t;
+
+
+
+typedef class clientsnapresizesouthcommand_t : public command_t
+{
+public:
+    explicit clientsnapresizesouthcommand_t(client_model_t& clients, client_ptr_t client)
+        : command_t(false),
+          m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientsnapresizesouthcommand_ptr_t;
+
+
+
+typedef class clientsnapresizewestcommand_t : public command_t
+{
+public:
+    explicit clientsnapresizewestcommand_t(client_model_t& clients, client_ptr_t client)
+        : command_t(false),
+          m_clients(clients),
+          m_client(client)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+
+}* clientsnapresizewestcommand_ptr_t;
 
 
 

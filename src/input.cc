@@ -160,10 +160,14 @@ inputhandler_t::create_command(commandbind_t commandbind)
         case commandop_t::clientabove:             return new clientabovecommand_t(m_clients, m_sidebar, m_target);
         case commandop_t::clientbelow:             return new clientbelowcommand_t(m_clients, m_sidebar, m_target);
         case commandop_t::clientcenter:            return new clientcentercommand_t(m_clients, m_target);
-        case commandop_t::clientsnapnorth:         return new clientsnapnorthcommand_t(m_clients, m_target);
-        case commandop_t::clientsnapeast:          return new clientsnapeastcommand_t(m_clients, m_target);
-        case commandop_t::clientsnapsouth:         return new clientsnapsouthcommand_t(m_clients, m_target);
-        case commandop_t::clientsnapwest:          return new clientsnapwestcommand_t(m_clients, m_target);
+        case commandop_t::clientsnapmovenorth:     return new clientsnapmovenorthcommand_t(m_clients, m_target);
+        case commandop_t::clientsnapmoveeast:      return new clientsnapmoveeastcommand_t(m_clients, m_target);
+        case commandop_t::clientsnapmovesouth:     return new clientsnapmovesouthcommand_t(m_clients, m_target);
+        case commandop_t::clientsnapmovewest:      return new clientsnapmovewestcommand_t(m_clients, m_target);
+        case commandop_t::clientsnapresizenorth:   return new clientsnapresizenorthcommand_t(m_clients, m_target);
+        case commandop_t::clientsnapresizeeast:    return new clientsnapresizeeastcommand_t(m_clients, m_target);
+        case commandop_t::clientsnapresizesouth:   return new clientsnapresizesouthcommand_t(m_clients, m_target);
+        case commandop_t::clientsnapresizewest:    return new clientsnapresizewestcommand_t(m_clients, m_target);
         case commandop_t::clientkill:              return new clientkillcommand_t(m_target);
         case commandop_t::clientmarkset:           return new clientmarksetcommand_t(m_clients, m_target);
         case commandop_t::clientworkspace:         return new clientworkspacecommand_t(m_clients, m_target, ::std::get<int>(*commandbind.get_arg()));

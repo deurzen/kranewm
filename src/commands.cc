@@ -95,46 +95,90 @@ clientcentercommand_t::execute()
 }
 
 void
-clientsnapnorthcommand_t::execute()
+clientsnapmovenorthcommand_t::execute()
 {
     if (!m_client->fullscreen && (m_client->floating
         || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
         || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
     {
-        m_client->snap(snapedge_t::north);
+        m_client->snapmove(snapedge_t::north);
     }
 }
 
 void
-clientsnapeastcommand_t::execute()
+clientsnapmoveeastcommand_t::execute()
 {
     if (!m_client->fullscreen && (m_client->floating
         || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
         || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
     {
-        m_client->snap(snapedge_t::east);
+        m_client->snapmove(snapedge_t::east);
     }
 }
 
 void
-clientsnapsouthcommand_t::execute()
+clientsnapmovesouthcommand_t::execute()
 {
     if (!m_client->fullscreen && (m_client->floating
         || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
         || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
     {
-        m_client->snap(snapedge_t::south);
+        m_client->snapmove(snapedge_t::south);
     }
 }
 
 void
-clientsnapwestcommand_t::execute()
+clientsnapmovewestcommand_t::execute()
 {
     if (!m_client->fullscreen && (m_client->floating
         || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
         || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
     {
-        m_client->snap(snapedge_t::west);
+        m_client->snapmove(snapedge_t::west);
+    }
+}
+
+void
+clientsnapresizenorthcommand_t::execute()
+{
+    if (!m_client->fullscreen && (m_client->floating
+        || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
+        || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
+    {
+        m_client->snapresize(snapedge_t::north);
+    }
+}
+
+void
+clientsnapresizeeastcommand_t::execute()
+{
+    if (!m_client->fullscreen && (m_client->floating
+        || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
+        || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
+    {
+        m_client->snapresize(snapedge_t::east);
+    }
+}
+
+void
+clientsnapresizesouthcommand_t::execute()
+{
+    if (!m_client->fullscreen && (m_client->floating
+        || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
+        || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
+    {
+        m_client->snapresize(snapedge_t::south);
+    }
+}
+
+void
+clientsnapresizewestcommand_t::execute()
+{
+    if (!m_client->fullscreen && (m_client->floating
+        || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
+        || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
+    {
+        m_client->snapresize(snapedge_t::west);
     }
 }
 

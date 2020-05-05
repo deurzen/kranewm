@@ -228,7 +228,7 @@ client_t::center()
 }
 
 client_t&
-client_t::snap(snapedge_t edge)
+client_t::snapmove(snapedge_t edge)
 {
     auto attrs = x_data::get_attributes(frame);
     auto root_attrs = x_data::get_attributes(x_data::g_root);
@@ -238,6 +238,23 @@ client_t::snap(snapedge_t edge)
     case snapedge_t::east:  move({root_attrs.w() - attrs.w() - SNAP_OFFSET, attrs.y()}); break;
     case snapedge_t::south: move({attrs.x(), root_attrs.h() - attrs.h() - SNAP_OFFSET}); break;
     case snapedge_t::west:  move({SNAP_OFFSET, attrs.y()});                              break;
+    default: break;
+    }
+
+    return *this;
+}
+
+client_t&
+client_t::snapresize(snapedge_t edge)
+{
+    auto attrs = x_data::get_attributes(frame);
+    auto root_attrs = x_data::get_attributes(x_data::g_root);
+
+    switch (edge) {
+    case snapedge_t::north: move({attrs.x(), SNAP_OFFSET}); resize({attrs.w(), attrs.y() + attrs.h() - SNAP_OFFSET}); break;
+    case snapedge_t::east:  resize({root_attrs.w() - SNAP_OFFSET - attrs.x(), attrs.h()});                            break;
+    case snapedge_t::south: resize({attrs.w(), root_attrs.h() - SNAP_OFFSET - attrs.y()});                            break;
+    case snapedge_t::west:  move({SNAP_OFFSET, attrs.y()}); resize({attrs.x() + attrs.w() - SNAP_OFFSET, attrs.h()}); break;
     default: break;
     }
 
