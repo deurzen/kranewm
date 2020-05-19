@@ -609,7 +609,7 @@ workspacegapsizecommand_t::execute()
 {
     auto gapsize = m_clients.active_workspace()->get_gapsize();
 
-    if ((m_delta < 0 && gapsize > 0) || (m_delta > 0 && gapsize < MAX_NMASTER))
+    if ((m_delta < 0 && gapsize > 0) || (m_delta > 0 && gapsize < MAX_GAPSIZE))
         m_clients.active_workspace()->set_gapsize(gapsize + m_delta).arrange();
     else if (m_delta == 0)
         m_clients.active_workspace()->set_gapsize(0).arrange();

@@ -30,7 +30,7 @@ const int SECMASK = Mod4Mask;
 const int KB_RESIZE_INCREMENT = 15;
 const int KB_MOVE_INCREMENT   = 15;
 
-const int MAX_GAPSIZE = 200;
+const int MAX_GAPSIZE = 250;
 const int MAX_NMASTER = 50;
 
 const int MIN_WINDOW_SIZE = 50;
