@@ -12,7 +12,7 @@ void
 layouthandler_t::layout_floating(const user_workspace_t& workspace) const
 {
     for (auto& client : workspace.get_all())
-        if (!client->fullscreen)
+        if (!(!client->in_window && client->fullscreen))
             client->resize(client->float_dim, true).move(client->float_pos, true);
 }
 
@@ -21,7 +21,7 @@ layouthandler_t::layout_tile(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+        [](client_ptr_t client) { return client->floating || (!client->in_window && client->fullscreen); }), clients.end());
 
     if (clients.empty())
         return;
@@ -88,7 +88,7 @@ layouthandler_t::layout_stick(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+        [](client_ptr_t client) { return client->floating || (!client->in_window && client->fullscreen); }), clients.end());
 
     if (clients.empty())
         return;
@@ -156,7 +156,7 @@ layouthandler_t::layout_deck(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+        [](client_ptr_t client) { return client->floating || (!client->in_window && client->fullscreen); }), clients.end());
 
     if (clients.empty())
         return;
@@ -216,7 +216,7 @@ layouthandler_t::layout_doubledeck(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+        [](client_ptr_t client) { return client->floating || (!client->in_window && client->fullscreen); }), clients.end());
 
     if (clients.empty())
         return;
@@ -269,7 +269,7 @@ layouthandler_t::layout_sdeck(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+        [](client_ptr_t client) { return client->floating || (!client->in_window && client->fullscreen); }), clients.end());
 
     if (clients.empty())
         return;
@@ -330,7 +330,7 @@ layouthandler_t::layout_sdoubledeck(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+        [](client_ptr_t client) { return client->floating || (!client->in_window && client->fullscreen); }), clients.end());
 
     if (clients.empty())
         return;
@@ -384,7 +384,7 @@ layouthandler_t::layout_grid(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+        [](client_ptr_t client) { return client->floating || (!client->in_window && client->fullscreen); }), clients.end());
 
     if (clients.empty())
         return;
@@ -446,7 +446,7 @@ layouthandler_t::layout_pillar(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+        [](client_ptr_t client) { return client->floating || (!client->in_window && client->fullscreen); }), clients.end());
 
     if (clients.empty())
         return;
@@ -558,7 +558,7 @@ layouthandler_t::layout_column(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+        [](client_ptr_t client) { return client->floating || (!client->in_window && client->fullscreen); }), clients.end());
 
     if (clients.empty())
         return;
@@ -638,7 +638,7 @@ layouthandler_t::layout_monocle(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+        [](client_ptr_t client) { return client->floating || (!client->in_window && client->fullscreen); }), clients.end());
 
     if (clients.empty())
         return;
@@ -661,7 +661,7 @@ layouthandler_t::layout_center(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+        [](client_ptr_t client) { return client->floating || (!client->in_window && client->fullscreen); }), clients.end());
 
     if (clients.empty())
         return;
@@ -694,7 +694,7 @@ layouthandler_t::layout_centerstack(const user_workspace_t& workspace) const
 {
     auto clients = workspace.get_all();
     clients.erase(::std::remove_if(clients.begin(), clients.end(),
-        [](client_ptr_t client) { return client->floating || client->fullscreen; }), clients.end());
+        [](client_ptr_t client) { return client->floating || (!client->in_window && client->fullscreen); }), clients.end());
 
     if (clients.empty())
         return;

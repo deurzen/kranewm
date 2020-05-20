@@ -526,7 +526,7 @@ client_model_t::set_above(client_ptr_t client, clientaction_t action)
             if (client->disowned || m_above_clients.count(client))
                 return;
 
-            if (client->fullscreen)
+            if (!client->in_window && client->fullscreen)
                 set_fullscreen(client, clientaction_t::remove);
 
             if (client->below)
@@ -569,7 +569,7 @@ client_model_t::set_below(client_ptr_t client, clientaction_t action)
             if (client->disowned || m_below_clients.count(client))
                 return;
 
-            if (client->fullscreen)
+            if (!client->in_window && client->fullscreen)
                 set_fullscreen(client, clientaction_t::remove);
 
             if (client->above)
@@ -673,7 +673,7 @@ client_model_t::set_disowned(client_ptr_t client, clientaction_t action, bool by
             if (m_disowned_clients.count(client) || client->sticky)
                 return;
 
-            if (client->fullscreen)
+            if (!client->in_window && client->fullscreen)
                 set_fullscreen(client, clientaction_t::remove);
 
             auto workspace = client_user_workspace(client);
