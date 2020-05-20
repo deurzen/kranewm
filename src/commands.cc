@@ -2,6 +2,7 @@
 
 #include "client-model.hh"
 #include "sidebar.hh"
+#include "group.hh"
 
 #include "x-data/window.hh"
 
@@ -402,6 +403,18 @@ void
 clientresizemousecommand_t::execute()
 {
     m_clients.start_resizing(m_client);
+}
+
+void
+clientgroupcommand_t::execute()
+{
+    m_groups.group_client(m_client, m_number);
+}
+
+void
+clientdegroupcommand_t::execute()
+{
+    m_groups.degroup_client(m_client);
 }
 
 void

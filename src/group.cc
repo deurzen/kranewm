@@ -28,7 +28,7 @@ group_t::diffuse_event(XKeyEvent* event) const
 void
 grouphandler_t::group_client(client_ptr_t client, size_t group_nr)
 {
-    if (!range_t<size_t>::contains(0, m_groups.size() - 1, group_nr))
+    if (!range_t<size_t>::contains(0, m_groups.size() - 1, group_nr) || m_clientgroups.count(client))
         return;
 
     auto group = m_groups.at(group_nr);

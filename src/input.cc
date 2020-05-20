@@ -177,6 +177,7 @@ inputhandler_t::create_command(commandbind_t commandbind)
         case commandop_t::clientnextcontext:       return new clientnextcontextcommand_t(m_clients, m_target);
         case commandop_t::clientpreviouscontext:   return new clientpreviouscontextcommand_t(m_clients, m_target);
         case commandop_t::clientresizemouse:       return new clientresizemousecommand_t(m_clients, m_target);
+        case commandop_t::clientgroup:             return new clientgroupcommand_t(m_clients, m_target);
         case commandop_t::clienticonify:           return new clienticonifycommand_t(m_clients, m_target);
         case commandop_t::clientdisown:            return new clientdisowncommand_t(m_clients, m_target);
         default: break;

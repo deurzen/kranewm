@@ -34,7 +34,7 @@ const int MAX_GAPSIZE = 200;
 const int MAX_NMASTER = 50;
 
 const int MIN_WINDOW_SIZE = 50;
-const int SIDEBAR_WIDTH   = 12;
-const int SNAP_OFFSET     = 15;
+const int SIDEBAR_WIDTH   = 14;
+const int SNAP_OFFSET     = 18;
 
 #endif//__KRANEWM__COMMON__GUARD__

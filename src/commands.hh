@@ -13,6 +13,7 @@ class client_model_t;
 class windowstack_t;
 class sidebar_t;
 class processjumplist_t;
+class grouphandler_t;
 typedef class client_t* client_ptr_t;
 typedef class command_t* command_ptr_t;
 
@@ -33,6 +34,7 @@ enum class commandop_t
     clientworkspace, clientnextworkspace, clientpreviousworkspace,
     clientcontext, clientnextcontext, clientpreviouscontext,
     clientgrow, clientshrink, clientmove, clientmovemouse, clientresizemouse,
+    clientgroup, clientdegroup,
     masterforward, masterbackward, stackforward, stackbackward, allforward, allbackward,
     clienticonify, clienticonifyindex, deiconifypop, clientdeiconifyindex,
     clientdisown, reclaimpop,
@@ -924,6 +926,48 @@ private:
     client_ptr_t m_client;
 
 }* clientresizemousecommand_ptr_t;
+
+
+
+typedef class clientgroupcommand_t : public command_t
+{
+public:
+    explicit clientgroupcommand_t(grouphandler_t& groups, client_ptr_t client, unsigned number)
+        : command_t(false),
+          m_groups(groups),
+          m_client(client),
+          m_number(number)
+    {}
+
+    void execute() override;
+
+private:
+    grouphandler_t& m_groups;
+    client_ptr_t m_client;
+    unsigned m_number;
+
+}* clientgroupcommand_ptr_t;
+
+
+
+typedef class clientdegroupcommand_t : public command_t
+{
+public:
+    explicit clientdegroupcommand_t(grouphandler_t& groups, client_ptr_t client, unsigned number)
+        : command_t(false),
+          m_groups(groups),
+          m_client(client),
+          m_number(number)
+    {}
+
+    void execute() override;
+
+private:
+    grouphandler_t& m_groups;
+    client_ptr_t m_client;
+    unsigned m_number;
+
+}* clientdegroupcommand_ptr_t;
 
 
 

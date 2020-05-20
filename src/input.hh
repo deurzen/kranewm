@@ -7,6 +7,7 @@
 #include "keybind.hh"
 #include "mousebind.hh"
 #include "process.hh"
+#include "group.hh"
 
 #include "x-data/event.hh"
 
@@ -32,6 +33,7 @@ public:
           m_windowstack(windowstack),
           m_processes(processes),
           m_running(running),
+          m_groups({}),
           m_processbinds({
               //  keysym  mask                           class
               { { XK_b,   MODMASK             },      "Firefox" },
@@ -278,6 +280,7 @@ private:
     windowstack_t& m_windowstack;
     processjumplist_t& m_processes;
     bool& m_running;
+    grouphandler_t m_groups;
     processbinds_t m_processbinds;
     mousebinds_t m_mousebinds;
     keybinds_t m_keybinds;

@@ -4,7 +4,7 @@
 #include <string>
 
 
-const ::std::string FONTNAME = "-*-terminus-*-*-*-*-*-*-*-*-*-*-*-*";
+const ::std::string FONTNAME = "-*-terminus-medium-*-normal-*-14-*-*-*-*-*-*-*";
 
 const int BORDER_HEIGHT = 3;
 
