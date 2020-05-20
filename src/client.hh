@@ -49,6 +49,7 @@ typedef struct client_t
           focused(false),
           floating(rule.floating),
           above(false),
+          in_window(false),
           fullscreen(rule.fullscreen),
           below(false),
           urgent(false),
@@ -86,6 +87,7 @@ typedef struct client_t
     bool                focused;
     bool                floating;
     bool                above;
+    bool                in_window;
     bool                fullscreen;
     bool                below;
     bool                urgent;

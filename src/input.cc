@@ -156,6 +156,7 @@ inputhandler_t::create_command(commandbind_t commandbind)
         switch (commandbind.get_op()) { // target client commands
         case commandop_t::clientfloat:             return new clientfloatcommand_t(m_clients, m_windowstack, m_sidebar, m_target);
         case commandop_t::clientfullscreen:        return new clientfullscreencommand_t(m_clients, m_sidebar, m_target);
+        case commandop_t::clientinwindow:          return new clientinwindowcommand_t(m_clients, m_sidebar, m_target);
         case commandop_t::clientsticky:            return new clientstickycommand_t(m_clients, m_sidebar, m_target);
         case commandop_t::clientabove:             return new clientabovecommand_t(m_clients, m_sidebar, m_target);
         case commandop_t::clientbelow:             return new clientbelowcommand_t(m_clients, m_sidebar, m_target);

@@ -161,6 +161,7 @@ public:
               { { XK_9,            MODMASK|ShiftMask },   { commandop_t::clientworkspace, 9 }                                       },
               { { XK_bracketleft,  MODMASK|ShiftMask },   { commandop_t::clientpreviousworkspace }                                  },
               { { XK_bracketright, MODMASK|ShiftMask },   { commandop_t::clientnextworkspace }                                      },
+              { { XK_f,            MODMASK|ShiftMask },   { commandop_t::clientinwindow }                                           },
               { { XK_t,            MODMASK|ShiftMask },   { commandop_t::workspacelayout, layout_t::stick }                         },
               { { XK_d,            MODMASK|ShiftMask },   { commandop_t::workspacelayout, layout_t::deck }                          },
               { { XK_w,            MODMASK|ShiftMask },   { commandop_t::workspacelayout, layout_t::sdeck }                         },

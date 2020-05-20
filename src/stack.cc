@@ -164,7 +164,7 @@ windowstack_t::apply(workspacestack_t stack, bool ignore_floating)
             disowned_windows.push_back(client->frame);
         else if (client->above)
             above_windows.push_back(client->frame);
-        else if (client->fullscreen)
+        else if (!client->in_window && client->fullscreen)
             fullscreen_windows.push_back(client->frame);
         else if (client->below)
             below_windows.push_back(client->frame);

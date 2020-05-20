@@ -219,7 +219,7 @@ client_model_t::cycle_focus_backward()
 void
 client_model_t::start_moving(client_ptr_t client)
 {
-    if (!client->fullscreen && (client->floating
+    if (!(!client->in_window && client->fullscreen) && (client->floating
         || ((!client->sticky && client_user_workspace(client)->in_float_layout())
         || (client->sticky && active_workspace()->in_float_layout()))))
     {
@@ -230,7 +230,7 @@ client_model_t::start_moving(client_ptr_t client)
 void
 client_model_t::start_resizing(client_ptr_t client)
 {
-    if (!client->fullscreen && (client->floating
+    if (!(!client->in_window && client->fullscreen) && (client->floating
         || ((!client->sticky && client_user_workspace(client)->in_float_layout())
         || (client->sticky && active_workspace()->in_float_layout()))))
     {
@@ -263,10 +263,13 @@ client_model_t::wedge_clients()
     for (auto& workspace : *m_user_workspaces)
         for (auto& client : workspace->get_all()) {
             pos_t new_pos = client->float_pos;
+
             if (root_attrs.h() < (client->float_pos.y + client->float_dim.h))
                 new_pos.y = root_attrs.h() - client->float_dim.h;
+
             if (root_attrs.w() < (client->float_pos.x + client->float_dim.w))
                 new_pos.x = root_attrs.w() - client->float_dim.w;
+
             if (!(new_pos == client->float_pos))
                 client->move(new_pos);
         }
@@ -275,10 +278,21 @@ client_model_t::wedge_clients()
 void
 client_model_t::refullscreen_clients()
 {
-    for (auto [client,state] : m_fullscreen_clients) {
-        state.fullscreen = client->fullscreen;
-        m_changequeue.add(change_client_fullscreen(client, state));
-    }
+    for (auto [client,state] : m_fullscreen_clients)
+        if (client->in_window) {
+            if (client->floating
+                || ((!client->sticky && client_user_workspace(client)->in_float_layout())
+                || (client->sticky && active_workspace()->in_float_layout())))
+            {
+                client->resize(client->float_dim).move(client->float_pos);
+            } else if (client->sticky)
+                active_workspace()->arrange();
+            else
+                client_user_workspace(client)->arrange();
+        } else {
+            state.fullscreen = client->fullscreen;
+            m_changequeue.add(change_client_fullscreen(client, state));
+        }
 }
 
 void
@@ -451,7 +465,9 @@ client_model_t::set_fullscreen(client_ptr_t client, clientaction_t action)
             client->fullscreen = true;
             m_changequeue.add(change_client_fullscreen(client, *client));
             m_fullscreen_clients[client] = *client;
-            client_user_workspace(client)->raise_client(client);
+
+            if (!client->in_window)
+                client_user_workspace(client)->raise_client(client);
         }
         break;
     case clientaction_t::remove:
@@ -466,6 +482,33 @@ client_model_t::set_fullscreen(client_ptr_t client, clientaction_t action)
         break;
     case clientaction_t::toggle:
         set_fullscreen(client, client->fullscreen
+            ? clientaction_t::remove : clientaction_t::add);
+        return;
+    default: break;
+    }
+
+    m_windowstack.apply(client_user_workspace(client));
+}
+
+void
+client_model_t::set_inwindow(client_ptr_t client, clientaction_t action)
+{
+    switch (action) {
+    case clientaction_t::add:
+        client->in_window = true;
+        break;
+    case clientaction_t::remove:
+        {
+            client->in_window = false;
+
+            if (client->fullscreen) {
+                m_fullscreen_clients.at(client).float_pos = client->float_pos;
+                m_fullscreen_clients.at(client).float_dim = client->float_dim;
+            }
+        }
+        break;
+    case clientaction_t::toggle:
+        set_inwindow(client, client->in_window
             ? clientaction_t::remove : clientaction_t::add);
         return;
     default: break;

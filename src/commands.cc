@@ -34,7 +34,7 @@ zoomcommand_t::execute()
 void
 clientfloatcommand_t::execute()
 {
-    if (m_client->parent || m_client->fullscreen || m_client->disowned)
+    if (m_client->parent || (!m_client->in_window && m_client->fullscreen) || m_client->disowned)
         return;
 
     if (m_client->floating) {
@@ -57,6 +57,14 @@ void
 clientfullscreencommand_t::execute()
 {
     m_clients.set_fullscreen(m_client, clientaction_t::toggle);
+    m_sidebar.draw_clientstate();
+}
+
+void
+clientinwindowcommand_t::execute()
+{
+    m_clients.set_inwindow(m_client, clientaction_t::toggle);
+    m_clients.refullscreen_clients();
     m_sidebar.draw_clientstate();
 }
 
@@ -86,7 +94,7 @@ clientbelowcommand_t::execute()
 void
 clientcentercommand_t::execute()
 {
-    if (!m_client->fullscreen && (m_client->floating
+    if (!(!m_client->in_window && m_client->fullscreen) && (m_client->floating
         || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
         || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
     {
@@ -97,7 +105,7 @@ clientcentercommand_t::execute()
 void
 clientsnapmovenorthcommand_t::execute()
 {
-    if (!m_client->fullscreen && (m_client->floating
+    if (!(!m_client->in_window && m_client->fullscreen) && (m_client->floating
         || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
         || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
     {
@@ -108,7 +116,7 @@ clientsnapmovenorthcommand_t::execute()
 void
 clientsnapmoveeastcommand_t::execute()
 {
-    if (!m_client->fullscreen && (m_client->floating
+    if (!(!m_client->in_window && m_client->fullscreen) && (m_client->floating
         || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
         || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
     {
@@ -119,7 +127,7 @@ clientsnapmoveeastcommand_t::execute()
 void
 clientsnapmovesouthcommand_t::execute()
 {
-    if (!m_client->fullscreen && (m_client->floating
+    if (!(!m_client->in_window && m_client->fullscreen) && (m_client->floating
         || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
         || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
     {
@@ -130,7 +138,7 @@ clientsnapmovesouthcommand_t::execute()
 void
 clientsnapmovewestcommand_t::execute()
 {
-    if (!m_client->fullscreen && (m_client->floating
+    if (!(!m_client->in_window && m_client->fullscreen) && (m_client->floating
         || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
         || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
     {
@@ -141,7 +149,7 @@ clientsnapmovewestcommand_t::execute()
 void
 clientsnapresizenorthcommand_t::execute()
 {
-    if (!m_client->fullscreen && (m_client->floating
+    if (!(!m_client->in_window && m_client->fullscreen) && (m_client->floating
         || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
         || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
     {
@@ -152,7 +160,7 @@ clientsnapresizenorthcommand_t::execute()
 void
 clientsnapresizeeastcommand_t::execute()
 {
-    if (!m_client->fullscreen && (m_client->floating
+    if (!(!m_client->in_window && m_client->fullscreen) && (m_client->floating
         || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
         || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
     {
@@ -163,7 +171,7 @@ clientsnapresizeeastcommand_t::execute()
 void
 clientsnapresizesouthcommand_t::execute()
 {
-    if (!m_client->fullscreen && (m_client->floating
+    if (!(!m_client->in_window && m_client->fullscreen) && (m_client->floating
         || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
         || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
     {
@@ -174,7 +182,7 @@ clientsnapresizesouthcommand_t::execute()
 void
 clientsnapresizewestcommand_t::execute()
 {
-    if (!m_client->fullscreen && (m_client->floating
+    if (!(!m_client->in_window && m_client->fullscreen) && (m_client->floating
         || ((!m_client->sticky && m_clients.client_user_workspace(m_client)->in_float_layout())
         || (m_client->sticky && m_clients.active_workspace()->in_float_layout()))))
     {

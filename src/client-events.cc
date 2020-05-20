@@ -103,12 +103,13 @@ client_events_t::on_change_client_fullscreen()
         auto root_attrs = x_data::get_attributes(x_data::g_root);
         auto workspace = m_clients.client_user_workspace(client);
 
-        client->resize({root_attrs.w() - (workspace->has_sidebar() ? m_ewmh.get_left_strut() : 0)
-            - m_ewmh.get_right_strut() - 2, root_attrs.h() + BORDER_HEIGHT}, true);
+        if (!client->in_window) {
+            client->resize({root_attrs.w() - (workspace->has_sidebar() ? m_ewmh.get_left_strut() : 0)
+                - m_ewmh.get_right_strut() - 2, root_attrs.h() + BORDER_HEIGHT}, true);
 
-        client->move({(workspace->has_sidebar() ? m_ewmh.get_left_strut() : 0),
-            -BORDER_HEIGHT - 1}, true);
-
+            client->move({(workspace->has_sidebar() ? m_ewmh.get_left_strut() : 0),
+                -BORDER_HEIGHT - 1}, true);
+        }
     } else {
         if (former_state.above)
             m_ewmh.set_window_state_property(client->win, "ABOVE");
@@ -123,15 +124,17 @@ client_events_t::on_change_client_fullscreen()
         client->pos = former_state.pos;
         client->dim = former_state.dim;
 
-        if (client->floating
-            || ((!client->sticky && m_clients.client_user_workspace(client)->in_float_layout())
-            || (client->sticky && m_clients.active_workspace()->in_float_layout())))
-        {
-            client->resize(client->float_dim).move(client->float_pos);
-        } else if (client->sticky)
-            m_clients.active_workspace()->arrange();
-        else
-            m_clients.client_user_workspace(client)->arrange();
+        if (!client->in_window) {
+            if (client->floating
+                || ((!client->sticky && m_clients.client_user_workspace(client)->in_float_layout())
+                || (client->sticky && m_clients.active_workspace()->in_float_layout())))
+            {
+                client->resize(client->float_dim).move(client->float_pos);
+            } else if (client->sticky)
+                m_clients.active_workspace()->arrange();
+            else
+                m_clients.client_user_workspace(client)->arrange();
+        }
     }
 }
 

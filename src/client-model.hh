@@ -85,6 +85,7 @@ public:
     void change_active_context(::std::optional<context_ptr_t> = ::std::nullopt);
 
     void set_fullscreen(client_ptr_t, clientaction_t);
+    void set_inwindow(client_ptr_t, clientaction_t);
     void set_above(client_ptr_t, clientaction_t);
     void set_below(client_ptr_t, clientaction_t);
     void set_urgent(client_ptr_t, clientaction_t);
