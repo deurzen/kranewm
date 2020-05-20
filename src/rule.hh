@@ -2,6 +2,7 @@
 #define __KRANEWM__RULE__GUARD__
 
 #include <map>
+#include <string>
 #include <tuple>
 
 // fwd decls

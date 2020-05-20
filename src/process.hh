@@ -5,6 +5,7 @@
 #include "x-data/key.hh"
 
 #include <deque>
+#include <string>
 #include <unordered_map>
 
 // fwd decls

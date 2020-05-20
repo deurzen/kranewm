@@ -1,6 +1,7 @@
 #ifndef __KRANEWM__X_DATA__MASK__GUARD__
 #define __KRANEWM__X_DATA__MASK__GUARD__
 
+#include <cstdint>
 #include <set>
 #include <vector>
 

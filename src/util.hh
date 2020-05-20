@@ -35,7 +35,7 @@ struct range_t
 
 
 template <typename Keytype, typename Valtype>
-void
+inline void
 erase_find(::std::unordered_map<Keytype, Valtype>& m, Keytype key)
 {
     auto i = m.find(key);
@@ -46,7 +46,7 @@ erase_find(::std::unordered_map<Keytype, Valtype>& m, Keytype key)
 }
 
 template <typename Valtype>
-void
+inline void
 erase_find(::std::list<Valtype>& v, Valtype val)
 {
     auto i = ::std::find(v.begin(), v.end(), val);
@@ -57,7 +57,7 @@ erase_find(::std::list<Valtype>& v, Valtype val)
 }
 
 template <typename Valtype>
-void
+inline void
 erase_remove(::std::vector<Valtype>& v, Valtype val)
 {
     auto i = ::std::remove(v.begin(), v.end(), val);
@@ -68,7 +68,7 @@ erase_remove(::std::vector<Valtype>& v, Valtype val)
 }
 
 template <typename Valtype>
-void
+inline void
 erase_remove(::std::deque<Valtype>& v, Valtype val)
 {
     auto i = ::std::remove(v.begin(), v.end(), val);
@@ -79,7 +79,7 @@ erase_remove(::std::deque<Valtype>& v, Valtype val)
 }
 
 template <typename Valtype>
-void
+inline void
 splice_back(::std::list<Valtype>& v, Valtype val)
 {
     auto i = ::std::find(v.begin(), v.end(), val);
@@ -90,7 +90,7 @@ splice_back(::std::list<Valtype>& v, Valtype val)
 }
 
 template <typename Valtype1, typename Valtype2>
-void
+inline void
 insert_container(::std::vector<Valtype1>& v, ::std::list<Valtype2>& l)
 {
     for (auto& le : l)
@@ -104,13 +104,15 @@ struct revertible
 };
 
 template <typename T>
-auto begin(revertible<T> r)
+inline auto
+begin(revertible<T> r)
 {
     return ::std::rbegin(r.iterable);
 }
 
 template <typename T>
-auto end(revertible<T> r)
+inline auto
+end(revertible<T> r)
 {
     return ::std::rend(r.iterable);
 }
