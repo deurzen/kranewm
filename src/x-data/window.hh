@@ -83,6 +83,14 @@ namespace x_data
             return *this;
         }
 
+        window_t& moveresize(pos_t pos, dim_t dim)
+        {
+            disable_substructure_events();
+            XMoveResizeWindow(g_dpy, val, pos.x, pos.y, dim.w, dim.h);
+            enable_substructure_events();
+            return *this;
+        }
+
         window_t& raise()
         {
             disable_substructure_events();

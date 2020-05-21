@@ -66,6 +66,7 @@ typedef struct client_t
 
     client_t& move(pos_t, bool = false);
     client_t& resize(dim_t, bool = false);
+    client_t& moveresize(pos_t, dim_t, bool = false);
 
     client_t& map();
     client_t& unmap();

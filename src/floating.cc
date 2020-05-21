@@ -24,12 +24,11 @@ moveresize_t::process_resize_increment(pos_t pos, dim_t dim, pos_t delta)
             dim_t new_dim = {resize_width, resize_height};
 
             client->sizeconstraints.apply(new_pos, new_dim);
-            client->resize({new_dim.w, new_dim.h + BORDER_HEIGHT});
-
             if (!(new_dim == dim_t{dim.w, dim.h})) {
                 new_pos = {pos.x + (dim.w - new_dim.w), pos.y + (dim.h - new_dim.h)};
-                client->move(new_pos);
-            }
+                client->moveresize(new_pos, {new_dim.w, new_dim.h + BORDER_HEIGHT});
+            } else
+                client->resize({new_dim.w, new_dim.h + BORDER_HEIGHT});
         }
         break;
     case corner_t::top_right:
@@ -41,12 +40,11 @@ moveresize_t::process_resize_increment(pos_t pos, dim_t dim, pos_t delta)
             dim_t new_dim = {resize_width, resize_height};
 
             client->sizeconstraints.apply(new_pos, new_dim);
-            client->resize({new_dim.w, new_dim.h + BORDER_HEIGHT});
-
             if (!(new_dim == dim_t{dim.w, dim.h})) {
                 new_pos = {pos.x, pos.y + (dim.h - new_dim.h)};
-                client->move(new_pos);
-            }
+                client->moveresize(new_pos, {new_dim.w, new_dim.h + BORDER_HEIGHT});
+            } else
+                client->resize({new_dim.w, new_dim.h + BORDER_HEIGHT});
         }
         break;
     case corner_t::bottom_left:
@@ -58,12 +56,11 @@ moveresize_t::process_resize_increment(pos_t pos, dim_t dim, pos_t delta)
             dim_t new_dim = {resize_width, resize_height};
 
             client->sizeconstraints.apply(new_pos, new_dim);
-            client->resize({new_dim.w, new_dim.h + BORDER_HEIGHT});
-
             if (!(new_dim == dim_t{dim.w, dim.h})) {
                 new_pos = {pos.x + (dim.w - new_dim.w), pos.y};
-                client->move(new_pos);
-            }
+                client->moveresize(new_pos, {new_dim.w, new_dim.h + BORDER_HEIGHT});
+            } else
+                client->resize({new_dim.w, new_dim.h + BORDER_HEIGHT});
         }
         break;
     case corner_t::bottom_right:

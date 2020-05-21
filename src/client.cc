@@ -165,15 +165,50 @@ client_t::move(pos_t new_pos, bool tiled)
 client_t&
 client_t::resize(dim_t new_dim, bool tiled)
 {
-    if (new_dim.h > BORDER_HEIGHT)
-        win.resize({new_dim.w, new_dim.h - BORDER_HEIGHT});
+    const static auto do_resize([](auto win, auto w, auto h){ win.resize({w, h}); });
+    dim_t old_dim = tiled ? dim : float_dim;
 
-    frame.resize(new_dim);
+    if (new_dim.w >= old_dim.w) {
+        do_resize(win, new_dim.w, old_dim.h - BORDER_HEIGHT);
+        do_resize(frame, new_dim.w, old_dim.h);
+    } else {
+        do_resize(frame, new_dim.w, old_dim.h);
+        do_resize(win, new_dim.w, old_dim.h - BORDER_HEIGHT);
+    }
+
+    if (new_dim.h >= old_dim.h) {
+        if (new_dim.h > BORDER_HEIGHT)
+            do_resize(win, new_dim.w, new_dim.h - BORDER_HEIGHT);
+        frame.resize(new_dim);
+    } else {
+        frame.resize(new_dim);
+        if (new_dim.h > BORDER_HEIGHT)
+            do_resize(win, new_dim.w, new_dim.h - BORDER_HEIGHT);
+    }
 
     if (tiled)
         dim = new_dim;
     else
         float_dim = new_dim;
+
+    update_offset(this);
+    return *this;
+}
+
+client_t&
+client_t::moveresize(pos_t new_pos, dim_t new_dim, bool tiled)
+{
+    frame.moveresize(new_pos, new_dim);
+    if (new_dim.h > BORDER_HEIGHT)
+        win.resize({new_dim.w, new_dim.h - BORDER_HEIGHT});
+
+    if (tiled) {
+        pos = new_pos;
+        dim = new_dim;
+    } else {
+        float_pos = new_pos;
+        float_dim = new_dim;
+    }
 
     update_offset(this);
     return *this;
