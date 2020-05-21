@@ -75,6 +75,9 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
     m_processes.add_process(client);
 
     if (client->parent) {
+        if (client_context(client->parent) != client_context(client))
+            change_active_context(client_context(client->parent));
+
         if (!client->parent->sticky) {
             if (is_user_workspace(client_workspace(client->parent))
                 && client_workspace(client->parent) != client_workspace(client))
