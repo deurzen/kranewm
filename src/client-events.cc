@@ -306,7 +306,8 @@ client_events_t::on_change_workspace_active()
     auto from   = change->from;
     auto to     = change->to;
 
-    m_ewmh.set_current_desktop_property(to->get_index());
+    m_ewmh.set_current_desktop_property(m_clients.active_context()->get_index()
+        * USER_WORKSPACES.size() + to->get_index());
 
     { // circumvents X server race condition
         x_data::sync(false);

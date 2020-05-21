@@ -57,6 +57,8 @@ public:
     void arrange() const;
 
     char get_letter() const;
+    size_t get_index() const;
+
     const ::std::vector<user_workspace_ptr_t>* get_workspaces();
 
     bool empty() const;

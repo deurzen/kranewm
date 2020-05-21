@@ -44,8 +44,11 @@ kranewm_t::setup()
     m_ewmh.set_current_desktop_property(0);
 
     ::std::vector<::std::string> desktop_names;
-    for (auto&& [nr,name] : USER_WORKSPACES)
-        desktop_names.push_back(::std::to_string(nr) + (!name.empty() ? ":" : "") + name);
+    for (auto&& [lr,_] : CONTEXTS)
+        for (auto&& [nr,name] : USER_WORKSPACES)
+            desktop_names.push_back(::std::string(1, lr) + ":"
+                +::std::to_string(nr) + (!name.empty() ? ":" : "") + name);
+
     m_ewmh.set_desktop_names_property(desktop_names);
 
     auto existing_wins = x_data::get_top_level_windows();
