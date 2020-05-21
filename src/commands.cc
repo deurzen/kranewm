@@ -205,6 +205,7 @@ clientdisowncommand_t::execute()
 void
 clientkillcommand_t::execute()
 {
+    update_offset(m_client);
     m_client->win.force_close();
 }
 
