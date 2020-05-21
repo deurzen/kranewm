@@ -87,6 +87,9 @@ client_events_t::on_change_client_destroy()
         m_x.exit_move_resize();
     }
 
+    for (auto& child : client->children)
+        client->disown_child(child);
+
     m_sidebar.draw();
     delete client;
 }

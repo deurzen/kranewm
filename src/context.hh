@@ -71,7 +71,7 @@ public:
 
     const client_ptr_t get_marked() const;
     const client_ptr_t get_jumped_from() const;
-    void set_marked(client_ptr_t);
+    void set_marked(client_ptr_t = nullptr);
     void set_jumped_from(client_ptr_t);
 
     context_t& add_workspace(user_workspace_ptr_t);

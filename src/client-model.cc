@@ -75,6 +75,11 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
     m_processes.add_process(client);
 
     if (client->parent) {
+        if (client_context(client->parent) != client_context(client)) {
+            change_active_context(client_context(client->parent));
+            m_client_contexts[client] = client_context(client->parent);
+        }
+
         if (!client->parent->sticky) {
             if (is_user_workspace(client_workspace(client->parent))
                 && client_workspace(client->parent) != client_workspace(client))
@@ -125,15 +130,11 @@ client_model_t::unmanage_client(client_ptr_t client)
     if (client->sticky)
         set_sticky(client, clientaction_t::remove, false);
 
+    auto context = client_context(client);
     auto workspace = client_workspace(client);
 
-    if (client == m_current_context->get_marked())
-        m_current_context->set_marked(nullptr);
-
-    if (client->parent) {
-        focus(client->parent);
-        client->parent->disown_child(client);
-    }
+    if (client == context->get_marked())
+        context->set_marked();
 
     if (is_moveresize_workspace(workspace)) {
         if (is_resize_workspace(workspace))
@@ -142,6 +143,14 @@ client_model_t::unmanage_client(client_ptr_t client)
             stop_moving(client);
 
         workspace = client_user_workspace(client);
+    }
+
+    if (client->parent) {
+        if (client->parent->sticky)
+            set_sticky(client, clientaction_t::remove, false);
+
+        focus(client->parent);
+        client->parent->disown_child(client);
     }
 
     workspace->remove_client(client);
