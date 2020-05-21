@@ -198,8 +198,8 @@ user_workspace_t::move_forward()
             if (in_float_layout()) {
                 pos_t pos1 = moved.first->float_pos, pos2 = moved.second->float_pos;
                 dim_t dim1 = moved.first->float_dim, dim2 = moved.second->float_dim;
-                moved.first->resize(dim2).move(pos2);
-                moved.second->resize(dim1).move(pos1);
+                moved.first->moveresize(pos2, dim2);
+                moved.second->moveresize(pos1, dim1);
             } else {
                 arrange();
             }
@@ -218,8 +218,8 @@ user_workspace_t::move_backward()
             if (in_float_layout()) {
                 pos_t pos1 = moved.first->float_pos, pos2 = moved.second->float_pos;
                 dim_t dim1 = moved.first->float_dim, dim2 = moved.second->float_dim;
-                moved.first->resize(dim2).move(pos2);
-                moved.second->resize(dim1).move(pos1);
+                moved.first->moveresize(pos2, dim2);
+                moved.second->moveresize(pos1, dim1);
             } else
                 arrange();
         }
@@ -305,8 +305,8 @@ user_workspace_t::zoom()
         if (in_float_layout() && zoomed.first && zoomed.second) {
             pos_t pos1 = zoomed.first->float_pos, pos2 = zoomed.second->float_pos;
             dim_t dim1 = zoomed.first->float_dim, dim2 = zoomed.second->float_dim;
-            zoomed.first->resize(dim2).move(pos2);
-            zoomed.second->resize(dim1).move(pos1);
+            zoomed.first->moveresize(pos2, dim2);
+            zoomed.second->moveresize(pos1, dim1);
         } else
             arrange();
     }

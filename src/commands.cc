@@ -45,7 +45,7 @@ clientfloatcommand_t::execute()
     }
 
     m_client->set_float(clientaction_t::toggle);
-    m_client->resize(m_client->float_dim).move(m_client->float_pos);
+    m_client->moveresize(m_client->float_pos, m_client->float_dim);
 
     m_clients.active_workspace()->raise_client(m_client);
     m_windowstack.apply(m_clients.active_workspace());
@@ -362,7 +362,7 @@ clientgrowcommand_t::execute()
     default: return;
     }
 
-    m_client->resize(dim).move(pos);
+    m_client->moveresize(pos, dim);
 }
 
 void
@@ -382,7 +382,7 @@ clientshrinkcommand_t::execute()
     default: return;
     }
 
-    m_client->resize(dim).move(pos);
+    m_client->moveresize(pos, dim);
 }
 
 void
@@ -680,7 +680,7 @@ workspacelayoutpreservedimcommand_t::execute()
     m_windowstack.apply(m_clients.active_workspace());
 
     for (auto& client : m_clients.active_workspace()->get_all())
-        client->resize(client->dim).move(client->pos);
+        client->moveresize(client->pos, client->dim);
 
     m_clients.active_workspace()->arrange();
     m_sidebar.draw_layoutsymbol();

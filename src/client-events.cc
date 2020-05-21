@@ -129,7 +129,7 @@ client_events_t::on_change_client_fullscreen()
                 || ((!client->sticky && m_clients.client_user_workspace(client)->in_float_layout())
                 || (client->sticky && m_clients.active_workspace()->in_float_layout())))
             {
-                client->resize(client->float_dim).move(client->float_pos);
+                client->moveresize(client->float_pos, client->float_dim);
             } else if (client->sticky)
                 m_clients.active_workspace()->arrange();
             else
@@ -147,7 +147,7 @@ client_events_t::on_change_client_above()
 
     if (client->above) {
         m_ewmh.set_window_state_property(client->win, "ABOVE");
-        client->set_float(clientaction_t::add).resize(client->float_dim).move(client->float_pos);
+        client->set_float(clientaction_t::add).moveresize(client->float_pos, client->float_dim);
         m_clients.active_workspace()->raise_client(client);
         m_clients.active_workspace()->arrange();
     } else {
@@ -169,7 +169,7 @@ client_events_t::on_change_client_below()
 
     if (client->below) {
         m_ewmh.set_window_state_property(client->win, "BELOW");
-        client->set_float(clientaction_t::add).resize(client->float_dim).move(client->float_pos);
+        client->set_float(clientaction_t::add).moveresize(client->float_pos, client->float_dim);
         m_clients.active_workspace()->raise_client(client);
         m_clients.active_workspace()->arrange();
     } else {
@@ -235,7 +235,7 @@ client_events_t::on_change_client_disown()
     auto former_state = change->former_state;
 
     if (client->disowned) {
-        client->set_float(clientaction_t::add).resize(client->float_dim).move(client->float_pos);
+        client->set_float(clientaction_t::add).moveresize(client->float_pos, client->float_dim);
         m_clients.active_workspace()->raise_client(client);
         m_clients.active_workspace()->arrange();
     } else {

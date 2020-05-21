@@ -42,7 +42,7 @@ typedef struct moveresize_t
     {
         indicator.set_background_color(MRIND_BG_COLOR);
         indicator.set_border_width(0);
-        indicator.resize({1, 1}).move({-1, -1}).map();
+        indicator.moveresize({-1, -1}, {1, 1}).map();
     }
 
     ~moveresize_t()

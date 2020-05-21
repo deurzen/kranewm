@@ -284,7 +284,7 @@ client_model_t::refullscreen_clients()
                 || ((!client->sticky && client_user_workspace(client)->in_float_layout())
                 || (client->sticky && active_workspace()->in_float_layout())))
             {
-                client->resize(client->float_dim).move(client->float_pos);
+                client->moveresize(client->float_pos, client->float_dim);
             } else if (client->sticky)
                 active_workspace()->arrange();
             else
