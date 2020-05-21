@@ -16,7 +16,7 @@ enum class layout_t : char
     pillar      = 'P',
     column      = 'C',
     monocle     = 'M',
-    center      = '^',
+    center      = '|',
     centerstack = '&',
 };
 
