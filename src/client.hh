@@ -41,22 +41,23 @@ typedef struct client_t
     client_t() = default;
     client_t(x_data::window_t _win, x_data::window_t _frame,
         sizeconstraints_t _sizeconstraints, rule_t& rule)
-        : name(_win.get_class()),
-          win(_win),
-          frame(_frame),
-          sizeconstraints(_sizeconstraints),
-          expect(clientexpect_t::noeffect),
-          focused(false),
-          floating(rule.floating),
-          above(false),
-          in_window(false),
-          fullscreen(rule.fullscreen),
-          below(false),
-          urgent(false),
-          iconified(false),
-          disowned(false),
-          sticky(false),
-          parent(nullptr) {}
+      : name(_win.get_class()),
+        win(_win),
+        frame(_frame),
+        sizeconstraints(_sizeconstraints),
+        expect(clientexpect_t::noeffect),
+        focused(false),
+        floating(rule.floating),
+        above(false),
+        in_window(false),
+        fullscreen(rule.fullscreen),
+        below(false),
+        urgent(false),
+        iconified(false),
+        disowned(false),
+        sticky(false),
+        parent(nullptr)
+    {}
 
     void disown_child(client_ptr_t);
     bool consume_expect(clientexpect_t);
