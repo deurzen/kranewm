@@ -18,12 +18,12 @@ class client_events_t
 public:
     client_events_t(changequeue_t& changes, ewmh_t& ewmh, sidebar_t& sidebar,
         x_model_t& x, client_model_t& clients)
-        : m_current_change(nullptr),
-          m_changes(changes),
-          m_ewmh(ewmh),
-          m_sidebar(sidebar),
-          m_x(x),
-          m_clients(clients)
+      : m_current_change(nullptr),
+        m_changes(changes),
+        m_ewmh(ewmh),
+        m_sidebar(sidebar),
+        m_x(x),
+        m_clients(clients)
     {
         m_sidebar.set_context(m_clients.active_context());
     }

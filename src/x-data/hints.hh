@@ -16,15 +16,32 @@ namespace x_data
         wmhints_t() = default;
 
         wmhints_t(XWMHints wmhints, bool _status)
-            : val(wmhints),
-              status(_status) {}
+          : val(wmhints),
+            status(_status)
+        {}
 
-        operator XWMHints() const { return val; }
+        operator XWMHints() const
+        {
+            return val;
+        }
 
-        inline XWMHints& get() { return val; }
-        inline XWMHints* get_ptr() { return &val; }
+        inline XWMHints&
+        get()
+        {
+            return val;
+        }
 
-        inline bool success() { return status; }
+        inline XWMHints*
+        get_ptr()
+        {
+            return &val;
+        }
+
+        inline bool
+        success()
+        {
+            return status;
+        }
 
     private:
         XWMHints val;
@@ -38,15 +55,32 @@ namespace x_data
         sizehints_t() = default;
 
         sizehints_t(XSizeHints sizehints, bool _status)
-            : val(sizehints),
-              status(_status) {}
+          : val(sizehints),
+            status(_status)
+        {}
 
-        operator XSizeHints() const { return val; }
+        operator XSizeHints() const
+        {
+            return val;
+        }
 
-        inline XSizeHints& get()     { return val; }
-        inline XSizeHints* get_ptr() { return &val; }
+        inline XSizeHints&
+        get()
+        {
+            return val;
+        }
 
-        inline bool success() { return status; }
+        inline XSizeHints*
+        get_ptr()
+        {
+            return &val;
+        }
+
+        inline bool
+        success()
+        {
+            return status;
+        }
 
     private:
         XSizeHints val;

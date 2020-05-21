@@ -52,7 +52,7 @@ typedef class command_t
 {
 public:
     command_t(bool internable = false)
-        : m_internable(internable)
+      : m_internable(internable)
     {}
 
     virtual ~command_t() = default;
@@ -76,52 +76,52 @@ public:
     typedef ::std::optional<::std::pair<commandbind_ptr_t, commandbind_ptr_t>> comptype_t;
 
     commandbind_t()
-        : m_operation(commandop_t::noop),
-          m_argument(::std::nullopt),
-          m_composite(::std::nullopt)
+      : m_operation(commandop_t::noop),
+        m_argument(::std::nullopt),
+        m_composite(::std::nullopt)
     {}
 
     commandbind_t(commandop_t operation)
-        : m_operation(operation),
-          m_argument(::std::nullopt),
-          m_composite(::std::nullopt)
+      : m_operation(operation),
+        m_argument(::std::nullopt),
+        m_composite(::std::nullopt)
     {}
 
     commandbind_t(commandop_t operation, int selector)
-        : m_operation(operation),
-          m_argument(selector),
-          m_composite(::std::nullopt)
+      : m_operation(operation),
+        m_argument(selector),
+        m_composite(::std::nullopt)
     {}
 
     commandbind_t(commandop_t operation, float selector)
-        : m_operation(operation),
-          m_argument(selector),
-          m_composite(::std::nullopt)
+      : m_operation(operation),
+        m_argument(selector),
+        m_composite(::std::nullopt)
     {}
 
     commandbind_t(commandop_t operation, layout_t selector)
-        : m_operation(operation),
-          m_argument(selector),
-          m_composite(::std::nullopt)
+      : m_operation(operation),
+        m_argument(selector),
+        m_composite(::std::nullopt)
     {}
 
     commandbind_t(commandop_t operation, direction_t selector)
-        : m_operation(operation),
-          m_argument(selector),
-          m_composite(::std::nullopt)
+      : m_operation(operation),
+        m_argument(selector),
+        m_composite(::std::nullopt)
     {}
 
     commandbind_t(::std::string command)
-        : m_operation(commandop_t::external),
-          m_argument(command),
-          m_composite(::std::nullopt)
+      : m_operation(commandop_t::external),
+        m_argument(command),
+        m_composite(::std::nullopt)
     {}
 
     commandbind_t(commandop_t operation,
-        commandbind_ptr_t commandbind1, commandbind_ptr_t commandbind2)
-        : m_operation(operation),
-          m_argument(::std::nullopt),
-          m_composite({commandbind1, commandbind2})
+      commandbind_ptr_t commandbind1, commandbind_ptr_t commandbind2)
+      : m_operation(operation),
+        m_argument(::std::nullopt),
+        m_composite({commandbind1, commandbind2})
     {}
 
 
@@ -167,7 +167,7 @@ typedef class noopcommand_t : public command_t
 {
 public:
     explicit noopcommand_t()
-        : command_t(false)
+      : command_t(false)
     {}
 
     void execute() {}
@@ -181,11 +181,11 @@ typedef class floatingconditionalcommand_t : public command_t
 public:
     explicit floatingconditionalcommand_t(client_model_t& clients,
         command_ptr_t truecommand, command_ptr_t falsecommand, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_truecommand(truecommand),
-          m_falsecommand(falsecommand),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_truecommand(truecommand),
+        m_falsecommand(falsecommand),
+        m_client(client)
     {}
 
     ~floatingconditionalcommand_t()
@@ -210,8 +210,8 @@ typedef class quitcommand_t : public command_t
 {
 public:
     explicit quitcommand_t(bool& running)
-        : command_t(true),
-          m_running(running)
+      : command_t(true),
+        m_running(running)
     {}
 
     void execute() override;
@@ -227,8 +227,8 @@ typedef class zoomcommand_t : public command_t
 {
 public:
     explicit zoomcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -245,11 +245,11 @@ typedef class clientfloatcommand_t : public command_t
 public:
     explicit clientfloatcommand_t(client_model_t& clients, windowstack_t& windowstack,
         sidebar_t& sidebar, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_windowstack(windowstack),
-          m_sidebar(sidebar),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_windowstack(windowstack),
+        m_sidebar(sidebar),
+        m_client(client)
     {}
 
     void execute() override;
@@ -269,10 +269,10 @@ typedef class clientfullscreencommand_t : public command_t
 public:
     explicit clientfullscreencommand_t(client_model_t& clients,
         sidebar_t& sidebar, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_sidebar(sidebar),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_sidebar(sidebar),
+        m_client(client)
     {}
 
     void execute() override;
@@ -291,10 +291,10 @@ typedef class clientinwindowcommand_t : public command_t
 public:
     explicit clientinwindowcommand_t(client_model_t& clients,
         sidebar_t& sidebar, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_sidebar(sidebar),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_sidebar(sidebar),
+        m_client(client)
     {}
 
     void execute() override;
@@ -313,10 +313,10 @@ typedef class clientstickycommand_t : public command_t
 public:
     explicit clientstickycommand_t(client_model_t& clients,
         sidebar_t& sidebar, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_sidebar(sidebar),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_sidebar(sidebar),
+        m_client(client)
     {}
 
     void execute() override;
@@ -335,10 +335,10 @@ typedef class clientabovecommand_t : public command_t
 public:
     explicit clientabovecommand_t(client_model_t& clients,
         sidebar_t& sidebar, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_sidebar(sidebar),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_sidebar(sidebar),
+        m_client(client)
     {}
 
     void execute() override;
@@ -357,10 +357,10 @@ typedef class clientbelowcommand_t : public command_t
 public:
     explicit clientbelowcommand_t(client_model_t& clients,
         sidebar_t& sidebar, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_sidebar(sidebar),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_sidebar(sidebar),
+        m_client(client)
     {}
 
     void execute() override;
@@ -378,9 +378,9 @@ typedef class clientcentercommand_t : public command_t
 {
 public:
     explicit clientcentercommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -397,9 +397,9 @@ typedef class clientsnapmovenorthcommand_t : public command_t
 {
 public:
     explicit clientsnapmovenorthcommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -416,9 +416,9 @@ typedef class clientsnapmoveeastcommand_t : public command_t
 {
 public:
     explicit clientsnapmoveeastcommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -435,9 +435,9 @@ typedef class clientsnapmovesouthcommand_t : public command_t
 {
 public:
     explicit clientsnapmovesouthcommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -454,9 +454,9 @@ typedef class clientsnapmovewestcommand_t : public command_t
 {
 public:
     explicit clientsnapmovewestcommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -473,9 +473,9 @@ typedef class clientsnapresizenorthcommand_t : public command_t
 {
 public:
     explicit clientsnapresizenorthcommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -492,9 +492,9 @@ typedef class clientsnapresizeeastcommand_t : public command_t
 {
 public:
     explicit clientsnapresizeeastcommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -511,9 +511,9 @@ typedef class clientsnapresizesouthcommand_t : public command_t
 {
 public:
     explicit clientsnapresizesouthcommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -530,9 +530,9 @@ typedef class clientsnapresizewestcommand_t : public command_t
 {
 public:
     explicit clientsnapresizewestcommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -549,8 +549,8 @@ typedef class clientkillcommand_t : public command_t
 {
 public:
     explicit clientkillcommand_t(client_ptr_t client)
-        : command_t(false),
-          m_client(client)
+      : command_t(false),
+        m_client(client)
     {}
 
     void execute() override;
@@ -566,8 +566,8 @@ typedef class clientmoveforwardcommand_t : public command_t
 {
 public:
     explicit clientmoveforwardcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -583,8 +583,8 @@ typedef class clientmovebackwardcommand_t : public command_t
 {
 public:
     explicit clientmovebackwardcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -600,9 +600,9 @@ typedef class clientmarksetcommand_t : public command_t
 {
 public:
     explicit clientmarksetcommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -619,8 +619,8 @@ typedef class clientmarkjumpcommand_t : public command_t
 {
 public:
     explicit clientmarkjumpcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -636,8 +636,8 @@ typedef class clientmasterjumpcommand_t : public command_t
 {
 public:
     explicit clientmasterjumpcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -653,8 +653,8 @@ typedef class clientstackjumpcommand_t : public command_t
 {
 public:
     explicit clientstackjumpcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -670,8 +670,8 @@ typedef class clientlastjumpcommand_t : public command_t
 {
 public:
     explicit clientlastjumpcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -687,8 +687,8 @@ typedef class clientpanejumpcommand_t : public command_t
 {
 public:
     explicit clientpanejumpcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -704,9 +704,9 @@ typedef class clientjumpindexcommand_t : public command_t
 {
 public:
     explicit clientjumpindexcommand_t(client_model_t& clients, unsigned index)
-        : command_t(true),
-          m_clients(clients),
-          m_index(index)
+      : command_t(true),
+        m_clients(clients),
+        m_index(index)
     {}
 
     void execute() override;
@@ -724,10 +724,10 @@ typedef class clientworkspacecommand_t : public command_t
 public:
     explicit clientworkspacecommand_t(client_model_t& clients,
         client_ptr_t client, unsigned number)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client),
-          m_number(number)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client),
+        m_number(number)
     {}
 
     void execute() override;
@@ -745,9 +745,9 @@ typedef class clientnextworkspacecommand_t : public command_t
 {
 public:
     explicit clientnextworkspacecommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -764,9 +764,9 @@ typedef class clientpreviousworkspacecommand_t : public command_t
 {
 public:
     explicit clientpreviousworkspacecommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -784,10 +784,10 @@ typedef class clientcontextcommand_t : public command_t
 public:
     explicit clientcontextcommand_t(client_model_t& clients,
         client_ptr_t client, unsigned number)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client),
-          m_number(number)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client),
+        m_number(number)
     {}
 
     void execute() override;
@@ -805,9 +805,9 @@ typedef class clientnextcontextcommand_t : public command_t
 {
 public:
     explicit clientnextcontextcommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -824,9 +824,9 @@ typedef class clientpreviouscontextcommand_t : public command_t
 {
 public:
     explicit clientpreviouscontextcommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -844,11 +844,11 @@ typedef class clientgrowcommand_t : public command_t
 public:
     explicit clientgrowcommand_t(client_model_t& clients, client_ptr_t client,
         direction_t direction, unsigned increment = KB_RESIZE_INCREMENT)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client),
-          m_direction(direction),
-          m_increment(increment)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client),
+        m_direction(direction),
+        m_increment(increment)
     {}
 
     void execute() override;
@@ -868,11 +868,11 @@ typedef class clientshrinkcommand_t : public command_t
 public:
     explicit clientshrinkcommand_t(client_model_t& clients, client_ptr_t client,
         direction_t direction, unsigned increment = KB_RESIZE_INCREMENT)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client),
-          m_direction(direction),
-          m_increment(increment)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client),
+        m_direction(direction),
+        m_increment(increment)
     {}
 
     void execute() override;
@@ -892,11 +892,11 @@ typedef class clientmovecommand_t : public command_t
 public:
     explicit clientmovecommand_t(client_model_t& clients, client_ptr_t client,
         direction_t direction, unsigned increment = KB_MOVE_INCREMENT)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client),
-          m_direction(direction),
-          m_increment(increment)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client),
+        m_direction(direction),
+        m_increment(increment)
     {}
 
     void execute() override;
@@ -915,9 +915,9 @@ typedef class clientmovemousecommand_t : public command_t
 {
 public:
     explicit clientmovemousecommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -934,9 +934,9 @@ typedef class clientresizemousecommand_t : public command_t
 {
 public:
     explicit clientresizemousecommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -953,9 +953,9 @@ typedef class masterforwardcommand_t : public command_t
 {
 public:
     explicit masterforwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
-        : command_t(true),
-          m_clients(clients),
-          m_windowstack(windowstack)
+      : command_t(true),
+        m_clients(clients),
+        m_windowstack(windowstack)
     {}
 
     void execute() override;
@@ -972,9 +972,9 @@ typedef class masterbackwardcommand_t : public command_t
 {
 public:
     explicit masterbackwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
-        : command_t(true),
-          m_clients(clients),
-          m_windowstack(windowstack)
+      : command_t(true),
+        m_clients(clients),
+        m_windowstack(windowstack)
     {}
 
     void execute() override;
@@ -991,9 +991,9 @@ typedef class stackforwardcommand_t : public command_t
 {
 public:
     explicit stackforwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
-        : command_t(true),
-          m_clients(clients),
-          m_windowstack(windowstack)
+      : command_t(true),
+        m_clients(clients),
+        m_windowstack(windowstack)
     {}
 
     void execute() override;
@@ -1010,9 +1010,9 @@ typedef class stackbackwardcommand_t : public command_t
 {
 public:
     explicit stackbackwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
-        : command_t(true),
-          m_clients(clients),
-          m_windowstack(windowstack)
+      : command_t(true),
+        m_clients(clients),
+        m_windowstack(windowstack)
     {}
 
     void execute() override;
@@ -1029,9 +1029,9 @@ typedef class allforwardcommand_t : public command_t
 {
 public:
     explicit allforwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
-        : command_t(true),
-          m_clients(clients),
-          m_windowstack(windowstack)
+      : command_t(true),
+        m_clients(clients),
+        m_windowstack(windowstack)
     {}
 
     void execute() override;
@@ -1048,9 +1048,9 @@ typedef class allbackwardcommand_t : public command_t
 {
 public:
     explicit allbackwardcommand_t(client_model_t& clients, windowstack_t& windowstack)
-        : command_t(true),
-          m_clients(clients),
-          m_windowstack(windowstack)
+      : command_t(true),
+        m_clients(clients),
+        m_windowstack(windowstack)
     {}
 
     void execute() override;
@@ -1067,9 +1067,9 @@ typedef class clienticonifycommand_t : public command_t
 {
 public:
     explicit clienticonifycommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -1086,9 +1086,9 @@ typedef class clienticonifyindexcommand_t : public command_t
 {
 public:
     explicit clienticonifyindexcommand_t(client_model_t& clients, unsigned index)
-        : command_t(true),
-          m_clients(clients),
-          m_index(index)
+      : command_t(true),
+        m_clients(clients),
+        m_index(index)
     {}
 
     void execute() override;
@@ -1105,8 +1105,8 @@ typedef class deiconifypopcommand_t : public command_t
 {
 public:
     explicit deiconifypopcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -1122,9 +1122,9 @@ typedef class clientdeiconifyindexcommand_t : public command_t
 {
 public:
     explicit clientdeiconifyindexcommand_t(client_model_t& clients, unsigned index)
-        : command_t(true),
-          m_clients(clients),
-          m_index(index)
+      : command_t(true),
+        m_clients(clients),
+        m_index(index)
     {}
 
     void execute() override;
@@ -1141,9 +1141,9 @@ typedef class clientdisowncommand_t : public command_t
 {
 public:
     explicit clientdisowncommand_t(client_model_t& clients, client_ptr_t client)
-        : command_t(false),
-          m_clients(clients),
-          m_client(client)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client)
     {}
 
     void execute() override;
@@ -1160,8 +1160,8 @@ typedef class reclaimpopcommand_t : public command_t
 {
 public:
     explicit reclaimpopcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -1177,9 +1177,9 @@ typedef class profilesavecommand_t : public command_t
 {
 public:
     explicit profilesavecommand_t(client_model_t& clients, unsigned number)
-        : command_t(true),
-          m_clients(clients),
-          m_number(number)
+      : command_t(true),
+        m_clients(clients),
+        m_number(number)
     {}
 
     void execute() override;
@@ -1197,10 +1197,10 @@ typedef class profileloadcommand_t : public command_t
 public:
     explicit profileloadcommand_t(client_model_t& clients,
         sidebar_t& sidebar, unsigned number)
-        : command_t(true),
-          m_clients(clients),
-          m_sidebar(sidebar),
-          m_number(number)
+      : command_t(true),
+        m_clients(clients),
+        m_sidebar(sidebar),
+        m_number(number)
     {}
 
     void execute() override;
@@ -1218,10 +1218,10 @@ typedef class workspacesetcommand_t : public command_t
 {
 public:
     explicit workspacesetcommand_t(client_model_t& clients, sidebar_t& sidebar, unsigned number)
-        : command_t(true),
-          m_clients(clients),
-          m_sidebar(sidebar),
-          m_number(number)
+      : command_t(true),
+        m_clients(clients),
+        m_sidebar(sidebar),
+        m_number(number)
     {}
 
     void execute() override;
@@ -1239,9 +1239,9 @@ typedef class nextworkspacecommand_t : public command_t
 {
 public:
     explicit nextworkspacecommand_t(client_model_t& clients, sidebar_t& sidebar)
-        : command_t(true),
-          m_clients(clients),
-          m_sidebar(sidebar)
+      : command_t(true),
+        m_clients(clients),
+        m_sidebar(sidebar)
     {}
 
     void execute() override;
@@ -1258,9 +1258,9 @@ typedef class previousworkspacecommand_t : public command_t
 {
 public:
     explicit previousworkspacecommand_t(client_model_t& clients, sidebar_t& sidebar)
-        : command_t(true),
-          m_clients(clients),
-          m_sidebar(sidebar)
+      : command_t(true),
+        m_clients(clients),
+        m_sidebar(sidebar)
     {}
 
     void execute() override;
@@ -1277,8 +1277,8 @@ typedef class workspacemirrorcommand_t : public command_t
 {
 public:
     explicit workspacemirrorcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -1294,9 +1294,9 @@ typedef class workspacemfactorcommand_t : public command_t
 {
 public:
     explicit workspacemfactorcommand_t(client_model_t& clients, float delta = 0.05)
-        : command_t(true),
-          m_clients(clients),
-          m_delta(delta)
+      : command_t(true),
+        m_clients(clients),
+        m_delta(delta)
     {}
 
     void execute() override;
@@ -1313,9 +1313,9 @@ typedef class workspacenmastercommand_t : public command_t
 {
 public:
     explicit workspacenmastercommand_t(client_model_t& clients, int delta = 1)
-        : command_t(true),
-          m_clients(clients),
-          m_delta(delta)
+      : command_t(true),
+        m_clients(clients),
+        m_delta(delta)
     {}
 
     void execute() override;
@@ -1332,9 +1332,9 @@ typedef class workspacegapsizecommand_t : public command_t
 {
 public:
     explicit workspacegapsizecommand_t(client_model_t& clients, int delta = 1)
-        : command_t(true),
-          m_clients(clients),
-          m_delta(delta)
+      : command_t(true),
+        m_clients(clients),
+        m_delta(delta)
     {}
 
     void execute() override;
@@ -1352,11 +1352,11 @@ typedef class workspacelayoutcommand_t : public command_t
 public:
     explicit workspacelayoutcommand_t(client_model_t& clients, windowstack_t& windowstack,
         sidebar_t& sidebar, layout_t layout)
-        : command_t(true),
-          m_clients(clients),
-          m_windowstack(windowstack),
-          m_sidebar(sidebar),
-          m_layout(layout)
+      : command_t(true),
+        m_clients(clients),
+        m_windowstack(windowstack),
+        m_sidebar(sidebar),
+        m_layout(layout)
     {}
 
     void execute() override;
@@ -1376,11 +1376,11 @@ typedef class workspacelayoutpreservedimcommand_t : public command_t
 public:
     explicit workspacelayoutpreservedimcommand_t(client_model_t& clients, windowstack_t& windowstack,
         sidebar_t& sidebar, layout_t layout)
-        : command_t(true),
-          m_clients(clients),
-          m_windowstack(windowstack),
-          m_sidebar(sidebar),
-          m_layout(layout)
+      : command_t(true),
+        m_clients(clients),
+        m_windowstack(windowstack),
+        m_sidebar(sidebar),
+        m_layout(layout)
     {}
 
     void execute() override;
@@ -1399,9 +1399,9 @@ typedef class sidebarshowcommand_t : public command_t
 {
 public:
     explicit sidebarshowcommand_t(client_model_t& clients, sidebar_t& sidebar)
-        : command_t(true),
-          m_clients(clients),
-          m_sidebar(sidebar)
+      : command_t(true),
+        m_clients(clients),
+        m_sidebar(sidebar)
     {}
 
     void execute() override;
@@ -1418,9 +1418,9 @@ typedef class sidebarshowallcommand_t : public command_t
 {
 public:
     explicit sidebarshowallcommand_t(client_model_t& clients, sidebar_t& sidebar)
-        : command_t(true),
-          m_clients(clients),
-          m_sidebar(sidebar)
+      : command_t(true),
+        m_clients(clients),
+        m_sidebar(sidebar)
     {}
 
     void execute() override;
@@ -1437,9 +1437,9 @@ typedef class contextsetcommand_t : public command_t
 {
 public:
     explicit contextsetcommand_t(client_model_t& clients, unsigned number)
-        : command_t(true),
-          m_clients(clients),
-          m_number(number)
+      : command_t(true),
+        m_clients(clients),
+        m_number(number)
     {}
 
     void execute() override;
@@ -1456,8 +1456,8 @@ typedef class nextcontextcommand_t : public command_t
 {
 public:
     explicit nextcontextcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -1473,8 +1473,8 @@ typedef class previouscontextcommand_t : public command_t
 {
 public:
     explicit previouscontextcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -1490,8 +1490,8 @@ typedef class focusforwardcommand_t : public command_t
 {
 public:
     explicit focusforwardcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -1507,8 +1507,8 @@ typedef class focusbackwardcommand_t : public command_t
 {
 public:
     explicit focusbackwardcommand_t(client_model_t& clients)
-        : command_t(true),
-          m_clients(clients)
+      : command_t(true),
+        m_clients(clients)
     {}
 
     void execute() override;
@@ -1524,8 +1524,8 @@ typedef class externalcommand_t : public command_t
 {
 public:
     explicit externalcommand_t(::std::string&& command)
-        : command_t(true),
-          m_command(command)
+      : command_t(true),
+        m_command(command)
     {}
 
     void execute() override;

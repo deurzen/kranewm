@@ -21,32 +21,70 @@ namespace x_data
         cardinal_t() = default;
 
         cardinal_t(CARD32 x)
-            : val(x) {}
+          : val(x)
+        {}
 
         cardinal_t(void* raw_data, unsigned long _)
-            : val(*(CARD32*)raw_data) {}
+          : val(*(CARD32*)raw_data)
+        {}
 
-        operator CARD32() const { return val; }
-        operator bool()   const { return val != 0; }
+        operator CARD32() const
+        {
+            return val;
+        }
 
-        inline bool operator==(const cardinal_t& card) const
+        operator bool() const
+        {
+            return val != 0;
+        }
+
+        inline bool
+        operator==(const cardinal_t& card) const
         {
             return card.val == val;
         }
 
-        inline bool operator==(const CARD32& card) const
+        inline bool
+        operator==(const CARD32& card) const
         {
             return card == val;
         }
 
-        inline int  length() const { return 1; }
-        inline Atom type()   const { return XA_CARDINAL; }
-        inline int  size()   const { return 32; }
+        inline int
+        length() const
+        {
+            return 1;
+        }
 
-        inline CARD32 get() const { return val; }
-        inline const CARD32* get_ptr() const { return &val; }
+        inline Atom
+        type() const
+        {
+            return XA_CARDINAL;
+        }
 
-        inline void set(CARD32 new_val) { val = new_val; }
+        inline int
+        size() const
+        {
+            return 32;
+        }
+
+        inline CARD32
+        get() const
+        {
+            return val;
+        }
+
+        inline const CARD32*
+        get_ptr() const
+        {
+            return &val;
+        }
+
+        inline void
+        set(CARD32 new_val)
+        {
+            val = new_val;
+        }
 
     private:
         CARD32 val;
@@ -60,25 +98,37 @@ namespace x_data
         cardinal_list_t() = default;
 
         cardinal_list_t(unsigned long* card_list, ::std::size_t list_len)
-            : len(list_len)
+          : len(list_len)
         {
             for (::std::size_t i = 0; i < list_len; ++i)
                 val.push_back(card_list[i]);
         }
 
         cardinal_list_t(void* raw_data, unsigned long data_len)
-            : len(data_len)
+          : len(data_len)
         {
             unsigned long* card_list = (unsigned long*) raw_data;
             for (::std::size_t i = 0; i < data_len; ++i)
                 val.push_back(card_list[i]);
         }
 
-        operator ::std::vector<unsigned long>() const { return val; }
-        operator unsigned long*() { return val.data(); }
-        operator bool() const { return len != 0; }
+        operator ::std::vector<unsigned long>() const
+        {
+            return val;
+        }
 
-        inline bool operator==(const cardinal_list_t& card_list) const
+        operator unsigned long*()
+        {
+            return val.data();
+        }
+
+        operator bool() const
+        {
+            return len != 0;
+        }
+
+        inline bool
+        operator==(const cardinal_list_t& card_list) const
         {
             if (card_list.len != len)
                 return false;
@@ -91,12 +141,35 @@ namespace x_data
             return !different;
         }
 
-        inline int  length() const { return len; }
-        inline Atom type() const { return XA_CARDINAL; }
-        inline int  size() const { return 32; }
+        inline int
+        length() const
+        {
+            return len;
+        }
 
-        inline ::std::vector<unsigned long> get() { return val; }
-        inline unsigned long* get_ptr() { return val.data(); }
+        inline Atom
+        type() const
+        {
+            return XA_CARDINAL;
+        }
+
+        inline int
+        size() const
+        {
+            return 32;
+        }
+
+        inline ::std::vector<unsigned long>
+        get()
+        {
+            return val;
+        }
+
+        inline unsigned long*
+        get_ptr()
+        {
+            return val.data();
+        }
 
     private:
         ::std::vector<unsigned long> val;

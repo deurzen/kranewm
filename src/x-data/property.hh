@@ -16,15 +16,20 @@ namespace x_data
     {
     public:
         property_t(const ::std::string& name, T t = T())
-            : id(get_atom(name)),
-              data(t),
-              data_length(t.length()),
-              data_type(t.type()),
-              type_size(t.size()) {}
+          : id(get_atom(name)),
+            data(t),
+            data_length(t.length()),
+            data_type(t.type()),
+            type_size(t.size())
+        {}
 
-        operator T() { return data; }
+        operator T()
+        {
+            return data;
+        }
 
-        inline bool operator==(const property_t& prop) const
+        inline bool
+        operator==(const property_t& prop) const
         {
             if (prop.id != id)
                 return false;
@@ -32,19 +37,45 @@ namespace x_data
             return data == prop.data;
         }
 
-        inline T operator()() const
+        inline T
+        operator()() const
         {
             return data.get();
         }
 
-        inline int  length() const { return data_length; }
-        inline Atom type()   const { return data_type; }
-        inline int  size()   const { return type_size; }
+        inline int
+        length() const
+        {
+            return data_length;
+        }
 
-        inline Atom get_id()   const { return id; }
-        inline T    get_data() const { return data; }
+        inline Atom
+        type() const
+        {
+            return data_type;
+        }
 
-        inline void set_data(void* data_ptr, unsigned long len) {
+        inline int
+        size() const
+        {
+            return type_size;
+        }
+
+        inline Atom
+        get_id() const
+        {
+            return id;
+        }
+
+        inline T
+        get_data() const
+        {
+            return data;
+        }
+
+        inline void
+        set_data(void* data_ptr, unsigned long len)
+        {
             data = T(data_ptr, len);
         }
 
@@ -63,7 +94,8 @@ namespace x_data
     extern void set_text_property(window_t, property_t<string_list_t>);
 
     template <typename T>
-    bool has_property(Window win, atom_t atom)
+    bool
+    has_property(Window win, atom_t atom)
     {
         T prop = T();
         int _i;
@@ -78,11 +110,13 @@ namespace x_data
             &_ul, &ucp) == Success
             && ucp && XFree(ucp)
             && returned_type == prop.type()
-            && n_items_returned > 0);
+            && n_items_returned > 0
+        );
     }
 
     template <typename T>
-    property_t<T> get_property(Window win, const ::std::string& name)
+    property_t<T>
+    get_property(Window win, const ::std::string& name)
     {
         int _i;
         unsigned long n;
@@ -104,21 +138,24 @@ namespace x_data
     }
 
     template <typename T>
-    void replace_property(window_t win, property_t<T> prop)
+    void
+    replace_property(window_t win, property_t<T> prop)
     {
         XChangeProperty(g_dpy, win, prop.get_id(), prop.type(), prop.size(),
             PropModeReplace, (unsigned char*) prop.get_data().get_ptr(), prop.length());
     }
 
     template <typename T>
-    void append_property(window_t win, property_t<T> prop)
+    void
+    append_property(window_t win, property_t<T> prop)
     {
         XChangeProperty(g_dpy, win, prop.get_id(), prop.type(), prop.size(),
             PropModeAppend, (unsigned char*) prop.get_data().get_ptr(), prop.length());
     }
 
     template <typename T>
-    void unset_property(window_t win, property_t<T> prop)
+    void
+    unset_property(window_t win, property_t<T> prop)
     {
         XChangeProperty(g_dpy, win, prop.get_id(), prop.type(), prop.size(),
             PropModeReplace, (unsigned char*) 0, 0);

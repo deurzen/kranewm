@@ -55,7 +55,8 @@ private:
 typedef struct clientchange_t
 {
     explicit clientchange_t(change_t _type = change_t::noop)
-      : type(_type) {}
+      : type(_type)
+    {}
 
     virtual ~clientchange_t() = default;
 
@@ -70,7 +71,8 @@ typedef struct clientfocuschange_t : clientchange_t
     explicit clientfocuschange_t(client_ptr_t _from, client_ptr_t _to)
       : clientchange_t(change_t::client_focus),
         from(_from),
-        to(_to) {}
+        to(_to)
+    {}
 
     client_ptr_t from;
     client_ptr_t to;
@@ -94,7 +96,8 @@ typedef struct clientdestroychange_t : clientchange_t
     explicit clientdestroychange_t(client_ptr_t _client, workspace_ptr_t _workspace)
       : clientchange_t(change_t::client_destroy),
         client(_client),
-        workspace(_workspace) {}
+        workspace(_workspace)
+    {}
 
     client_ptr_t client;
     workspace_ptr_t workspace;
@@ -118,7 +121,8 @@ typedef struct clientfullscreenchange_t : clientchange_t
     explicit clientfullscreenchange_t(client_ptr_t _client, client_t _former_state)
       : clientchange_t(change_t::client_fullscreen),
         client(_client),
-        former_state(_former_state) {}
+        former_state(_former_state)
+    {}
 
     client_ptr_t client;
     client_t former_state;
@@ -142,7 +146,8 @@ typedef struct clientabovechange_t : clientchange_t
     explicit clientabovechange_t(client_ptr_t _client, client_t _former_state)
       : clientchange_t(change_t::client_above),
         client(_client),
-        former_state(_former_state) {}
+        former_state(_former_state)
+    {}
 
     client_ptr_t client;
     client_t former_state;
@@ -166,7 +171,8 @@ typedef struct clientbelowchange_t : clientchange_t
     explicit clientbelowchange_t(client_ptr_t _client, client_t _former_state)
       : clientchange_t(change_t::client_below),
         client(_client),
-        former_state(_former_state) {}
+        former_state(_former_state)
+    {}
 
     client_ptr_t client;
     client_t former_state;
@@ -189,7 +195,8 @@ typedef struct clienturgentchange_t : clientchange_t
 {
     explicit clienturgentchange_t(client_ptr_t _client)
       : clientchange_t(change_t::client_urgent),
-        client(_client) {}
+        client(_client)
+    {}
 
     client_ptr_t client;
 
@@ -211,7 +218,8 @@ typedef struct clienticonifychange_t : clientchange_t
 {
     explicit clienticonifychange_t(client_ptr_t _client)
       : clientchange_t(change_t::client_iconify),
-        client(_client) {}
+        client(_client)
+    {}
 
     client_ptr_t client;
 
@@ -234,7 +242,8 @@ typedef struct clientdisownchange_t : clientchange_t
     explicit clientdisownchange_t(client_ptr_t _client, client_t _former_state)
       : clientchange_t(change_t::client_disown),
         client(_client),
-        former_state(_former_state) {}
+        former_state(_former_state)
+    {}
 
     client_ptr_t client;
     client_t former_state;
@@ -258,7 +267,8 @@ typedef struct clientstickychange_t : clientchange_t
     explicit clientstickychange_t(client_ptr_t _client, context_ptr_t _context)
       : clientchange_t(change_t::client_sticky),
         client(_client),
-        context(_context) {}
+        context(_context)
+    {}
 
     client_ptr_t client;
     context_ptr_t context;
@@ -283,7 +293,8 @@ typedef struct clientworkspacechange_t : clientchange_t
       : clientchange_t(change_t::client_workspace),
         client(_client),
         from(_from),
-        to(_to) {}
+        to(_to)
+    {}
 
     client_ptr_t client;
     workspace_ptr_t from;
@@ -309,7 +320,8 @@ typedef struct workspaceactivechange_t : clientchange_t
     explicit workspaceactivechange_t(user_workspace_ptr_t _from, user_workspace_ptr_t _to)
       : clientchange_t(change_t::workspace_active),
         from(_from),
-        to(_to) {}
+        to(_to)
+    {}
 
     user_workspace_ptr_t from;
     user_workspace_ptr_t to;
@@ -333,7 +345,8 @@ typedef struct contextactivechange_t : clientchange_t
     explicit contextactivechange_t(context_ptr_t _from, context_ptr_t _to)
       : clientchange_t(change_t::context_active),
         from(_from),
-        to(_to) {}
+        to(_to)
+    {}
 
     context_ptr_t from;
     context_ptr_t to;

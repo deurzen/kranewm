@@ -17,7 +17,9 @@ class focus_cycle_t
     {
     public:
         focus_stack_t()
-            : max_stack_size(MAX_STACK_SIZE) {}
+          : max_stack_size(MAX_STACK_SIZE),
+            stack({})
+        {}
 
         void push(client_ptr_t);
         client_ptr_t pop(client_ptr_t);
@@ -35,7 +37,8 @@ class focus_cycle_t
 
 public:
     focus_cycle_t()
-        : m_has_focus(false) {}
+      : m_has_focus(false)
+    {}
 
     void add(client_ptr_t);
     void remove(client_ptr_t);

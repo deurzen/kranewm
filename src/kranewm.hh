@@ -22,14 +22,15 @@ class kranewm_t
 {
 public:
     kranewm_t()
-        : m_ewmh(),
-          m_ipc(),
-          m_sidebar(m_ewmh),
-          m_x(),
-          m_changequeue(),
-          m_clients(m_changequeue, m_ewmh, m_windowstack, m_processes),
-          m_events(m_ewmh, m_ipc, m_sidebar, m_windowstack, m_processes, m_clients, m_x),
-          m_changes(m_changequeue, m_ewmh, m_sidebar, m_x, m_clients) {}
+      : m_ewmh(),
+        m_ipc(),
+        m_sidebar(m_ewmh),
+        m_x(),
+        m_changequeue(),
+        m_clients(m_changequeue, m_ewmh, m_windowstack, m_processes),
+        m_events(m_ewmh, m_ipc, m_sidebar, m_windowstack, m_processes, m_clients, m_x),
+        m_changes(m_changequeue, m_ewmh, m_sidebar, m_x, m_clients)
+    {}
 
     void setup();
     void run();

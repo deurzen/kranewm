@@ -12,20 +12,24 @@
 struct keyshortcut_t
 {
     keyshortcut_t(KeySym _keysym, unsigned _mask)
-        : keysym(_keysym),
-          mask(_mask) {}
+      : keysym(_keysym),
+        mask(_mask)
+    {}
 
     keyshortcut_t(XKeyEvent event)
-        : keysym(x_data::get_keysym(event.keycode)),
-          mask(event.state) {}
+      : keysym(x_data::get_keysym(event.keycode)),
+        mask(event.state)
+    {}
 
-    inline bool operator==(const keyshortcut_t& ks) const
+    inline bool
+    operator==(const keyshortcut_t& ks) const
     {
         return ks.keysym == keysym && x_data::clean_mask(ks.mask) == x_data::clean_mask(mask);
     }
 
     KeySym keysym;
     unsigned mask;
+
 };
 
 namespace std
@@ -33,7 +37,8 @@ namespace std
     template <>
     struct hash<keyshortcut_t>
     {
-        ::std::size_t operator()(const keyshortcut_t& ks) const
+        ::std::size_t
+        operator()(const keyshortcut_t& ks) const
         {
             return ks.keysym + 10000 * x_data::clean_mask(ks.mask);
         }

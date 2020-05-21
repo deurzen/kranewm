@@ -12,12 +12,28 @@ namespace x_data
     class x_type
     {
     public:
-        virtual ~x_type() {}
+        virtual ~x_type()
+        {}
 
     protected:
-        virtual int  length() { return 0; }
-        virtual Atom type()   { return 0; }
-        virtual int  size()   { return 0; }
+        virtual int
+        length()
+        {
+            return 0;
+        }
+
+        virtual Atom
+        type()
+        {
+            return 0;
+        }
+
+        virtual int
+        size()
+        {
+            return 0;
+        }
+
     };
 }
 

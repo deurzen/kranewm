@@ -16,7 +16,7 @@ namespace x_data
     {
     public:
         explicit display_t(const char* _dpy)
-            : dpy(XOpenDisplay(_dpy))
+          : dpy(XOpenDisplay(_dpy))
         {
             XSetWindowAttributes wa;
             wa.cursor = XCreateFontCursor(dpy, XC_left_ptr);
@@ -33,8 +33,17 @@ namespace x_data
     extern display_t g_dpy;
     extern window_t g_root;
 
-    inline int connection_number() { return XConnectionNumber(g_dpy); }
-    inline display_t::operator Display*() const { return dpy; }
+    inline int
+    connection_number()
+    {
+        return XConnectionNumber(g_dpy);
+    }
+
+    inline
+    display_t::operator Display*() const
+    {
+        return dpy;
+    }
 }
 
 #endif//__KRANEWM__X_DATA__DISPLAY__GUARD__

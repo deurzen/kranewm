@@ -13,7 +13,11 @@ class profile_t
 public:
     profile_t() = default;
 
-    bool is_set() const { return m_set; }
+    bool
+    is_set() const
+    {
+        return m_set;
+    }
 
     void save(const user_workspace_ptr_t);
     void apply(const user_workspace_ptr_t);

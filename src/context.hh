@@ -26,15 +26,15 @@ typedef class context_t
 {
 public:
     context_t(char letter, const ::std::string name, ewmh_t& ewmh, bool initialize = false)
-        : m_ewmh(ewmh),
-          m_letter(letter),
-          m_name(name),
-          m_is_initialized(initialize),
-          m_nsticky(0),
-          m_previous(nullptr),
-          m_activated(nullptr),
-          m_marked(nullptr),
-          m_jumped_from(nullptr)
+      : m_ewmh(ewmh),
+        m_letter(letter),
+        m_name(name),
+        m_is_initialized(initialize),
+        m_nsticky(0),
+        m_previous(nullptr),
+        m_activated(nullptr),
+        m_marked(nullptr),
+        m_jumped_from(nullptr)
     {
         if (initialize)
             context_t::initialize();
@@ -46,7 +46,8 @@ public:
             delete workspace;
     }
 
-    explicit operator bool() const
+    explicit
+    operator bool() const
     {
         return m_is_initialized;
     }

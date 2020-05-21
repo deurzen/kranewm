@@ -22,15 +22,31 @@ namespace x_data
         event_t() = default;
 
         event_t(XEvent event)
-            : val(event)
+          : val(event)
         {}
 
-        operator XEvent() const { return val; }
+        operator XEvent() const
+        {
+            return val;
+        }
 
-        inline XEvent& get() { return val; }
-        inline XEvent* get_ptr() { return &val; }
+        inline XEvent&
+        get()
+        {
+            return val;
+        }
 
-        inline int type() const  { return val.type; }
+        inline XEvent*
+        get_ptr()
+        {
+            return &val;
+        }
+
+        inline int
+        type() const
+        {
+            return val.type;
+        }
 
         event_t& send(long mask, window_t win = None);
 
@@ -40,7 +56,8 @@ namespace x_data
     };
 
     template <class T>
-    event_t create_event(window_t win, atom_t type, T data)
+    event_t
+    create_event(window_t win, atom_t type, T data)
     {
         XEvent event;
         event.type = ClientMessage;
@@ -59,6 +76,7 @@ namespace x_data
     extern bool typed_event(event_t&, int);
     extern void last_typed_event(event_t&, int);
     extern void sync(bool);
+
 }
 
 #endif//__KRANEWM__X_DATA__EVENT__GUARD__

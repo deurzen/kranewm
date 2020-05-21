@@ -13,19 +13,53 @@ namespace x_data
     {
     public:
         attributes_t(XWindowAttributes wa)
-            : val(wa) {}
+          : val(wa)
+        {}
 
-        operator XWindowAttributes() const { return val; }
+        operator XWindowAttributes() const
+        {
+            return val;
+        }
 
-        operator dim_t() const { return dim_t{val.width, val.height}; }
-        operator pos_t()  const { return pos_t{val.x, val.y}; }
+        operator dim_t() const
+        {
+            return dim_t{val.width, val.height};
+        }
 
-        inline XWindowAttributes& get() { return val; }
+        operator pos_t() const
+        {
+            return pos_t{val.x, val.y};
+        }
 
-        inline int x() const { return val.x; }
-        inline int y() const { return val.y; }
-        inline int w() const { return val.width; }
-        inline int h() const { return val.height; }
+        inline XWindowAttributes&
+        get()
+        {
+            return val;
+        }
+
+        inline int
+        x() const
+        {
+            return val.x;
+        }
+
+        inline int
+        y() const
+        {
+            return val.y;
+        }
+
+        inline int
+        w() const
+        {
+            return val.width;
+        }
+
+        inline int
+        h() const
+        {
+            return val.height;
+        }
 
     private:
         XWindowAttributes val;

@@ -9,7 +9,8 @@
 namespace x_data { class window_t; }
 
 
-enum autoclosemethod {
+enum autoclosemethod
+{
     OFF,
     ONCE,
     PERSIST
@@ -20,29 +21,32 @@ struct rulespec_t
 {
     rulespec_t(bool _floating, bool _center, autoclosemethod _autoclose,
         bool _nohint, ::std::size_t _workspace)
-        : floating(_floating),
-          center(_center),
-          autoclose(_autoclose),
-          nohint(_nohint),
-          workspace(_workspace) {}
+      : floating(_floating),
+        center(_center),
+        autoclose(_autoclose),
+        nohint(_nohint),
+        workspace(_workspace)
+    {}
 
     bool floating;
     bool center;
     autoclosemethod autoclose;
     bool nohint;
     ::std::size_t workspace;
+
 };
 
 struct rule_t
 {
     rule_t(bool _floating, bool _center, bool _fullscreen,
         bool _autoclose, bool _nohint, ::std::size_t _workspace)
-        : floating(_floating),
-          center(_center),
-          fullscreen(_fullscreen),
-          autoclose(_autoclose),
-          nohint(_nohint),
-          workspace(_workspace) {}
+      : floating(_floating),
+        center(_center),
+        fullscreen(_fullscreen),
+        autoclose(_autoclose),
+        nohint(_nohint),
+        workspace(_workspace)
+    {}
 
     bool floating;
     bool center;
@@ -50,6 +54,7 @@ struct rule_t
     bool autoclose;
     bool nohint;
     ::std::size_t workspace;
+
 };
 
 inline bool

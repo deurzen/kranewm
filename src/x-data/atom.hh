@@ -28,36 +28,72 @@ namespace x_data
         atom_t() = default;
 
         atom_t(Atom atom)
-            : val(atom) {}
+          : val(atom)
+        {}
 
         atom_t(const ::std::string& name)
-            : val(XInternAtom(g_dpy, name.c_str(), False)) {}
+          : val(XInternAtom(g_dpy, name.c_str(), False))
+        {}
 
         atom_t(const char* name)
-            : val(XInternAtom(g_dpy, name, False)) {}
+          : val(XInternAtom(g_dpy, name, False))
+        {}
 
         explicit atom_t(void* raw_data, unsigned long _)
-            : val(*(Atom*)raw_data) {}
+          : val(*(Atom*)raw_data)
+        {}
 
-        operator Atom() const { return val; }
-        operator bool() const { return val != 0; }
+        operator Atom() const
+        {
+            return val;
+        }
 
-        inline bool operator==(const atom_t& atom) const
+        operator bool() const
+        {
+            return val != 0;
+        }
+
+        inline bool
+        operator==(const atom_t& atom) const
         {
             return atom.val == val;
         }
 
-        inline bool operator==(const Atom& atom) const
+        inline bool
+        operator==(const Atom& atom) const
         {
             return atom == val;
         }
 
-        inline int  length() const { return 1; }
-        inline Atom type()   const { return XA_ATOM; }
-        inline int  size()   const { return 32; }
+        inline int
+        length() const
+        {
+            return 1;
+        }
 
-        inline Atom get() const { return val; }
-        inline const Atom* get_ptr() const { return &val; }
+        inline Atom
+        type() const
+        {
+            return XA_ATOM;
+        }
+
+        inline int
+        size() const
+        {
+            return 32;
+        }
+
+        inline Atom
+        get() const
+        {
+            return val;
+        }
+
+        inline const Atom*
+        get_ptr() const
+        {
+            return &val;
+        }
 
     private:
         Atom val;
@@ -70,25 +106,37 @@ namespace x_data
         atom_list_t() = default;
 
         atom_list_t(Atom* atom_list, ::std::size_t list_len)
-            : len(list_len)
+          : len(list_len)
         {
             for (::std::size_t i = 0; i < list_len; ++i)
                 val.push_back(atom_list[i]);
         }
 
         atom_list_t(void* raw_data, unsigned long data_len)
-            : len(data_len)
+          : len(data_len)
         {
             Atom* atom_list = (Atom*) raw_data;
             for (::std::size_t i = 0; i < data_len; ++i)
                 val.push_back(atom_list[i]);
         }
 
-        operator ::std::vector<Atom>() const { return val; }
-        operator Atom*() { return val.data(); }
-        operator bool() const { return !val.empty(); }
+        operator ::std::vector<Atom>() const
+        {
+            return val;
+        }
 
-        inline bool operator==(const atom_list_t& atom_list) const
+        operator Atom*()
+        {
+            return val.data();
+        }
+
+        operator bool() const
+        {
+            return !val.empty();
+        }
+
+        inline bool
+        operator==(const atom_list_t& atom_list) const
         {
             if (atom_list.len != len)
                 return false;
@@ -101,14 +149,41 @@ namespace x_data
             return !different;
         }
 
-        inline int  length() const { return len; }
-        inline Atom type()   const { return XA_ATOM; }
-        inline int  size()   const { return 32; }
+        inline int
+        length() const
+        {
+            return len;
+        }
 
-        inline Atom* get() { return &val[0]; }
-        inline Atom* get_ptr() { return val.data(); }
+        inline Atom
+        type() const
+        {
+            return XA_ATOM;
+        }
 
-        inline ::std::vector<Atom> get_all() { return val; }
+        inline int
+        size() const
+        {
+            return 32;
+        }
+
+        inline Atom*
+        get()
+        {
+            return &val[0];
+        }
+
+        inline Atom*
+        get_ptr()
+        {
+            return val.data();
+        }
+
+        inline ::std::vector<Atom>
+        get_all()
+        {
+            return val;
+        }
 
     private:
         ::std::vector<Atom> val;

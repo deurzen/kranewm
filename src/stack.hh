@@ -24,8 +24,9 @@ typedef struct user_workspace_t* user_workspace_ptr_t;
 struct windowstack_window_t
 {
     windowstack_window_t(x_data::window_t _win, layer_t _layer)
-        : win(_win),
-          layer(_layer) {}
+      : win(_win),
+        layer(_layer)
+    {}
 
     x_data::window_t win;
     layer_t layer;
@@ -44,7 +45,6 @@ public:
     ::std::vector<client_ptr_t>& get_clients();
 
 private:
-
     ::std::vector<client_ptr_t> m_clients;
 
 };

@@ -7,7 +7,8 @@
 #include "x-data/window.hh"
 
 
-enum class applicationtype_t {
+enum class applicationtype_t
+{
     other,
     terminal,
     browser,

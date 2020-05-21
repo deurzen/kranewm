@@ -13,7 +13,8 @@ class x_model_t
 {
 public:
     x_model_t()
-        : m_moveresize(nullptr) {};
+      : m_moveresize(nullptr)
+    {}
 
     static bool update_hints(client_ptr_t, x_data::sizehints_t);
 

@@ -20,12 +20,14 @@ enum class mousetarget_t
 
 struct mouseshortcut_t
 {
-    mouseshortcut_t(unsigned _button , unsigned _mask, mousetarget_t _target)
-        : button(_button),
-          mask(_mask),
-          target(_target) {}
+    mouseshortcut_t(unsigned _button, unsigned _mask, mousetarget_t _target)
+      : button(_button),
+        mask(_mask),
+        target(_target)
+    {}
 
-    inline bool operator==(const mouseshortcut_t& ms) const
+    inline bool
+    operator==(const mouseshortcut_t& ms) const
     {
         return ms.button == button && x_data::clean_mask(ms.mask) == x_data::clean_mask(mask) && ms.target == target;
     }
@@ -33,6 +35,7 @@ struct mouseshortcut_t
     unsigned button;
     unsigned mask;
     mousetarget_t target;
+
 };
 
 namespace std
@@ -40,7 +43,8 @@ namespace std
     template <>
     struct hash<mouseshortcut_t>
     {
-        ::std::size_t operator()(const mouseshortcut_t& ms) const
+        ::std::size_t
+        operator()(const mouseshortcut_t& ms) const
         {
             return ms.button + 10000 * x_data::clean_mask(ms.mask) + static_cast<int>(ms.target);
         }

@@ -51,7 +51,8 @@ enum netwmid_t : int
     netlast
 };
 
-inline netwmid_t& operator++(netwmid_t& id)
+inline netwmid_t&
+operator++(netwmid_t& id)
 {
     return id = static_cast<netwmid_t>(static_cast<int>(id) + 1);
 }

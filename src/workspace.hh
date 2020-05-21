@@ -36,16 +36,33 @@ typedef class workspace_t
 {
 public:
     explicit workspace_t(workspacetype_t _type = workspacetype_t::generic)
-        : type(_type) {}
+      : type(_type)
+    {}
 
-    virtual ~workspace_t() {}
+    virtual ~workspace_t()
+    {}
 
-    virtual workspacetype_t get_type() const { return type; }
+    virtual workspacetype_t
+    get_type() const
+    {
+        return type;
+    }
 
-    virtual void arrange() const {}
+    virtual void
+    arrange() const
+    {}
 
-    virtual workspace_t& add_client(client_ptr_t)    { return *this; }
-    virtual workspace_t& remove_client(client_ptr_t) { return *this; }
+    virtual workspace_t&
+    add_client(client_ptr_t)
+    {
+        return *this;
+    }
+
+    virtual workspace_t&
+    remove_client(client_ptr_t)
+    {
+        return *this;
+    }
 
 private:
     workspacetype_t type;
@@ -56,18 +73,39 @@ typedef class moveresize_workspace_t : public workspace_t
 {
 public:
     explicit moveresize_workspace_t(workspacetype_t _type)
-        : workspace_t(_type),
-          client(nullptr) {}
+      : workspace_t(_type),
+        client(nullptr)
+    {}
 
-    void arrange() const override {}
+    void arrange() const override
+    {}
 
-    inline void set(client_ptr_t _client) { client = _client; }
-    inline void unset() { client = nullptr; }
+    inline void
+    set(client_ptr_t _client)
+    {
+        client = _client;
+    }
 
-    inline client_ptr_t get() const { return client; }
-    inline bool is_set() const { return client != nullptr; }
+    inline void
+    unset()
+    {
+        client = nullptr;
+    }
 
-    inline moveresize_workspace_t& add_client(client_ptr_t client) override
+    inline client_ptr_t
+    get() const
+    {
+        return client;
+    }
+
+    inline bool
+    is_set() const
+    {
+        return client != nullptr;
+    }
+
+    inline moveresize_workspace_t&
+    add_client(client_ptr_t client) override
     {
         if (!is_set())
             set(client);
@@ -75,7 +113,8 @@ public:
         return *this;
     }
 
-    inline moveresize_workspace_t& remove_client(client_ptr_t client) override
+    inline moveresize_workspace_t&
+    remove_client(client_ptr_t client) override
     {
         if (is_set() && client == get()) {
             unset();
@@ -120,18 +159,19 @@ typedef class user_workspace_t : public workspace_t
 {
 public:
     user_workspace_t(::std::size_t _number, ::std::string&& _name, ewmh_t& ewmh)
-        : workspace_t(workspacetype_t::user),
-          m_number(_number),
-          m_name(_name),
-          m_nmaster(1),
-          m_nurgent(0),
-          m_gapsize(0),
-          m_mfactor(.5f),
-          m_mirrored(false),
-          m_sidebarset(true),
-          m_layout(layout_t::floating),
-          m_previous_layout(m_layout),
-          m_layouthandler(layouthandler_t{ewmh}) {}
+      : workspace_t(workspacetype_t::user),
+        m_number(_number),
+        m_name(_name),
+        m_nmaster(1),
+        m_nurgent(0),
+        m_gapsize(0),
+        m_mfactor(.5f),
+        m_mirrored(false),
+        m_sidebarset(true),
+        m_layout(layout_t::floating),
+        m_previous_layout(m_layout),
+        m_layouthandler(layouthandler_t{ewmh})
+    {}
 
     void arrange() const override;
 

@@ -15,10 +15,12 @@ typedef class processjump_t* processjump_ptr_t;
 typedef struct processjump_t
 {
     processjump_t(client_ptr_t _target, client_ptr_t _prev)
-        : target(_target),
-          prev(_prev) {}
+      : target(_target),
+        prev(_prev)
+    {}
 
-    inline bool operator==(const processjump_t& pj) const
+    inline bool
+    operator==(const processjump_t& pj) const
     {
         return target == pj.target && prev == pj.prev;
     }
@@ -54,21 +56,24 @@ private:
 struct processshortcut_t
 {
     processshortcut_t(KeySym _keysym, unsigned _mask)
-        : keysym(_keysym),
-          mask(_mask) {}
-
-    processshortcut_t(XKeyEvent event)
-        : keysym(x_data::get_keysym(event.keycode)),
-          mask(event.state)
+      : keysym(_keysym),
+        mask(_mask)
     {}
 
-    inline bool operator==(const processshortcut_t& ps) const
+    processshortcut_t(XKeyEvent event)
+      : keysym(x_data::get_keysym(event.keycode)),
+        mask(event.state)
+    {}
+
+    inline bool
+    operator==(const processshortcut_t& ps) const
     {
         return ps.keysym == keysym && x_data::clean_mask(ps.mask) == x_data::clean_mask(mask);
     }
 
     KeySym keysym;
     unsigned mask;
+
 };
 
 namespace std
@@ -76,7 +81,8 @@ namespace std
     template <>
     struct hash<processshortcut_t>
     {
-        ::std::size_t operator()(const processshortcut_t& ps) const
+        ::std::size_t
+        operator()(const processshortcut_t& ps) const
         {
             return ps.keysym + 10000 * x_data::clean_mask(ps.mask);
         }

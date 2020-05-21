@@ -28,7 +28,8 @@ class layouthandler_t
 {
 public:
     explicit layouthandler_t(ewmh_t& ewmh)
-        : m_ewmh(ewmh) {}
+      : m_ewmh(ewmh)
+    {}
 
     void layout_floating(const user_workspace_t&) const;
     void layout_tile(const user_workspace_t&) const;

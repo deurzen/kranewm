@@ -12,10 +12,10 @@ namespace x_data
     {
     public:
         graphicscontext_t(window_t _win, const ::std::string& fontname, int line_width)
-            : win(_win),
-              font_dim{12, 6},
-              pos{},
-              line_width(line_width)
+          : win(_win),
+            font_dim{12, 6},
+            pos{},
+            line_width(line_width)
         {
             XGCValues values;
             values.function           = GXcopy;
@@ -57,7 +57,8 @@ namespace x_data
             XFree(gc);
         }
 
-        inline dim_t get_font_dim() const
+        inline dim_t
+        get_font_dim() const
         {
             return font_dim;
         }

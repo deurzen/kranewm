@@ -23,16 +23,16 @@ class client_model_t
 public:
     explicit client_model_t(changequeue_t& changequeue, ewmh_t& ewmh,
         windowstack_t& windowstack, processjumplist_t& processes)
-        : m_changequeue(changequeue),
-          m_windowstack(windowstack),
-          m_processes(processes),
-          m_current_context(new context_t{'a', CONTEXTS.at('a'), ewmh, true}),
-          m_current_workspace(m_current_context->get_activated()),
-          m_move_workspace(new moveresize_workspace_t{workspacetype_t::move}),
-          m_resize_workspace(new moveresize_workspace_t{workspacetype_t::resize}),
-          m_user_workspaces(m_current_context->get_workspaces()),
-          m_profiles(3, profile_t{}),
-          m_focused_client(nullptr)
+      : m_changequeue(changequeue),
+        m_windowstack(windowstack),
+        m_processes(processes),
+        m_current_context(new context_t{'a', CONTEXTS.at('a'), ewmh, true}),
+        m_current_workspace(m_current_context->get_activated()),
+        m_move_workspace(new moveresize_workspace_t{workspacetype_t::move}),
+        m_resize_workspace(new moveresize_workspace_t{workspacetype_t::resize}),
+        m_user_workspaces(m_current_context->get_workspaces()),
+        m_profiles(3, profile_t{}),
+        m_focused_client(nullptr)
     {
         m_contexts.push_back(m_current_context);
         for (::std::size_t i = 1; i < CONTEXTS.size(); ++i) {

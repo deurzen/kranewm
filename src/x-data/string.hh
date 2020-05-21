@@ -25,25 +25,62 @@ namespace x_data
         string_t() = default;
 
         string_t(const char* c_str)
-            : val(c_str) {}
+          : val(c_str)
+        {}
 
         string_t(const ::std::string& str)
-            : val(str) {}
+          : val(str)
+        {}
 
         explicit string_t(void* raw_data)
-            : val((wrapped_type*)raw_data) {}
+          : val((wrapped_type*)raw_data)
+        {}
 
-        operator ::std::string() const { return val; }
-        operator bool() const { return !val.empty(); }
+        operator ::std::string() const
+        {
+            return val;
+        }
 
-        inline int  length() const { return val.size(); }
-        inline Atom type()   const { return get_atom("UTF8_STRING"); }
-        inline int  size()   const { return 8; }
+        operator bool() const
+        {
+            return !val.empty();
+        }
 
-        inline ::std::string get()     const { return val; }
-        inline const char*   get_ptr() const { return val.c_str(); }
+        inline int
+        length() const
+        {
+            return val.size();
+        }
 
-        inline void set(const ::std::string& new_val) { val = new_val; }
+        inline Atom
+        type() const
+        {
+            return get_atom("UTF8_STRING");
+        }
+
+        inline int
+        size() const
+        {
+            return 8;
+        }
+
+        inline ::std::string
+        get() const
+        {
+            return val;
+        }
+
+        inline const char*
+        get_ptr() const
+        {
+            return val.c_str();
+        }
+
+        inline void
+        set(const ::std::string& new_val)
+        {
+            val = new_val;
+        }
 
     private:
         ::std::string val;
@@ -58,11 +95,12 @@ namespace x_data
         string_list_t() = default;
 
         string_list_t(char** c_str_list, ::std::size_t list_length)
-            : val(c_str_list, c_str_list + list_length),
-              len(list_length) {}
+          : val(c_str_list, c_str_list + list_length),
+            len(list_length)
+        {}
 
         string_list_t(::std::vector<::std::string> str_list)
-            : len(str_list.size())
+          : len(str_list.size())
         {
             ::std::transform(str_list.begin(), str_list.end(),
                 ::std::back_inserter(val),
@@ -74,21 +112,43 @@ namespace x_data
         }
 
         string_list_t(void* raw_data, unsigned long data_len)
-            : len(data_len)
+          : len(data_len)
         {
             char** c_str_list = (char**)raw_data;
             val.clear();
             val = ::std::vector<char*>(&c_str_list[0], &c_str_list[data_len]);
         }
 
-        operator char**() { return &val[0]; }
-        operator bool() const { return val[0] != nullptr; }
+        operator char**()
+        {
+            return &val[0];
+        }
 
-        inline int  length() const { return len; }
-        inline Atom type()   const { return get_atom("UTF8_STRING"); }
-        inline int  size()   const { return 8; }
+        operator bool() const
+        {
+            return val[0] != nullptr;
+        }
 
-        inline XTextProperty get()
+        inline int
+        length() const
+        {
+            return len;
+        }
+
+        inline Atom
+        type() const
+        {
+            return get_atom("UTF8_STRING");
+        }
+
+        inline int
+        size() const
+        {
+            return 8;
+        }
+
+        inline XTextProperty
+        get()
         {
             XTextProperty prop;
             Xutf8TextListToTextProperty(g_dpy, &val[0], len,
@@ -96,7 +156,11 @@ namespace x_data
             return prop;
         }
 
-        inline char** get_ptr() { return &val[0]; }
+        inline char**
+        get_ptr()
+        {
+            return &val[0];
+        }
 
     private:
         ::std::vector<char*> val;

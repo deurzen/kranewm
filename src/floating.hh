@@ -10,13 +10,15 @@
 typedef class client_t* client_ptr_t;
 
 
-enum class moveresizestate_t {
+enum class moveresizestate_t
+{
     invalid,
     move,
     resize
 };
 
-enum class corner_t {
+enum class corner_t
+{
     no_corner,
     top_left,
     top_right,
@@ -24,7 +26,8 @@ enum class corner_t {
     bottom_right
 };
 
-enum class direction_t {
+enum class direction_t
+{
     no_direction,
     up,
     right,
