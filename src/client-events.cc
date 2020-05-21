@@ -306,7 +306,7 @@ client_events_t::on_change_workspace_active()
     auto from   = change->from;
     auto to     = change->to;
 
-    m_ewmh.set_current_desktop_property(to->get_number() - 1);
+    m_ewmh.set_current_desktop_property(to->get_index());
 
     { // circumvents X server race condition
         x_data::sync(false);
@@ -404,7 +404,7 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
         m_clients.focus(client);
     }
 
-    m_ewmh.set_wm_desktop_property(client->win, user_workspace(to)->get_number() - 1);
+    m_ewmh.set_wm_desktop_property(client->win, user_workspace(to)->get_index());
     m_sidebar.draw_workspacenumbers();
     m_sidebar.draw_numbersticky();
     m_sidebar.draw_numberclients();

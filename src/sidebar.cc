@@ -231,7 +231,7 @@ sidebar_t::draw_numberclients()
     pos_t pos = {(SIDEBAR_WIDTH - m_numberclientsgc.get_font_dim().w) / 2,
         root_attrs.h() - (m_numberclientsgc.get_font_dim().h) + 2};
 
-    ::std::size_t nclients = m_context->get_nnonsticky(m_context->get_activated()->get_number() - 1);
+    ::std::size_t nclients = m_context->get_nnonsticky(m_context->get_activated()->get_index());
     m_numberclientsgc.clear();
 
     if (nclients > 9)

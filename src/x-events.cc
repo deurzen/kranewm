@@ -535,6 +535,5 @@ x_events_t::on_unmap_notify()
     }
 
     client->unmap();
-    client->win.reparent(client->pos);
     client->frame.destroy();
 }

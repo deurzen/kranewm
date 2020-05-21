@@ -416,7 +416,7 @@ client_model_t::client_to_context(client_ptr_t client, context_ptr_t context)
         return;
 
     auto workspace = client_user_workspace(client);
-    client_to_workspace(client, context->get_workspaces()->at(workspace->get_number() - 1));
+    client_to_workspace(client, context->get_workspaces()->at(workspace->get_index()));
 }
 
 void

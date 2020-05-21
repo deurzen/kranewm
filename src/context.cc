@@ -67,14 +67,14 @@ context_t::get_previous() const
 void
 context_t::set_activated(user_workspace_ptr_t workspace)
 {
-    if (m_workspaces[workspace->get_number() - 1] == workspace)
+    if (m_workspaces[workspace->get_index()] == workspace)
         m_activated = workspace;
 }
 
 void
 context_t::set_previous(user_workspace_ptr_t workspace)
 {
-    if (m_workspaces[workspace->get_number() - 1] == workspace)
+    if (m_workspaces[workspace->get_index()] == workspace)
         m_previous = workspace;
 }
 
