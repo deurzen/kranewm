@@ -1,6 +1,6 @@
 include config.mk
 
-all: quick_debug
+all: build
 
 quick_build:
 	$(MAKE) -j$$(( 10 * $(shell nproc) )) build
@@ -14,6 +14,7 @@ debug: build-core
 	+$(MAKE) run tags
 
 build: CXXFLAGS += $(RELEASE_CXXFLAGS)
+build: LDFLAGS += $(RELEASE_LDFLAGS)
 build: build-core
 
 install:

@@ -121,8 +121,6 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
 void
 client_model_t::unmanage_client(client_ptr_t client)
 {
-    client->dying = true;
-
     if (client->iconified)
         set_iconified(client, clientaction_t::remove, false);
 
@@ -147,7 +145,7 @@ client_model_t::unmanage_client(client_ptr_t client)
         workspace = client_user_workspace(client);
     }
 
-    if (client->parent && !client->parent->dying) {
+    if (client->parent) {
         if (client->parent->sticky)
             set_sticky(client, clientaction_t::remove, false);
 
