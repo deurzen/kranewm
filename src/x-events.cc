@@ -347,18 +347,13 @@ x_events_t::on_destroy_notify()
 {
     x_data::window_t win = m_current_event.get().xdestroywindow.window;
     client_ptr_t client = m_clients.win_client(win);
-    ::std::cout << "::14" << ::std::endl;
 
     if (!client) {
-    ::std::cout << "::15" << ::std::endl;
         if (m_ewmh.check_release_strut(win))
             m_clients.active_workspace()->arrange();
-    ::std::cout << "::16" << ::std::endl;
         m_ewmh.unregister_from_list(win);
-    ::std::cout << "::17" << ::std::endl;
         return;
     }
-    ::std::cout << "::15" << ::std::endl;
 
     x_data::select_input(client->win, 0);
     x_data::select_input(client->frame, 0);
@@ -366,13 +361,9 @@ x_events_t::on_destroy_notify()
     if (client->urgent)
         m_clients.client_user_workspace(client)->erase_urgent();
 
-    ::std::cout << "::16" << ::std::endl;
     m_clients.unmanage_client(client);
-    ::std::cout << "::17" << ::std::endl;
     m_clients.active_workspace()->arrange();
-    ::std::cout << "::18" << ::std::endl;
     m_ewmh.unregister_from_list(client->win);
-    ::std::cout << "::19" << ::std::endl;
 }
 
 void
@@ -527,32 +518,23 @@ x_events_t::on_property_notify()
 void
 x_events_t::on_unmap_notify()
 {
-    ::std::cout << "::81" << ::std::endl;
     x_data::window_t win = m_current_event.get().xunmap.window;
     client_ptr_t client = m_clients.win_client(win);
-    ::std::cout << "::82" << ::std::endl;
 
     if (!client) {
-    ::std::cout << "::83" << ::std::endl;
         m_windowstack.remove_from_stack(win);
-    ::std::cout << "::84" << ::std::endl;
         return;
     }
-    ::std::cout << "::85" << ::std::endl;
 
     x_data::sync(false);
 
-    ::std::cout << "::86" << ::std::endl;
     if (client->consume_expect(clientexpect_t::withdraw)
         || (win == client->frame && client->consume_expect(clientexpect_t::iconify)))
     {
-    ::std::cout << "::87" << ::std::endl;
         return;
     }
-    ::std::cout << "::88" << ::std::endl;
 
     client->unmap();
-    ::std::cout << "::89" << ::std::endl;
+    client->win.reparent(client->pos);
     client->frame.destroy();
-    ::std::cout << "::90" << ::std::endl;
 }
