@@ -14,6 +14,7 @@ debug: build-core
 	+$(MAKE) run tags
 
 build: CXXFLAGS += $(RELEASE_CXXFLAGS)
+build: LDFLAGS += $(RELEASE_LDFLAGS)
 build: build-core
 
 install:
