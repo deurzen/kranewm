@@ -75,8 +75,10 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
     m_processes.add_process(client);
 
     if (client->parent) {
-        if (client_context(client->parent) != client_context(client))
+        if (client_context(client->parent) != client_context(client)) {
+            m_client_contexts[client] = client_context(client->parent);
             change_active_context(client_context(client->parent));
+        }
 
         if (!client->parent->sticky) {
             if (is_user_workspace(client_workspace(client->parent))
@@ -119,25 +121,38 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
 void
 client_model_t::unmanage_client(client_ptr_t client)
 {
+    ::std::cout << "::1" << ::std::endl;
     if (client->iconified)
         set_iconified(client, clientaction_t::remove, false);
+    ::std::cout << "::2" << ::std::endl;
 
     if (client->disowned)
         set_disowned(client, clientaction_t::remove, false);
+    ::std::cout << "::3" << ::std::endl;
 
     if (client->sticky)
         set_sticky(client, clientaction_t::remove, false);
+    ::std::cout << "::4" << ::std::endl;
 
+    auto context = client_context(client);
     auto workspace = client_workspace(client);
 
-    if (client == m_current_context->get_marked())
-        m_current_context->set_marked(nullptr);
+    ::std::cout << "::5" << ::std::endl;
+    if (client == context->get_marked())
+        context->set_marked();
 
+    ::std::cout << "::6" << ::std::endl;
     if (client->parent) {
-        focus(client->parent);
-        client->parent->disown_child(client);
+        /* if (client->parent->sticky) */
+        /*     set_sticky(client, clientaction_t::remove, false); */
+    ::std::cout << "::7" << ::std::endl;
+
+        /* focus(client->parent); */
+    ::std::cout << "::8" << ::std::endl;
+        /* client->parent->disown_child(client); */
     }
 
+    ::std::cout << "::9" << ::std::endl;
     if (is_moveresize_workspace(workspace)) {
         if (is_resize_workspace(workspace))
             stop_resizing(client);
@@ -146,9 +161,11 @@ client_model_t::unmanage_client(client_ptr_t client)
 
         workspace = client_user_workspace(client);
     }
+    ::std::cout << "::10" << ::std::endl;
 
     workspace->remove_client(client);
     sync_workspace_focus();
+    ::std::cout << "::11" << ::std::endl;
 
     erase_find(m_client_windows, client->frame);
     erase_find(m_client_windows, client->win);
@@ -159,32 +176,41 @@ client_model_t::unmanage_client(client_ptr_t client)
     erase_remove(m_managed_windows, client->win);
     m_processes.remove_process(client);
 
+    ::std::cout << "::12" << ::std::endl;
     m_changequeue.add(change_client_destroy(client, workspace));
+    ::std::cout << "::13" << ::std::endl;
 }
 
 void
 client_model_t::focus(client_ptr_t client, bool ignore_unwind)
 {
+    ::std::cout << "::23" << ::std::endl;
     if (!client)
         return;
+    ::std::cout << "::24" << ::std::endl;
 
     auto parent = client;
     if (client->parent)
         parent = client->parent;
 
+    ::std::cout << "::25" << ::std::endl;
     if (parent && !m_current_workspace->contains(parent))
         return;
+    ::std::cout << "::26" << ::std::endl;
 
     m_current_workspace->set_focused(client, ignore_unwind);
     m_changequeue.add(change_client_focus(m_focused_client, client));
+    ::std::cout << "::27" << ::std::endl;
 
     client->focused = true;
     if (m_focused_client && m_focused_client != client)
         m_focused_client->focused = false;
 
-    m_windowstack.apply(m_current_workspace);
+    ::std::cout << "::28" << ::std::endl;
+    /* m_windowstack.apply(m_current_workspace); */
     m_focused_client = client;
     m_processes.relayer_process(client);
+    ::std::cout << "::29" << ::std::endl;
 }
 
 void
@@ -718,40 +744,56 @@ client_model_t::set_disowned(client_ptr_t client, clientaction_t action, bool by
 void
 client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_user)
 {
+    ::std::cout << "::27" << ::std::endl;
     if (by_user && client->parent)
         return;
+    ::std::cout << "::28" << ::std::endl;
 
     switch (action) {
     case clientaction_t::add:
         {
+    ::std::cout << "::29" << ::std::endl;
             client->sticky = true;
             for (auto& workspace : *m_user_workspaces)
                 if (workspace != m_current_workspace) {
+    ::std::cout << "::30" << ::std::endl;
                     workspace->add_client(client);
+    ::std::cout << "::31" << ::std::endl;
                     m_changequeue.add(change_client_workspace(client, workspace, nullptr));
+    ::std::cout << "::32" << ::std::endl;
                     sync_workspace_focus();
+    ::std::cout << "::33" << ::std::endl;
             }
 
             m_changequeue.add(change_client_sticky(client, m_client_contexts.at(client)));
+    ::std::cout << "::34" << ::std::endl;
             m_sticky_clients.push_back(client);
+    ::std::cout << "::35" << ::std::endl;
 
             for (auto& child : client->children)
                 set_sticky(child, clientaction_t::add, false);
+    ::std::cout << "::36" << ::std::endl;
         }
         break;
     case clientaction_t::remove:
         {
+    ::std::cout << "::37" << ::std::endl;
             client->sticky = false;
             for (auto& workspace : *m_user_workspaces)
                 if (workspace != m_current_workspace)
                     workspace->remove_client(client);
 
+    ::std::cout << "::38" << ::std::endl;
             m_changequeue.add(change_client_sticky(client, m_client_contexts.at(client)));
+    ::std::cout << "::39" << ::std::endl;
             m_client_workspaces[client] = m_current_workspace;
+    ::std::cout << "::40" << ::std::endl;
             erase_remove(m_sticky_clients, client);
+    ::std::cout << "::41" << ::std::endl;
 
             for (auto& child : client->children)
                 set_sticky(child, clientaction_t::remove, false);
+    ::std::cout << "::42" << ::std::endl;
         }
         break;
     case clientaction_t::toggle:

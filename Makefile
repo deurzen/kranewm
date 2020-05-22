@@ -1,6 +1,6 @@
 include config.mk
 
-all: build
+all: quick_debug
 
 quick_build:
 	$(MAKE) -j$$(( 10 * $(shell nproc) )) build

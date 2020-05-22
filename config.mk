@@ -17,9 +17,12 @@ SRC_FILES := $(shell find $(SRCDIR) -name '*.cc')
 OBJ_FILES := ${X_DATA_OBJ_FILES} ${BASE_OBJ_FILES}
 DEPS = $(OBJ_FILES:%.o=%.d)
 
-SANFLAGS = -fsanitize=undefined -fsanitize=address -fsanitize-address-use-after-scope
-CXXFLAGS = -std=c++17 -flto
-LDFLAGS = `pkg-config --libs x11` -flto
+# SANFLAGS = -fsanitize=undefined -fsanitize=address -fsanitize-address-use-after-scope
+SANFLAGS = -fsanitize=undefined
+# CXXFLAGS = -std=c++17 -flto
+# LDFLAGS = `pkg-config --libs x11` -flto
+CXXFLAGS = -std=c++17
+LDFLAGS = `pkg-config --libs x11`
 
 DEBUG_CXXFLAGS = -Wall -g -DDEBUG ${SANFLAGS}
 DEBUG_LDFLAGS = ${SANFLAGS}
