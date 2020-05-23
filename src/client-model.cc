@@ -361,11 +361,11 @@ client_model_t::change_active_workspace(::std::size_t workspace_nr, bool save_pr
     if (range_t<::std::size_t>::contains(1, USER_WORKSPACES.size(), workspace_nr))
         change_active_workspace((*m_user_workspaces).at(workspace_nr - 1), save_prev);
     else
-        change_active_workspace(::std::nullopt, save_prev);
+        change_active_workspace(nullptr, save_prev);
 }
 
 void
-client_model_t::change_active_workspace(::std::optional<user_workspace_ptr_t> workspace, bool save_prev)
+client_model_t::change_active_workspace(user_workspace_ptr_t workspace, bool save_prev)
 {
     if ((!workspace && !(workspace = m_current_context->get_previous()))
         || m_current_workspace == workspace)
@@ -392,9 +392,9 @@ client_model_t::change_active_workspace(::std::optional<user_workspace_ptr_t> wo
         }
     }
 
-    m_changequeue.add(change_workspace_active(m_current_workspace, *workspace));
-    m_current_workspace = *workspace;
-    m_current_context->set_activated(*workspace);
+    m_changequeue.add(change_workspace_active(m_current_workspace, workspace));
+    m_current_workspace = workspace;
+    m_current_context->set_activated(workspace);
     sync_workspace_focus(true);
 }
 
@@ -434,9 +434,9 @@ client_model_t::change_active_context(::std::size_t context_nr)
 }
 
 void
-client_model_t::change_active_context(::std::optional<context_ptr_t> context)
+client_model_t::change_active_context(context_ptr_t context)
 {
-    if (context == m_current_context)
+    if (!context || context == m_current_context)
         return;
 
     for (auto& client : m_sticky_clients) {
@@ -450,10 +450,10 @@ client_model_t::change_active_context(::std::optional<context_ptr_t> context)
         }
     }
 
-    m_user_workspaces = (*context)->get_workspaces();
-    m_changequeue.add(change_context_active(m_current_context, *context));
-    m_current_context = *context;
-    change_active_workspace((*context)->get_activated(), false);
+    m_user_workspaces = context->get_workspaces();
+    m_changequeue.add(change_context_active(m_current_context, context));
+    m_current_context = context;
+    change_active_workspace(context->get_activated(), false);
 }
 
 void
