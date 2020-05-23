@@ -256,9 +256,9 @@ client_events_t::on_change_client_disown()
 void
 client_events_t::on_change_client_sticky()
 {
-    auto change    = change_client_sticky(m_current_change);
-    auto client    = change->client;
-    auto context   = change->context;
+    auto change  = change_client_sticky(m_current_change);
+    auto client  = change->client;
+    auto context = change->context;
 
     if (client->sticky) {
         if (client->focused) client->frame.set_background_color(SELSTICKY_COLOR);
