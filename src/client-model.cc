@@ -413,13 +413,38 @@ client_model_t::client_to_context(client_ptr_t client, ::std::size_t context_nr)
 }
 
 void
-client_model_t::client_to_context(client_ptr_t client, context_ptr_t context)
+client_model_t::client_to_context(client_ptr_t client, context_ptr_t to)
 {
-    if (context == m_current_context)
+    auto from = client_context(client);
+
+    if (from == to)
         return;
 
-    auto workspace = client_user_workspace(client);
-    client_to_workspace(client, context->get_workspaces()->at(workspace->get_index()));
+    auto from_workspace = client_user_workspace(client);
+    auto to_workspace = to->get_workspaces()->at(from_workspace->get_index());
+
+    m_client_contexts[client] = to;
+    for (auto& child : client->children)
+        m_client_contexts[child] = to;
+
+    if (client->sticky) {
+        for (auto& to_workspace : *to->get_workspaces())
+            to_workspace->add_family(client);
+        for (auto& from_workspace : *from->get_workspaces())
+            from_workspace->remove_family(client);
+    } else {
+        to_workspace->add_family(client);
+        from_workspace->remove_family(client);
+    }
+
+    m_client_workspaces[client] = to_workspace;
+    for (auto& child : client->children)
+        m_client_workspaces[child] = to_workspace;
+
+    m_changequeue.add(change_client_context(client, from, to,
+        from_workspace, to_workspace));
+
+    sync_workspace_focus();
 }
 
 void
@@ -725,7 +750,7 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
     case clientaction_t::add:
         {
             client->sticky = true;
-            for (auto& workspace : *m_user_workspaces)
+            for (auto& workspace : *client_context(client)->get_workspaces())
                 if (workspace != m_current_workspace) {
                     if (!child_spawn)
                         workspace->add_family(client);
@@ -744,7 +769,7 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
     case clientaction_t::remove:
         {
             client->sticky = false;
-            for (auto& workspace : *m_user_workspaces)
+            for (auto& workspace : *client_context(client)->get_workspaces())
                 if (workspace != m_current_workspace)
                     workspace->remove_family(client);
 

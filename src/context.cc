@@ -186,14 +186,24 @@ context_t::get_nnonsticky(::std::size_t workspace_nr) const
 }
 
 void
-context_t::record_sticky()
+context_t::record_sticky(::std::optional<unsigned> number)
 {
-    ++m_nsticky;
+    if (number)
+        m_nsticky += *number;
+    else
+        ++m_nsticky;
 }
 
 void
-context_t::erase_sticky()
+context_t::erase_sticky(::std::optional<unsigned> number)
 {
-    if (m_nsticky)
-        --m_nsticky;
+    if (m_nsticky) {
+        if (number && m_nsticky >= *number) {
+            if (m_nsticky > *number)
+                m_nsticky -= *number;
+            else
+                m_nsticky = 0;
+        } else
+            --m_nsticky;
+    }
 }

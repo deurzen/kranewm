@@ -34,6 +34,7 @@ private:
     void on_change_client_focus();
     void on_change_client_destroy();
     void on_change_client_workspace();
+    void on_change_client_context();
     void on_change_client_fullscreen();
     void on_change_client_above();
     void on_change_client_below();

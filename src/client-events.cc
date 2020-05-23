@@ -26,6 +26,7 @@ client_events_t::process_queued_changes()
         case change_t::client_disown:     on_change_client_disown();     break;
         case change_t::client_sticky:     on_change_client_sticky();     break;
         case change_t::client_workspace:  on_change_client_workspace();  break;
+        case change_t::client_context:    on_change_client_context();    break;
         case change_t::workspace_active:  on_change_workspace_active();  break;
         case change_t::context_active:    on_change_context_active();    break;
         default: break;
@@ -303,6 +304,32 @@ client_events_t::on_change_client_workspace()
 }
 
 void
+client_events_t::on_change_client_context()
+{
+    auto change = change_client_context(m_current_change);
+    auto client = change->client;
+    auto from   = change->from;
+    auto to     = change->to;
+    auto from_workspace = change->from_workspace;
+    auto to_workspace   = change->to_workspace;
+
+    if (to_workspace)
+        to_user_workspace(client, from_workspace, to_workspace);
+
+    if (from_workspace)
+        from_user_workspace(client, from_workspace, to_workspace);
+
+    if (client->sticky) {
+        from->erase_sticky(client->children.size() + 1);
+        to->record_sticky(client->children.size() + 1);
+    }
+
+    m_sidebar.draw_workspacenumbers();
+    m_sidebar.draw_numbersticky();
+    m_sidebar.draw_numberclients();
+}
+
+void
 client_events_t::on_change_workspace_active()
 {
     auto change = change_workspace_active(m_current_change);
@@ -369,11 +396,13 @@ void
 client_events_t::from_user_workspace(client_ptr_t client, workspace_ptr_t from, workspace_ptr_t to)
 {
     auto current = m_clients.active_workspace();
-    if (from == current && to != current) {
+    if ((from == current && to != current)
+        || (client->sticky && (m_clients.active_context() != m_clients.client_context(client))))
+    {
         client->expect = clientexpect_t::withdraw;
         client->unmap();
         m_clients.unfocus_if_focused(client);
-        unmap_all(client->children);
+        unmap_all(client->children, client->sticky);
     }
 
     m_sidebar.draw_workspacenumbers();
@@ -404,7 +433,7 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
     if (from != current && to == current) {
         client->expect = clientexpect_t::map;
         client->map();
-        map_all(client->children);
+        map_all(client->children, client->sticky);
         m_clients.focus(client);
     }
 

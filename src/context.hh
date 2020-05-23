@@ -4,6 +4,7 @@
 #include "workspace.hh"
 
 #include <vector>
+#include <optional>
 
 
 static const ::std::map<char, ::std::string> CONTEXTS({
@@ -87,8 +88,8 @@ public:
 
     ::std::size_t get_nsticky() const;
     ::std::size_t get_nnonsticky(::std::size_t) const;
-    void record_sticky();
-    void erase_sticky();
+    void record_sticky(::std::optional<unsigned> = ::std::nullopt);
+    void erase_sticky(::std::optional<unsigned> = ::std::nullopt);
 
 private:
     ewmh_t& m_ewmh;

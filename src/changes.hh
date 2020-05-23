@@ -24,6 +24,7 @@ enum class change_t
     client_disown,
     client_sticky,
     client_workspace,
+    client_context,
     workspace_active,
     context_active,
 };
@@ -311,6 +312,40 @@ inline clientworkspacechange_ptr_t change_client_workspace(client_ptr_t client,
 inline clientworkspacechange_ptr_t change_client_workspace(clientchange_ptr_t change)
 {
     return dynamic_cast<clientworkspacechange_ptr_t>(change);
+}
+
+
+
+typedef struct clientcontextchange_t : clientchange_t
+{
+    explicit clientcontextchange_t(client_ptr_t _client, context_ptr_t _from, context_ptr_t _to,
+        user_workspace_ptr_t _from_workspace, user_workspace_ptr_t _to_workspace)
+      : clientchange_t(change_t::client_context),
+        client(_client),
+        from(_from),
+        to(_to),
+        from_workspace(_from_workspace),
+        to_workspace(_to_workspace)
+    {}
+
+    client_ptr_t client;
+    context_ptr_t from;
+    context_ptr_t to;
+    user_workspace_ptr_t from_workspace;
+    user_workspace_ptr_t to_workspace;
+
+}* clientcontextchange_ptr_t;
+
+inline clientcontextchange_ptr_t change_client_context(client_ptr_t client,
+    context_ptr_t from, context_ptr_t to,
+    user_workspace_ptr_t from_workspace, user_workspace_ptr_t to_workspace)
+{
+    return new clientcontextchange_t(client, from, to, from_workspace, to_workspace);
+}
+
+inline clientcontextchange_ptr_t change_client_context(clientchange_ptr_t change)
+{
+    return dynamic_cast<clientcontextchange_ptr_t>(change);
 }
 
 
