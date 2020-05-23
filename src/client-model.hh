@@ -91,7 +91,7 @@ public:
     void set_urgent(client_ptr_t, clientaction_t);
     void set_iconified(client_ptr_t, clientaction_t, bool = true);
     void set_disowned(client_ptr_t, clientaction_t, bool = true);
-    void set_sticky(client_ptr_t, clientaction_t, bool = true);
+    void set_sticky(client_ptr_t, clientaction_t, bool = true, bool = false);
     void set_marked(client_ptr_t);
 
     void wedge_clients();

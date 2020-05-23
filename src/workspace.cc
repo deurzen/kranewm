@@ -114,12 +114,7 @@ user_workspace_t&
 user_workspace_t::add_client(client_ptr_t client)
 {
     m_clients.add(client);
-    ::std::for_each(client->children.begin(), client->children.end(),
-        [=](client_ptr_t child) { m_clients.add(child); });
-
     m_stack.add(client);
-    ::std::for_each(client->children.begin(), client->children.end(),
-        [=](client_ptr_t child) { m_stack.add(child); });
 
     return *this;
 }
@@ -127,13 +122,28 @@ user_workspace_t::add_client(client_ptr_t client)
 user_workspace_t&
 user_workspace_t::remove_client(client_ptr_t client)
 {
-    ::std::for_each(client->children.begin(), client->children.end(),
-        [=](client_ptr_t child) { m_clients.remove(child); });
     m_clients.remove(client);
-
-    ::std::for_each(client->children.begin(), client->children.end(),
-        [=](client_ptr_t child) { m_stack.remove(child); });
     m_stack.remove(client);
+
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::add_family(client_ptr_t client)
+{
+    add_client(client);
+    ::std::for_each(client->children.begin(), client->children.end(),
+        [=](client_ptr_t child) { add_client(child); });
+
+    return *this;
+}
+
+user_workspace_t&
+user_workspace_t::remove_family(client_ptr_t client)
+{
+    ::std::for_each(client->children.begin(), client->children.end(),
+        [=](client_ptr_t child) { remove_client(child); });
+    remove_client(client);
 
     return *this;
 }

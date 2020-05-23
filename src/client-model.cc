@@ -101,11 +101,11 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
     if (!rule.nohint && rule.workspace) {
         auto workspace = (*m_user_workspaces).at(rule.workspace - 1);
         m_client_workspaces[client] = workspace;
-        workspace->add_client(client);
+        workspace->add_family(client);
         m_changequeue.add(change_client_workspace(client, nullptr, workspace));
     } else {
         m_client_workspaces[client] = m_current_workspace;
-        m_current_workspace->add_client(client).arrange();
+        m_current_workspace->add_family(client).arrange();
         m_changequeue.add(change_client_workspace(client, nullptr, m_current_workspace));
     }
 
@@ -146,14 +146,11 @@ client_model_t::unmanage_client(client_ptr_t client)
     }
 
     if (client->parent) {
-        if (client->parent->sticky)
-            set_sticky(client, clientaction_t::remove, false);
-
         focus(client->parent);
         client->parent->disown_child(client);
     }
 
-    workspace->remove_client(client);
+    workspace->remove_family(client);
     sync_workspace_focus();
 
     erase_find(m_client_windows, client->frame);
@@ -174,10 +171,7 @@ client_model_t::focus(client_ptr_t client, bool ignore_unwind)
     if (!client)
         return;
 
-    auto parent = client;
-    if (client->parent)
-        parent = client->parent;
-
+    auto parent = (client->parent) ? client->parent : client;
     if (parent && !m_current_workspace->contains(parent))
         return;
 
@@ -345,10 +339,10 @@ client_model_t::client_to_workspace(client_ptr_t client, workspace_ptr_t to)
         return;
 
     if (is_user_workspace(from))
-        to->add_client(client);
+        to->add_family(client);
 
     if (is_user_workspace(to)) {
-        from->remove_client(client);
+        from->remove_family(client);
         m_client_workspaces[client] = user_workspace(to);
         for (auto& child : client->children)
             m_client_workspaces[child] = user_workspace(to);
@@ -648,7 +642,7 @@ client_model_t::set_iconified(client_ptr_t client, clientaction_t action, bool b
             auto workspace = client_user_workspace(client);
             client->iconified = true;
             workspace->add_icon(client);
-            workspace->remove_client(client);
+            workspace->remove_family(client);
 
             if (by_user)
                 m_changequeue.add(change_client_iconify(client));
@@ -658,7 +652,7 @@ client_model_t::set_iconified(client_ptr_t client, clientaction_t action, bool b
         {
             auto workspace = client_user_workspace(client);
             client->iconified = false;
-            workspace->add_client(client);
+            workspace->add_family(client);
             workspace->remove_icon(client);
 
             if (by_user)
@@ -687,7 +681,7 @@ client_model_t::set_disowned(client_ptr_t client, clientaction_t action, bool by
 
             auto workspace = client_user_workspace(client);
             client->disowned = true;
-            workspace->remove_client(client);
+            workspace->remove_family(client);
             workspace->add_disowned(client);
             m_windowstack.apply(workspace);
             m_disowned_clients[client] = *client;
@@ -704,7 +698,7 @@ client_model_t::set_disowned(client_ptr_t client, clientaction_t action, bool by
             auto workspace = client_user_workspace(client);
             client->disowned = false;
             workspace->remove_disowned(client);
-            workspace->add_client(client);
+            workspace->add_family(client);
             m_windowstack.apply(workspace);
 
             if (by_user)
@@ -722,7 +716,7 @@ client_model_t::set_disowned(client_ptr_t client, clientaction_t action, bool by
 }
 
 void
-client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_user)
+client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_user, bool child_spawn)
 {
     if (by_user && client->parent)
         return;
@@ -733,7 +727,9 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
             client->sticky = true;
             for (auto& workspace : *m_user_workspaces)
                 if (workspace != m_current_workspace) {
-                    workspace->add_client(client);
+                    if (!child_spawn)
+                        workspace->add_family(client);
+
                     m_changequeue.add(change_client_workspace(client, workspace, nullptr));
                     sync_workspace_focus();
             }
@@ -742,7 +738,7 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
             m_sticky_clients.push_back(client);
 
             for (auto& child : client->children)
-                set_sticky(child, clientaction_t::add, false);
+                set_sticky(child, clientaction_t::add, false, true);
         }
         break;
     case clientaction_t::remove:
@@ -750,7 +746,7 @@ client_model_t::set_sticky(client_ptr_t client, clientaction_t action, bool by_u
             client->sticky = false;
             for (auto& workspace : *m_user_workspaces)
                 if (workspace != m_current_workspace)
-                    workspace->remove_client(client);
+                    workspace->remove_family(client);
 
             m_changequeue.add(change_client_sticky(client, m_client_contexts.at(client)));
             m_client_workspaces[client] = m_current_workspace;

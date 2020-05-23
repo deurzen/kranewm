@@ -64,6 +64,18 @@ public:
         return *this;
     }
 
+    virtual workspace_t&
+    add_family(client_ptr_t)
+    {
+        return *this;
+    }
+
+    virtual workspace_t&
+    remove_family(client_ptr_t)
+    {
+        return *this;
+    }
+
 private:
     workspacetype_t type;
 
@@ -120,6 +132,20 @@ public:
             unset();
         }
 
+        return *this;
+    }
+
+    inline moveresize_workspace_t&
+    add_family(client_ptr_t client) override
+    {
+        add_client(client);
+        return *this;
+    }
+
+    inline moveresize_workspace_t&
+    remove_family(client_ptr_t client) override
+    {
+        remove_client(client);
         return *this;
     }
 
@@ -196,6 +222,8 @@ public:
 
     user_workspace_t& add_client(client_ptr_t) override;
     user_workspace_t& remove_client(client_ptr_t) override;
+    user_workspace_t& add_family(client_ptr_t) override;
+    user_workspace_t& remove_family(client_ptr_t) override;
     user_workspace_t& add_icon(client_ptr_t);
     user_workspace_t& remove_icon(client_ptr_t);
     user_workspace_t& add_disowned(client_ptr_t);

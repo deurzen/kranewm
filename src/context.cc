@@ -128,7 +128,7 @@ context_t&
 context_t::add_all_client(client_ptr_t client)
 {
     for (auto& workspace : m_workspaces)
-        workspace->add_client(client);
+        workspace->add_family(client);
     return *this;
 }
 
@@ -136,7 +136,7 @@ context_t&
 context_t::remove_all_client(client_ptr_t client)
 {
     for (auto& workspace : m_workspaces)
-        workspace->remove_client(client);
+        workspace->remove_family(client);
     return *this;
 }
 
