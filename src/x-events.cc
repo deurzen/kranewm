@@ -73,9 +73,14 @@ x_events_t::register_window(x_data::window_t win)
 
     rule_t rule = retrieve_rule(m_rules, win);
     if (x_data::has_property<x_data::cardinal_t>(win, "_NET_WM_DESKTOP")) {
-        rule.workspace = x_data::get_property<x_data::cardinal_t>(win, "_NET_WM_DESKTOP")().get() + 1;
-        if (!range_t<::std::size_t>::contains(1, USER_WORKSPACES.size(), rule.workspace))
+        rule.workspace = x_data::get_property<x_data::cardinal_t>(win, "_NET_WM_DESKTOP")().get();
+        if (range_t<::std::size_t>::contains(0, CONTEXTS.size() * USER_WORKSPACES.size() - 1, rule.workspace)) {
+            rule.context   = 1 + rule.workspace / USER_WORKSPACES.size();
+            rule.workspace = 1 + rule.workspace % USER_WORKSPACES.size();
+        } else {
+            rule.context   = 0;
             rule.workspace = 0;
+        }
     }
 
     if (x_data::get_sizehints(win).success() & USPosition)
@@ -173,19 +178,20 @@ x_events_t::on_client_message()
     x_data::window_t win = event.window;
     client_ptr_t client = m_clients.win_client(win);
 
-    if (!client)
-        return;
-
     netwmid_t netwm_index;
     for (netwm_index = netwmid_t::netfirst; netwm_index < netwmid_t::netlast; ++netwm_index)
         if (event.message_type == m_ewmh.get_netwm_atom(netwm_index))
             break;
+
     if (netwm_index >= netwmid_t::netlast)
         return;
 
     switch (netwm_index) {
     case netwmid_t::netwmstate:
         {
+            if (!client)
+                return;
+
             for (int property = 1; property <= 2; ++property) {
                 if (event.data.l[property] == 0)
                     continue;
@@ -220,8 +226,25 @@ x_events_t::on_client_message()
         break;
     case netwmid_t::netactivewindow:
         {   // if pager or taskbar (source indicator = 2)
+            if (!client)
+                return;
+
             if (event.data.l[0] == 2)
                 m_clients.focus(client);
+        }
+        break;
+    case netwmid_t::netcurrentdesktop:
+        {
+            if (range_t<size_t>::contains(0,
+                CONTEXTS.size() * USER_WORKSPACES.size() - 1, event.data.l[0]))
+            {
+                auto flat_workspace_nr = event.data.l[0];
+                auto context_lr   = 1 + flat_workspace_nr / USER_WORKSPACES.size();
+                auto workspace_nr = 1 + flat_workspace_nr % USER_WORKSPACES.size();
+
+                m_clients.change_active_context(context_lr);
+                m_clients.change_active_workspace(workspace_nr);
+            }
         }
         break;
     default: break;

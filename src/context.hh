@@ -47,8 +47,14 @@ public:
             delete workspace;
     }
 
-    explicit
+    inline explicit
     operator bool() const
+    {
+        return is_initialized();
+    }
+
+    inline bool
+    is_initialized() const
     {
         return m_is_initialized;
     }
@@ -58,7 +64,8 @@ public:
     void arrange() const;
 
     char get_letter() const;
-    size_t get_index() const;
+    ::std::size_t get_number() const;
+    ::std::size_t get_index() const;
 
     const ::std::vector<user_workspace_ptr_t>* get_workspaces();
 

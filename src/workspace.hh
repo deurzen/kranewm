@@ -9,6 +9,7 @@
 #include <map>
 #include <string>
 
+#define NOWORKSPACE nullptr
 
 static const ::std::map<::std::size_t, ::std::string> USER_WORKSPACES({
 //    nr   name

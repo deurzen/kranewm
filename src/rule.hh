@@ -19,13 +19,14 @@ enum autoclosemethod
 
 struct rulespec_t
 {
-    rulespec_t(bool _floating, bool _center, autoclosemethod _autoclose,
-        bool _nohint, ::std::size_t _workspace)
+    rulespec_t(bool _floating, bool _center, autoclosemethod _autoclose, bool _nohint,
+        ::std::size_t _workspace, ::std::size_t _context)
       : floating(_floating),
         center(_center),
         autoclose(_autoclose),
         nohint(_nohint),
-        workspace(_workspace)
+        workspace(_workspace),
+        context(_context)
     {}
 
     bool floating;
@@ -33,19 +34,22 @@ struct rulespec_t
     autoclosemethod autoclose;
     bool nohint;
     ::std::size_t workspace;
+    ::std::size_t context;
 
 };
 
 struct rule_t
 {
     rule_t(bool _floating, bool _center, bool _fullscreen,
-        bool _autoclose, bool _nohint, ::std::size_t _workspace)
+        bool _autoclose, bool _nohint,
+        ::std::size_t _workspace, ::std::size_t _context)
       : floating(_floating),
         center(_center),
         fullscreen(_fullscreen),
         autoclose(_autoclose),
         nohint(_nohint),
-        workspace(_workspace)
+        workspace(_workspace),
+        context(_context)
     {}
 
     bool floating;
@@ -54,14 +58,15 @@ struct rule_t
     bool autoclose;
     bool nohint;
     ::std::size_t workspace;
+    ::std::size_t context;
 
 };
 
 inline bool
 operator<(const rulespec_t& r1, const rulespec_t& r2)
 {
-    return (r1.floating + r1.center + r1.autoclose + r1.nohint + r1.workspace)
-        == (r2.floating + r2.center + r2.autoclose + r2.nohint + r2.workspace);
+    return (r1.floating + r1.center + r1.autoclose + r1.nohint + r1.workspace + r1.context)
+        == (r2.floating + r2.center + r2.autoclose + r2.nohint + r2.workspace + r2.context);
 }
 
 typedef ::std::tuple<::std::string, ::std::string, ::std::string> ruleid_t;

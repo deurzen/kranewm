@@ -98,15 +98,22 @@ client_model_t::manage_client(client_ptr_t client, rule_t rule)
     if (rule.autoclose)
         client->win.force_close();
 
+    auto context = m_current_context;
+    if (!rule.nohint && rule.context && (rule.context != context->get_number())) {
+        context = m_contexts.at(rule.context - 1);
+        if (!context->is_initialized())
+            context->initialize();
+    }
+
     if (!rule.nohint && rule.workspace) {
-        auto workspace = (*m_user_workspaces).at(rule.workspace - 1);
+        auto workspace = (*context->get_workspaces()).at(rule.workspace - 1);
         m_client_workspaces[client] = workspace;
         workspace->add_family(client);
-        m_changequeue.add(change_client_workspace(client, nullptr, workspace));
+        m_changequeue.add(change_client_workspace(client, NOWORKSPACE, workspace));
     } else {
-        m_client_workspaces[client] = m_current_workspace;
-        m_current_workspace->add_family(client).arrange();
-        m_changequeue.add(change_client_workspace(client, nullptr, m_current_workspace));
+        m_client_workspaces[client] = context->get_activated();
+        context->get_activated()->add_family(client).arrange();
+        m_changequeue.add(change_client_workspace(client, NOWORKSPACE, context->get_activated()));
     }
 
     if (rule.fullscreen)

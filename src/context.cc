@@ -24,7 +24,13 @@ context_t::get_letter() const
     return m_letter;
 }
 
-size_t
+::std::size_t
+context_t::get_number() const
+{
+    return m_letter - 'a' + 1;
+}
+
+::std::size_t
 context_t::get_index() const
 {
     return m_letter - 'a';

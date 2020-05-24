@@ -2,6 +2,7 @@
 
 #include "common.hh"
 #include "util.hh"
+#include "workspace.hh"
 
 #include "x-data/window.hh"
 
@@ -14,15 +15,17 @@ zip_rules(rule_t r1, rule_t r2)
     bool autoclose  = false;
     bool nohint     = false;
     ::std::size_t workspace = 0;
+    ::std::size_t context   = 0;
 
     floating   = r1.floating   || r2.floating;
     center     = r1.center     || r2.center;
     fullscreen = r1.fullscreen || r2.fullscreen;
     autoclose  = r1.autoclose  || r2.autoclose;
     nohint     = r1.nohint     || r2.nohint;
+    context    = r1.context   ? r1.context   : r2.context;
     workspace  = r1.workspace ? r1.workspace : r2.workspace;
 
-    return {floating, center, fullscreen, autoclose, nohint, workspace};
+    return {floating, center, fullscreen, autoclose, nohint, context, workspace};
 }
 
 rule_t
@@ -35,6 +38,7 @@ retrieve_rule(rules_t& rules, x_data::window_t& win)
     bool autoclose = false;
     bool nohint    = false;
     ::std::size_t workspace = 0;
+    ::std::size_t context   = 0;
 
     ::std::string cls   = win.get_class();
     ::std::string inst  = win.get_instance();
@@ -48,8 +52,14 @@ retrieve_rule(rules_t& rules, x_data::window_t& win)
         same_title = !rule_title.compare(title) || rule_title.empty();
 
         if (same_cls && same_inst && same_title) {
-            if (rule.workspace != 0)
+            if (range_t<::std::size_t>::contains(1, 9, rule.workspace))
                 workspace = rule.workspace;
+
+            if (range_t<char>::contains('a', 'i', rule.context))
+                context = rule.context - 'a' + 1;
+            else if (range_t<::std::size_t>::contains(1, 9, rule.context))
+                context = rule.context;
+
             floating = rule.floating;
             center   = rule.center;
             nohint   = rule.nohint;
@@ -59,14 +69,14 @@ retrieve_rule(rules_t& rules, x_data::window_t& win)
                     rule.autoclose = OFF;
             }
             return zip_rules(
-                {floating, center, false, autoclose, nohint, workspace},
+                {floating, center, false, autoclose, nohint, context, workspace},
                 global_rule
             );
         }
     }
 
     return zip_rules(
-        {false, false, false, false, false, 0},
+        {false, false, false, false, false, 0, 0},
         global_rule
     );
 }
@@ -80,6 +90,7 @@ parse_global_rule(x_data::window_t& win)
     bool autoclose  = false;
     bool nohint     = false;
     ::std::size_t workspace = 0;
+    ::std::size_t context   = 0;
 
     ::std::string cls   = win.get_class();
     ::std::string inst  = win.get_instance();
@@ -98,11 +109,25 @@ parse_global_rule(x_data::window_t& win)
                 case 'F': fullscreen = true; break;
                 case 'a': autoclose  = true; break;
                 case 'n': nohint     = true; break;
+                case 'x':
+                    {
+                        if (it + 1 == rule_flags.end())
+                            break;
+
+                        char cx_flag = *++it;
+                        if (range_t<char>::contains('a', 'i', cx_flag))
+                            context = cx_flag - 'a' + 1;
+                        else if (range_t<char>::contains('1', '9', cx_flag))
+                            context = cx_flag - '0';
+                    }
+                    break;
                 case 'w':
                     {
-                        if (it + 1 == rule_flags.end()) break;
+                        if (it + 1 == rule_flags.end())
+                            break;
+
                         char ws_flag = *++it;
-                        if (range_t<int>::contains(0, 9, ws_flag - '0'))
+                        if (range_t<char>::contains('1', '9', ws_flag))
                             workspace = ws_flag - '0';
                     }
                     break;
@@ -113,5 +138,5 @@ parse_global_rule(x_data::window_t& win)
         }
     }
 
-    return {floating, center, fullscreen, autoclose, nohint, workspace};
+    return {floating, center, fullscreen, autoclose, nohint, context, workspace};
 }
