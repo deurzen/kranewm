@@ -46,7 +46,7 @@ kranewm_t::setup()
     ::std::vector<::std::string> desktop_names;
     for (auto&& [lr,_] : CONTEXTS)
         for (auto&& [nr,name] : USER_WORKSPACES)
-            desktop_names.push_back(::std::string(1, lr) + ":"
+            desktop_names.push_back(::std::string(1, lr)
                 +::std::to_string(nr) + (!name.empty() ? ":" : "") + name);
 
     m_ewmh.set_desktop_names_property(desktop_names);
