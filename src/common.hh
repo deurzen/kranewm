@@ -37,4 +37,6 @@ const int MIN_WINDOW_SIZE = 50;
 const int SIDEBAR_WIDTH   = 12;
 const int SNAP_OFFSET     = 15;
 
+const bool ALLOW_FOCUSSTEAL = true;
+
 #endif//__KRANEWM__COMMON__GUARD__

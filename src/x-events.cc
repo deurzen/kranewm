@@ -176,7 +176,7 @@ x_events_t::on_client_message()
 {
     XClientMessageEvent event = m_current_event.get().xclient;
     x_data::window_t win = event.window;
-    client_ptr_t client = m_clients.win_client(win);
+    client_ptr_t client;
 
     netwmid_t netwm_index;
     for (netwm_index = netwmid_t::netfirst; netwm_index < netwmid_t::netlast; ++netwm_index)
@@ -189,7 +189,7 @@ x_events_t::on_client_message()
     switch (netwm_index) {
     case netwmid_t::netwmstate:
         {
-            if (!client)
+            if (!(client = m_clients.win_client(win)))
                 return;
 
             for (int property = 1; property <= 2; ++property) {
@@ -226,11 +226,14 @@ x_events_t::on_client_message()
         break;
     case netwmid_t::netactivewindow:
         {   // if pager or taskbar (source indicator = 2)
-            if (!client)
+            if (!(client = m_clients.win_client(win)))
                 return;
 
-            if (event.data.l[0] == 2)
+            if (event.data.l[0] == 2 || (ALLOW_FOCUSSTEAL
+                && (event.data.l[0] == 0 || event.data.l[0] == 1)))
+            {
                 m_clients.focus(client);
+            }
         }
         break;
     case netwmid_t::netcurrentdesktop:

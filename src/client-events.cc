@@ -324,6 +324,13 @@ client_events_t::on_change_client_context()
         to->record_sticky(client->children.size() + 1);
     }
 
+    m_ewmh.set_wm_desktop_property(client->win, to->get_index()
+        * USER_WORKSPACES.size() + to_workspace->get_index());
+
+    for (auto& child : client->children)
+        m_ewmh.set_wm_desktop_property(child->win, to->get_index()
+            * USER_WORKSPACES.size() + to_workspace->get_index());
+
     m_sidebar.draw_workspacenumbers();
     m_sidebar.draw_numbersticky();
     m_sidebar.draw_numberclients();
@@ -437,7 +444,13 @@ client_events_t::to_user_workspace(client_ptr_t client, workspace_ptr_t from, wo
         m_clients.focus(client);
     }
 
-    m_ewmh.set_wm_desktop_property(client->win, user_workspace(to)->get_index());
+    m_ewmh.set_wm_desktop_property(client->win, m_clients.active_context()->get_index()
+        * USER_WORKSPACES.size() + user_workspace(to)->get_index());
+
+    for (auto& child : client->children)
+        m_ewmh.set_wm_desktop_property(child->win, m_clients.active_context()->get_index()
+            * USER_WORKSPACES.size() + user_workspace(to)->get_index());
+
     m_sidebar.draw_workspacenumbers();
     m_sidebar.draw_numbersticky();
     m_sidebar.draw_numberclients();
