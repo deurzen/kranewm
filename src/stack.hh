@@ -56,8 +56,12 @@ public:
     windowstack_t& add_to_stack(windowstack_window_t);
     windowstack_t& remove_from_stack(x_data::window_t);
     windowstack_t& relayer_window(windowstack_window_t);
+
     windowstack_t& raise_window(x_data::window_t);
     windowstack_t& lower_window(x_data::window_t);
+
+    windowstack_t& raise_window_above(x_data::window_t, x_data::window_t);
+    windowstack_t& lower_window_below(x_data::window_t, x_data::window_t);
 
     ::std::list<x_data::window_t> get_all_of_type(layer_t);
 

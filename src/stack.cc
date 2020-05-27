@@ -81,28 +81,19 @@ windowstack_t::raise_window(x_data::window_t win)
     if (!m_win_layers.count(win))
         return *this;
 
+    ::std::list<x_data::window_t>* layer_list;
+
     switch (m_win_layers[win]) {
-    case layer_t::desktop:
-        m_desktop_windows.remove(win);
-        m_desktop_windows.push_front(win);
-        break;
-    case layer_t::below:
-        m_below_windows.remove(win);
-        m_below_windows.push_front(win);
-        break;
-    case layer_t::dock:
-        m_dock_windows.remove(win);
-        m_dock_windows.push_front(win);
-        break;
-    case layer_t::above:
-        m_above_windows.remove(win);
-        m_above_windows.push_front(win);
-        break;
-    case layer_t::notification:
-        m_notification_windows.remove(win);
-        m_notification_windows.push_front(win);
-        break;
+    case layer_t::desktop:      layer_list = &m_desktop_windows;      break;
+    case layer_t::below:        layer_list = &m_below_windows;        break;
+    case layer_t::dock:         layer_list = &m_dock_windows;         break;
+    case layer_t::above:        layer_list = &m_above_windows;        break;
+    case layer_t::notification: layer_list = &m_notification_windows; break;
+    default: return *this;
     }
+
+    layer_list->remove(win);
+    layer_list->push_front(win);
 
     return *this;
 }
@@ -123,6 +114,65 @@ windowstack_t::lower_window(x_data::window_t win)
 
     return *this;
 }
+
+windowstack_t&
+windowstack_t::raise_window_above(x_data::window_t win, x_data::window_t sibling)
+{
+    if (!m_win_layers.count(win) || !m_win_layers.count(sibling)
+        || m_win_layers.at(win) != m_win_layers.at(sibling))
+    {
+        return *this;
+    }
+
+    ::std::list<x_data::window_t>* layer_list;
+
+    switch (m_win_layers[win]) {
+    case layer_t::desktop:      layer_list = &m_desktop_windows;      break;
+    case layer_t::below:        layer_list = &m_below_windows;        break;
+    case layer_t::dock:         layer_list = &m_dock_windows;         break;
+    case layer_t::above:        layer_list = &m_above_windows;        break;
+    case layer_t::notification: layer_list = &m_notification_windows; break;
+    default: return *this;
+    }
+
+    ::std::list<x_data::window_t>::iterator it;
+
+    layer_list->remove(win);
+    it = ::std::find(layer_list->begin(), layer_list->end(), sibling);
+    layer_list->insert((it != layer_list->end()) ? ++it : it, win);
+
+    return *this;
+}
+
+windowstack_t&
+windowstack_t::lower_window_below(x_data::window_t win, x_data::window_t sibling)
+{
+    if (!m_win_layers.count(win) || !m_win_layers.count(sibling)
+        || m_win_layers.at(win) != m_win_layers.at(sibling))
+    {
+        return *this;
+    }
+
+    ::std::list<x_data::window_t>* layer_list;
+
+    switch (m_win_layers[win]) {
+    case layer_t::desktop:      layer_list = &m_desktop_windows;      break;
+    case layer_t::below:        layer_list = &m_below_windows;        break;
+    case layer_t::dock:         layer_list = &m_dock_windows;         break;
+    case layer_t::above:        layer_list = &m_above_windows;        break;
+    case layer_t::notification: layer_list = &m_notification_windows; break;
+    default: return *this;
+    }
+
+    ::std::list<x_data::window_t>::iterator it;
+
+    layer_list->remove(win);
+    it = ::std::find(layer_list->begin(), layer_list->end(), sibling);
+    layer_list->insert(it, sibling);
+
+    return *this;
+}
+
 
 ::std::list<x_data::window_t>
 windowstack_t::get_all_of_type(layer_t type)
