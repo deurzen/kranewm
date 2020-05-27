@@ -225,10 +225,12 @@ x_events_t::on_client_message()
         }
         break;
     case netwmid_t::netactivewindow:
-        {   // if pager or taskbar (source indicator = 2)
+        {
             if (!(client = m_clients.win_client(win)))
                 return;
 
+            // pager or taskbar (source indicator = 2),
+            // or normal client ({0,1}) with focus stealing allowed.
             if (event.data.l[0] == 2 || (ALLOW_FOCUSSTEAL
                 && (event.data.l[0] == 0 || event.data.l[0] == 1)))
             {

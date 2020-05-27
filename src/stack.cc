@@ -135,10 +135,8 @@ windowstack_t::raise_window_above(x_data::window_t win, x_data::window_t sibling
     default: return *this;
     }
 
-    ::std::list<x_data::window_t>::iterator it;
-
     layer_list->remove(win);
-    it = ::std::find(layer_list->begin(), layer_list->end(), sibling);
+    auto it = ::std::find(layer_list->begin(), layer_list->end(), sibling);
     layer_list->insert((it != layer_list->end()) ? ++it : it, win);
 
     return *this;
@@ -164,10 +162,8 @@ windowstack_t::lower_window_below(x_data::window_t win, x_data::window_t sibling
     default: return *this;
     }
 
-    ::std::list<x_data::window_t>::iterator it;
-
     layer_list->remove(win);
-    it = ::std::find(layer_list->begin(), layer_list->end(), sibling);
+    auto it = ::std::find(layer_list->begin(), layer_list->end(), sibling);
     layer_list->insert(it, sibling);
 
     return *this;

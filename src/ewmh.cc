@@ -148,11 +148,11 @@ ewmh_t::set_workarea_property()
     x_data::remove_property(x_data::g_root, "_NET_WORKAREA");
     for (::std::size_t i = 0; i < CONTEXTS.size() * USER_WORKSPACES.size(); ++i) {
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",
-            (strut.left_window.get() != None) ? strut.left_width : SIDEBAR_WIDTH});
+            strut.left_window ? strut.left_width : SIDEBAR_WIDTH});
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",
             strut.top_height});
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",
-            root_attrs.get().width - ((strut.left_window.get() != None) ? strut.left_width : SIDEBAR_WIDTH)});
+            root_attrs.get().width - (strut.left_window ? strut.left_width : SIDEBAR_WIDTH)});
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",
             root_attrs.get().height - strut.top_height});
     }
@@ -219,22 +219,22 @@ ewmh_t::check_apply_strut(x_data::window_t win)
             if (strut_vals[i] == 0)
                 strut_vals[i] = partial_strut_vals[i];
 
-    if (strut.left_window.get() == None
+    if (strut.left_window
         && strut_vals.size() > 0 && strut_vals[0] > 0)
     {
         strut.left_width = strut_vals[0];
         strut.left_window = win;
-    } else if (strut.right_window.get() == None
+    } else if (strut.right_window
         && strut_vals.size() > 1 && strut_vals[1] > 0)
     {
         strut.right_width = strut_vals[1];
         strut.right_window = win;
-    } else if (strut.top_window.get() == None
+    } else if (strut.top_window
         && strut_vals.size() > 2 && strut_vals[2] > 0)
     {
         strut.top_height = strut_vals[2];
         strut.top_window = win;
-    } else if (strut.bottom_window.get() == None
+    } else if (strut.bottom_window
         && strut_vals.size() > 3 && strut_vals[3] > 0)
     {
         strut.bottom_height = strut_vals[3];
