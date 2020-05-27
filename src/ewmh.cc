@@ -1,5 +1,7 @@
 #include "ewmh.hh"
+
 #include "common.hh"
+#include "context.hh"
 #include "decoration.hh"
 #include "util.hh"
 #include "workspace.hh"
@@ -133,7 +135,7 @@ void
 ewmh_t::set_desktop_viewport_property()
 {
     x_data::remove_property(x_data::g_root, "_NET_DESKTOP_VIEWPORT");
-    for (::std::size_t i = 0; i < USER_WORKSPACES.size(); ++i) {
+    for (::std::size_t i = 0; i < CONTEXTS.size() * USER_WORKSPACES.size(); ++i) {
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_DESKTOP_VIEWPORT", 0});
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_DESKTOP_VIEWPORT", 0});
     }
@@ -144,7 +146,7 @@ ewmh_t::set_workarea_property()
 {
     auto root_attrs = x_data::get_attributes(x_data::g_root);
     x_data::remove_property(x_data::g_root, "_NET_WORKAREA");
-    for (::std::size_t i = 0; i < USER_WORKSPACES.size(); ++i) {
+    for (::std::size_t i = 0; i < CONTEXTS.size() * USER_WORKSPACES.size(); ++i) {
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",
             (strut.left_window.get() != None) ? strut.left_width : SIDEBAR_WIDTH});
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",

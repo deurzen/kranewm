@@ -40,7 +40,7 @@ kranewm_t::setup()
     m_ewmh.set_desktop_viewport_property();
     m_ewmh.set_workarea_property();
 
-    m_ewmh.set_number_of_desktops_property(USER_WORKSPACES.size());
+    m_ewmh.set_number_of_desktops_property(CONTEXTS.size() * USER_WORKSPACES.size());
     m_ewmh.set_current_desktop_property(0);
 
     ::std::vector<::std::string> desktop_names;
