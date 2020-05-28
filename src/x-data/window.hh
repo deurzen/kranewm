@@ -57,6 +57,18 @@ namespace x_data
             return win == val;
         }
 
+        inline bool
+        operator!=(const window_t& win) const
+        {
+            return win.val != val;
+        }
+
+        inline bool
+        operator!=(const Window& win) const
+        {
+            return win != val;
+        }
+
         inline int
         length() const
         {

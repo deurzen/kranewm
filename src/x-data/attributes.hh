@@ -49,6 +49,12 @@ namespace x_data
             return val.y;
         }
 
+        inline pos_t
+        pos() const
+        {
+            return {val.x, val.y};
+        }
+
         inline int
         w() const
         {
@@ -59,6 +65,12 @@ namespace x_data
         h() const
         {
             return val.height;
+        }
+
+        inline dim_t
+        dim() const
+        {
+            return {val.width, val.height};
         }
 
     private:
