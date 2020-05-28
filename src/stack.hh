@@ -63,6 +63,10 @@ public:
     windowstack_t& raise_window_above(x_data::window_t, x_data::window_t);
     windowstack_t& lower_window_below(x_data::window_t, x_data::window_t);
 
+    bool occluded_by(x_data::window_t, x_data::window_t);
+    bool occluded_by_any(x_data::window_t);
+    bool occludes_any(x_data::window_t);
+
     ::std::list<x_data::window_t> get_all_of_type(layer_t);
 
     void apply(user_workspace_ptr_t);

@@ -3,6 +3,8 @@
 #include "client.hh"
 #include "workspace.hh"
 
+#include "x-data/attributes.hh"
+
 
 void
 workspacestack_t::add(client_ptr_t client)
@@ -167,6 +169,78 @@ windowstack_t::lower_window_below(x_data::window_t win, x_data::window_t sibling
     layer_list->insert(it, sibling);
 
     return *this;
+}
+
+bool
+windowstack_t::occluded_by(x_data::window_t win, x_data::window_t sibling)
+{
+    if (!m_win_layers.count(win) || !m_win_layers.count(sibling)
+        || m_win_layers.at(win) != m_win_layers.at(sibling))
+    {
+        return false;
+    }
+
+    x_data::attributes_t win_attrs = x_data::get_attributes(win);
+    x_data::attributes_t sibling_attrs = x_data::get_attributes(sibling);
+
+    const pos_t win_topleft = win_attrs.pos();
+    const pos_t win_bottomright = win_attrs.pos() + win_attrs.dim();
+
+    const pos_t sibling_topleft = sibling_attrs.pos();
+    const pos_t sibling_bottomright = sibling_attrs.pos() + sibling_attrs.dim();
+
+    return !(win_topleft.x > sibling_bottomright.x
+        || win_bottomright.x > sibling_topleft.x
+        || win_topleft.y < sibling_bottomright.y
+        || win_bottomright.y < sibling_topleft.y);
+}
+
+bool
+windowstack_t::occluded_by_any(x_data::window_t win)
+{
+    if (!m_win_layers.count(win))
+        return false;
+
+    ::std::list<x_data::window_t>* layer_list;
+
+    switch (m_win_layers[win]) {
+    case layer_t::desktop:      layer_list = &m_desktop_windows;      break;
+    case layer_t::below:        layer_list = &m_below_windows;        break;
+    case layer_t::dock:         layer_list = &m_dock_windows;         break;
+    case layer_t::above:        layer_list = &m_above_windows;        break;
+    case layer_t::notification: layer_list = &m_notification_windows; break;
+    default: return false;
+    }
+
+    for (auto& sibling : *layer_list)
+        if (win != sibling && occluded_by(win, sibling))
+            return true;
+
+    return false;
+}
+
+bool
+windowstack_t::occludes_any(x_data::window_t win)
+{
+    if (!m_win_layers.count(win))
+        return false;
+
+    ::std::list<x_data::window_t>* layer_list;
+
+    switch (m_win_layers[win]) {
+    case layer_t::desktop:      layer_list = &m_desktop_windows;      break;
+    case layer_t::below:        layer_list = &m_below_windows;        break;
+    case layer_t::dock:         layer_list = &m_dock_windows;         break;
+    case layer_t::above:        layer_list = &m_above_windows;        break;
+    case layer_t::notification: layer_list = &m_notification_windows; break;
+    default: return false;
+    }
+
+    for (auto& sibling : *layer_list)
+        if (win != sibling && occluded_by(sibling, win))
+            return true;
+
+    return false;
 }
 
 
