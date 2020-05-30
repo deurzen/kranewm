@@ -29,6 +29,9 @@ enum netwmid_t : int
     netsupportingwmcheck,
     netwmstate,
     netwmwindowtype,
+    // root messages
+    netwmclosewindow, netwmrootfirst = netwmclosewindow,
+    netwmrestackwindow, netwmrootlast = netwmrestackwindow,
     // window states
     netwmstatefullscreen, netwmstatefirst = netwmstatefullscreen,
     netwmstateabove,
@@ -90,6 +93,9 @@ public:
             { netwmid_t::netsupportingwmcheck,        "_NET_SUPPORTING_WM_CHECK"          },
             { netwmid_t::netwmstate,                  "_NET_WM_STATE"                     },
             { netwmid_t::netwmwindowtype,             "_NET_WM_WINDOW_TYPE"               },
+            // root messages
+            { netwmid_t::netwmclosewindow,            "_NET_CLOSE_WINDOW"                 },
+            { netwmid_t::netwmrestackwindow,          "_NET_RESTACK_WINDOW"               },
             // window states
             { netwmid_t::netwmstatefullscreen,        "_NET_WM_STATE_FULLSCREEN"          },
             { netwmid_t::netwmstateabove,             "_NET_WM_STATE_ABOVE"               },

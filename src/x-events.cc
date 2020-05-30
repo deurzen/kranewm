@@ -238,6 +238,79 @@ x_events_t::on_client_message()
             }
         }
         break;
+    case netwmid_t::netwmclosewindow:
+        {
+            if (!(client = m_clients.win_client(win)))
+                return;
+
+            if (range_t<::std::size_t>::contains(0, 2, event.data.l[0]))
+                client->win.close();
+        }
+        break;
+    case netwmid_t::netwmrestackwindow:
+        {
+            if ((event.data.l[0] == 2) && (win != x_data::g_root)) {
+                x_data::window_t sibling = event.data.l[1];
+
+                switch (event.data.l[2]) {
+                case Above:
+                {
+                    if (sibling)
+                        m_windowstack.raise_window_above(win, sibling);
+                    else
+                        m_windowstack.raise_window(win);
+                }
+                break;
+                case Below:
+                {
+                    if (sibling)
+                        m_windowstack.lower_window_below(win, sibling);
+                    else
+                        m_windowstack.lower_window(win);
+                }
+                break;
+                case TopIf:
+                {
+                    if (sibling) {
+                        if (m_windowstack.occluded_by(win, sibling))
+                            m_windowstack.raise_window(win);
+                    } else {
+                        if (m_windowstack.occluded_by_any(win))
+                            m_windowstack.raise_window(win);
+                    }
+                }
+                break;
+                case BottomIf:
+                {
+                    if (sibling) {
+                        if (m_windowstack.occluded_by(sibling, win))
+                            m_windowstack.lower_window(win);
+                    } else {
+                        if (m_windowstack.occludes_any(win))
+                            m_windowstack.lower_window(win);
+                    }
+                }
+                break;
+                case Opposite:
+                {
+                    if (sibling) {
+                        if (m_windowstack.occluded_by(win, sibling))
+                            m_windowstack.raise_window(win);
+                        else if (m_windowstack.occluded_by(sibling, win))
+                            m_windowstack.lower_window(win);
+                    } else {
+                        if (m_windowstack.occluded_by_any(win))
+                            m_windowstack.raise_window(win);
+                        else if (m_windowstack.occludes_any(win))
+                            m_windowstack.lower_window(win);
+                    }
+                }
+                break;
+                default: break;
+                }
+            }
+        }
+        break;
     case netwmid_t::netcurrentdesktop:
         {
             if (range_t<size_t>::contains(0,
