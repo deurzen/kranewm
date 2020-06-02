@@ -268,7 +268,6 @@ public:
     void process_mouse_input_client(client_ptr_t, XButtonEvent);
     void process_key_input_global(XKeyEvent);
     void process_key_input_client(client_ptr_t, XKeyEvent);
-    void process_ipc_global(ipccommand_t);
 
     void process_command(commandbind_t);
 

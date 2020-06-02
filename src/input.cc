@@ -67,14 +67,6 @@ inputhandler_t::process_key_input_client(client_ptr_t client, XKeyEvent event)
 }
 
 void
-inputhandler_t::process_ipc_global(ipccommand_t command)
-{
-    auto [data,op] = command;
-
-    process_command(op);
-}
-
-void
 inputhandler_t::process_command(commandbind_t commandbind)
 {
     static ::std::unordered_map<commandbind_t, command_ptr_t> interned_commands{};
