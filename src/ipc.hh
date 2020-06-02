@@ -39,7 +39,8 @@ public:
             gethostname(hostname, HOST_NAME_MAX);
 
             m_sock_path = ::std::string(DEFAULT_SOCK_PATH_PREFIX);
-            m_sock_path += "-" + ::std::string(hostname);
+            if (hostname[0] != '\0')
+                m_sock_path += "-" + ::std::string(hostname);
         }
 
         m_sock_address.sun_family = AF_UNIX;
@@ -66,6 +67,12 @@ public:
         x_data::replace_property<x_data::cardinal_t>(x_data::g_root, {IPC_PREFIX + "SOCKET_FD", (CARD32)m_sock_fd});
     }
 
+    ~ipc_t()
+    {
+        unlink(m_sock_path.c_str());
+        //TODO unbind socket
+    }
+
     void
     fail_ipc(::std::string&& msg)
     {
@@ -78,11 +85,6 @@ public:
     is_enabled() const
     {
         return m_enabled;
-    }
-
-    ~ipc_t()
-    {
-        //TODO unbind socket
     }
 
 private:
