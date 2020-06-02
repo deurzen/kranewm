@@ -6,7 +6,6 @@
 #include "util.hh"
 #include "workspace.hh"
 
-#include <csignal>
 #include <cstdlib>
 #include <sstream>
 
@@ -79,6 +78,7 @@ kranewm_t::run()
 {
     while(m_events.step())
         m_changes.process_queued_changes();
+
     x_data::sync(false);
 }
 
