@@ -9,7 +9,7 @@
 #include <vector>
 
 
-void die(const ::std::string&);
+void die(const ::std::string&&);
 
 
 template <typename T>

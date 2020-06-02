@@ -5,7 +5,7 @@
 
 
 void
-die(const ::std::string& msg)
+die(const ::std::string&& msg)
 {
     ::std::cerr << WMNAME << ": " << msg << ::std::endl;
     exit(1);
