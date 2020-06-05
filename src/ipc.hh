@@ -2,6 +2,7 @@
 #define __KRANEWM__IPC__GUARD__
 
 #include "commands.hh"
+#include "util.hh"
 
 #include "x-data/property.hh"
 #include "x-data/display.hh"
@@ -12,9 +13,9 @@
 #include <unistd.h>
 
 
-const ::std::string IPC_PREFIX = "_KRANEWM_IPC_";
-const ::std::string SOCK_PATH_ENV = "KRANEWM_SOCKETPATH";
-const ::std::string DEFAULT_SOCK_PATH_PREFIX = "/tmp/kranewm";
+const ::std::string IPC_PREFIX = "_" + uppercase(WMNAME) + "_IPC_";
+const ::std::string SOCK_PATH_ENV = uppercase(WMNAME) + "_SOCKETPATH";
+const ::std::string DEFAULT_SOCK_PATH_PREFIX = "/tmp/" + WMNAME;
 
 
 class ipc_t
