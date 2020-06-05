@@ -209,7 +209,7 @@ private:
 typedef class quitcommand_t : public command_t
 {
 public:
-    explicit quitcommand_t(bool& running)
+    explicit quitcommand_t(bool* running)
       : command_t(true),
         m_running(running)
     {}
@@ -217,7 +217,7 @@ public:
     void execute() override;
 
 private:
-    bool& m_running;
+    bool* m_running;
 
 }* quitcommand_ptr_t;
 

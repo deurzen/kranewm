@@ -98,10 +98,7 @@ public:
         return m_enabled;
     }
 
-    ~ipc_t()
-    {
-        //TODO unbind socket
-    }
+    void handle_ipc();
 
 private:
     bool m_enabled;

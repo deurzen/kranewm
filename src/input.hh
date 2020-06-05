@@ -26,7 +26,7 @@ class inputhandler_t
 {
 public:
     explicit inputhandler_t(sidebar_t& sidebar, client_model_t& clients,
-        windowstack_t& windowstack, processjumplist_t& processes, bool& running)
+        windowstack_t& windowstack, processjumplist_t& processes, bool* running)
       : m_sidebar(sidebar),
         m_clients(clients),
         m_windowstack(windowstack),
@@ -278,7 +278,7 @@ private:
     client_model_t& m_clients;
     windowstack_t& m_windowstack;
     processjumplist_t& m_processes;
-    bool& m_running;
+    bool* m_running;
     processbinds_t m_processbinds;
     mousebinds_t m_mousebinds;
     keybinds_t m_keybinds;

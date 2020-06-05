@@ -10,6 +10,7 @@
 
 
 void die(const ::std::string&&);
+::std::string uppercase(const ::std::string);
 
 
 template <typename T>

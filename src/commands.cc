@@ -21,7 +21,7 @@ floatingconditionalcommand_t::execute()
 void
 quitcommand_t::execute()
 {
-    m_running = false;
+    *m_running = false;
 }
 
 void

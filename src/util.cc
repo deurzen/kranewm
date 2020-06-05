@@ -10,3 +10,15 @@ die(const ::std::string&& msg)
     ::std::cerr << WMNAME << ": " << msg << ::std::endl;
     exit(1);
 }
+
+::std::string
+uppercase(const ::std::string word)
+{
+    ::std::string uppercase_word = word;
+
+    ::std::for_each(uppercase_word.begin(), uppercase_word.end(),
+        [](char& c){ c = ::toupper(c); }
+    );
+
+    return uppercase_word;
+}
