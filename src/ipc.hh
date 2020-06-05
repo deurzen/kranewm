@@ -52,7 +52,7 @@ public:
 
         unlink(m_sock_path.c_str());
 
-        if (bind(m_sock_fd, (struct sockaddr*)&m_sock_address, sizeof(m_sock_address)) == -1) {
+        if (bind(m_sock_fd, reinterpret_cast<struct sockaddr*>(&m_sock_address), sizeof(m_sock_address)) == -1) {
             fail_ipc("couldn't bind name to socket");
             return;
         }
@@ -66,12 +66,27 @@ public:
         x_data::replace_property<x_data::cardinal_t>(x_data::g_root, {IPC_PREFIX + "SOCKET_FD", (CARD32)m_sock_fd});
     }
 
+    ~ipc_t()
+    {
+        unlink(m_sock_path.c_str());
+        close(m_sock_fd);
+    }
+
+    int
+    get_sock_fd() const
+    {
+        if (m_enabled)
+            return m_sock_fd;
+
+        return -1;
+    }
+
     void
     fail_ipc(::std::string&& msg)
     {
         ::std::cerr << "error setting up IPC server: " << msg << ::std::endl;
-        m_enabled = false;
         x_data::replace_property<x_data::cardinal_t>(x_data::g_root, {IPC_PREFIX + "ENABLED", false});
+        m_enabled = false;
     }
 
     bool
