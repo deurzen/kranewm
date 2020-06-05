@@ -37,10 +37,12 @@ public:
             m_sock_path = ::std::string(env_sock_path);
         else {
             char hostname[HOST_NAME_MAX];
+            hostname[0] = '\0';
             gethostname(hostname, HOST_NAME_MAX);
 
             m_sock_path = ::std::string(DEFAULT_SOCK_PATH_PREFIX);
-            m_sock_path += "-" + ::std::string(hostname);
+            if (hostname[0] != '\0')
+                m_sock_path += "-" + ::std::string(hostname);
         }
 
         m_sock_address.sun_family = AF_UNIX;
