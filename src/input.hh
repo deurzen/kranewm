@@ -258,7 +258,8 @@ public:
             x_data::grab_key(shortcut.keysym, shortcut.mask);
 
         for (auto&& [shortcut,_] : m_mousebinds)
-            if (shortcut.mask) x_data::grab_button(shortcut.button, shortcut.mask);
+            if (shortcut.mask)
+                x_data::grab_button(shortcut.button, shortcut.mask);
     }
 
     bool moves_focus(XButtonEvent) const;

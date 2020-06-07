@@ -11,6 +11,12 @@ die(const ::std::string&& msg)
     exit(1);
 }
 
+void
+warn(const ::std::string&& msg)
+{
+    ::std::cerr << msg << ::std::endl;
+}
+
 ::std::string
 uppercase(const ::std::string word)
 {

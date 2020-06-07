@@ -10,6 +10,7 @@
 
 
 void die(const ::std::string&&);
+void warn(const ::std::string&&);
 ::std::string uppercase(const ::std::string);
 
 

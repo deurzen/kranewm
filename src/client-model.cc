@@ -334,7 +334,7 @@ client_model_t::client_to_workspace(client_ptr_t client, ::std::size_t workspace
         return;
 
     if (range_t<::std::size_t>::contains(1, USER_WORKSPACES.size(), workspace_nr))
-        client_to_workspace(client, (*m_user_workspaces).at(workspace_nr - 1));
+        client_to_workspace(client, m_user_workspaces->at(workspace_nr - 1));
 }
 
 void
@@ -366,7 +366,7 @@ void
 client_model_t::change_active_workspace(::std::size_t workspace_nr, bool save_prev)
 {
     if (range_t<::std::size_t>::contains(1, USER_WORKSPACES.size(), workspace_nr))
-        change_active_workspace((*m_user_workspaces).at(workspace_nr - 1), save_prev);
+        change_active_workspace(m_user_workspaces->at(workspace_nr - 1), save_prev);
     else
         change_active_workspace(nullptr, save_prev);
 }

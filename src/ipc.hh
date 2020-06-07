@@ -87,7 +87,7 @@ public:
     void
     fail_ipc(::std::string&& msg)
     {
-        ::std::cerr << "error setting up IPC server: " << msg << ::std::endl;
+        warn("error setting up IPC server: " + msg);
         x_data::replace_property<x_data::cardinal_t>(x_data::g_root, {IPC_PREFIX + "ENABLED", false});
         m_enabled = false;
     }
