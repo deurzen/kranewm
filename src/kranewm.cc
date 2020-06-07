@@ -83,8 +83,10 @@ kranewm_t::run()
 {
     while(m_running) {
         if (reselect()) {
-            if (ipc_received())
+            if (ipc_received()) {
                 m_ipc.handle_ipc();
+                m_changes.process_queued_changes();
+            }
 
             if (x11_received())
                 while(x_data::pending()) {

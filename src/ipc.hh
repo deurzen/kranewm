@@ -12,6 +12,9 @@
 #include <sys/un.h>
 #include <unistd.h>
 
+class inputhandler_t;
+
+
 const ::std::string IPC_PREFIX = "_" + uppercase(WMNAME) + "_IPC_";
 const ::std::string SOCK_PATH_ENV = uppercase(WMNAME) + "_SOCKETPATH";
 const ::std::string DEFAULT_SOCK_PATH_PREFIX = "/tmp/" + WMNAME;
@@ -32,7 +35,7 @@ public:
         m_op_arg(::std::nullopt)
     {}
 
-    ipcbind_t(commandop_t commandop = commandop_t::noop, argtype_t arg = {})
+    ipcbind_t(commandop_t commandop, argtype_t arg)
       : m_commandbind(::std::nullopt),
         m_op_arg({commandop, arg})
     {}
@@ -73,8 +76,9 @@ typedef ::std::unordered_map<::std::string, ipcbind_t> ipcbinds_t;
 class ipc_t
 {
 public:
-    ipc_t()
+    ipc_t(inputhandler_t& input)
       : m_enabled(true),
+        m_input(input),
         m_sock_fd(-1),
         m_sock_address({}),
         m_sock_path({}),
@@ -288,6 +292,8 @@ public:
 
 private:
     bool m_enabled;
+    inputhandler_t& m_input;
+
     int m_sock_fd;
     struct sockaddr_un m_sock_address;
     ::std::string m_sock_path;

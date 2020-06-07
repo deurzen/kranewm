@@ -3,7 +3,6 @@
 
 #include "common.hh"
 #include "floating.hh"
-#include "ipc.hh"
 #include "keybind.hh"
 #include "mousebind.hh"
 #include "process.hh"

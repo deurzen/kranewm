@@ -24,16 +24,17 @@ class x_model_t;
 class x_events_t
 {
 public:
-    explicit x_events_t(ewmh_t& ewmh, ipc_t& ipc, sidebar_t& sidebar, windowstack_t& windowstack,
-        processjumplist_t& processes,  client_model_t& clients, x_model_t& x, bool* running)
+    explicit x_events_t(ewmh_t& ewmh, sidebar_t& sidebar, windowstack_t& windowstack,
+        processjumplist_t& processes,  client_model_t& clients, x_model_t& x,
+        inputhandler_t& input, ipc_t& ipc, bool* running)
       : m_ewmh(ewmh),
-        m_ipc(ipc),
         m_sidebar(sidebar),
         m_windowstack(windowstack),
         m_clients(clients),
         m_x(x),
+        m_input(input),
+        m_ipc(ipc),
         m_running(running),
-        m_input(sidebar, clients, windowstack, processes, m_running),
         m_rules({
             //  class                  inst          title      float center close nohint workspace context
             { { "Anki",                ALL,          ALL },   { YES,  YES,    OFF,  NO,   CURRENT,  CURRENT } },
@@ -79,13 +80,13 @@ private:
     void on_unmap_notify();
 
     ewmh_t& m_ewmh;
-    ipc_t& m_ipc;
     sidebar_t& m_sidebar;
     windowstack_t& m_windowstack;
     client_model_t& m_clients;
     x_model_t& m_x;
+    inputhandler_t& m_input;
+    ipc_t& m_ipc;
     bool* m_running;
-    inputhandler_t m_input;
     x_data::event_t m_current_event;
     rules_t m_rules;
 

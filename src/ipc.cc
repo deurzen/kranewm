@@ -1,5 +1,7 @@
 #include "ipc.hh"
 
+#include "input.hh"
+
 #include <iostream>
 #include <sstream>
 
@@ -34,7 +36,9 @@ ipc_t::handle_ipc()
 
 void
 ipc_t::process_message(::std::vector<::std::string>& tokens, FILE* stream)
-{}
+{
+    m_input.process_command(resolve_command(tokens));
+}
 
 commandbind_t
 ipc_t::resolve_command(::std::vector<::std::string>& tokens)
@@ -61,7 +65,7 @@ ipc_t::resolve_command(::std::vector<::std::string>& tokens)
             default: break;
             }
         } catch (::std::invalid_argument& err) {
-            return fail_command("unable to resolve argument: " + ::std::string(err.what()));
+            return fail_command("unable to resolve argument (" + ::std::string(err.what()) + ")");
         }
 
     }
