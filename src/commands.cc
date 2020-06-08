@@ -21,7 +21,7 @@ floatingconditionalcommand_t::execute()
 void
 quitcommand_t::execute()
 {
-    m_running = false;
+    *m_running = false;
 }
 
 void
@@ -703,7 +703,7 @@ externalcommand_t::execute()
 {
     if (!fork()) {
         if (x_data::g_dpy)
-            close(x_data::connection_number());
+            close(x_data::g_connection);
 
         setsid();
         execl("/bin/sh", "/bin/sh", "-c", ("exec " + m_command).c_str(), NULL);

@@ -3,7 +3,6 @@
 
 #include "common.hh"
 #include "floating.hh"
-#include "ipc.hh"
 #include "keybind.hh"
 #include "mousebind.hh"
 #include "process.hh"
@@ -26,7 +25,7 @@ class inputhandler_t
 {
 public:
     explicit inputhandler_t(sidebar_t& sidebar, client_model_t& clients,
-        windowstack_t& windowstack, processjumplist_t& processes, bool& running)
+        windowstack_t& windowstack, processjumplist_t& processes, bool* running)
       : m_sidebar(sidebar),
         m_clients(clients),
         m_windowstack(windowstack),
@@ -258,7 +257,8 @@ public:
             x_data::grab_key(shortcut.keysym, shortcut.mask);
 
         for (auto&& [shortcut,_] : m_mousebinds)
-            if (shortcut.mask) x_data::grab_button(shortcut.button, shortcut.mask);
+            if (shortcut.mask)
+                x_data::grab_button(shortcut.button, shortcut.mask);
     }
 
     bool moves_focus(XButtonEvent) const;
@@ -278,7 +278,7 @@ private:
     client_model_t& m_clients;
     windowstack_t& m_windowstack;
     processjumplist_t& m_processes;
-    bool& m_running;
+    bool* m_running;
     processbinds_t m_processbinds;
     mousebinds_t m_mousebinds;
     keybinds_t m_keybinds;

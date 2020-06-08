@@ -23,7 +23,17 @@ namespace x_data
             XChangeWindowAttributes(dpy, (XDefaultRootWindow(dpy)), CWCursor, &wa);
         }
 
-        operator Display*() const;
+        inline
+        operator Display*() const
+        {
+            return dpy;
+        }
+
+        inline void
+        close() const
+        {
+            XCloseDisplay(dpy);
+        }
 
     private:
         Display* dpy;
@@ -32,18 +42,8 @@ namespace x_data
 
     extern display_t g_dpy;
     extern window_t g_root;
+    extern int g_connection;
 
-    inline int
-    connection_number()
-    {
-        return XConnectionNumber(g_dpy);
-    }
-
-    inline
-    display_t::operator Display*() const
-    {
-        return dpy;
-    }
 }
 
 #endif//__KRANEWM__X_DATA__DISPLAY__GUARD__

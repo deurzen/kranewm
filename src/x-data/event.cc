@@ -56,6 +56,11 @@ x_data::sync(bool discard)
     XSync(g_dpy, discard);
 }
 
+int
+x_data::pending()
+{
+    return XPending(g_dpy);
+}
 
 event_t&
 x_data::event_t::send(long mask, window_t win)

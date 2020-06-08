@@ -76,6 +76,7 @@ namespace x_data
     extern bool typed_event(event_t&, int);
     extern void last_typed_event(event_t&, int);
     extern void sync(bool);
+    extern int pending();
 
 }
 

@@ -133,8 +133,8 @@ public:
     inline commandop_t get_op() const { return m_operation; }
     inline argtype_t get_arg() const { return m_argument; }
 
-    inline commandbind_ptr_t get_comp1() const { return (*m_composite).first; }
-    inline commandbind_ptr_t get_comp2() const { return (*m_composite).second; }
+    inline commandbind_ptr_t get_comp1() const { return m_composite->first; }
+    inline commandbind_ptr_t get_comp2() const { return m_composite->second; }
 
 private:
     commandop_t m_operation;
@@ -209,7 +209,7 @@ private:
 typedef class quitcommand_t : public command_t
 {
 public:
-    explicit quitcommand_t(bool& running)
+    explicit quitcommand_t(bool* running)
       : command_t(true),
         m_running(running)
     {}
@@ -217,7 +217,7 @@ public:
     void execute() override;
 
 private:
-    bool& m_running;
+    bool* m_running;
 
 }* quitcommand_ptr_t;
 

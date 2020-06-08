@@ -27,9 +27,6 @@ x_data::g_xerror(Display* dpy, XErrorEvent* error)
         if (error->request_code == reqerr_pair.first && error->error_code == reqerr_pair.second)
             return 0;
 
-    ::std::cerr << "fatal error: request code=" << error->request_code << ::std::endl;
-    ::std::cerr << "               error code=" << error->error_code << ::std::endl;
-
     return -1;
 }
 

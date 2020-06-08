@@ -12,7 +12,7 @@
 #include "x-data/hints.hh"
 
 
-bool
+void
 x_events_t::step()
 {
     x_data::next_event(m_current_event);
@@ -36,8 +36,6 @@ x_events_t::step()
     case UnmapNotify:      on_unmap_notify();      break;
     default: break;
     }
-
-    return m_running;
 }
 
 void
