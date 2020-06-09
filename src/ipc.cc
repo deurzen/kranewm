@@ -37,7 +37,7 @@ ipc_t::handle_ipc()
 void
 ipc_t::process_message(::std::vector<::std::string>& tokens, FILE* stream)
 {
-    m_input.process_command(resolve_command(tokens));
+    m_input.process_ipc_input(resolve_command(tokens));
 }
 
 commandbind_t

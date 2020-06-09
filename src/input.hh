@@ -245,8 +245,7 @@ public:
             { { XK_Down,         MODMASK|ShiftMask|ControlMask }, { commandop_t::clientsnapresizesouth }                          },
             { { XK_Left,         MODMASK|ShiftMask|ControlMask }, { commandop_t::clientsnapresizewest }                           },
             { { XK_q,            MODMASK|ShiftMask|ControlMask }, { commandop_t::quit }                                           },
-        }),
-        m_target(nullptr)
+        })
     {
         for (auto&& [shortcut,name] : m_processbinds) {
             x_data::grab_key(shortcut.keysym, shortcut.mask);
@@ -268,11 +267,12 @@ public:
     void process_mouse_input_client(client_ptr_t, XButtonEvent);
     void process_key_input_global(XKeyEvent);
     void process_key_input_client(client_ptr_t, XKeyEvent);
+    void process_ipc_input(commandbind_t);
 
-    void process_command(commandbind_t);
 
 private:
-    command_ptr_t create_command(commandbind_t);
+    command_ptr_t create_command(commandbind_t, client_ptr_t);
+    void process_command(commandbind_t, client_ptr_t = nullptr);
 
     sidebar_t& m_sidebar;
     client_model_t& m_clients;
@@ -282,8 +282,6 @@ private:
     processbinds_t m_processbinds;
     mousebinds_t m_mousebinds;
     keybinds_t m_keybinds;
-
-    client_ptr_t m_target;
 
 };
 
