@@ -108,7 +108,12 @@ kranewm_t::exit()
 void
 kranewm_t::wait_children(int sig)
 {
-    signal(sig, kranewm_t::wait_children);
+    struct sigaction child_sa;
+
+    memset(&child_sa, 0, sizeof(child_sa));
+    child_sa.sa_handler = &kranewm_t::wait_children;
+
+    sigaction(SIGCHLD, &child_sa,  NULL);
     while (waitpid(-1, 0, WNOHANG) > 0);
 }
 
