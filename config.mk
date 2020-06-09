@@ -1,4 +1,5 @@
 PROJECT = kranewm
+CLIENT = kranec
 
 OBJDIR = obj
 SRCDIR = src
@@ -6,8 +7,11 @@ SRCDIR = src
 BIN = bin
 DESTDIR = /usr/local/bin
 
+KRANEC_SRC_FILES := $(wildcard src/kranec/*.cc) $(wildcard src/x-data/*.cc) src/util.cc
+KRANEC_OBJ_FILES := $(patsubst src/kranec/%.cc,obj/kranec/%.o,${KRANEC_SRC_FILES})
+
 X_DATA_SRC_FILES := $(wildcard src/x-data/*.cc)
-X_DATA_OBJ_FILES := $(patsubst src/x-data/%.cc,obj/%.o,${X_DATA_SRC_FILES})
+X_DATA_OBJ_FILES := $(patsubst src/x-data/%.cc,obj/x-data/%.o,${X_DATA_SRC_FILES})
 
 BASE_SRC_FILES := $(wildcard src/*.cc)
 BASE_OBJ_FILES := $(patsubst src/%.cc,obj/%.o,${BASE_SRC_FILES})

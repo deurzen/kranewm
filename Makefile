@@ -11,17 +11,23 @@ quick_debug:
 debug: CXXFLAGS += $(DEBUG_CXXFLAGS)
 debug: LDFLAGS += $(DEBUG_LDFLAGS)
 debug: build-core
+debug: build-client
 	+$(MAKE) run tags
 
 build: CXXFLAGS += $(RELEASE_CXXFLAGS)
 build: LDFLAGS += $(RELEASE_LDFLAGS)
 build: build-core
+build: build-client
 
 install:
 	install $(BIN)/$(PROJECT) $(DESTDIR)/$(PROJECT)
+	install $(BIN)/$(CLIENT) $(DESTDIR)/$(CLIENT)
 
-build-core: notify-build bin obj ${OBJ_FILES} notify-link
+build-core: bin obj ${OBJ_FILES}
 	${CC} ${OBJ_FILES} ${LDFLAGS} -o $(BIN)/$(PROJECT)
+
+build-client: bin obj ${KRANEC_OBJ_FILES}
+	${CC} ${KRANEC_OBJ_FILES} ${LDFLAGS} -o $(BIN)/$(CLIENT)
 
 -include $(DEPS)
 
@@ -30,7 +36,10 @@ obj/%.o: obj
 obj/%.o: src/%.cc
 	${CC} ${CXXFLAGS} -MMD -c $< -o $@
 
-obj/%.o: src/x-data/%.cc
+obj/x-data/%.o: src/x-data/%.cc
+	${CC} ${CXXFLAGS} -MMD -c $< -o $@
+
+obj/kranec/%.o: src/kranec/%.cc
 	${CC} ${CXXFLAGS} -MMD -c $< -o $@
 
 run:
@@ -42,10 +51,13 @@ bin:
 	@[ -d bin ] || mkdir bin
 
 obj:
-	@[ -d obj ] || mkdir obj
+	@[ -d obj ] || mkdir -p obj/{x-data,kranec}
 
 notify-build:
-	@echo building
+	@echo building kranewm
+
+notify-client:
+	@echo building kranec
 
 notify-link:
 	@echo
