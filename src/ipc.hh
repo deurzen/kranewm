@@ -17,13 +17,20 @@ class inputhandler_t;
 
 const ::std::string IPC_PREFIX = "_" + uppercase(WMNAME) + "_IPC_";
 const ::std::string SOCK_PATH_ENV = uppercase(WMNAME) + "_SOCKETPATH";
+#ifndef DEBUG
 const ::std::string DEFAULT_SOCK_PATH_PREFIX = "/tmp/" + WMNAME;
+#else
+const ::std::string DEFAULT_SOCK_PATH_PREFIX = "/tmp/D" + WMNAME;
+#endif
+
 
 enum class argtype_t
 {
-    d, i = d, // int
+    d,        // int
     f,        // float
     lt,       // layout
+    i,        // int index
+    c,        // char index
     dir,      // direction
 };
 
@@ -80,125 +87,126 @@ public:
       : m_enabled(true),
         m_input(input),
         m_sock_fd(-1),
-        m_sock_address({}),
-        m_sock_path({}),
+        m_sock_address(),
+        m_sock_path(),
         m_ipcbinds({
             // command                            operation                             arg
-            {  "workspace",                   {   commandop_t::workspaceset,          { argtype_t::i   }                   } },
-            {  "layout",                      {   commandop_t::workspacelayout,       { argtype_t::lt  }                   } },
-            {  "profilesave",                 {   commandop_t::profilesave,           { argtype_t::i   }                   } },
-            {  "profileload",                 {   commandop_t::profileload,           { argtype_t::i   }                   } },
-            {  "deiconify",                   {   commandop_t::clientdeiconifyindex,  { argtype_t::i   }                   } },
-            {  "workspaceactiveclient",       {   commandop_t::clientworkspace,       { argtype_t::i   }                   } },
-            {  "context",                     {   commandop_t::contextset,            { argtype_t::i   }                   } },
-            {  "contextactiveclient",         {   commandop_t::clientcontext,         { argtype_t::i   }                   } },
-            {  "moveactiveclient",            {   commandop_t::clientmove,            { argtype_t::dir }                   } },
+            {  "context",                     {   commandop_t::contextset,            { argtype_t::c   }                   } },
+            {  "contextactiveclient",         {   commandop_t::clientcontext,         { argtype_t::c   }                   } },
+            {  "deiconify",                   {   commandop_t::clientdeiconifyindex,  { argtype_t::d   }                   } },
             {  "growactiveclient",            {   commandop_t::clientgrow,            { argtype_t::dir }                   } },
+            {  "layout",                      {   commandop_t::workspacelayout,       { argtype_t::lt  }                   } },
+            {  "moveactiveclient",            {   commandop_t::clientmove,            { argtype_t::dir }                   } },
+            {  "profileload",                 {   commandop_t::profileload,           { argtype_t::d   }                   } },
+            {  "profilesave",                 {   commandop_t::profilesave,           { argtype_t::d   }                   } },
             {  "shrinkactiveclient",          {   commandop_t::clientshrink,          { argtype_t::dir }                   } },
+            {  "workspace",                   {   commandop_t::workspaceset,          { argtype_t::i   }                   } },
+            {  "workspaceactiveclient",       {   commandop_t::clientworkspace,       { argtype_t::i   }                   } },
             // command                            bind
-            {  "prevworkspace",               { { commandop_t::previousworkspace }                                         } },
-            {  "nextworkspace",               { { commandop_t::nextworkspace }                                             } },
-            {  "killactiveclient",            { { commandop_t::clientkill }                                                } },
-            {  "focusbackward",               { { commandop_t::focusbackward }                                             } },
-            {  "focusforward",                { { commandop_t::focusforward }                                              } },
-            {  "zoom",                        { { commandop_t::zoom }                                                      } },
-            {  "togworkspace",                { { commandop_t::workspaceset, 0 }                                           } },
-            {  "masterjump",                  { { commandop_t::clientmasterjump }                                          } },
-            {  "decnmaster",                  { { commandop_t::workspacenmaster, -1 }                                      } },
-            {  "decmfactor",                  { { commandop_t::workspacemfactor, -.05f }                                   } },
-            {  "incnmaster",                  { { commandop_t::workspacenmaster,  1 }                                      } },
-            {  "incmfactor",                  { { commandop_t::workspacemfactor,  .05f }                                   } },
-            {  "stregion",                    { { "~/bin/stregion" }                                                       } },
-            {  "stickyactiveclient",          { { commandop_t::clientsticky }                                              } },
-            {  "iconifyactiveclient",         { { commandop_t::clienticonify }                                             } },
-            {  "deiconifypop",                { { commandop_t::deiconifypop }                                              } },
-            {  "togsidebar",                  { { commandop_t::sidebarshow }                                               } },
-            {  "stackjump",                   { { commandop_t::clientstackjump }                                           } },
-            {  "lastjump",                    { { commandop_t::clientlastjump }                                            } },
-            {  "panejump",                    { { commandop_t::clientpanejump }                                            } },
-            {  "workspacemirror",             { { commandop_t::workspacemirror }                                           } },
-            {  "dmenu",                       { { "~/bin/dmenu_runner" }                                                   } },
-            {  "secbrowser",                  {  { "qutebrowser" }                                                         } },
-            {  "toglayout",                   { { commandop_t::workspacelayout, layout_t::toggle }                         } },
-            {  "fullscreenactiveclient",      { { commandop_t::clientfullscreen }                                          } },
-            {  "skippy-xd",                   { { "skippy-xd --toggle-window-picker" }                                     } },
-            {  "calculator",                  { { "qalculate-gtk" }                                                        } },
-            {  "decgapsize",                  { { commandop_t::workspacegapsize, -1 }                                      } },
-            {  "incgapsize",                  { { commandop_t::workspacegapsize,  1 }                                      } },
-            {  "disownactiveclient",          { { commandop_t::clientdisown }                                              } },
-            {  "reclaimpop",                  { { commandop_t::reclaimpop }                                                } },
-            {  "belowactiveclient",           { { commandop_t::clientbelow }                                               } },
             {  "aboveactiveclient",           { { commandop_t::clientabove }                                               } },
-            {  "gapsizereset",                { { commandop_t::workspacegapsize, 0 }                                       } },
-            {  "markactiveclient",            { { commandop_t::clientmarkset }                                             } },
-            {  "prevworkspaceactiveclient",   { { commandop_t::clientpreviousworkspace }                                   } },
-            {  "nextworkspaceactiveclient",   { { commandop_t::clientnextworkspace }                                       } },
-            {  "inwindowactiveclient",        { { commandop_t::clientinwindow }                                            } },
-            {  "movebackwardactiveclient",    { { commandop_t::clientmovebackward }                                        } },
-            {  "moveforwardactiveclient",     { { commandop_t::clientmoveforward }                                         } },
-            {  "togsidebarall",               { { commandop_t::sidebarshowall }                                            } },
-            {  "floatactiveclient",           { { commandop_t::clientfloat }                                               } },
-            {  "dmenupass",                   { { "~/bin/dmenupass" }                                                      } },
-            {  "browser",                     { { "firefox" }                                                              } },
-            {  "jumpmark",                    { { commandop_t::clientmarkjump }                                            } },
-            {  "centeractiveclient",          { { commandop_t::clientcenter }                                              } },
-            {  "snapmovenorthactiveclient",   { { commandop_t::clientsnapmovenorth }                                       } },
-            {  "snapmoveeastactiveclient",    { { commandop_t::clientsnapmoveeast }                                        } },
-            {  "snapmovesouthactiveclient",   { { commandop_t::clientsnapmovesouth }                                       } },
-            {  "snapmovewestactiveclient",    { { commandop_t::clientsnapmovewest }                                        } },
-            {  "masterforward",               { { commandop_t::masterforward }                                             } },
-            {  "masterbackward",              { { commandop_t::masterbackward }                                            } },
-            {  "stackforward",                { { commandop_t::stackforward }                                              } },
-            {  "stackbackward",               { { commandop_t::stackbackward }                                             } },
-            {  "moveleftmasterforward",       { { commandop_t::floatingconditional,
-                                                              new commandbind_t{ commandop_t::clientmove, direction_t::left },
-                                                              new commandbind_t{ commandop_t::masterforward }
-                                              } } },
-            {  "movedownstackbackward",       { { commandop_t::floatingconditional,
-                                                              new commandbind_t{ commandop_t::clientmove, direction_t::down },
-                                                              new commandbind_t{ commandop_t::stackbackward }
-                                              } } },
-            {  "moveupstackforward",          { { commandop_t::floatingconditional,
-                                                              new commandbind_t{ commandop_t::clientmove, direction_t::up },
-                                                              new commandbind_t{ commandop_t::stackforward }
-                                              } } },
-            {  "moverightmasterbackward",     { { commandop_t::floatingconditional,
-                                                              new commandbind_t{ commandop_t::clientmove, direction_t::right },
-                                                              new commandbind_t{ commandop_t::masterbackward }
-                                              } } },
-            {  "neomutt",                     { { "st -g 140x42 -e zsh -i -c neomutt" }                                    } },
-            {  "sncli",                       { { "st -g 80x42 -e zsh -i -c sncli" }                                       } },
-            {  "rtv",                         { { "st -g 80x42 -e zsh -i -c rtv" }                                         } },
-            {  "irssi",                       { { "st -g 80x42 -e zsh -i -c irssi" }                                       } },
-            {  "dmenupasscopy",               { { "~/bin/dmenupass --copy" }                                               } },
-            {  "dmenunotify",                 { { "~/bin/dmenunotify" }                                                    } },
             {  "allbackward",                 { { commandop_t::allbackward }                                               } },
             {  "allforward",                  { { commandop_t::allforward }                                                } },
-            {  "prevcontext",                 { { commandop_t::previouscontext }                                           } },
-            {  "nextcontext",                 { { commandop_t::nextcontext }                                               } },
+            {  "belowactiveclient",           { { commandop_t::clientbelow }                                               } },
+            {  "centeractiveclient",          { { commandop_t::clientcenter }                                              } },
+            {  "decgapsize",                  { { commandop_t::workspacegapsize, -1 }                                      } },
+            {  "decmfactor",                  { { commandop_t::workspacemfactor, -.05f }                                   } },
+            {  "decnmaster",                  { { commandop_t::workspacenmaster, -1 }                                      } },
+            {  "deiconifypop",                { { commandop_t::deiconifypop }                                              } },
+            {  "disownactiveclient",          { { commandop_t::clientdisown }                                              } },
+            {  "floatactiveclient",           { { commandop_t::clientfloat }                                               } },
             {  "floatingpreservedim",         { { commandop_t::workspacelayoutpreservedim, layout_t::floating }            } },
-            {  "snapresizenorthactiveclient", { { commandop_t::clientsnapresizenorth }                                     } },
+            {  "focusbackward",               { { commandop_t::focusbackward }                                             } },
+            {  "focusforward",                { { commandop_t::focusforward }                                              } },
+            {  "fullscreenactiveclient",      { { commandop_t::clientfullscreen }                                          } },
+            {  "gapsizereset",                { { commandop_t::workspacegapsize, 0 }                                       } },
+            {  "iconifyactiveclient",         { { commandop_t::clienticonify }                                             } },
+            {  "incgapsize",                  { { commandop_t::workspacegapsize,  1 }                                      } },
+            {  "incmfactor",                  { { commandop_t::workspacemfactor,  .05f }                                   } },
+            {  "incnmaster",                  { { commandop_t::workspacenmaster,  1 }                                      } },
+            {  "inwindowactiveclient",        { { commandop_t::clientinwindow }                                            } },
+            {  "jumpmark",                    { { commandop_t::clientmarkjump }                                            } },
+            {  "killactiveclient",            { { commandop_t::clientkill }                                                } },
+            {  "lastjump",                    { { commandop_t::clientlastjump }                                            } },
+            {  "markactiveclient",            { { commandop_t::clientmarkset }                                             } },
+            {  "masterbackward",              { { commandop_t::masterbackward }                                            } },
+            {  "masterforward",               { { commandop_t::masterforward }                                             } },
+            {  "masterjump",                  { { commandop_t::clientmasterjump }                                          } },
+            {  "movebackwardactiveclient",    { { commandop_t::clientmovebackward }                                        } },
+            {  "movedownstackbackward",       { { commandop_t::floatingconditional,
+                                                    new commandbind_t{ commandop_t::clientmove, direction_t::down },
+                                                    new commandbind_t{ commandop_t::stackbackward }
+                                              } } },
+            {  "moveforwardactiveclient",     { { commandop_t::clientmoveforward }                                         } },
+            {  "moveleftmasterforward",       { { commandop_t::floatingconditional,
+                                                    new commandbind_t{ commandop_t::clientmove, direction_t::left },
+                                                    new commandbind_t{ commandop_t::masterforward }
+                                              } } },
+            {  "moverightmasterbackward",     { { commandop_t::floatingconditional,
+                                                    new commandbind_t{ commandop_t::clientmove, direction_t::right },
+                                                    new commandbind_t{ commandop_t::masterbackward }
+                                              } } },
+            {  "moveupstackforward",          { { commandop_t::floatingconditional,
+                                                    new commandbind_t{ commandop_t::clientmove, direction_t::up },
+                                                    new commandbind_t{ commandop_t::stackforward }
+                                              } } },
+            {  "nextcontext",                 { { commandop_t::nextcontext }                                               } },
+            {  "nextworkspace",               { { commandop_t::nextworkspace }                                             } },
+            {  "nextworkspaceactiveclient",   { { commandop_t::clientnextworkspace }                                       } },
+            {  "panejump",                    { { commandop_t::clientpanejump }                                            } },
+            {  "prevcontext",                 { { commandop_t::previouscontext }                                           } },
+            {  "prevworkspace",               { { commandop_t::previousworkspace }                                         } },
+            {  "prevworkspaceactiveclient",   { { commandop_t::clientpreviousworkspace }                                   } },
+            {  "quit",                        { { commandop_t::quit }                                                      } },
+            {  "reclaimpop",                  { { commandop_t::reclaimpop }                                                } },
+            {  "snapmoveeastactiveclient",    { { commandop_t::clientsnapmoveeast }                                        } },
+            {  "snapmovenorthactiveclient",   { { commandop_t::clientsnapmovenorth }                                       } },
+            {  "snapmovesouthactiveclient",   { { commandop_t::clientsnapmovesouth }                                       } },
+            {  "snapmovewestactiveclient",    { { commandop_t::clientsnapmovewest }                                        } },
             {  "snapresizeeastactiveclient",  { { commandop_t::clientsnapresizeeast }                                      } },
+            {  "snapresizenorthactiveclient", { { commandop_t::clientsnapresizenorth }                                     } },
             {  "snapresizesouthactiveclient", { { commandop_t::clientsnapresizesouth }                                     } },
             {  "snapresizewestactiveclient",  { { commandop_t::clientsnapresizewest }                                      } },
-            {  "quit",                        { { commandop_t::quit }                                                      } },
-            {  "incvolaudio",                 { { "amixer -D pulse sset Master 5%+" }                                      } },
+            {  "stackbackward",               { { commandop_t::stackbackward }                                             } },
+            {  "stackforward",                { { commandop_t::stackforward }                                              } },
+            {  "stackjump",                   { { commandop_t::clientstackjump }                                           } },
+            {  "stickyactiveclient",          { { commandop_t::clientsticky }                                              } },
+            {  "toglayout",                   { { commandop_t::workspacelayout, layout_t::toggle }                         } },
+            {  "togsidebar",                  { { commandop_t::sidebarshow }                                               } },
+            {  "togsidebarall",               { { commandop_t::sidebarshowall }                                            } },
+            {  "togworkspace",                { { commandop_t::workspaceset, 0 }                                           } },
+            {  "workspacemirror",             { { commandop_t::workspacemirror }                                           } },
+            {  "zoom",                        { { commandop_t::zoom }                                                      } },
+            // command                            external command
+            {  "browser",                     { { "firefox" }                                                              } },
+            {  "calculator",                  { { "qalculate-gtk" }                                                        } },
+            {  "decbrightness",               { { "xbacklight -dec 10" }                                                   } },
+            {  "decbrightness5",              { { "xbacklight -dec 5" }                                                    } },
             {  "decvolaudio",                 { { "amixer -D pulse sset Master 5%-" }                                      } },
-            {  "togmuteaudio",                { { "amixer -D pulse set Master 1+ toggle" }                                 } },
-            {  "togplayaudio",                { { "playerctl play-pause" }                                                 } },
-            {  "stopaudio",                   { { "playerctl stop" }                                                       } },
-            {  "prevaudio",                   { { "playerctl previous" }                                                   } },
+            {  "dmenu",                       { { "~/bin/dmenu_runner" }                                                   } },
+            {  "dmenunotify",                 { { "~/bin/dmenunotify" }                                                    } },
+            {  "dmenupass",                   { { "~/bin/dmenupass" }                                                      } },
+            {  "dmenupasscopy",               { { "~/bin/dmenupass --copy" }                                               } },
+            {  "incbrightness",               { { "xbacklight -inc 10" }                                                   } },
+            {  "incbrightness5",              { { "xbacklight -inc 5" }                                                    } },
+            {  "incvolaudio",                 { { "amixer -D pulse sset Master 5%+" }                                      } },
+            {  "irssi",                       { { "st -g 80x42 -e zsh -i -c irssi" }                                       } },
+            {  "neomutt",                     { { "st -g 140x42 -e zsh -i -c neomutt" }                                    } },
             {  "nextaudio",                   { { "playerctl next" }                                                       } },
+            {  "prevaudio",                   { { "playerctl previous" }                                                   } },
+            {  "rtv",                         { { "st -g 80x42 -e zsh -i -c rtv" }                                         } },
+            {  "screenshot",                  { { "maim -m 1 $(date +~/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)" }     } },
+            {  "secbrowser",                  { { "qutebrowser" }                                                          } },
             {  "seekbackwardaudio",           { { "playerctl position -5" }                                                } },
             {  "seekforwardaudio",            { { "playerctl position +5" }                                                } },
-            {  "incbrightness",               { { "xbacklight -inc 10" }                                                   } },
-            {  "decbrightness",               { { "xbacklight -dec 10" }                                                   } },
             {  "selscreenshot",               { { "maim -m 1 -s $(date +~/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)" }  } },
-            {  "incbrightness5",              { { "xbacklight -inc 5" }                                                    } },
-            {  "decbrightness5",              { { "xbacklight -dec 5" }                                                    } },
-            {  "screenshot",                  { { "maim -m 1 $(date +~/screenshots/scrots/SS_%Y-%h-%d_%H-%M-%S.png)" }     } },
-            {  "spawntiledterm",              { { "st" }                                                                   } },
+            {  "skippy-xd",                   { { "skippy-xd --toggle-window-picker" }                                     } },
+            {  "sncli",                       { { "st -g 80x42 -e zsh -i -c sncli" }                                       } },
             {  "spawnterm",                   { { "st -n \"kranewm:cf\"" }                                                 } },
+            {  "spawntiledterm",              { { "st" }                                                                   } },
+            {  "stopaudio",                   { { "playerctl stop" }                                                       } },
+            {  "stregion",                    { { "~/bin/stregion" }                                                       } },
+            {  "togmuteaudio",                { { "amixer -D pulse set Master 1+ toggle" }                                 } },
+            {  "togplayaudio",                { { "playerctl play-pause" }                                                 } },
             {  "togskippy",                   { { "skippy-xd --toggle-window-picker" }                                     } },
         })
     {
@@ -260,9 +268,10 @@ public:
     }
 
     commandbind_t
-    fail_command(::std::string&& msg)
+    fail_command(::std::string&& msg, int cli_fd)
     {
         warn("error resolving command: " + msg);
+        write(cli_fd, msg.c_str(), msg.size());
         return commandop_t::noop;
     }
 
@@ -281,12 +290,14 @@ public:
     }
 
     void handle_ipc();
-    void process_message(::std::vector<::std::string>&, FILE*);
+    void process_message(::std::vector<::std::string>&, int);
 
-    commandbind_t resolve_command(::std::vector<::std::string>&);
+    commandbind_t resolve_command(::std::vector<::std::string>&, int);
 
     int resolve_int(::std::string&);
     float resolve_float(::std::string&);
+    int resolve_char_index(::std::string&);
+    int resolve_int_index(::std::string&);
     layout_t resolve_layout(::std::string&);
     direction_t resolve_direction(::std::string&);
 
