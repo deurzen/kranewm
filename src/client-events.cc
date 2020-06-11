@@ -262,12 +262,18 @@ client_events_t::on_change_client_sticky()
     auto context = change->context;
 
     if (client->sticky) {
-        if (client->focused) client->frame.set_background_color(SELSTICKY_COLOR);
-        else client->frame.set_background_color(REGSTICKY_COLOR);
+        if (client->focused)
+            client->frame.set_background_color(SELSTICKY_COLOR);
+        else
+            client->frame.set_background_color(REGSTICKY_COLOR);
+
         context->record_sticky();
     } else {
-        if (client->focused) client->frame.set_background_color(SEL_COLOR);
-        else client->frame.set_background_color(REG_COLOR);
+        if (client->focused)
+            client->frame.set_background_color(SEL_COLOR);
+        else
+            client->frame.set_background_color(REG_COLOR);
+
         context->erase_sticky();
     }
 

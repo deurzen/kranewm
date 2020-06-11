@@ -59,6 +59,8 @@ public:
     context_ptr_t active_context() const;
     client_ptr_t focused_client() const;
 
+    bool is_unstuck(client_ptr_t);
+
     void manage_client(client_ptr_t, rule_t);
     void unmanage_client(client_ptr_t);
 

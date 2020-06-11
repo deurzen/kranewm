@@ -65,6 +65,18 @@ client_model_t::focused_client() const
 }
 
 
+bool
+client_model_t::is_unstuck(client_ptr_t client)
+{
+    bool is_not_noninwindow_fullscreen = !(!client->in_window && client->fullscreen);
+    bool is_nonsticky_floating = (!client->sticky && client_user_workspace(client)->in_float_layout());
+    bool is_sticky_floating = (client->sticky && active_workspace()->in_float_layout());
+
+    return is_not_noninwindow_fullscreen
+        && (client->floating || (is_nonsticky_floating || is_sticky_floating));
+}
+
+
 void
 client_model_t::manage_client(client_ptr_t client, rule_t rule)
 {
@@ -229,23 +241,15 @@ client_model_t::cycle_focus_backward()
 void
 client_model_t::start_moving(client_ptr_t client)
 {
-    if (!(!client->in_window && client->fullscreen) && (client->floating
-        || ((!client->sticky && client_user_workspace(client)->in_float_layout())
-        || (client->sticky && active_workspace()->in_float_layout()))))
-    {
+    if (is_unstuck(client))
         client_to_workspace(client, m_move_workspace);
-    }
 }
 
 void
 client_model_t::start_resizing(client_ptr_t client)
 {
-    if (!(!client->in_window && client->fullscreen) && (client->floating
-        || ((!client->sticky && client_user_workspace(client)->in_float_layout())
-        || (client->sticky && active_workspace()->in_float_layout()))))
-    {
+    if (is_unstuck(client))
         client_to_workspace(client, m_resize_workspace);
-    }
 }
 
 void
@@ -290,12 +294,9 @@ client_model_t::refullscreen_clients()
 {
     for (auto [client,state] : m_fullscreen_clients)
         if (client->in_window) {
-            if (client->floating
-                || ((!client->sticky && client_user_workspace(client)->in_float_layout())
-                || (client->sticky && active_workspace()->in_float_layout())))
-            {
+            if (is_unstuck(client))
                 client->moveresize(client->float_pos, client->float_dim);
-            } else if (client->sticky)
+            else if (client->sticky)
                 active_workspace()->arrange();
             else
                 client_user_workspace(client)->arrange();
