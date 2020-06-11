@@ -31,7 +31,7 @@ public:
         m_move_workspace(new moveresize_workspace_t{workspacetype_t::move}),
         m_resize_workspace(new moveresize_workspace_t{workspacetype_t::resize}),
         m_user_workspaces(m_current_context->get_workspaces()),
-        m_profiles(3, profile_t{}),
+        m_profiles(CONTEXTS.size() * USER_WORKSPACES.size(), profile_t{}),
         m_focused_client(nullptr)
     {
         m_contexts.push_back(m_current_context);

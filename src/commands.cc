@@ -536,8 +536,8 @@ clientdeiconifyindexcommand_t::execute()
 {
     auto icons = m_clients.active_workspace()->get_icons();
 
-    if (icons.size() > m_index)
-        m_clients.set_iconified(icons[m_index], clientaction_t::remove);
+    if (m_index && icons.size() > (m_index - 1))
+        m_clients.set_iconified(icons[m_index - 1], clientaction_t::remove);
 }
 
 void

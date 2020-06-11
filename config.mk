@@ -7,7 +7,7 @@ SRCDIR = src
 BIN = bin
 DESTDIR = /usr/local/bin
 
-KRANEC_SRC_FILES := $(wildcard src/kranec/*.cc) $(wildcard src/x-data/*.cc) src/util.cc
+KRANEC_SRC_FILES := $(wildcard src/kranec/*.cc) $(wildcard src/x-data/*.cc)
 KRANEC_OBJ_FILES := $(patsubst src/kranec/%.cc,obj/kranec/%.o,${KRANEC_SRC_FILES})
 
 X_DATA_SRC_FILES := $(wildcard src/x-data/*.cc)

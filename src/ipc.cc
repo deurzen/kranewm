@@ -103,16 +103,16 @@ ipc_t::resolve_layout(::std::string& arg)
     if (!arg.compare("center"))      return layout_t::center;
     if (!arg.compare("centerstack")) return layout_t::centerstack;
 
-    throw ::std::invalid_argument("received invalid layout");
+    throw ::std::invalid_argument("received invalid layout name");
 }
 
 direction_t
 ipc_t::resolve_direction(::std::string& arg)
 {
-    if (!arg.compare("up")) return direction_t::up;
-    if (!arg.compare("right")) return direction_t::up;
-    if (!arg.compare("down")) return direction_t::up;
-    if (!arg.compare("left")) return direction_t::up;
+    if (!arg.compare("up"))    return direction_t::up;
+    if (!arg.compare("right")) return direction_t::right;
+    if (!arg.compare("down"))  return direction_t::down;
+    if (!arg.compare("left"))  return direction_t::left;
 
     throw ::std::invalid_argument("received invalid direction");
 }
