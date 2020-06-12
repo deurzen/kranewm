@@ -14,6 +14,8 @@ class windowstack_t;
 class sidebar_t;
 class processjumplist_t;
 typedef class client_t* client_ptr_t;
+typedef class user_workspace_t* user_workspace_ptr_t;
+typedef class context_t* context_ptr_t;
 typedef class command_t* command_ptr_t;
 
 
@@ -26,7 +28,7 @@ enum class commandop_t
     clientfloat, clientfullscreen, clientinwindow, clientsticky, clientabove, clientbelow,
     clientcenter, clientsnapmovenorth, clientsnapmoveeast, clientsnapmovesouth, clientsnapmovewest,
     clientsnapresizenorth, clientsnapresizeeast, clientsnapresizesouth, clientsnapresizewest,
-    clientkill,
+    clientkill, workspacekill, contextkill,
     clientmoveforward, clientmovebackward,
     clientmarkset, clientmarkjump,
     clientmasterjump, clientstackjump, clientlastjump, clientpanejump, clientjumpindex,
@@ -559,6 +561,40 @@ private:
     client_ptr_t m_client;
 
 }* clientkillcommand_ptr_t;
+
+
+
+typedef class workspacekillcommand_t : public command_t
+{
+public:
+    explicit workspacekillcommand_t(user_workspace_ptr_t workspace)
+      : command_t(false),
+        m_workspace(workspace)
+    {}
+
+    void execute() override;
+
+private:
+    user_workspace_ptr_t m_workspace;
+
+}* workspacekillcommand_ptr_t;
+
+
+
+typedef class contextkillcommand_t : public command_t
+{
+public:
+    explicit contextkillcommand_t(context_ptr_t context)
+      : command_t(false),
+        m_context(context)
+    {}
+
+    void execute() override;
+
+private:
+    context_ptr_t m_context;
+
+}* contextkillcommand_ptr_t;
 
 
 

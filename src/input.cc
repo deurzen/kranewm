@@ -143,6 +143,8 @@ inputhandler_t::create_command(commandbind_t commandbind, client_ptr_t target)
     case commandop_t::previouscontext:            return new previouscontextcommand_t(m_clients);
     case commandop_t::focusforward:               return new focusforwardcommand_t(m_clients);
     case commandop_t::focusbackward:              return new focusbackwardcommand_t(m_clients);
+    case commandop_t::workspacekill:              return new workspacekillcommand_t(m_clients.active_workspace());
+    case commandop_t::contextkill:                return new contextkillcommand_t(m_clients.active_context());
     case commandop_t::external:                   return new externalcommand_t(::std::get<::std::string>(*commandbind.get_arg()));
     default: break;
     }

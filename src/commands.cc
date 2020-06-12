@@ -210,6 +210,25 @@ clientkillcommand_t::execute()
 }
 
 void
+workspacekillcommand_t::execute()
+{
+    for (auto& client : m_workspace->get_all()) {
+        update_offset(client);
+        client->win.force_close();
+    }
+}
+
+void
+contextkillcommand_t::execute()
+{
+    for (auto& workspace : *m_context->get_workspaces())
+        for (auto& client : workspace->get_all()) {
+            update_offset(client);
+            client->win.force_close();
+        }
+}
+
+void
 clientmoveforwardcommand_t::execute()
 {
     m_clients.active_workspace()->move_forward();

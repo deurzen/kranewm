@@ -126,6 +126,8 @@ public:
             {  "inwindowactiveclient",        { { commandop_t::clientinwindow }                                            } },
             {  "jumpmark",                    { { commandop_t::clientmarkjump }                                            } },
             {  "killactiveclient",            { { commandop_t::clientkill }                                                } },
+            {  "killactivecontext",           { { commandop_t::contextkill }                                               } },
+            {  "killactiveworkspace",         { { commandop_t::workspacekill }                                             } },
             {  "lastjump",                    { { commandop_t::clientlastjump }                                            } },
             {  "markactiveclient",            { { commandop_t::clientmarkset }                                             } },
             {  "masterbackward",              { { commandop_t::masterbackward }                                            } },
