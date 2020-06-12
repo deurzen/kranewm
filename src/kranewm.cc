@@ -56,8 +56,8 @@ kranewm_t::setup()
     m_ewmh.set_desktop_names_property(desktop_names);
 
     auto existing_wins = x_data::get_top_level_windows();
-    ::std::for_each(existing_wins.begin(), existing_wins.end(),
-        [=](x_data::window_t win) { m_events.register_window(win); });
+    for (auto& win : existing_wins)
+        m_events.register_window(win);
 
     m_changes.process_queued_changes();
     m_sidebar.draw();

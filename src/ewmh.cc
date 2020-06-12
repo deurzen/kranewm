@@ -298,6 +298,7 @@ void
 ewmh_t::set_client_list_property(::std::vector<x_data::window_t>& wins)
 {
     clear_client_list_property();
-    ::std::for_each(wins.begin(), wins.end(),
-        [=](auto win) { append_client_list_property(win); });
+
+    for (auto& win : wins)
+        append_client_list_property(win);
 }

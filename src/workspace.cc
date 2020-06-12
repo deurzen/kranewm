@@ -100,8 +100,9 @@ user_workspace_t::set_focused(client_ptr_t client, bool ignore_unwind)
 {
     m_clients.set(client, ignore_unwind);
     m_stack.raise(client);
-    ::std::for_each(client->children.begin(), client->children.end(),
-        [=](client_ptr_t child) { m_stack.raise(child); });
+
+    for (auto& child : client->children)
+        m_stack.raise(child);
 }
 
 void
@@ -132,8 +133,9 @@ user_workspace_t&
 user_workspace_t::add_family(client_ptr_t client)
 {
     add_client(client);
-    ::std::for_each(client->children.begin(), client->children.end(),
-        [=](client_ptr_t child) { add_client(child); });
+
+    for (auto& child : client->children)
+        add_client(child);
 
     return *this;
 }
@@ -141,8 +143,9 @@ user_workspace_t::add_family(client_ptr_t client)
 user_workspace_t&
 user_workspace_t::remove_family(client_ptr_t client)
 {
-    ::std::for_each(client->children.begin(), client->children.end(),
-        [=](client_ptr_t child) { remove_client(child); });
+    for (auto& child : client->children)
+        remove_client(child);
+
     remove_client(client);
 
     return *this;

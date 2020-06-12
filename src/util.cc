@@ -22,9 +22,8 @@ uppercase(const ::std::string word)
 {
     ::std::string uppercase_word = word;
 
-    ::std::for_each(uppercase_word.begin(), uppercase_word.end(),
-        [](char& c){ c = ::toupper(c); }
-    );
+    for (char& c : uppercase_word)
+        c = ::toupper(c);
 
     return uppercase_word;
 }
