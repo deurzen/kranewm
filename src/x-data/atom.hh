@@ -65,6 +65,18 @@ namespace x_data
             return atom == val;
         }
 
+        inline bool
+        operator!=(const atom_t& atom) const
+        {
+            return atom.val != val;
+        }
+
+        inline bool
+        operator!=(const Atom& atom) const
+        {
+            return atom != val;
+        }
+
         inline int
         length() const
         {

@@ -14,25 +14,25 @@ create_client(x_data::window_t win, rule_t& rule)
     dim_t base{}, inc{}, max{}, min{};
     range_t<float> aspect{};
 
-    if (sizehints.get().flags & PBaseSize)
-        base = {sizehints.get().base_width, sizehints.get().base_height};
-    else if (sizehints.get().flags & PMinSize)
-        base = {sizehints.get().min_width, sizehints.get().min_height};
+    if (sizehints.flag_set(PBaseSize))
+        base = sizehints.base_dim();
+    else if (sizehints.flag_set(PMinSize))
+        base = sizehints.min_dim();
 
-    if (sizehints.get().flags & PResizeInc)
-        inc = {sizehints.get().width_inc, sizehints.get().height_inc};
+    if (sizehints.flag_set(PResizeInc))
+        inc = sizehints.inc_dim();
 
-    if (sizehints.get().flags & PMaxSize)
-        max = {sizehints.get().max_width, sizehints.get().max_height};
+    if (sizehints.flag_set(PMaxSize))
+        max = sizehints.max_dim();
 
-    if (sizehints.get().flags & PMinSize)
-        min = {sizehints.get().min_width, sizehints.get().min_height};
-    else if (sizehints.get().flags & PBaseSize)
-        min = {sizehints.get().base_width, sizehints.get().base_height};
+    if (sizehints.flag_set(PMinSize))
+        min = sizehints.min_dim();
+    else if (sizehints.flag_set(PBaseSize))
+        min = sizehints.base_dim();
 
-    if (sizehints.get().flags & PAspect)
-        aspect = {static_cast<float>(sizehints.get().min_aspect.y) / sizehints.get().min_aspect.x,
-            static_cast<float>(sizehints.get().max_aspect.y) / sizehints.get().max_aspect.x};
+    if (sizehints.flag_set(PAspect))
+        aspect = {static_cast<float>(sizehints.min_aspect().y) / sizehints.min_aspect().x,
+            static_cast<float>(sizehints.max_aspect().y) / sizehints.max_aspect().x};
 
     sizeconstraints_t sizeconstraints(base, inc, max, min, aspect);
 

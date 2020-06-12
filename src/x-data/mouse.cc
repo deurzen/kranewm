@@ -18,7 +18,7 @@ x_data::grab_button(unsigned button, unsigned mask)
 void
 x_data::confine_pointer(window_t win)
 {
-    if (l_confined.get() != None)
+    if (l_confined)
         return;
 
     XGrabPointer(g_dpy, win, False,
@@ -32,7 +32,7 @@ x_data::confine_pointer(window_t win)
 void
 x_data::release_pointer()
 {
-    if (l_confined.get() == None)
+    if (!l_confined)
         return;
 
     XUngrabButton(g_dpy, AnyButton, AnyModifier, l_confined);

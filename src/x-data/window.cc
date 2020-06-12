@@ -35,7 +35,7 @@ x_data::get_top_level_windows()
 
     ::std::vector<window_t> wins;
     for (unsigned i = 0; i < nchildren; ++i)
-        if (children[i] != g_root.get())
+        if (g_root != children[i])
             wins.push_back(children[i]);
 
     if (children)
@@ -56,8 +56,8 @@ bool
 x_data::should_manage(window_t& win)
 {
     auto attrs = x_data::get_attributes(win);
-    return !(attrs.get().override_redirect
-        || attrs.get().c_class == InputOnly);
+    return !(attrs.override_redirect()
+        || attrs.c_class() == InputOnly);
 }
 
 window_t
@@ -72,11 +72,11 @@ x_data::get_input_focus()
 bool
 x_data::set_input_focus(window_t win)
 {
-    if (win.get() == None)
+    if (!win)
         win = g_root;
 
     XSetInputFocus(g_dpy, win.get(), RevertToNone, CurrentTime);
-    return get_input_focus().get() == win.get();
+    return get_input_focus() == win;
 }
 
 void
@@ -125,7 +125,7 @@ x_data::window_t::force_close()
 
     if (XGetWMProtocols(g_dpy, val, &protocols, &n)) {
         while (!found && n--)
-            found = protocols[n] == get_atom("WM_DELETE_WINDOW").get();
+            found = get_atom("WM_DELETE_WINDOW") == protocols[n];
         XFree(protocols);
     }
 
@@ -157,7 +157,8 @@ x_data::window_t::is_of_type(::std::string&& type_name)
     const atom_t type_id = get_atom("_NET_WM_WINDOW_TYPE_" + type_name);
 
     for (auto& atom : type_atoms.get_all())
-        if (atom == type_id.get()) return true;
+        if (type_id == atom)
+            return true;
 
     return false;
 }
@@ -169,7 +170,8 @@ x_data::window_t::is_of_state(::std::string&& state_name)
     const atom_t state_id = get_atom("_NET_WM_STATE_" + state_name);
 
     for (auto& atom : state_atoms.get_all())
-        if (atom == state_id.get()) return true;
+        if (state_id == atom)
+            return true;
 
     return false;
 }

@@ -3,6 +3,8 @@
 
 #include "display.hh"
 
+#include "common.hh"
+
 extern "C" {
 #include <X11/Xutil.h>
 }
@@ -35,6 +37,12 @@ namespace x_data
         get_ptr()
         {
             return &val;
+        }
+
+        long&
+        flags()
+        {
+            return val.flags;
         }
 
         inline bool
@@ -74,6 +82,60 @@ namespace x_data
         get_ptr()
         {
             return &val;
+        }
+
+        long&
+        flags()
+        {
+            return val.flags;
+        }
+
+        bool
+        flag_set(long flag)
+        {
+            return val.flags & flag;
+        }
+
+        dim_t
+        max_dim()
+        {
+            return {val.max_width, val.max_height};
+        }
+
+        dim_t
+        min_dim()
+        {
+            return {val.min_width, val.min_height};
+        }
+
+        dim_t
+        base_dim()
+        {
+            return {val.base_width, val.base_height};
+        }
+
+        dim_t
+        inc_dim()
+        {
+            return {val.width_inc, val.height_inc};
+        }
+
+        pos_t
+        min_aspect()
+        {
+            return {val.min_aspect.x, val.min_aspect.y};
+        }
+
+        pos_t
+        max_aspect()
+        {
+            return {val.max_aspect.x, val.max_aspect.y};
+        }
+
+        int
+        gravity()
+        {
+            return val.win_gravity;
         }
 
         inline bool

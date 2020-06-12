@@ -206,8 +206,8 @@ client_events_t::on_change_client_urgent()
 
     x_data::wmhints_t hints = x_data::get_wmhints(client->win);
     if (hints.success())
-        hints.get().flags = client->urgent
-            ? (hints.get().flags | XUrgencyHint) : (hints.get().flags & ~XUrgencyHint);
+        hints.flags() = client->urgent
+            ? (hints.flags() | XUrgencyHint) : (hints.flags() & ~XUrgencyHint);
 
     x_data::set_wmhints(client->win, hints);
 }

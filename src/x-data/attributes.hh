@@ -37,14 +37,14 @@ namespace x_data
             return val;
         }
 
-        inline int
-        x() const
+        inline int&
+        x()
         {
             return val.x;
         }
 
-        inline int
-        y() const
+        inline int&
+        y()
         {
             return val.y;
         }
@@ -55,14 +55,14 @@ namespace x_data
             return {val.x, val.y};
         }
 
-        inline int
-        w() const
+        inline int&
+        w()
         {
             return val.width;
         }
 
-        inline int
-        h() const
+        inline int&
+        h()
         {
             return val.height;
         }
@@ -71,6 +71,18 @@ namespace x_data
         dim() const
         {
             return {val.width, val.height};
+        }
+
+        inline bool
+        override_redirect()
+        {
+            return val.override_redirect;
+        }
+
+        inline int
+        c_class()
+        {
+            return val.c_class;
         }
 
     private:

@@ -120,15 +120,15 @@ x_events_t::on_button_press()
     x_data::window_t win = event.window;
     x_data::window_t subwin = event.subwindow;
 
-    if (win.get() == x_data::g_root.get()) {
-        if (subwin.get() == None) {
+    if (win == x_data::g_root) {
+        if (!subwin) {
             m_input.process_mouse_input_global(event);
             return;
         } else
             win = subwin;
     }
 
-    if (win.get() == m_sidebar.get_win().get()) {
+    if (win == m_sidebar.get_win()) {
         m_input.process_mouse_input_sidebar(event);
         return;
     }
@@ -150,7 +150,7 @@ x_events_t::on_button_release()
 {
     x_data::window_t win = m_current_event.get().xbutton.window;
 
-    if (!m_x.is_valid() || (win.get() != m_x.moveresize()->indicator.get()))
+    if (!m_x.is_valid() || (win != m_x.moveresize()->indicator))
         return;
 
     auto client = m_x.moveresize()->client;
@@ -353,7 +353,7 @@ x_events_t::on_configure_request()
 
     auto before_attrs = x_data::get_attributes(client->frame);
 
-    if (win.get() == client->win.get()) {
+    if (win == client->win) {
         if (m_x.is_valid() && m_x.moveresize()->state == moveresizestate_t::resize)
             return;
 
@@ -423,7 +423,7 @@ x_events_t::on_configure_notify()
     x_data::window_t win = m_current_event.get().xconfigure.window;
     client_ptr_t client = m_clients.win_client(win);
 
-    if (win.get() == x_data::g_root.get()) {
+    if (win == x_data::g_root) {
         m_clients.wedge_clients();
         m_clients.active_workspace()->arrange();
     }
@@ -433,7 +433,7 @@ x_events_t::on_configure_notify()
 
     auto sizehints = x_data::get_sizehints(client->win);
     if (sizehints.success())
-        sizehints.get().flags = PSize;
+        sizehints.flags() = PSize;
 
     if (m_x.update_hints(client, sizehints)) {
         client->sizeconstraints.apply(client->pos, client->dim);
@@ -471,10 +471,10 @@ x_events_t::on_expose()
     x_data::window_t win = m_current_event.get().xexpose.window;
     int count = m_current_event.get().xexpose.count;
 
-    if (count == 0 && m_sidebar.get_win().get() == win.get())
+    if (count == 0 && m_sidebar.get_win() == win)
         m_sidebar.draw();
 
-    if (count == 0 && m_sidebar.get_unmappedsidebarwin().get() == win.get())
+    if (count == 0 && m_sidebar.get_unmappedsidebarwin() == win)
         m_sidebar.draw();
 
     x_data::sync(false);
@@ -567,7 +567,7 @@ x_events_t::on_motion_notify()
     x_data::last_typed_event(m_current_event, MotionNotify);
 
     auto client_attrs = x_data::get_attributes(client->frame);
-    client_attrs.get().height -= BORDER_HEIGHT;
+    client_attrs.h() -= BORDER_HEIGHT;
 
     pos_t pos = client_attrs;
     dim_t dim = client_attrs;
@@ -591,19 +591,19 @@ x_events_t::on_property_notify()
         if (event.atom == XA_WM_NORMAL_HINTS) {
             auto sizehints = x_data::get_sizehints(win);
 
-            if (!sizehints.get().flags)
-                sizehints.get().flags = PSize;
+            if (!sizehints.flags())
+                sizehints.flags() = PSize;
 
             m_x.update_hints(client, sizehints);
-        } else if ((event.atom == XA_WM_NAME || event.atom
-            == x_data::get_atom("_NET_WM_NAME").get()))
+        } else if ((event.atom == XA_WM_NAME
+            || x_data::get_atom("_NET_WM_NAME") == event.atom))
         {
             // handle iconified, shaded (if ever implemented)
         }
     }
 
-    if (event.atom == x_data::get_atom("_NET_WM_STRUT").get()
-        || event.atom == x_data::get_atom("_NET_WM_STRUT_PARTIAL").get())
+    if (x_data::get_atom("_NET_WM_STRUT") == event.atom
+        || x_data::get_atom("_NET_WM_STRUT_PARTIAL") == event.atom)
     {
         m_ewmh.check_release_strut(event.window);
         m_ewmh.check_apply_strut(event.window);

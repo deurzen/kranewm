@@ -65,7 +65,8 @@ x_data::pending()
 event_t&
 x_data::event_t::send(long mask, window_t win)
 {
-    XSendEvent(g_dpy, ((win.get() == None) ? val.xany.window : win.get()),
+    XSendEvent(g_dpy, (!win ? val.xany.window : win.get()),
         False, mask, &val);
+
     return *this;
 }

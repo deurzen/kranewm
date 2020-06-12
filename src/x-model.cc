@@ -14,25 +14,25 @@ x_model_t::update_hints(client_ptr_t client, x_data::sizehints_t sh)
     dim_t base{}, inc{}, max{}, min{};
     range_t<float> aspect{};
 
-    if (sh.get().flags & PBaseSize)
-        base = {sh.get().base_width, sh.get().base_height};
-    else if (sh.get().flags & PMinSize)
-        base = {sh.get().min_width, sh.get().min_height};
+    if (sh.flag_set(PBaseSize))
+        base = sh.base_dim();
+    else if (sh.flag_set(PMinSize))
+        base = sh.min_dim();
 
-    if (sh.get().flags & PResizeInc)
-        inc = {sh.get().width_inc, sh.get().height_inc};
+    if (sh.flag_set(PResizeInc))
+        inc = sh.inc_dim();
 
-    if (sh.get().flags & PMaxSize)
-        max = {sh.get().max_width, sh.get().max_height};
+    if (sh.flag_set(PMaxSize))
+        max = sh.max_dim();
 
-    if (sh.get().flags & PMinSize)
-        min = {sh.get().min_width, sh.get().min_height};
-    else if (sh.get().flags & PBaseSize)
-        min = {sh.get().base_width, sh.get().base_height};
+    if (sh.flag_set(PMinSize))
+        min = sh.min_dim();
+    else if (sh.flag_set(PBaseSize))
+        min = sh.base_dim();
 
-    if (sh.get().flags & PAspect)
-        aspect = {static_cast<float>(sh.get().min_aspect.y) / sh.get().min_aspect.x,
-            static_cast<float>(sh.get().max_aspect.y) / sh.get().max_aspect.x};
+    if (sh.flag_set(PAspect))
+        aspect = {static_cast<float>(sh.min_aspect().y) / sh.min_aspect().x,
+            static_cast<float>(sh.max_aspect().y) / sh.max_aspect().x};
 
     bool changed = !(client->sizeconstraints == sizeconstraints_t{base, inc, max, min, aspect});
     client->sizeconstraints = {base, inc, max, min, aspect};

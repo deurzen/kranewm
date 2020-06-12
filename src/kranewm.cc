@@ -20,7 +20,7 @@ int (*kranewm_t::m_xerrorxlib)(Display*, XErrorEvent*);
 ::std::unique_ptr<kranewm_t>
 kranewm_t::init()
 {
-    if (!x_data::g_dpy || (x_data::g_root.get() == None))
+    if (!x_data::g_dpy || !x_data::g_root)
         die("unable to open display");
 
     return ::std::make_unique<kranewm_t>();

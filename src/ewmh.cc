@@ -126,9 +126,9 @@ ewmh_t::set_desktop_geometry_property()
 {
     auto root_attrs = x_data::get_attributes(x_data::g_root);
     x_data::replace_property<x_data::cardinal_t>(x_data::g_root,
-        {"_NET_DESKTOP_GEOMETRY", (unsigned) root_attrs.get().width});
+        {"_NET_DESKTOP_GEOMETRY", (unsigned) root_attrs.w()});
     x_data::append_property<x_data::cardinal_t>(x_data::g_root,
-        {"_NET_DESKTOP_GEOMETRY", (unsigned) root_attrs.get().height});
+        {"_NET_DESKTOP_GEOMETRY", (unsigned) root_attrs.h()});
 }
 
 void
@@ -152,9 +152,9 @@ ewmh_t::set_workarea_property()
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",
             strut.top_height});
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",
-            root_attrs.get().width - (strut.left_window ? strut.left_width : SIDEBAR_WIDTH)});
+            root_attrs.w() - (strut.left_window ? strut.left_width : SIDEBAR_WIDTH)});
         x_data::append_property<x_data::cardinal_t>(x_data::g_root, {"_NET_WORKAREA",
-            root_attrs.get().height - strut.top_height});
+            root_attrs.h() - strut.top_height});
     }
 }
 

@@ -43,7 +43,7 @@ public:
         auto root_attrs = x_data::get_attributes(x_data::g_root);
         m_sidebarwin.set_background_color(SIDEBAR_BG_COLOR);
         m_sidebarwin.set_border_color(SIDEBAR_BG_COLOR);
-        m_sidebarwin.moveresize({0, 0}, {SIDEBAR_WIDTH, root_attrs.get().height});
+        m_sidebarwin.moveresize({0, 0}, {SIDEBAR_WIDTH, root_attrs.h()});
         x_data::select_input(m_sidebarwin, ExposureMask);
 
         m_unmappedsidebarindicator.set_background_color(USIND_BG_COLOR);
