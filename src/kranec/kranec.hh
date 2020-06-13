@@ -13,7 +13,7 @@
 typedef class kranec_t* kranec_ptr_t;
 static kranec_ptr_t g_instance;
 
-class kranec_t
+class kranec_t final
 {
 public:
     kranec_t(int argc, char** argv)

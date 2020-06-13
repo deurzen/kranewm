@@ -16,7 +16,7 @@
 // fwd decls
 typedef class context_t* context_ptr_t;
 
-class sidebar_t
+class sidebar_t final
 {
 public:
     explicit sidebar_t(ewmh_t& ewmh)

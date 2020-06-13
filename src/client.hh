@@ -36,7 +36,7 @@ enum class snapedge_t
 typedef struct client_t* client_ptr_t;
 typedef struct ::std::set<client_ptr_t> client_ptr_set_t;
 
-typedef struct client_t
+typedef struct client_t final
 {
     client_t() = default;
     client_t(x_data::window_t _win, x_data::window_t _frame,

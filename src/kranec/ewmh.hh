@@ -6,7 +6,7 @@
 #include "../x-data/string.hh"
 
 
-class ewmh_t
+class ewmh_t final
 {
 public:
     ewmh_t() = default;

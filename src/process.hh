@@ -12,7 +12,7 @@
 typedef class client_t* client_ptr_t;
 typedef class processjump_t* processjump_ptr_t;
 
-typedef struct processjump_t
+typedef struct processjump_t final
 {
     processjump_t(client_ptr_t _target, client_ptr_t _prev)
       : target(_target),
@@ -31,7 +31,7 @@ typedef struct processjump_t
 }* processjump_ptr_t;
 
 
-class processjumplist_t
+class processjumplist_t final
 {
 public:
     processjumplist_t() = default;
@@ -53,7 +53,7 @@ private:
 };
 
 
-struct processshortcut_t
+struct processshortcut_t final
 {
     processshortcut_t(KeySym _keysym, unsigned _mask)
       : keysym(_keysym),

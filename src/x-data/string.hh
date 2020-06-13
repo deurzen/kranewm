@@ -17,7 +17,7 @@ extern "C" {
 
 namespace x_data
 {
-    class string_t : public x_type
+    class string_t final : public x_type
     {
         using wrapped_type = char;
 
@@ -87,7 +87,7 @@ namespace x_data
 
     };
 
-    class string_list_t : public x_type
+    class string_list_t final : public x_type
     {
         using wrapped_type = char*;
 

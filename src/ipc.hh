@@ -34,7 +34,7 @@ enum class argtype_t
     dir,      // direction
 };
 
-class ipcbind_t
+class ipcbind_t final
 {
 public:
     ipcbind_t(commandbind_t commandbind = commandop_t::noop)
@@ -80,7 +80,7 @@ private:
 typedef ::std::unordered_map<::std::string, ipcbind_t> ipcbinds_t;
 
 
-class ipc_t
+class ipc_t final
 {
 public:
     ipc_t(inputhandler_t& input)

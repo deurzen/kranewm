@@ -15,7 +15,7 @@ void warn(const ::std::string&&);
 
 
 template <typename T>
-struct range_t
+struct range_t final
 {
     static bool
     contains(T min, T max, T i)
@@ -39,6 +39,16 @@ struct range_t
 
 };
 
+namespace std {
+    template <typename T1, typename T2>
+    struct hash<::std::pair<T1, T2>>
+    {
+        ::std::size_t operator()(const ::std::pair<T1, T2>& p) const
+        {
+            return ::std::hash<T1>{}(p.first) + ::std::hash<T2>{}(p.second);
+        }
+    };
+}
 
 template <typename Keytype, typename Valtype>
 inline void
@@ -104,7 +114,7 @@ insert_container(::std::vector<Valtype1>& v, ::std::list<Valtype2>& l)
 }
 
 template <typename T>
-struct revertible
+struct revertible final
 {
     T& iterable;
 };

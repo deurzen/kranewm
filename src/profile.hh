@@ -8,7 +8,7 @@
 #include <vector>
 
 
-class profile_t
+class profile_t final
 {
 public:
     profile_t() = default;

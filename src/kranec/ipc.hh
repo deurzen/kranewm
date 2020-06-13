@@ -28,7 +28,7 @@ const ::std::string DEFAULT_SOCK_PATH_PREFIX = "/tmp/D" + WMNAME;
 #endif
 
 
-class ipc_t
+class ipc_t final
 {
 public:
     ipc_t(int argc, char** argv)

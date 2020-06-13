@@ -17,7 +17,7 @@ enum autoclosemethod
 };
 
 
-struct rulespec_t
+struct rulespec_t final
 {
     rulespec_t(bool _floating, bool _center, autoclosemethod _autoclose, bool _nohint,
         ::std::size_t _workspace, ::std::size_t _context)
@@ -38,7 +38,7 @@ struct rulespec_t
 
 };
 
-struct rule_t
+struct rule_t final
 {
     rule_t(bool _floating, bool _center, bool _fullscreen,
         bool _autoclose, bool _nohint,
@@ -71,7 +71,7 @@ operator<(const rulespec_t& r1, const rulespec_t& r2)
 
 typedef ::std::tuple<::std::string, ::std::string, ::std::string> ruleid_t;
 
-struct rulecomp
+struct rulecomp final
 {
     bool
     operator()(const ruleid_t& rid1, const ruleid_t& rid2) const

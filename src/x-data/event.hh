@@ -16,7 +16,7 @@ extern "C" {
 namespace x_data
 {
     class window_t;
-    class event_t
+    class event_t final
     {
     public:
         event_t() = default;

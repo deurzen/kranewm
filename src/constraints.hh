@@ -6,7 +6,7 @@
 #include "x-data/window.hh"
 
 
-struct sizeconstraints_t
+struct sizeconstraints_t final
 {
     sizeconstraints_t() = default;
 

@@ -12,7 +12,7 @@ extern "C" {
 namespace x_data
 {
     class window_t;
-    class display_t
+    class display_t final
     {
     public:
         explicit display_t(const char* _dpy)

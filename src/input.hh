@@ -21,7 +21,7 @@ class user_workspace_t;
 typedef struct client_t* client_ptr_t;
 
 
-class inputhandler_t
+class inputhandler_t final
 {
 public:
     explicit inputhandler_t(sidebar_t& sidebar, client_model_t& clients,

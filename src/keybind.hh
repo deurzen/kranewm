@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 
-struct keyshortcut_t
+struct keyshortcut_t final
 {
     keyshortcut_t(KeySym _keysym, unsigned _mask)
       : keysym(_keysym),

@@ -24,7 +24,7 @@ enum class layout_t : char
 class user_workspace_t;
 class ewmh_t;
 
-class layouthandler_t
+class layouthandler_t final
 {
 public:
     explicit layouthandler_t(ewmh_t& ewmh)

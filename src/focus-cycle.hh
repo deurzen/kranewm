@@ -5,7 +5,7 @@
 #include <deque>
 
 
-class focus_cycle_t
+class focus_cycle_t final
 {
     static const ::std::size_t MAX_STACK_SIZE = 50;
 
@@ -13,7 +13,7 @@ class focus_cycle_t
     typedef ::std::deque<client_ptr_t>::reverse_iterator fg_rit;
     typedef ::std::deque<client_ptr_t>::size_type fg_sz;
 
-    class focus_stack_t
+    class focus_stack_t final
     {
     public:
         focus_stack_t()

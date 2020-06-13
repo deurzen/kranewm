@@ -18,7 +18,7 @@ class processjumplist_t;
 class rule_t;
 
 
-class client_model_t
+class client_model_t final
 {
 public:
     explicit client_model_t(changequeue_t& changequeue, ewmh_t& ewmh,

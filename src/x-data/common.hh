@@ -14,7 +14,7 @@ const long REG_FRAME_SELECTION = FocusChangeMask
 const long NONSUBSTR_FRAME_SELECTION = (REG_FRAME_SELECTION & ~SubstructureRedirectMask)
     & ~SubstructureNotifyMask;
 
-struct dim_t
+struct dim_t final
 {
     dim_t(int _w = 0, int _h = 0)
       : w(_w),
@@ -50,7 +50,7 @@ struct dim_t
 
 };
 
-struct pos_t
+struct pos_t final
 {
     pos_t(int _x = 0, int _y = 0)
       : x(_x),

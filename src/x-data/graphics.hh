@@ -8,7 +8,7 @@
 
 namespace x_data
 {
-    class graphicscontext_t
+    class graphicscontext_t final
     {
     public:
         graphicscontext_t(window_t _win, const ::std::string& fontname, int line_width)

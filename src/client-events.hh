@@ -13,7 +13,7 @@ typedef class client_t* client_ptr_t;
 typedef class workspace_t* workspace_ptr_t;
 
 
-class client_events_t
+class client_events_t final
 {
 public:
     client_events_t(changequeue_t& changes, ewmh_t& ewmh, sidebar_t& sidebar,

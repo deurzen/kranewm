@@ -22,7 +22,7 @@
 typedef class kranewm_t* kranewm_ptr_t;
 static kranewm_ptr_t g_instance;
 
-class kranewm_t
+class kranewm_t final
 {
 public:
     kranewm_t()

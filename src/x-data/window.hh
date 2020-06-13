@@ -20,7 +20,7 @@ namespace x_data
     extern void enable_substructure_events();
     extern void disable_substructure_events();
 
-    class window_t : public x_type
+    class window_t final : public x_type
     {
     public:
         window_t()

@@ -12,7 +12,7 @@
 namespace x_data
 {
     template <class T>
-    class property_t : public x_type
+    class property_t final : public x_type
     {
     public:
         property_t(const ::std::string& name, T t = T())

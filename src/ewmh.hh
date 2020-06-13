@@ -69,7 +69,7 @@ enum class netwmaction_t
 };
 
 
-class ewmh_t
+class ewmh_t final
 {
 public:
     ewmh_t()

@@ -15,7 +15,7 @@ extern "C" {
 
 namespace x_data
 {
-    class cardinal_t : public x_type
+    class cardinal_t final : public x_type
     {
     public:
         cardinal_t() = default;
@@ -92,7 +92,7 @@ namespace x_data
     };
 
 
-    class cardinal_list_t : public x_type
+    class cardinal_list_t final : public x_type
     {
     public:
         cardinal_list_t() = default;

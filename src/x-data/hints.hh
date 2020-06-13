@@ -12,7 +12,7 @@ extern "C" {
 
 namespace x_data
 {
-    class wmhints_t
+    class wmhints_t final
     {
     public:
         wmhints_t() = default;
@@ -57,7 +57,7 @@ namespace x_data
 
     };
 
-    class sizehints_t
+    class sizehints_t final
     {
     public:
         sizehints_t() = default;

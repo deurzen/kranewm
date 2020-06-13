@@ -9,7 +9,7 @@ typedef class client_t* client_ptr_t;
 typedef class moveresize_t* moveresize_ptr_t;
 
 
-class x_model_t
+class x_model_t final
 {
 public:
     x_model_t()

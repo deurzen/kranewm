@@ -19,7 +19,7 @@ extern "C" {
 
 namespace x_data
 {
-    class atom_t : public x_type
+    class atom_t final : public x_type
     {
     public:
         static ::std::map<::std::string, Atom> g_interned_atoms;
@@ -112,7 +112,7 @@ namespace x_data
 
     };
 
-    class atom_list_t : public x_type
+    class atom_list_t final : public x_type
     {
     public:
         atom_list_t() = default;

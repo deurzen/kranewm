@@ -18,7 +18,7 @@ enum class mousetarget_t
     sidebar,
 };
 
-struct mouseshortcut_t
+struct mouseshortcut_t final
 {
     mouseshortcut_t(unsigned _button, unsigned _mask, mousetarget_t _target)
       : button(_button),

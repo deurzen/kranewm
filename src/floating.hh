@@ -35,7 +35,7 @@ enum class direction_t
     left
 };
 
-typedef struct moveresize_t
+typedef struct moveresize_t final
 {
     moveresize_t(client_ptr_t _client, moveresizestate_t _state, corner_t _grabbed_at)
       : client(_client),

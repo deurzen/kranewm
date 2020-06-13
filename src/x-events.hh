@@ -21,7 +21,7 @@ class client_model_t;
 class x_model_t;
 
 
-class x_events_t
+class x_events_t final
 {
 public:
     explicit x_events_t(ewmh_t& ewmh, sidebar_t& sidebar, windowstack_t& windowstack,

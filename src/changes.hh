@@ -33,7 +33,7 @@ enum class change_t
 typedef class clientchange_t* clientchange_ptr_t;
 
 
-class changequeue_t
+class changequeue_t final
 {
 public:
     ~changequeue_t()
@@ -67,7 +67,7 @@ typedef struct clientchange_t
 
 
 
-typedef struct clientfocuschange_t : clientchange_t
+typedef struct clientfocuschange_t final : clientchange_t
 {
     explicit clientfocuschange_t(client_ptr_t _from, client_ptr_t _to)
       : clientchange_t(change_t::client_focus),
@@ -92,7 +92,7 @@ inline clientfocuschange_ptr_t change_client_focus(clientchange_ptr_t change)
 
 
 
-typedef struct clientdestroychange_t : clientchange_t
+typedef struct clientdestroychange_t final : clientchange_t
 {
     explicit clientdestroychange_t(client_ptr_t _client, workspace_ptr_t _workspace)
       : clientchange_t(change_t::client_destroy),
@@ -117,7 +117,7 @@ inline clientdestroychange_ptr_t change_client_destroy(clientchange_ptr_t change
 
 
 
-typedef struct clientfullscreenchange_t : clientchange_t
+typedef struct clientfullscreenchange_t final : clientchange_t
 {
     explicit clientfullscreenchange_t(client_ptr_t _client, client_t _former_state)
       : clientchange_t(change_t::client_fullscreen),
@@ -142,7 +142,7 @@ inline clientfullscreenchange_ptr_t change_client_fullscreen(clientchange_ptr_t 
 
 
 
-typedef struct clientabovechange_t : clientchange_t
+typedef struct clientabovechange_t final : clientchange_t
 {
     explicit clientabovechange_t(client_ptr_t _client, client_t _former_state)
       : clientchange_t(change_t::client_above),
@@ -167,7 +167,7 @@ inline clientabovechange_ptr_t change_client_above(clientchange_ptr_t change)
 
 
 
-typedef struct clientbelowchange_t : clientchange_t
+typedef struct clientbelowchange_t final : clientchange_t
 {
     explicit clientbelowchange_t(client_ptr_t _client, client_t _former_state)
       : clientchange_t(change_t::client_below),
@@ -192,7 +192,7 @@ inline clientbelowchange_ptr_t change_client_below(clientchange_ptr_t change)
 
 
 
-typedef struct clienturgentchange_t : clientchange_t
+typedef struct clienturgentchange_t final : clientchange_t
 {
     explicit clienturgentchange_t(client_ptr_t _client)
       : clientchange_t(change_t::client_urgent),
@@ -215,7 +215,7 @@ inline clienturgentchange_ptr_t change_client_urgent(clientchange_ptr_t change)
 
 
 
-typedef struct clienticonifychange_t : clientchange_t
+typedef struct clienticonifychange_t final : clientchange_t
 {
     explicit clienticonifychange_t(client_ptr_t _client)
       : clientchange_t(change_t::client_iconify),
@@ -238,7 +238,7 @@ inline clienticonifychange_ptr_t change_client_iconify(clientchange_ptr_t change
 
 
 
-typedef struct clientdisownchange_t : clientchange_t
+typedef struct clientdisownchange_t final : clientchange_t
 {
     explicit clientdisownchange_t(client_ptr_t _client, client_t _former_state)
       : clientchange_t(change_t::client_disown),
@@ -263,7 +263,7 @@ inline clientdisownchange_ptr_t change_client_disown(clientchange_ptr_t change)
 
 
 
-typedef struct clientstickychange_t : clientchange_t
+typedef struct clientstickychange_t final : clientchange_t
 {
     explicit clientstickychange_t(client_ptr_t _client, context_ptr_t _context)
       : clientchange_t(change_t::client_sticky),
@@ -288,7 +288,7 @@ inline clientstickychange_ptr_t change_client_sticky(clientchange_ptr_t change)
 
 
 
-typedef struct clientworkspacechange_t : clientchange_t
+typedef struct clientworkspacechange_t final : clientchange_t
 {
     explicit clientworkspacechange_t(client_ptr_t _client, workspace_ptr_t _from, workspace_ptr_t _to)
       : clientchange_t(change_t::client_workspace),
@@ -316,7 +316,7 @@ inline clientworkspacechange_ptr_t change_client_workspace(clientchange_ptr_t ch
 
 
 
-typedef struct clientcontextchange_t : clientchange_t
+typedef struct clientcontextchange_t final : clientchange_t
 {
     explicit clientcontextchange_t(client_ptr_t _client, context_ptr_t _from, context_ptr_t _to,
         user_workspace_ptr_t _from_workspace, user_workspace_ptr_t _to_workspace)
@@ -350,7 +350,7 @@ inline clientcontextchange_ptr_t change_client_context(clientchange_ptr_t change
 
 
 
-typedef struct workspaceactivechange_t : clientchange_t
+typedef struct workspaceactivechange_t final : clientchange_t
 {
     explicit workspaceactivechange_t(user_workspace_ptr_t _from, user_workspace_ptr_t _to)
       : clientchange_t(change_t::workspace_active),
@@ -375,7 +375,7 @@ inline workspaceactivechange_ptr_t change_workspace_active(clientchange_ptr_t ch
 
 
 
-typedef struct contextactivechange_t : clientchange_t
+typedef struct contextactivechange_t final : clientchange_t
 {
     explicit contextactivechange_t(context_ptr_t _from, context_ptr_t _to)
       : clientchange_t(change_t::context_active),

@@ -9,7 +9,7 @@ extern "C" {
 
 namespace x_data
 {
-    class attributes_t
+    class attributes_t final
     {
     public:
         attributes_t(XWindowAttributes wa)

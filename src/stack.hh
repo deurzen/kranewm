@@ -21,7 +21,7 @@ typedef struct client_t* client_ptr_t;
 typedef struct user_workspace_t* user_workspace_ptr_t;
 
 
-struct windowstack_window_t
+struct windowstack_window_t final
 {
     windowstack_window_t(x_data::window_t _win, layer_t _layer)
       : win(_win),
@@ -33,7 +33,7 @@ struct windowstack_window_t
 
 };
 
-class workspacestack_t
+class workspacestack_t final
 {
 public:
     workspacestack_t() = default;
@@ -50,7 +50,7 @@ private:
 };
 
 
-class windowstack_t
+class windowstack_t final
 {
 public:
     windowstack_t& add_to_stack(windowstack_window_t);
