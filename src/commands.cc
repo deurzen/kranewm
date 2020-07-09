@@ -6,6 +6,7 @@
 #include "x-data/window.hh"
 
 #include <unistd.h>
+#include <cmath>
 
 
 void
@@ -400,6 +401,67 @@ clientshrinkcommand_t::execute()
     case direction_t::left:  pos.x += m_increment; dim.w -= m_increment; break;
     default: return;
     }
+
+    m_client->moveresize(pos, dim);
+}
+
+void
+clientinflatecommand_t::execute()
+{
+    if (!(m_client->floating || m_clients.active_workspace()->in_float_layout()))
+        return;
+
+    auto dim = m_client->float_dim;
+    auto pos = m_client->float_pos;
+    float x_inc, y_inc;
+
+    if (dim.w >= dim.h) {
+        y_inc = m_increment;
+        x_inc = static_cast<float>(m_increment)
+            * (static_cast<float>(dim.w) / static_cast<float>(dim.h));
+    } else {
+        x_inc = m_increment;
+        y_inc = static_cast<float>(m_increment)
+            * (static_cast<float>(dim.h) / static_cast<float>(dim.w));
+    }
+
+    dim.w += ::std::round(2.f * x_inc);
+    dim.h += ::std::round(2.f * y_inc);
+
+    pos.x -= ::std::round(x_inc);
+    pos.y -= ::std::round(y_inc);
+
+    m_client->moveresize(pos, dim);
+}
+
+void
+clientdeflatecommand_t::execute()
+{
+    if (!(m_client->floating || m_clients.active_workspace()->in_float_layout()))
+        return;
+
+    auto dim = m_client->float_dim;
+    auto pos = m_client->float_pos;
+    float x_inc, y_inc;
+
+    if (dim.w >= dim.h) {
+        y_inc = m_increment;
+        x_inc = static_cast<float>(m_increment)
+            * (static_cast<float>(dim.w) / static_cast<float>(dim.h));
+    } else {
+        x_inc = m_increment;
+        y_inc = static_cast<float>(m_increment)
+            * (static_cast<float>(dim.h) / static_cast<float>(dim.w));
+    }
+
+    dim.w -= ::std::round(2.f * x_inc);
+    dim.h -= ::std::round(2.f * y_inc);
+
+    if (dim.w < MIN_WINDOW_SIZE || (dim.h - BORDER_HEIGHT) < MIN_WINDOW_SIZE)
+        return;
+
+    pos.x += ::std::round(x_inc);
+    pos.y += ::std::round(y_inc);
 
     m_client->moveresize(pos, dim);
 }

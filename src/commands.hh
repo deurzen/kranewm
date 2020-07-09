@@ -34,7 +34,8 @@ enum class commandop_t
     clientmasterjump, clientstackjump, clientlastjump, clientpanejump, clientjumpindex,
     clientworkspace, clientnextworkspace, clientpreviousworkspace,
     clientcontext, clientnextcontext, clientpreviouscontext,
-    clientgrow, clientshrink, clientmove, clientmovemouse, clientresizemouse,
+    clientgrow, clientshrink, clientinflate, clientdeflate,
+    clientmove, clientmovemouse, clientresizemouse,
     masterforward, masterbackward, stackforward, stackbackward, allforward, allbackward,
     clienticonify, clienticonifyindex, deiconifypop, clientdeiconifyindex,
     clientdisown, reclaimpop,
@@ -920,6 +921,50 @@ private:
     unsigned m_increment;
 
 }* clientshrinkcommand_ptr_t;
+
+
+
+typedef class clientinflatecommand_t final : public command_t
+{
+public:
+    explicit clientinflatecommand_t(client_model_t& clients, client_ptr_t client,
+        unsigned increment = 2)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client),
+        m_increment(increment)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+    unsigned m_increment;
+
+}* clientinflatecommand_ptr_t;
+
+
+
+typedef class clientdeflatecommand_t final : public command_t
+{
+public:
+    explicit clientdeflatecommand_t(client_model_t& clients, client_ptr_t client,
+        unsigned increment = 2)
+      : command_t(false),
+        m_clients(clients),
+        m_client(client),
+        m_increment(increment)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    client_ptr_t m_client;
+    unsigned m_increment;
+
+}* clientdeflatecommand_ptr_t;
 
 
 

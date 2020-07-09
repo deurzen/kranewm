@@ -53,6 +53,8 @@ public:
             { { SCROLL_DOWN_BUTTON, MODMASK|ControlMask,  mousetarget_t::client  },  { commandop_t::nextcontext,             YES } },
             { { SCROLL_UP_BUTTON,   MODMASK|ControlMask,  mousetarget_t::client  },  { commandop_t::previouscontext,         YES } },
             { { RIGHT_BUTTON,       MODMASK|ControlMask,  mousetarget_t::client  },  { commandop_t::clientdisown,             NO } },
+            { { SCROLL_DOWN_BUTTON, MODMASK|SECMASK,      mousetarget_t::client  },  { commandop_t::clientdeflate,           YES } },
+            { { SCROLL_UP_BUTTON,   MODMASK|SECMASK,      mousetarget_t::client  },  { commandop_t::clientinflate,           YES } },
             { { BACKWARD_BUTTON,     NOMASK,              mousetarget_t::root    },  { commandop_t::nextworkspace,           YES } },
             { { FORWARD_BUTTON,      NOMASK,              mousetarget_t::root    },  { commandop_t::previousworkspace,       YES } },
             { { SCROLL_DOWN_BUTTON, MODMASK,              mousetarget_t::root    },  { commandop_t::focusbackward,           YES } },

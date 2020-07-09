@@ -111,6 +111,8 @@ inputhandler_t::create_command(commandbind_t commandbind, client_ptr_t target)
     case commandop_t::clientjumpindex:            return new clientjumpindexcommand_t(m_clients, ::std::get<int>(*commandbind.get_arg()));
     case commandop_t::clientgrow:                 return new clientgrowcommand_t(m_clients, target, ::std::get<direction_t>(*commandbind.get_arg()));
     case commandop_t::clientshrink:               return new clientshrinkcommand_t(m_clients, target, ::std::get<direction_t>(*commandbind.get_arg()));
+    case commandop_t::clientinflate:              return new clientinflatecommand_t(m_clients, target);
+    case commandop_t::clientdeflate:              return new clientdeflatecommand_t(m_clients, target);
     case commandop_t::clientmove:                 return new clientmovecommand_t(m_clients, target, ::std::get<direction_t>(*commandbind.get_arg()));
     case commandop_t::clientmovemouse:            return new clientmovemousecommand_t(m_clients, target);
     case commandop_t::masterforward:              return new masterforwardcommand_t(m_clients, m_windowstack);
