@@ -928,7 +928,7 @@ typedef class clientinflatecommand_t final : public command_t
 {
 public:
     explicit clientinflatecommand_t(client_model_t& clients, client_ptr_t client,
-        unsigned increment = 2)
+        unsigned increment = 5)
       : command_t(false),
         m_clients(clients),
         m_client(client),
@@ -950,7 +950,7 @@ typedef class clientdeflatecommand_t final : public command_t
 {
 public:
     explicit clientdeflatecommand_t(client_model_t& clients, client_ptr_t client,
-        unsigned increment = 2)
+        unsigned increment = 5)
       : command_t(false),
         m_clients(clients),
         m_client(client),
