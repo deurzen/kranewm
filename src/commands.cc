@@ -200,7 +200,7 @@ clienticonifycommand_t::execute()
 void
 clientdisowncommand_t::execute()
 {
-    m_clients.set_disowned(m_client, clientaction_t::add);
+    m_clients.set_disowned(m_client, clientaction_t::toggle);
 }
 
 void
