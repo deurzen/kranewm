@@ -706,6 +706,33 @@ workspacegapsizecommand_t::execute()
 }
 
 void
+workspaceresetcommand_t::execute()
+{
+    if (m_clients.active_workspace()->reset())
+        m_sidebar.toggle();
+
+    m_clients.refullscreen_clients();
+    m_clients.active_workspace()->arrange();
+
+    m_windowstack.apply(m_clients.active_workspace());
+    m_sidebar.draw();
+}
+
+void
+contextresetcommand_t::execute()
+{
+    m_sidebar.toggle_all(true);
+    for (auto& workspace : *m_clients.active_context()->get_workspaces()) {
+        workspace->reset();
+        workspace->arrange();
+        m_windowstack.apply(workspace);
+    }
+
+    m_clients.refullscreen_clients();
+    m_sidebar.draw();
+}
+
+void
 sidebarshowcommand_t::execute()
 {
     m_sidebar.toggle();

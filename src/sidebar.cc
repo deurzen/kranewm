@@ -62,6 +62,21 @@ sidebar_t::toggle_all()
     }
 }
 
+void
+sidebar_t::toggle_all(bool enable)
+{
+    for (size_t i = 0; i < USER_WORKSPACES.size(); ++i) {
+        m_enabled[i] = enable;
+
+        if (m_enabled.at(i))
+            map_sidebar();
+        else
+            unmap_sidebar();
+
+        (*m_context->get_workspaces()).at(i)->sidebarset(m_enabled.at(i));
+    }
+}
+
 x_data::window_t
 sidebar_t::get_win() const
 {

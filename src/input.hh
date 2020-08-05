@@ -246,6 +246,8 @@ public:
             { { XK_Right,        MODMASK|ShiftMask|ControlMask }, { commandop_t::clientsnapresizeeast }                           },
             { { XK_Down,         MODMASK|ShiftMask|ControlMask }, { commandop_t::clientsnapresizesouth }                          },
             { { XK_Left,         MODMASK|ShiftMask|ControlMask }, { commandop_t::clientsnapresizewest }                           },
+            { { XK_c,            MODMASK|ShiftMask|ControlMask }, { commandop_t::contextreset }                                   },
+            { { XK_r,            MODMASK|ShiftMask|ControlMask }, { commandop_t::workspacereset }                                 },
             { { XK_q,            MODMASK|ShiftMask|ControlMask }, { commandop_t::quit }                                           },
         })
     {

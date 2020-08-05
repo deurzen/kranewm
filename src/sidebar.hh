@@ -116,6 +116,7 @@ public:
     void draw();
     void toggle();
     void toggle_all();
+    void toggle_all(bool);
 
     void draw_layoutsymbol();
     void draw_contextletter();

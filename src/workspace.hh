@@ -184,18 +184,25 @@ is_moveresize_workspace(workspace_ptr_t workspace)
 
 typedef class user_workspace_t : public workspace_t
 {
+    const ::std::size_t DEFAULT_NMASTER = 1;
+    const ::std::size_t DEFAULT_GAPSIZE = 0;
+    const float DEFAULT_MFACTOR = .5f;
+    const bool DEFAULT_MIRRORED = false;
+    const bool DEFAULT_SIDEBARSET = true;
+    const layout_t DEFAULT_LAYOUT = layout_t::floating;
+
 public:
     user_workspace_t(::std::size_t _number, ::std::string&& _name, ewmh_t& ewmh)
       : workspace_t(workspacetype_t::user),
         m_number(_number),
         m_name(_name),
-        m_nmaster(1),
         m_nurgent(0),
-        m_gapsize(0),
-        m_mfactor(.5f),
-        m_mirrored(false),
-        m_sidebarset(true),
-        m_layout(layout_t::floating),
+        m_nmaster(DEFAULT_NMASTER),
+        m_gapsize(DEFAULT_GAPSIZE),
+        m_mfactor(DEFAULT_MFACTOR),
+        m_mirrored(DEFAULT_MIRRORED),
+        m_sidebarset(DEFAULT_SIDEBARSET),
+        m_layout(DEFAULT_LAYOUT),
         m_previous_layout(m_layout),
         m_layouthandler(layouthandler_t{ewmh})
     {}
@@ -225,6 +232,7 @@ public:
     user_workspace_t& remove_client(client_ptr_t) override;
     user_workspace_t& add_family(client_ptr_t) override;
     user_workspace_t& remove_family(client_ptr_t) override;
+
     user_workspace_t& add_icon(client_ptr_t);
     user_workspace_t& remove_icon(client_ptr_t);
     user_workspace_t& add_disowned(client_ptr_t);
@@ -270,11 +278,13 @@ public:
     bool master_focused();
     bool stack_focused();
 
+    bool reset();
+
 private:
     ::std::size_t    m_number;
     ::std::string    m_name;
-    ::std::size_t    m_nmaster;
     ::std::size_t    m_nurgent;
+    ::std::size_t    m_nmaster;
     ::std::size_t    m_gapsize;
     float            m_mfactor;
     bool             m_mirrored;

@@ -485,3 +485,17 @@ user_workspace_t::stack_focused()
 {
     return is_stack(m_clients.get());
 }
+
+bool
+user_workspace_t::reset()
+{
+    if (is_mirrored() != DEFAULT_MIRRORED)
+        mirror();
+
+    set_nmaster(DEFAULT_NMASTER);
+    set_gapsize(DEFAULT_GAPSIZE);
+    set_mfactor(DEFAULT_MFACTOR);
+    set_layout(DEFAULT_LAYOUT);
+
+    return m_sidebarset != DEFAULT_SIDEBARSET;
+}

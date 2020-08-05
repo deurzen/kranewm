@@ -42,9 +42,9 @@ enum class commandop_t
     profilesave, profileload,
     workspaceset, nextworkspace, previousworkspace,
     workspacemirror, workspacemfactor, workspacenmaster, workspacegapsize,
-    workspacelayout, workspacelayoutpreservedim,
+    workspacelayout, workspacelayoutpreservedim, workspacereset,
     sidebarshow, sidebarshowall,
-    contextset, nextcontext, previouscontext,
+    contextset, nextcontext, previouscontext, contextreset,
     focusforward, focusbackward,
     external,
 };
@@ -1473,6 +1473,50 @@ private:
     layout_t m_layout;
 
 }* workspacelayoutpreservedimcommand_ptr_t;
+
+
+
+typedef class workspaceresetcommand_t final : public command_t
+{
+public:
+    explicit workspaceresetcommand_t(client_model_t& clients, windowstack_t& windowstack,
+        sidebar_t& sidebar)
+      : command_t(true),
+        m_clients(clients),
+        m_windowstack(windowstack),
+        m_sidebar(sidebar)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    windowstack_t& m_windowstack;
+    sidebar_t& m_sidebar;
+
+}* workspaceresetcommand_ptr_t;
+
+
+
+typedef class contextresetcommand_t final : public command_t
+{
+public:
+    explicit contextresetcommand_t(client_model_t& clients, windowstack_t& windowstack,
+        sidebar_t& sidebar)
+      : command_t(false),
+        m_clients(clients),
+        m_windowstack(windowstack),
+        m_sidebar(sidebar)
+    {}
+
+    void execute() override;
+
+private:
+    client_model_t& m_clients;
+    windowstack_t& m_windowstack;
+    sidebar_t& m_sidebar;
+
+}* contextresetcommand_ptr_t;
 
 
 

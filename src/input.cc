@@ -100,6 +100,8 @@ inputhandler_t::create_command(commandbind_t commandbind, client_ptr_t target)
                                                        create_command(*commandbind.get_comp2(), target),
                                                        target);
     case commandop_t::quit:                       return new quitcommand_t(m_running);
+    case commandop_t::workspacereset:             return new workspaceresetcommand_t(m_clients, m_windowstack, m_sidebar);
+    case commandop_t::contextreset:               return new contextresetcommand_t(m_clients, m_windowstack, m_sidebar);
     case commandop_t::zoom:                       return new zoomcommand_t(m_clients);
     case commandop_t::clientmoveforward:          return new clientmoveforwardcommand_t(m_clients);
     case commandop_t::clientmovebackward:         return new clientmovebackwardcommand_t(m_clients);
