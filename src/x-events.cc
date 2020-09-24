@@ -599,6 +599,11 @@ x_events_t::on_property_notify()
             || x_data::get_atom("_NET_WM_NAME") == event.atom))
         {
             // handle iconified, shaded (if ever implemented)
+
+        } else if (event.atom == XA_WM_CLASS) {
+            m_clients.remove_process(client);
+            client->name = client->win.get_class();
+            m_clients.add_process(client);
         }
     }
 

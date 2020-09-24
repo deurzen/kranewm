@@ -105,6 +105,9 @@ public:
     void jump_marked();
     void jump_process(const ::std::string&);
 
+    void add_process(client_ptr_t);
+    void remove_process(client_ptr_t);
+
     void sync_workspace_focus(bool = false);
 
 private:

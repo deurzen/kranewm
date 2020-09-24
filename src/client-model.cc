@@ -864,6 +864,18 @@ client_model_t::jump_process(const ::std::string& name)
     sync_workspace_focus();
 }
 
+void
+client_model_t::add_process(client_ptr_t client)
+{
+    m_processes.add_process(client);
+}
+
+void
+client_model_t::remove_process(client_ptr_t client)
+{
+    m_processes.remove_process(client);
+}
+
 
 void
 client_model_t::sync_workspace_focus(bool ignore_unwind)
