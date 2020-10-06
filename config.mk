@@ -27,7 +27,7 @@ LDFLAGS = `pkg-config --libs x11`
 
 DEBUG_CXXFLAGS = -Wall -g -DDEBUG ${SANFLAGS}
 DEBUG_LDFLAGS = ${SANFLAGS}
-RELEASE_CXXFLAGS = -O3 -flto
+RELEASE_CXXFLAGS = -march=native -O3 -flto
 RELEASE_LDFLAGS = -flto
 
 CC = g++
