@@ -32,11 +32,10 @@ public:
         m_processes(processes),
         m_running(running),
         m_processbinds({
-            //  keysym  mask                           class
-            { { XK_b,   MODMASK             },  "qutebrowser" },
-            { { XK_b,   MODMASK|ShiftMask   },      "Firefox" },
-            { { XK_b,   MODMASK|ControlMask },      "Spotify" },
-            { { XK_s,   MODMASK|ShiftMask   },      "Spotify" },
+            //  keysym    mask                           class
+            { { XK_b,     MODMASK             },  "qutebrowser" },
+            { { XK_b,     MODMASK|ShiftMask   },      "Firefox" },
+            { { XK_space, MODMASK|SECMASK     },      "Spotify" },
         }),
         m_mousebinds({
             //  keysym              mask                                 target        operation                         nofocus
