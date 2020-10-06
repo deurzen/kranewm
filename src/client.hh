@@ -7,6 +7,9 @@
 #include <set>
 
 
+const dim_t DEFAULT_CLIENT_DIM = {480, 260};
+
+
 enum class clientaction_t : int
 {
     remove = 0,
@@ -44,6 +47,8 @@ typedef struct client_t final
       : name(_win.get_class()),
         win(_win),
         frame(_frame),
+        dim(DEFAULT_CLIENT_DIM),
+        float_dim(DEFAULT_CLIENT_DIM),
         sizeconstraints(_sizeconstraints),
         expect(clientexpect_t::noeffect),
         focused(false),
