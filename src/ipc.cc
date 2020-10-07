@@ -30,7 +30,12 @@ ipc_t::handle_ipc()
 
         if (cli_stream) {
             process_message(msg_tokens, cli_fd);
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
             write(cli_fd, NORETURN.c_str(), NORETURN.size());
+#pragma GCC diagnostic pop
+
         } else
             warn("couldn't establish connection with client");
 

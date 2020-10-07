@@ -72,8 +72,11 @@ kranewm_t::setup()
         else
             configdir_ss << "cd ~/.config/" << WMNAME << ";";
 
-        (void)::std::system((configdir_ss.str() + ::std::string("./blocking_autostart")).c_str());
-        (void)::std::system((configdir_ss.str() + ::std::string("./nonblocking_autostart &")).c_str());
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
+        ::std::system((configdir_ss.str() + ::std::string("./blocking_autostart")).c_str());
+        ::std::system((configdir_ss.str() + ::std::string("./nonblocking_autostart &")).c_str());
+#pragma GCC diagnostic pop
     }
 #endif
 }

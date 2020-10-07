@@ -273,7 +273,12 @@ public:
     fail_command(::std::string&& msg, int cli_fd)
     {
         warn("error resolving command: " + msg);
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
         write(cli_fd, msg.c_str(), msg.size());
+#pragma GCC diagnostic pop
+
         return commandop_t::noop;
     }
 
