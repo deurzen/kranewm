@@ -37,6 +37,7 @@ public:
         m_moveresizeindicator(x_data::create_window(true)),
         m_floatingindicator(x_data::create_window(true)),
         m_fullscreenindicator(x_data::create_window(true)),
+        m_invincibleindicator(x_data::create_window(true)),
         m_aboveindicator(x_data::create_window(true)),
         m_belowindicator(x_data::create_window(true))
     {
@@ -93,6 +94,7 @@ public:
         m_ewmh.set_window_type_property(m_moveresizeindicator, "DOCK");
         m_ewmh.set_window_type_property(m_floatingindicator, "DOCK");
         m_ewmh.set_window_type_property(m_fullscreenindicator, "DOCK");
+        m_ewmh.set_window_type_property(m_invincibleindicator, "DOCK");
 
         m_moveresizeindicator.set_background_color(MRIND_BORDER_COLOR);
         m_moveresizeindicator.set_border_width(0);
@@ -103,6 +105,9 @@ public:
 
         m_fullscreenindicator.set_background_color(FSIND_BG_COLOR).set_border_color(FSIND_BORDER_COLOR);
         m_fullscreenindicator.resize({1, 1}).reparent({SIDEBAR_WIDTH - 3, 1}, m_sidebarwin);
+
+        m_invincibleindicator.set_background_color(ININD_BG_COLOR).set_border_color(ININD_BORDER_COLOR);
+        m_invincibleindicator.resize({1, 1}).reparent({SIDEBAR_WIDTH - 3, 5}, m_sidebarwin);
 
         m_aboveindicator.set_background_color(ASIND_BG_COLOR).set_border_color(ASIND_BORDER_COLOR);
         m_aboveindicator.resize({1, 1}).reparent({SIDEBAR_WIDTH - 3, 1}, m_sidebarwin);
@@ -153,6 +158,7 @@ private:
     x_data::window_t m_moveresizeindicator;
     x_data::window_t m_floatingindicator;
     x_data::window_t m_fullscreenindicator;
+    x_data::window_t m_invincibleindicator;
     x_data::window_t m_aboveindicator;
     x_data::window_t m_belowindicator;
 

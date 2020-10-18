@@ -119,22 +119,31 @@ void
 sidebar_t::draw_clientstate()
 {
     auto client = m_context->get_activated()->get_focused();
-    if (client && client->fullscreen) {
+
+    if (!client) {
+        m_floatingindicator.unmap();
+        m_aboveindicator.unmap();
+        m_belowindicator.unmap();
+        m_invincibleindicator.unmap();
+        return;
+    }
+
+    if (client->fullscreen) {
         m_fullscreenindicator.map();
         m_floatingindicator.unmap();
         m_aboveindicator.unmap();
         m_belowindicator.unmap();
-    } else if (client && client->above) {
+    } else if (client->above) {
         m_aboveindicator.map();
         m_floatingindicator.unmap();
         m_fullscreenindicator.unmap();
         m_belowindicator.unmap();
-    } else if (client && client->below) {
+    } else if (client->below) {
         m_belowindicator.map();
         m_floatingindicator.unmap();
         m_fullscreenindicator.unmap();
         m_aboveindicator.unmap();
-    } else if (client && client->floating) {
+    } else if (client->floating) {
         m_floatingindicator.map();
         m_fullscreenindicator.unmap();
         m_aboveindicator.unmap();
@@ -144,6 +153,12 @@ sidebar_t::draw_clientstate()
         m_fullscreenindicator.unmap();
         m_aboveindicator.unmap();
         m_belowindicator.unmap();
+    }
+
+    if (client->invincible) {
+        m_invincibleindicator.map();
+    } else {
+        m_invincibleindicator.unmap();
     }
 }
 

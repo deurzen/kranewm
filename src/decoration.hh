@@ -37,6 +37,9 @@ const unsigned long FSIND_BORDER_COLOR = URG_COLOR;
 // floating
 const unsigned long FLIND_BG_COLOR     = REG_COLOR;
 const unsigned long FLIND_BORDER_COLOR = SIDEBAR_FG_COLOR;
+// invincible state
+const unsigned long ININD_BG_COLOR     = REG_COLOR;
+const unsigned long ININD_BORDER_COLOR = URG_COLOR;
 // below state
 const unsigned long BSIND_BG_COLOR     = REG_COLOR;
 const unsigned long BSIND_BORDER_COLOR = SELSTICKY_COLOR;

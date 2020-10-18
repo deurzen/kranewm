@@ -159,6 +159,7 @@ inputhandler_t::create_command(commandbind_t commandbind, client_ptr_t target)
         case commandop_t::clientfullscreen:        return new clientfullscreencommand_t(m_clients, m_sidebar, target);
         case commandop_t::clientinwindow:          return new clientinwindowcommand_t(m_clients, m_sidebar, target);
         case commandop_t::clientsticky:            return new clientstickycommand_t(m_clients, m_sidebar, target);
+        case commandop_t::clientinvincible:        return new clientinvinciblecommand_t(m_sidebar, target);
         case commandop_t::clientabove:             return new clientabovecommand_t(m_clients, m_sidebar, target);
         case commandop_t::clientbelow:             return new clientbelowcommand_t(m_clients, m_sidebar, target);
         case commandop_t::clientcenter:            return new clientcentercommand_t(m_clients, target);

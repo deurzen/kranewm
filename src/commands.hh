@@ -25,7 +25,7 @@ enum class commandop_t
     floatingconditional,
     quit,
     zoom,
-    clientfloat, clientfullscreen, clientinwindow, clientsticky, clientabove, clientbelow,
+    clientfloat, clientfullscreen, clientinwindow, clientsticky, clientinvincible, clientabove, clientbelow,
     clientcenter, clientsnapmovenorth, clientsnapmoveeast, clientsnapmovesouth, clientsnapmovewest,
     clientsnapresizenorth, clientsnapresizeeast, clientsnapresizesouth, clientsnapresizewest,
     clientkill, workspacekill, contextkill,
@@ -330,6 +330,25 @@ private:
     client_ptr_t m_client;
 
 }* clientstickycommand_ptr_t;
+
+
+
+typedef class clientinvinciblecommand_t final : public command_t
+{
+public:
+    explicit clientinvinciblecommand_t(sidebar_t& sidebar, client_ptr_t client)
+      : command_t(false),
+        m_sidebar(sidebar),
+        m_client(client)
+    {}
+
+    void execute() override;
+
+private:
+    sidebar_t& m_sidebar;
+    client_ptr_t m_client;
+
+}* clientinvinciblecommand_ptr_t;
 
 
 

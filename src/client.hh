@@ -61,6 +61,7 @@ typedef struct client_t final
         iconified(false),
         disowned(false),
         sticky(false),
+        invincible(false),
         parent(nullptr)
     {}
 
@@ -101,6 +102,7 @@ typedef struct client_t final
     bool                iconified;
     bool                disowned;
     bool                sticky;
+    bool                invincible;
     client_ptr_t        parent;
     client_ptr_set_t    children;
 

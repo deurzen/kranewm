@@ -79,6 +79,13 @@ clientstickycommand_t::execute()
 }
 
 void
+clientinvinciblecommand_t::execute()
+{
+    m_client->invincible = !m_client->invincible;
+    m_sidebar.draw_clientstate();
+}
+
+void
 clientabovecommand_t::execute()
 {
     m_clients.set_above(m_client, clientaction_t::toggle);
@@ -206,16 +213,20 @@ clientdisowncommand_t::execute()
 void
 clientkillcommand_t::execute()
 {
-    update_offset(m_client);
-    m_client->win.force_close();
+    if (!m_client->invincible) {
+        update_offset(m_client);
+        m_client->win.force_close();
+    }
 }
 
 void
 workspacekillcommand_t::execute()
 {
     for (auto& client : m_workspace->get_all()) {
-        update_offset(client);
-        client->win.force_close();
+        if (!client->invincible) {
+            update_offset(client);
+            client->win.force_close();
+        }
     }
 }
 
@@ -224,8 +235,10 @@ contextkillcommand_t::execute()
 {
     for (auto& workspace : *m_context->get_workspaces())
         for (auto& client : workspace->get_all()) {
-            update_offset(client);
-            client->win.force_close();
+            if (!client->invincible) {
+                update_offset(client);
+                client->win.force_close();
+            }
         }
 }
 
