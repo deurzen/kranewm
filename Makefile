@@ -20,8 +20,8 @@ build: build-core
 build: build-client
 
 install:
-	install $(BIN)/$(PROJECT) $(DESTDIR)/$(PROJECT)
-	install $(BIN)/$(CLIENT) $(DESTDIR)/$(CLIENT)
+	install -m0755 $(BIN)/$(PROJECT) $(DESTDIR)$(BINDIR)/$(PROJECT)
+	install -m0755 $(BIN)/$(CLIENT) $(DESTDIR)$(BINDIR)/$(CLIENT)
 
 build-core: bin obj ${OBJ_FILES}
 	${CC} ${OBJ_FILES} ${LDFLAGS} -o $(BIN)/$(PROJECT)
