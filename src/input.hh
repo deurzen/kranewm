@@ -139,6 +139,7 @@ public:
             { { XK_j,            MODMASK|SECMASK },     { "playerctl --player playerctld next" }                                  },
             { { XK_bracketleft,  MODMASK|SECMASK },     { "playerctl --player playerctld position -5" }                           },
             { { XK_bracketright, MODMASK|SECMASK },     { "playerctl --player playerctld position +5" }                           },
+            { { XK_g,            MODMASK|SECMASK },     { "~/bin/grabcolor" }                                                     },
             { { XK_1,            MODMASK|SECMASK },     { commandop_t::clientdeiconifyindex, 1 }                                  },
             { { XK_2,            MODMASK|SECMASK },     { commandop_t::clientdeiconifyindex, 2 }                                  },
             { { XK_3,            MODMASK|SECMASK },     { commandop_t::clientdeiconifyindex, 3 }                                  },
