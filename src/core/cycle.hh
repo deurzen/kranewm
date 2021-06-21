@@ -1,0 +1,149 @@
+#ifndef __CYCLE_H_GUARD__
+#define __CYCLE_H_GUARD__
+
+#include "../winsys/common.hh"
+#include "../winsys/geometry.hh"
+
+#include <cstdlib>
+#include <deque>
+#include <vector>
+#include <optional>
+#include <unordered_map>
+#include <variant>
+
+enum class StackAction
+{
+    Insert,
+    Remove
+};
+
+template <typename T>
+class HistoryStack final
+{
+    static_assert(std::is_pointer<T>::value,
+        "Only pointer types may be stored in a history stack.");
+
+public:
+    HistoryStack();
+    ~HistoryStack();
+
+    void clear();
+    void push_back(T);
+    void replace(T, T);
+    std::optional<T> peek_back() const;
+    std::optional<T> pop_back();
+    void remove(T);
+
+    std::vector<T> const& as_vector() const;
+
+private:
+    std::vector<T> m_stack;
+
+};
+
+template <typename T>
+class Cycle final
+{
+    static_assert(std::is_pointer<T>::value,
+        "Only pointer types may be stored in a cycle.");
+
+public:
+    Cycle(std::vector<T>, bool);
+    Cycle(std::initializer_list<T>, bool);
+    ~Cycle();
+
+    bool next_will_wrap(winsys::Direction) const;
+    bool empty() const;
+    bool contains(T) const;
+    bool is_active_element(T) const;
+    bool is_active_index(Index) const;
+
+    std::size_t size() const;
+    std::size_t length() const;
+
+    std::optional<Index> index() const;
+    Index active_index() const;
+    Index last_index() const;
+    Index next_index(winsys::Direction) const;
+    Index next_index_from(Index, winsys::Direction) const;
+
+    std::optional<Index> index_of_element(const T) const;
+
+    std::optional<T> next_element(winsys::Direction) const;
+    std::optional<T> active_element() const;
+    std::optional<T> prev_active_element() const;
+    std::optional<T> element_at_index(Index) const;
+    std::optional<T> element_at_front(T) const;
+    std::optional<T> element_at_back(T) const;
+
+    void activate_first();
+    void activate_last();
+    void activate_at_index(Index);
+    void activate_element(T);
+
+    bool remove_first();
+    bool remove_last();
+    bool remove_at_index(Index);
+    bool remove_element(T);
+
+    std::optional<T> pop_back();
+
+    void replace_element(T, T);
+    void swap_elements(T, T);
+    void swap_indices(Index, Index);
+
+    void rotate(winsys::Direction);
+    std::optional<T> cycle_active(winsys::Direction);
+    std::optional<T> drag_active(winsys::Direction);
+
+    void insert_at_front(T);
+    void insert_at_back(T);
+    void insert_before_index(Index, T);
+    void insert_after_index(Index, T);
+    void insert_before_element(T, T);
+    void insert_after_element(T, T);
+
+    void clear();
+
+    std::deque<T> const& as_deque() const;
+    std::vector<T> const& stack() const;
+
+    std::deque<T>::iterator
+    begin()
+    {
+        return m_elements.begin();
+    }
+
+    std::deque<T>::iterator
+    end()
+    {
+        return m_elements.end();
+    }
+
+    T operator[](std::size_t index)
+    {
+        return m_elements[index];
+    }
+
+    const T operator[](std::size_t index) const
+    {
+        return m_elements[index];
+    }
+
+private:
+    Index m_index;
+
+    std::deque<T> m_elements;
+
+    bool m_unwindable;
+    HistoryStack<T> m_stack;
+
+    void sync_active();
+
+    void push_index_to_stack(std::optional<Index>);
+    void push_active_to_stack();
+    std::optional<T> get_active_from_stack();
+
+};
+
+#endif//__CYCLE_H_GUARD__
