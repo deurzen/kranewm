@@ -1573,6 +1573,9 @@ Model::manage(const Window window, const bool ignore)
 void
 Model::unmanage(Client_ptr client)
 {
+    if (client->consume_unmap_if_expecting())
+        return;
+
     for (auto& consumer : client->consumers)
         check_unconsume_client(consumer);
 
@@ -1585,8 +1588,8 @@ Model::unmanage(Client_ptr client)
     m_conn.unparent_window(client->window, client->active_region.pos);
 
     m_conn.cleanup_window(client->window);
-    m_conn.destroy_window(client->frame);
     m_conn.destroy_window(client->window);
+    m_conn.destroy_window(client->frame);
 
     workspace->remove_client(client);
     workspace->remove_icon(client);
@@ -1600,11 +1603,6 @@ Model::unmanage(Client_ptr client)
 
     if (client->parent)
         Util::erase_remove(client->parent->children, client);
-
-    for (auto child : client->children) {
-        unmap_client(child);
-        unmanage(child);
-    }
 
     m_client_map.erase(client->window);
     m_client_map.erase(client->frame);
