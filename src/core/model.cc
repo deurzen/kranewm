@@ -2435,7 +2435,9 @@ Model::set_fullscreen_client(Toggle toggle, Client_ptr client)
         if (!client->fullscreen)
             return;
 
-        client->set_free_region(m_fullscreen_map.at(client));
+        if (!client->contained)
+            client->set_free_region(m_fullscreen_map.at(client));
+
         client->fullscreen = false;
 
         m_conn.set_window_state(
@@ -2570,14 +2572,22 @@ Model::set_contained_client(Toggle toggle, Client_ptr client)
     case Toggle::On:
     {
         client->contained = true;
-        set_fullscreen_client(toggle, client);
+
+        Workspace_ptr workspace = get_workspace(client->workspace);
+
+        apply_layout(workspace);
+        apply_stack(workspace);
 
         return;
     }
     case Toggle::Off:
     {
         client->contained = false;
-        set_fullscreen_client(toggle, client);
+
+        Workspace_ptr workspace = get_workspace(client->workspace);
+
+        apply_layout(workspace);
+        apply_stack(workspace);
 
         return;
     }
