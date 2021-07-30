@@ -172,7 +172,7 @@ Model::Model(Connection& conn)
           },
           { { Key::B, { Main, Ctrl } },
               CALL(jump_client({
-                  JumpSelector::SelectionCriterium::ByClassEquals,
+                  JumpSelector::SelectionCriterium::ByClassContains,
                   "Chromium"
               }))
           },
@@ -559,6 +559,9 @@ Model::Model(Connection& conn)
           },
           { { Key::O, { Main, Shift } },
               CALL_EXTERNAL($HOME/bin/dmenunotify)
+          },
+          { { Key::G, { Main, Shift } },
+              CALL_EXTERNAL($HOME/bin/grabcolor)
           },
           { { Key::PrintScreen, { Main } },
               CALL_EXTERNAL($HOME/bin/screenshot -s)
@@ -996,10 +999,10 @@ void
 Model::map_client(Client_ptr client)
 {
     if (!client->mapped) {
+        client->mapped = true;
         m_conn.map_window(client->window);
         m_conn.map_window(client->frame);
         render_decoration(client);
-        client->mapped = true;
     }
 }
 
@@ -1007,9 +1010,9 @@ void
 Model::unmap_client(Client_ptr client)
 {
     if (client->mapped) {
-        m_conn.unmap_window(client->frame);
-        client->expect_unmap();
         client->mapped = false;
+        client->expect_unmap();
+        m_conn.unmap_window(client->frame);
     }
 }
 
@@ -1547,7 +1550,7 @@ Model::manage(const Window window, const bool ignore)
 
     if (!m_move_buffer.is_occupied()
         && !m_resize_buffer.is_occupied()
-        && !producer
+        && !(producer && producer->producing)
     ) {
         focus_client(client);
     }
@@ -1576,7 +1579,7 @@ Model::unmanage(Client_ptr client)
     if (client->consume_unmap_if_expecting())
         return;
 
-    for (auto& consumer : client->consumers)
+    for (Client_ptr consumer : client->consumers)
         check_unconsume_client(consumer);
 
     check_unconsume_client(client);
@@ -1588,7 +1591,6 @@ Model::unmanage(Client_ptr client)
     m_conn.unparent_window(client->window, client->active_region.pos);
 
     m_conn.cleanup_window(client->window);
-    m_conn.destroy_window(client->window);
     m_conn.destroy_window(client->frame);
 
     workspace->remove_client(client);

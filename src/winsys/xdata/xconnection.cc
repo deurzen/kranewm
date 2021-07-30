@@ -459,41 +459,47 @@ XConnection::destroy_window(winsys::Window window)
 bool
 XConnection::close_window(winsys::Window window)
 {
-    XEvent event;
-    event.type = ClientMessage;
-    event.xclient.window = window;
-    event.xclient.message_type = get_atom("WM_PROTOCOLS");
-    event.xclient.format = 32;
-    event.xclient.data.l[0] = get_atom("WM_DELETE_WINDOW");
-    event.xclient.data.l[1] = CurrentTime;
+    Atom* protocols;
+    int n = 0;
 
-    return XSendEvent(mp_dpy, window, False, NoEventMask, &event) != 0;
+    Atom delete_atom = get_atom("WM_DELETE_WINDOW");
+    bool found = false;
+
+    if (XGetWMProtocols(mp_dpy, window, &protocols, &n)) {
+        while (!found && n--)
+            found = delete_atom == protocols[n];
+
+        XFree(protocols);
+    }
+
+    if (found) {
+        XEvent event;
+        event.type = ClientMessage;
+        event.xclient.window = window;
+        event.xclient.message_type = get_atom("WM_PROTOCOLS");
+        event.xclient.format = 32;
+        event.xclient.data.l[0] = get_atom("WM_DELETE_WINDOW");
+        event.xclient.data.l[1] = CurrentTime;
+        XSendEvent(mp_dpy, window, False, NoEventMask, &event);
+
+        return true;
+    }
+
+    return false;
 }
 
 bool
 XConnection::kill_window(winsys::Window window)
 {
-    int n;
-    Atom* protocols;
-    bool found = false;
-
-    if (XGetWMProtocols(mp_dpy, window, &protocols, &n)) {
-        while (!found && n--)
-            found = get_atom("WM_DELETE_WINDOW") == protocols[n];
-
-        XFree(protocols);
+    if (!close_window(window)) {
+        XGrabServer(mp_dpy);
+        XSetErrorHandler(s_passthrough_error_handler);
+        XSetCloseDownMode(mp_dpy, DestroyAll);
+        XKillClient(mp_dpy, window);
+        XSync(mp_dpy, False);
+        XSetErrorHandler(s_default_error_handler);
+        XUngrabServer(mp_dpy);
     }
-
-    if (found)
-        return close_window(window);
-
-    XGrabServer(mp_dpy);
-    XSetErrorHandler(s_passthrough_error_handler);
-    XSetCloseDownMode(mp_dpy, DestroyAll);
-    XKillClient(mp_dpy, window);
-    XSync(mp_dpy, False);
-    XSetErrorHandler(s_default_error_handler);
-    XUngrabServer(mp_dpy);
 
     return true;
 }
