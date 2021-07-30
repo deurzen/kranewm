@@ -1524,7 +1524,7 @@ Model::manage(const Window window, const bool ignore)
     if (pid)
         m_pid_map[*pid] = client;
 
-    m_conn.place_window(client->frame, client->free_region);
+    m_conn.place_window(frame, client->free_region);
     m_conn.unmap_window(window);
     m_conn.unmap_window(frame);
     m_conn.reparent_window(window, frame, Pos { extents.left, extents.top });
@@ -1550,7 +1550,6 @@ Model::manage(const Window window, const bool ignore)
 
     if (!m_move_buffer.is_occupied()
         && !m_resize_buffer.is_occupied()
-        && !(producer && producer->producing)
     ) {
         focus_client(client);
     }
@@ -3370,8 +3369,17 @@ Model::handle_map_request(MapRequestEvent event)
                 }
             }
 
-            if (strut)
+            if (strut) {
                 screen.add_strut(*edge, *strut);
+
+                if (screen.showing_struts()) {
+                    screen.compute_placeable_region();
+                    m_conn.map_window(strut->window);
+
+                    apply_layout(mp_workspace);
+                } else
+                    m_conn.unmap_window(strut->window);
+            }
         }
 
         layer = StackHandler::StackLayer::Dock;
@@ -3384,16 +3392,6 @@ Model::handle_map_request(MapRequestEvent event)
         m_stack.add_window(event.window, *layer);
         must_restack = true;
     }
-
-    Screen& screen = mp_partition->screen();
-
-    if (screen.showing_struts()) {
-        screen.compute_placeable_region();
-        m_conn.map_window(event.window);
-
-        apply_layout(mp_workspace);
-    } else
-        m_conn.unmap_window(event.window);
 
     if (must_restack)
         apply_stack(mp_workspace);
