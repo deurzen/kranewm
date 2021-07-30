@@ -2,8 +2,8 @@ include config.mk
 
 all: quick_debug
 
-quick_build:
-	$(MAKE) -j$$(( 10 * $(shell nproc) )) build
+quick_release:
+	$(MAKE) -j$$(( 10 * $(shell nproc) )) release
 
 quick_debug:
 	$(MAKE) -j$$(( 10 * $(shell nproc) )) debug
