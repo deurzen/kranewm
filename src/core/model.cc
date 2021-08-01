@@ -160,31 +160,31 @@ Model::Model(Connection& conn)
           // client jump criteria
           { { Key::B, { Main } },
               CALL(jump_client({
-                  JumpSelector::SelectionCriterium::ByClassEquals,
+                  SearchSelector::SelectionCriterium::ByClassEquals,
                   "qutebrowser"
               }))
           },
           { { Key::B, { Main, Shift } },
               CALL(jump_client({
-                  JumpSelector::SelectionCriterium::ByClassEquals,
+                  SearchSelector::SelectionCriterium::ByClassEquals,
                   "Firefox"
               }))
           },
           { { Key::B, { Main, Ctrl } },
               CALL(jump_client({
-                  JumpSelector::SelectionCriterium::ByClassContains,
+                  SearchSelector::SelectionCriterium::ByClassContains,
                   "Chromium"
               }))
           },
           { { Key::Space, { Main, Sec } },
               CALL(jump_client({
-                  JumpSelector::SelectionCriterium::ByClassEquals,
+                  SearchSelector::SelectionCriterium::ByClassEquals,
                   "Spotify"
               }))
           },
           { { Key::E, { Main } },
               CALL(jump_client({
-                  JumpSelector::SelectionCriterium::ByNameContains,
+                  SearchSelector::SelectionCriterium::ByNameContains,
                   "[vim]"
               }))
           },
@@ -885,6 +885,116 @@ Client_ptr
 Model::get_const_client(Window window) const
 {
     return Util::const_retrieve(m_client_map, window).value_or(nullptr);
+}
+
+
+Client_ptr
+Model::search_client(SearchSelector const& selector)
+{
+    static constexpr struct LastFocusedComparer final {
+        bool
+        operator()(const Client_ptr lhs, const Client_ptr rhs) const
+        {
+            return lhs->last_focused < rhs->last_focused;
+        }
+    } last_focused_comparer = {};
+
+    static std::set<Client_ptr, LastFocusedComparer> clients
+        = {{}, last_focused_comparer};
+
+    clients.clear();
+
+    switch (selector.criterium()) {
+    case SearchSelector::SelectionCriterium::OnWorkspaceBySelector:
+    {
+        auto const& [index,selector_] = selector.workspace_selector();
+
+        if (index <= m_workspaces.size()) {
+            Workspace_ptr workspace = m_workspaces[index];
+            std::optional<Client_ptr> client = workspace->find_client(selector_);
+
+            if (client && (*client)->managed)
+                clients.insert(*client);
+        }
+
+        break;
+    }
+    case SearchSelector::SelectionCriterium::ByNameEquals:
+    {
+        std::string const& name = selector.string_value();
+
+        for (auto const&[_,client] : m_client_map)
+            if (client->managed && client->name == name)
+                clients.insert(client);
+
+        break;
+    }
+    case SearchSelector::SelectionCriterium::ByClassEquals:
+    {
+        std::string const& class_ = selector.string_value();
+
+        for (auto const&[_,client] : m_client_map)
+            if (client->managed && client->class_ == class_)
+                clients.insert(client);
+
+        break;
+    }
+    case SearchSelector::SelectionCriterium::ByInstanceEquals:
+    {
+        std::string const& instance = selector.string_value();
+
+        for (auto const&[_,client] : m_client_map)
+            if (client->managed && client->instance == instance)
+                clients.insert(client);
+
+        break;
+    }
+    case SearchSelector::SelectionCriterium::ByNameContains:
+    {
+        std::string const& name = selector.string_value();
+
+        for (auto const&[_,client] : m_client_map)
+            if (client->managed && client->name.find(name) != std::string::npos)
+                clients.insert(client);
+
+        break;
+    }
+    case SearchSelector::SelectionCriterium::ByClassContains:
+    {
+        std::string const& class_ = selector.string_value();
+
+        for (auto const&[_,client] : m_client_map)
+            if (client->managed && client->class_.find(class_) != std::string::npos)
+                clients.insert(client);
+
+        break;
+    }
+    case SearchSelector::SelectionCriterium::ByInstanceContains:
+    {
+        std::string const& instance = selector.string_value();
+
+        for (auto const&[_,client] : m_client_map)
+            if (client->managed && client->instance.find(instance) != std::string::npos)
+                clients.insert(client);
+
+        break;
+    }
+    case SearchSelector::SelectionCriterium::ForCondition:
+    {
+        std::function<bool(const Client_ptr)> const& filter = selector.filter();
+
+        for (auto const&[_,client] : m_client_map)
+            if (client->managed && filter(client))
+                clients.insert(client);
+
+        break;
+    }
+    default: return nullptr;
+    }
+
+    return clients.empty()
+        ? nullptr
+        : *clients.rbegin();
 }
 
 
@@ -2257,112 +2367,11 @@ Model::kill_client(Client_ptr client)
 
 
 void
-Model::jump_client(JumpSelector const& selector)
+Model::jump_client(SearchSelector const& selector)
 {
-    static constexpr struct LastFocusedComparer final {
-        bool
-        operator()(const Client_ptr lhs, const Client_ptr rhs) const
-        {
-            return lhs->last_focused < rhs->last_focused;
-        }
-    } last_focused_comparer = {};
+    Client_ptr client = search_client(selector);
 
-    static std::set<Client_ptr, LastFocusedComparer> clients
-        = {{}, last_focused_comparer};
-
-    clients.clear();
-
-    switch (selector.criterium()) {
-    case JumpSelector::SelectionCriterium::OnWorkspaceBySelector:
-    {
-        auto const& [index,selector_] = selector.workspace_selector();
-
-        if (index <= m_workspaces.size()) {
-            Workspace_ptr workspace = m_workspaces[index];
-            std::optional<Client_ptr> client = workspace->find_client(selector_);
-
-            if (client && (*client)->managed)
-                clients.insert(*client);
-        }
-
-        break;
-    }
-    case JumpSelector::SelectionCriterium::ByNameEquals:
-    {
-        std::string const& name = selector.string_value();
-
-        for (auto const&[_,client] : m_client_map)
-            if (client->managed && client->name == name)
-                clients.insert(client);
-
-        break;
-    }
-    case JumpSelector::SelectionCriterium::ByClassEquals:
-    {
-        std::string const& class_ = selector.string_value();
-
-        for (auto const&[_,client] : m_client_map)
-            if (client->managed && client->class_ == class_)
-                clients.insert(client);
-
-        break;
-    }
-    case JumpSelector::SelectionCriterium::ByInstanceEquals:
-    {
-        std::string const& instance = selector.string_value();
-
-        for (auto const&[_,client] : m_client_map)
-            if (client->managed && client->instance == instance)
-                clients.insert(client);
-
-        break;
-    }
-    case JumpSelector::SelectionCriterium::ByNameContains:
-    {
-        std::string const& name = selector.string_value();
-
-        for (auto const&[_,client] : m_client_map)
-            if (client->managed && client->name.find(name) != std::string::npos)
-                clients.insert(client);
-
-        break;
-    }
-    case JumpSelector::SelectionCriterium::ByClassContains:
-    {
-        std::string const& class_ = selector.string_value();
-
-        for (auto const&[_,client] : m_client_map)
-            if (client->managed && client->class_.find(class_) != std::string::npos)
-                clients.insert(client);
-
-        break;
-    }
-    case JumpSelector::SelectionCriterium::ByInstanceContains:
-    {
-        std::string const& instance = selector.string_value();
-
-        for (auto const&[_,client] : m_client_map)
-            if (client->managed && client->instance.find(instance) != std::string::npos)
-                clients.insert(client);
-
-        break;
-    }
-    case JumpSelector::SelectionCriterium::ForCondition:
-    {
-        std::function<bool(const Client_ptr)> const& filter = selector.filter();
-
-        for (auto const&[_,client] : m_client_map)
-            if (client->managed && filter(client))
-                clients.insert(client);
-
-        break;
-    }
-    default: return;
-    }
-
-    if (!clients.empty()) {
-        Client_ptr client = *clients.rbegin();
-
+    if (client) {
         if (client == mp_focus) {
             if (mp_jumped_from && client != mp_jumped_from)
                 client = mp_jumped_from;

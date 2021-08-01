@@ -7,11 +7,11 @@
 #include "client.hh"
 #include "context.hh"
 #include "cycle.hh"
-#include "jump.hh"
 #include "layout.hh"
 #include "partition.hh"
 #include "partition.hh"
 #include "rules.hh"
+#include "search.hh"
 #include "stack.hh"
 #include "workspace.hh"
 
@@ -60,6 +60,8 @@ private:
 
     Client_ptr get_client(winsys::Window);
     Client_ptr get_const_client(winsys::Window) const;
+
+    Client_ptr search_client(SearchSelector const&);
 
     Index active_partition() const;
     Partition_ptr get_partition(Index) const;
@@ -151,7 +153,7 @@ private:
     void kill_focus();
     void kill_client(Client_ptr);
 
-    void jump_client(JumpSelector const&);
+    void jump_client(SearchSelector const&);
 
     void set_floating_focus(winsys::Toggle);
     void set_floating_client(winsys::Toggle, Client_ptr);
