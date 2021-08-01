@@ -62,6 +62,7 @@ private:
     Client_ptr get_const_client(winsys::Window) const;
 
     Client_ptr search_client(SearchSelector const&);
+    bool client_matches_search(Client_ptr, SearchSelector const&) const;
 
     Index active_partition() const;
     Partition_ptr get_partition(Index) const;
@@ -223,6 +224,9 @@ private:
 
     std::vector<Client_ptr> m_sticky_clients;
     std::vector<winsys::Window> m_unmanaged_windows;
+
+    std::vector<SearchSelector_ptr> m_ignored_producers;
+    std::vector<SearchSelector_ptr> m_ignored_consumers;
 
     Client_ptr mp_focus;
     Client_ptr mp_jumped_from;

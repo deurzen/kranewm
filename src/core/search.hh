@@ -9,7 +9,7 @@
 #include <string>
 #include <utility>
 
-class SearchSelector final
+typedef class SearchSelector final
 {
 public:
     enum class SelectionCriterium
@@ -81,6 +81,8 @@ public:
         }
     }
 
+    SearchSelector(SearchSelector&&) = delete;
+
     SelectionCriterium
     criterium() const
     {
@@ -139,6 +141,6 @@ private:
         std::function<bool(const Client_ptr)> m_filter;
     };
 
-};
+}* SearchSelector_ptr;
 
 #endif//__SEARCH_H_GUARD__

@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
 #include <iostream>
 #include <set>
 #include <sstream>
@@ -44,6 +45,8 @@ Model::Model(Connection& conn)
       m_fullscreen_map({}),
       m_sticky_clients({}),
       m_unmanaged_windows({}),
+      m_ignored_producers({}),
+      m_ignored_consumers({}),
       mp_focus(nullptr),
       mp_jumped_from(nullptr),
       m_key_bindings({
@@ -739,8 +742,7 @@ Model::Model(Connection& conn)
     for (auto& window : m_conn.top_level_windows())
         manage(window, !m_conn.must_manage_window(window));
 
-#ifndef DEBUG
-    { // run user-configured autostart programs
+    { // user configurations
         std::stringstream configdir_ss;
 
         if (const char* env_xdgconf = std::getenv("XDG_CONFIG_HOME"))
@@ -748,11 +750,83 @@ Model::Model(Connection& conn)
         else
             configdir_ss << "$HOME/.config/" << WM_NAME << "/";
 
-        spawn_external(configdir_ss.str() + std::string("blocking_autostart"));
-        spawn_external(configdir_ss.str() + std::string("nonblocking_autostart &"));
-        spdlog::info("ran autostart scripts");
-    }
+        { // produce vector of to-ignore-{producers,consumers}
+            std::ifstream in(configdir_ss.str() + std::string("consumeignore"));
+
+            if (in.good()) {
+                std::string line;
+
+                while (std::getline(in, line)) {
+                    std::string::size_type pos = line.find('#');
+
+                    if (pos != std::string::npos)
+                        line = line.substr(0, pos);
+
+                    if (line.length() < 5)
+                        continue;
+
+                    line.erase(4, line.find_first_not_of(" \t\n\r\f\v"));
+                    line.erase(line.find_last_not_of(" \t\n\r\f\v") + 1);
+
+                    if (line.length() < 5)
+                        continue;
+
+                    std::vector<SearchSelector_ptr>* ignored;
+                    switch (line[0]) {
+                    case '<': ignored = &m_ignored_producers; break;
+                    case '>': ignored = &m_ignored_consumers; break;
+                    default: continue;
+                    }
+
+                    SearchSelector::SelectionCriterium criterium;
+
+                    switch (line[2]) {
+                    case 'N':
+                    {
+                        switch (line[1]) {
+                        case '=': criterium = SearchSelector::SelectionCriterium::ByNameEquals;   break;
+                        case '~': criterium = SearchSelector::SelectionCriterium::ByNameContains; break;
+                        default: continue;
+                        }
+
+                        break;
+                    }
+                    case 'C':
+                    {
+                        switch (line[1]) {
+                        case '=': criterium = SearchSelector::SelectionCriterium::ByClassEquals;   break;
+                        case '~': criterium = SearchSelector::SelectionCriterium::ByClassContains; break;
+                        default: continue;
+                        }
+
+                        break;
+                    }
+                    case 'I':
+                    {
+                        switch (line[1]) {
+                        case '=': criterium = SearchSelector::SelectionCriterium::ByInstanceEquals;   break;
+                        case '~': criterium = SearchSelector::SelectionCriterium::ByInstanceContains; break;
+                        default: continue;
+                        }
+
+                        break;
+                    }
+                    default: continue;
+                    }
+
+                    ignored->push_back(new SearchSelector{criterium, line.substr(4)});
+                }
+            }
+        }
+
+#ifndef DEBUG
+        { // run user-configured autostart programs
+            spawn_external(configdir_ss.str() + std::string("blocking_autostart"));
+            spawn_external(configdir_ss.str() + std::string("nonblocking_autostart &"));
+            spdlog::info("ran autostart scripts");
+        }
 #endif
+    }
 
     spdlog::info("initialized " + WM_NAME);
 }
@@ -775,6 +849,12 @@ Model::~Model()
 
     for (Client_ptr client : clients)
         delete client;
+
+    for (std::size_t i = 0; i < m_ignored_producers.size(); ++i)
+        delete m_ignored_producers[i];
+
+    for (std::size_t i = 0; i < m_ignored_consumers.size(); ++i)
+        delete m_ignored_consumers[i];
 
     m_partitions.clear();
     m_contexts.clear();
@@ -995,6 +1075,56 @@ Model::search_client(SearchSelector const& selector)
     return clients.empty()
         ? nullptr
         : *clients.rbegin();
+}
+
+bool
+Model::client_matches_search(Client_ptr client, SearchSelector const& selector) const
+{
+    switch (selector.criterium()) {
+    case SearchSelector::SelectionCriterium::OnWorkspaceBySelector:
+    {
+        // TODO
+        break;
+    }
+    case SearchSelector::SelectionCriterium::ByNameEquals:
+    {
+        return client->managed
+            && client->name == selector.string_value();
+    }
+    case SearchSelector::SelectionCriterium::ByClassEquals:
+    {
+        return client->managed
+            && client->class_ == selector.string_value();
+    }
+    case SearchSelector::SelectionCriterium::ByInstanceEquals:
+    {
+        return client->managed
+            && client->instance == selector.string_value();
+    }
+    case SearchSelector::SelectionCriterium::ByNameContains:
+    {
+        return client->managed
+            && client->name.find(selector.string_value()) != std::string::npos;
+    }
+    case SearchSelector::SelectionCriterium::ByClassContains:
+    {
+        return client->managed
+            && client->class_.find(selector.string_value()) != std::string::npos;
+    }
+    case SearchSelector::SelectionCriterium::ByInstanceContains:
+    {
+        return client->managed
+            && client->instance.find(selector.string_value()) != std::string::npos;
+    }
+    case SearchSelector::SelectionCriterium::ForCondition:
+    {
+        return client->managed
+            && selector.filter()(client);
+    }
+    default: return false;
+    }
+
+    return false;
 }
 
 
@@ -2763,6 +2893,14 @@ Model::consume_client(Client_ptr producer, Client_ptr client)
     ) {
         return;
     }
+
+    for (SearchSelector_ptr selector : m_ignored_producers)
+        if (client_matches_search(producer, *selector))
+            return;
+
+    for (SearchSelector_ptr selector : m_ignored_consumers)
+        if (client_matches_search(client, *selector))
+            return;
 
     if (m_move_buffer.client() == producer)
         stop_moving();
