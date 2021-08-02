@@ -12,6 +12,7 @@
 #include <sstream>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <unordered_set>
 #include <vector>
 
 #ifdef DEBUG
@@ -2884,6 +2885,9 @@ Model::set_iconify_client(Toggle toggle, Client_ptr client)
 void
 Model::consume_client(Client_ptr producer, Client_ptr client)
 {
+    static std::unordered_set<std::string> ignored_producers_memoized;
+    static std::unordered_set<std::string> ignored_consumers_memoized;
+
     Workspace_ptr pworkspace = get_workspace(producer->workspace);
     Workspace_ptr cworkspace = get_workspace(client->workspace);
 
@@ -2894,13 +2898,31 @@ Model::consume_client(Client_ptr producer, Client_ptr client)
         return;
     }
 
+    std::string producer_handle = producer->name
+        + ":" + producer->class_
+        + ":" + producer->instance;
+
+    std::string consumer_handle = client->name
+        + ":" + client->class_
+        + ":" + client->instance;
+
+    if (Util::contains(ignored_producers_memoized, producer_handle))
+        return;
+
+    if (Util::contains(ignored_consumers_memoized, consumer_handle))
+        return;
+
     for (SearchSelector_ptr selector : m_ignored_producers)
-        if (client_matches_search(producer, *selector))
+        if (client_matches_search(producer, *selector)) {
+            ignored_producers_memoized.insert(producer_handle);
             return;
+        }
 
     for (SearchSelector_ptr selector : m_ignored_consumers)
-        if (client_matches_search(client, *selector))
+        if (client_matches_search(client, *selector)) {
+            ignored_consumers_memoized.insert(consumer_handle);
             return;
+        }
 
     if (m_move_buffer.client() == producer)
         stop_moving();

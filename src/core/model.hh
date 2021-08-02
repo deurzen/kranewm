@@ -16,6 +16,7 @@
 #include "workspace.hh"
 
 #include <cstddef>
+#include <unordered_map>
 #include <vector>
 
 class Model;
