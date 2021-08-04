@@ -863,18 +863,10 @@ XConnection::must_free_window(winsys::Window window)
 bool
 XConnection::window_is_mappable(winsys::Window window)
 {
-    static const std::vector<winsys::WindowState> unmappable_states = {
-        winsys::WindowState::Hidden
-    };
-
     XWindowAttributes wa;
     XGetWindowAttributes(mp_dpy, window, &wa);
 
-    std::optional<winsys::Hints> hints = get_icccm_window_hints(window);
-
-    return (wa.c_class != InputOnly)
-        && (hints && hints->initial_state && *hints->initial_state == winsys::IcccmWindowState::Normal)
-        && !window_is_any_of_states(window, unmappable_states);
+    return wa.c_class != InputOnly;
 }
 
 // ICCCM
@@ -1386,18 +1378,7 @@ XConnection::get_window_desktop(winsys::Window window)
     return index;
 }
 
-winsys::WindowType
-XConnection::get_window_preferred_type(winsys::Window window)
-{
-    std::vector<winsys::WindowType> window_types = get_window_types(window);
-
-    if (window_types.size() > 0)
-        return window_types[0];
-
-    return winsys::WindowType::Normal;
-}
-
-std::vector<winsys::WindowType>
+std::unordered_set<winsys::WindowType>
 XConnection::get_window_types(winsys::Window window)
 {
     std::vector<Atom> window_type_atoms = get_atomlist_property(window, "_NET_WM_WINDOW_TYPE");
@@ -1405,32 +1386,15 @@ XConnection::get_window_types(winsys::Window window)
     if (!property_status_ok())
         return {};
 
-    std::vector<winsys::WindowType> window_types = {};
+    std::unordered_set<winsys::WindowType> window_types = {};
 
-    std::transform(
-        window_type_atoms.begin(),
-        window_type_atoms.end(),
-        std::back_inserter(window_types),
-        [=, this](Atom atom) -> winsys::WindowType {
-            return get_window_type_from_atom(atom);
-        }
-    );
+    for (Atom atom : window_type_atoms)
+        window_types.insert(get_window_type_from_atom(atom));
 
     return window_types;
 }
 
-std::optional<winsys::WindowState>
-XConnection::get_window_preferred_state(winsys::Window window)
-{
-    std::vector<winsys::WindowState> window_states = get_window_states(window);
-
-    if (window_states.size() > 0)
-        return window_states[0];
-
-    return std::nullopt;
-}
-
-std::vector<winsys::WindowState>
+std::unordered_set<winsys::WindowState>
 XConnection::get_window_states(winsys::Window window)
 {
     std::vector<Atom> window_state_atoms = get_atomlist_property(window, "_NET_WM_STATE");
@@ -1438,16 +1402,10 @@ XConnection::get_window_states(winsys::Window window)
     if (!property_status_ok())
         return {};
 
-    std::vector<winsys::WindowState> window_states = {};
+    std::unordered_set<winsys::WindowState> window_states = {};
 
-    std::transform(
-        window_state_atoms.begin(),
-        window_state_atoms.end(),
-        std::back_inserter(window_states),
-        [=, this](Atom atom) -> winsys::WindowState {
-            return get_window_state_from_atom(atom);
-        }
-    );
+    for (Atom atom : window_state_atoms)
+        window_states.insert(get_window_state_from_atom(atom));
 
     return window_states;
 }

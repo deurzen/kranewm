@@ -1,16 +1,17 @@
 #ifndef __WINSYS_CONNECTION_H_GUARD__
 #define __WINSYS_CONNECTION_H_GUARD__
 
-#include <vector>
 #include <optional>
-#include <tuple>
 #include <string>
+#include <tuple>
+#include <unordered_set>
+#include <vector>
 
 #include "common.hh"
 #include "event.hh"
+#include "hints.hh"
 #include "screen.hh"
 #include "window.hh"
-#include "hints.hh"
 
 namespace winsys
 {
@@ -98,10 +99,8 @@ namespace winsys
         virtual std::optional<std::vector<std::optional<Strut>>> get_window_strut(Window) = 0;
         virtual std::optional<std::vector<std::optional<Strut>>> get_window_strut_partial(Window) = 0;
         virtual std::optional<Index> get_window_desktop(Window) = 0;
-        virtual WindowType get_window_preferred_type(Window) = 0;
-        virtual std::vector<WindowType> get_window_types(Window) = 0;
-        virtual std::optional<WindowState> get_window_preferred_state(Window) = 0;
-        virtual std::vector<WindowState> get_window_states(Window) = 0;
+        virtual std::unordered_set<WindowType> get_window_types(Window) = 0;
+        virtual std::unordered_set<WindowState> get_window_states(Window) = 0;
         virtual bool window_is_fullscreen(Window) = 0;
         virtual bool window_is_above(Window) = 0;
         virtual bool window_is_below(Window) = 0;

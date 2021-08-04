@@ -102,10 +102,8 @@ public:
     virtual std::optional<std::vector<std::optional<winsys::Strut>>> get_window_strut(winsys::Window) override;
     virtual std::optional<std::vector<std::optional<winsys::Strut>>> get_window_strut_partial(winsys::Window) override;
     virtual std::optional<Index> get_window_desktop(winsys::Window) override;
-    virtual winsys::WindowType get_window_preferred_type(winsys::Window) override;
-    virtual std::vector<winsys::WindowType> get_window_types(winsys::Window) override;
-    virtual std::optional<winsys::WindowState> get_window_preferred_state(winsys::Window) override;
-    virtual std::vector<winsys::WindowState> get_window_states(winsys::Window) override;
+    virtual std::unordered_set<winsys::WindowType> get_window_types(winsys::Window) override;
+    virtual std::unordered_set<winsys::WindowState> get_window_states(winsys::Window) override;
     virtual bool window_is_fullscreen(winsys::Window) override;
     virtual bool window_is_above(winsys::Window) override;
     virtual bool window_is_below(winsys::Window) override;

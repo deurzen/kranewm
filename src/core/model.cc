@@ -741,7 +741,7 @@ Model::Model(Connection& conn)
     m_conn.grab_bindings(key_inputs, mouse_inputs);
 
     for (auto& window : m_conn.top_level_windows())
-        manage(window, !m_conn.must_manage_window(window));
+        manage(window, !m_conn.must_manage_window(window), true);
 
     { // user configurations
         std::stringstream configdir_ss;
@@ -1615,12 +1615,12 @@ Model::retrieve_rules(Client_ptr client) const
 
 
 void
-Model::manage(const Window window, const bool ignore)
+Model::manage(const Window window, const bool ignore, const bool may_map)
 {
     std::optional<Region> window_geometry = m_conn.get_window_geometry(window);
 
     if (ignore || !window_geometry) {
-        if (m_conn.window_is_mappable(window))
+        if (may_map && m_conn.window_is_mappable(window))
             m_conn.map_window(window);
 
         m_conn.init_unmanaged(window);
@@ -1648,8 +1648,8 @@ Model::manage(const Window window, const bool ignore)
     std::string class_ = m_conn.get_icccm_window_class(window);
     std::string instance = m_conn.get_icccm_window_instance(window);
 
-    WindowType preferred_type = m_conn.get_window_preferred_type(window);
-    std::optional<WindowState> preferred_state = m_conn.get_window_preferred_state(window);
+    std::unordered_set<WindowType> types = m_conn.get_window_types(window);
+    std::unordered_set<WindowState> states = m_conn.get_window_states(window);
 
     Region geometry = *window_geometry;
 
@@ -1693,7 +1693,6 @@ Model::manage(const Window window, const bool ignore)
         mp_partition->index(),
         context,
         workspace,
-        preferred_type,
         pid,
         ppid
     );
@@ -1795,10 +1794,10 @@ Model::manage(const Window window, const bool ignore)
         focus_client(client);
     }
 
-    if (preferred_state && *preferred_state == WindowState::DemandsAttention)
+    if (Util::contains(states, WindowState::DemandsAttention))
         handle_state_request({
             window,
-            *preferred_state,
+            WindowState::DemandsAttention,
             Toggle::On,
             false
         });
@@ -3470,6 +3469,8 @@ void
 Model::handle_map_request(MapRequestEvent event)
 {
     bool must_restack = false;
+    bool may_map = true;
+
     std::optional<std::vector<std::optional<Strut>>> struts
         = m_conn.get_window_strut(event.window);
 
@@ -3486,25 +3487,25 @@ Model::handle_map_request(MapRequestEvent event)
             apply_layout(mp_workspace);
             must_restack = true;
         } else
-            m_conn.unmap_window(event.window);
+            may_map = false;
     }
 
-    WindowType type
-        = m_conn.get_window_preferred_type(event.window);
+    std::unordered_set<WindowType> types
+        = m_conn.get_window_types(event.window);
 
-    std::optional<WindowState> state
-        = m_conn.get_window_preferred_state(event.window);
+    std::unordered_set<WindowState> states
+        = m_conn.get_window_states(event.window);
 
     std::optional<Region> region
         = m_conn.get_window_geometry(event.window);
 
     std::optional<StackHandler::StackLayer> layer = std::nullopt;
 
-    if (state == WindowState::Below_)
+    if (Util::contains(states, WindowState::Below_))
         layer = StackHandler::StackLayer::Below_;
-    else if (type == WindowType::Desktop)
+    else if (Util::contains(types, WindowType::Desktop))
         layer = StackHandler::StackLayer::Desktop;
-    else if (type == WindowType::Dock) {
+    else if (Util::contains(types, WindowType::Dock)) {
         Screen& screen = mp_partition->screen();
 
         if (region && !screen.contains_strut(event.window)) {
@@ -3547,14 +3548,14 @@ Model::handle_map_request(MapRequestEvent event)
 
                     apply_layout(mp_workspace);
                 } else
-                    m_conn.unmap_window(strut->window);
+                    may_map = false;
             }
         }
 
         layer = StackHandler::StackLayer::Dock;
-    } else if (type == WindowType::Notification)
+    } else if (Util::contains(types, WindowType::Notification))
         layer = StackHandler::StackLayer::Notification;
-    else if (state == WindowState::Above_)
+    else if (Util::contains(states, WindowState::Above_))
         layer = StackHandler::StackLayer::Above_;
 
     if (layer) {
@@ -3565,8 +3566,11 @@ Model::handle_map_request(MapRequestEvent event)
     if (must_restack)
         apply_stack(mp_workspace);
 
+    if (!may_map)
+        m_conn.unmap_window(event.window);
+
     if (!(m_client_map.count(event.window) > 0))
-        manage(event.window, event.ignore);
+        manage(event.window, event.ignore, may_map);
 }
 
 void

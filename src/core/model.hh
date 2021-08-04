@@ -104,7 +104,7 @@ private:
 
     Rules retrieve_rules(Client_ptr) const;
 
-    void manage(const winsys::Window, const bool);
+    void manage(const winsys::Window, const bool, const bool);
     void unmanage(Client_ptr);
 
     void start_moving(Client_ptr);

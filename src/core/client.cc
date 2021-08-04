@@ -10,7 +10,6 @@ Client::Client(
     Index partition,
     Index context,
     Index workspace,
-    winsys::WindowType window_type,
     std::optional<winsys::Pid> pid,
     std::optional<winsys::Pid> ppid
 )
@@ -22,7 +21,6 @@ Client::Client(
       partition(partition),
       context(context),
       workspace(workspace),
-      window_type(window_type),
       free_region({}),
       tile_region({}),
       active_region({}),

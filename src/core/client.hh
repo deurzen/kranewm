@@ -46,7 +46,6 @@ typedef struct Client final
         Index partition,
         Index context,
         Index workspace,
-        winsys::WindowType window_type,
         std::optional<winsys::Pid> pid,
         std::optional<winsys::Pid> ppid
     );
@@ -87,7 +86,6 @@ typedef struct Client final
     Index partition;
     Index context;
     Index workspace;
-    winsys::WindowType window_type;
     winsys::Region free_region;
     winsys::Region tile_region;
     winsys::Region active_region;

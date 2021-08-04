@@ -27,21 +27,17 @@ Screen::show_and_get_struts(bool show)
 void
 Screen::add_struts(std::vector<std::optional<Strut>> struts)
 {
-    if (struts[0]) {
+    if (struts.size() > 0 && struts[0])
         add_strut(Edge::Left, *struts[0]);
-    }
 
-    if (struts[1]) {
-        add_strut(Edge::Top, *struts[1]);
-    }
+    if (struts.size() > 1 && struts[1])
+        add_strut(Edge::Right, *struts[1]);
 
-    if (struts[2]) {
-        add_strut(Edge::Right, *struts[2]);
-    }
+    if (struts.size() > 2 && struts[2])
+        add_strut(Edge::Top, *struts[2]);
 
-    if (struts[3]) {
+    if (struts.size() > 3 && struts[3])
         add_strut(Edge::Bottom, *struts[3]);
-    }
 }
 
 void
