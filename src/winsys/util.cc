@@ -1,6 +1,8 @@
 #include "util.hh"
 
+extern "C" {
 #include <unistd.h>
+}
 
 void
 Util::die(const std::string&& msg)

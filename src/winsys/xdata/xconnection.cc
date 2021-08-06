@@ -2,12 +2,13 @@
 #include "../util.hh"
 #include "xconnection.hh"
 
+#include <algorithm>
 #include <cstring>
+#include <iomanip>
 #include <iterator>
 #include <numeric>
-#include <proc/readproc.h>
 #include <sstream>
-#include <unistd.h>
+#include <deque>
 
 extern "C" {
 #include <X11/XF86keysym.h>
@@ -18,18 +19,22 @@ extern "C" {
 #include <X11/extensions/Xrandr.h>
 #include <X11/keysym.h>
 #include <X11/keysymdef.h>
+#include <fcntl.h>
+#include <proc/readproc.h>
+#include <signal.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <xcb/xcb.h>
+#include <xcb/xproto.h>
 #include <xkbcommon/xkbcommon-keysyms.h>
 }
 
-#include <xcb/xcb.h>
-#include <xcb/xproto.h>
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 
-XConnection::XConnection()
+XConnection::XConnection(const std::string_view wm_name)
     : mp_dpy(XOpenDisplay(NULL)),
-      m_conn_number(XConnectionNumber(mp_dpy)),
       m_root(XDefaultRootWindow(mp_dpy)),
       m_check_window(XCreateWindow(
           mp_dpy,
@@ -39,7 +44,10 @@ XConnection::XConnection()
           CopyFromParent, 0, InputOnly,
           CopyFromParent, 0, NULL
       )),
-      m_conn(XConnectionNumber(mp_dpy)),
+      m_dpy_fd(XConnectionNumber(mp_dpy)),
+      m_sock_fd(-1),
+      m_client_fd(-1),
+      m_max_fd(-1),
       m_interned_atoms({}),
       m_atom_names({}),
       m_keys({}),
@@ -118,6 +126,76 @@ XConnection::XConnection()
         m_event_dispatcher[event_base + RRScreenChangeNotify]
             = &XConnection::on_screen_change;
     }
+
+    std::string socket_name = wm_name.data() + std::string("_SOCKET");
+    std::string wm_socket;
+
+    if (const char* env_wm_socket = std::getenv(socket_name.c_str()))
+        wm_socket = std::string(env_wm_socket);
+    else {
+        static const std::string delim = "_";
+        std::string display_string = XDisplayString(mp_dpy);
+        int default_screen = XDefaultScreen(mp_dpy);
+
+        std::string host_name = "localhost";
+        std::string display_nr;
+        std::string screen_nr = std::to_string(default_screen);
+
+        std::string::size_type display_nr_pos = display_string.find_last_of(':');
+
+        if (display_nr_pos != std::string::npos) {
+            if (display_nr_pos != 0)
+                host_name = display_string.substr(0, display_nr_pos);
+
+            display_string = display_string.substr(display_nr_pos + 1);
+        }
+
+        std::string::size_type screen_nr_pos = display_string.find_last_of('.');
+
+        if (screen_nr_pos != std::string::npos
+            && display_nr_pos != std::string::npos
+            && display_nr_pos < screen_nr_pos)
+        {
+            display_nr = display_string.substr(display_nr_pos + 1, screen_nr_pos - (display_nr_pos + 1));
+        } else
+            display_nr = display_string.substr(0, screen_nr_pos);
+
+        wm_socket = "/tmp/"
+            + std::string(wm_name)
+            + delim + host_name
+            + delim + display_nr
+            + delim + screen_nr;
+    }
+
+    memset(m_sock_path, 0, 256);
+    memset(&m_sock_addr, 0, sizeof(m_sock_addr));
+
+    strncpy(m_sock_path,
+        wm_socket.c_str(),
+        wm_socket.length() < 256
+            ? wm_socket.length()
+            : 255
+    );
+
+    m_sock_addr.sun_family = AF_UNIX;
+
+    if (snprintf(m_sock_addr.sun_path, sizeof(m_sock_addr.sun_path), "%s", m_sock_path) < 0)
+        Util::die("unable to write IPC socket path");
+
+    m_sock_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+
+    if (m_sock_fd == -1)
+        Util::die("unable to set up IPC socket");
+
+    unlink(m_sock_path);
+
+    if (bind(m_sock_fd, (struct sockaddr*)&m_sock_addr, sizeof(m_sock_addr)) == -1)
+        Util::die("unable to bind name to IPC socket");
+
+    if (listen(m_sock_fd, SOMAXCONN) == -1)
+        Util::die("unable to listen to IPC socket");
+
+    fcntl(m_sock_fd, F_SETFD, FD_CLOEXEC | fcntl(m_sock_fd, F_GETFD));
 }
 
 XConnection::~XConnection()
@@ -131,15 +209,98 @@ XConnection::flush()
     return true;
 }
 
-winsys::Event
-XConnection::step()
+bool
+XConnection::block()
 {
-    next_event(m_current_event);
+    XFlush(mp_dpy);
 
-    if (m_current_event.type >= 0 && m_current_event.type <= 256)
-        return (this->*(m_event_dispatcher[m_current_event.type]))();
+    FD_ZERO(&m_descr);
+    FD_SET(m_sock_fd, &m_descr);
+    FD_SET(m_dpy_fd, &m_descr);
+    m_max_fd = std::max(m_sock_fd, m_dpy_fd);
 
-    return std::monostate{};
+    return select(m_max_fd + 1, &m_descr, NULL, NULL, NULL) > 0;
+}
+
+void
+XConnection::process_events(std::function<void(winsys::Event)> callback)
+{
+    if (FD_ISSET(m_dpy_fd, &m_descr)) {
+        while (XPending(mp_dpy)) {
+            next_event(m_current_event);
+
+            if (m_current_event.type >= 0 && m_current_event.type <= 256)
+                callback((this->*(m_event_dispatcher[m_current_event.type]))());
+        }
+    }
+}
+
+void
+XConnection::process_messages(std::function<void(winsys::Message)> callback)
+{
+    enum MessageType {
+        Command,
+        Config,
+        Window,
+        Workspace,
+        Query
+    };
+
+    static const std::unordered_map<std::string_view, MessageType> message_types = {
+        { "command",   Command },
+        { "cmd",       Command },
+        { "config",    Config },
+        { "conf",      Config },
+        { "cfg",       Config },
+        { "client",    Window },
+        { "cli",       Window },
+        { "workspace", Workspace },
+        { "ws",        Workspace },
+        { "query",     Query },
+        { "qr",        Query },
+    };
+
+    static int n = 0;
+    static char msg[BUFSIZ] = { 0 };
+
+    if (FD_ISSET(m_sock_fd, &m_descr)) {
+        m_client_fd = accept(m_sock_fd, NULL, 0);
+
+        if (m_client_fd > 0 && (n = recv(m_client_fd, msg, sizeof(msg) - 1, 0)) > 0) {
+            msg[n] = '\0';
+            FILE* rply = fdopen(m_client_fd, "w");
+
+            if (rply != NULL) {
+                winsys::Message message = std::monostate{};
+
+                std::deque<std::string> words = {};
+                std::istringstream word_stream(msg);
+                std::string word;
+
+                while (word_stream >> std::quoted(word))
+                    words.push_back(word);
+
+                if (!words.empty()) {
+                    std::string_view area = words.front();
+
+                    if (message_types.count(area) > 0) {
+                        words.pop_front();
+
+                        switch (message_types.at(area)) {
+                        case Command:   message = winsys::CommandMessage{words};   break;
+                        case Config:    message = winsys::ConfigMessage{words};    break;
+                        case Window:    message = winsys::WindowMessage{words};    break;
+                        case Workspace: message = winsys::WorkspaceMessage{words}; break;
+                        case Query:     message = winsys::QueryMessage{words};     break;
+                        }
+                    }
+                }
+
+                callback(message);
+            } else
+                close(m_client_fd);
+        }
+    }
 }
 
 std::vector<winsys::Screen>
@@ -319,7 +480,7 @@ XConnection::call_external_command(std::string& command)
 {
     if (!fork()) {
         if (mp_dpy)
-            close(m_conn_number);
+            close(m_dpy_fd);
 
         setsid();
         execl("/bin/sh", "/bin/sh", "-c", ("exec " + command).c_str(), NULL);

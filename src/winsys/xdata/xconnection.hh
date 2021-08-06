@@ -6,26 +6,30 @@
 #include "../input.hh"
 
 #include <cstddef>
+#include <functional>
 #include <iostream>
 #include <string>
 #include <unordered_map>
 #include <variant>
 
 extern "C" {
-#include <X11/Xlib.h>
-#include <X11/cursorfont.h>
 #include <X11/Xatom.h>
+#include <X11/Xlib.h>
 #include <X11/Xmd.h>
+#include <X11/cursorfont.h>
+#include <sys/un.h>
 }
 
 class XConnection final: public winsys::Connection
 {
 public:
-    XConnection();
+    XConnection(const std::string_view);
     ~XConnection();
 
     virtual bool flush() override;
-    virtual winsys::Event step() override;
+    virtual bool block() override;
+    virtual void process_events(std::function<void(winsys::Event)>) override;
+    virtual void process_messages(std::function<void(winsys::Message)>) override;
     virtual std::vector<winsys::Screen> connected_outputs() override;
     virtual std::vector<winsys::Window> top_level_windows() override;
     virtual winsys::Pos get_pointer_position() override;
@@ -175,10 +179,18 @@ private:
     }
 
     Display* mp_dpy;
-    int m_conn_number;
     winsys::Window m_root;
     winsys::Window m_check_window;
-    int m_conn;
+
+    int m_dpy_fd;
+    int m_sock_fd;
+    int m_client_fd;
+    int m_max_fd;
+
+	fd_set m_descr;
+	char m_sock_path[256];
+	char m_state_path[256] = { 0 };
+	struct sockaddr_un m_sock_addr;
 
     XEvent m_current_event;
 

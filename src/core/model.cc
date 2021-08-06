@@ -7,13 +7,17 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <set>
 #include <sstream>
-#include <sys/wait.h>
-#include <unistd.h>
 #include <unordered_set>
 #include <vector>
+
+extern "C" {
+#include <sys/wait.h>
+#include <unistd.h>
+}
 
 #ifdef DEBUG
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
@@ -863,12 +867,28 @@ Model::~Model()
     m_client_map.clear();
 }
 
+
 void
 Model::run()
 {
     while (m_running)
-        std::visit(event_visitor, m_conn.step());
+        if (m_conn.block()) {
+            // process IPC message
+            m_conn.process_messages(
+                [=,this](winsys::Message message) {
+                    std::visit(m_message_visitor, message);
+                }
+            );
+
+            // process windowing system event
+            m_conn.process_events(
+                [=,this](winsys::Event event) {
+                    std::visit(m_event_visitor, event);
+                }
+            );
+        }
 }
+
 
 void
 Model::init_signals() const
@@ -3975,6 +3995,119 @@ Model::handle_screen_change()
 {
     acquire_partitions();
     apply_layout(m_workspaces.active_index());
+}
+
+
+void
+Model::process_command(winsys::CommandMessage message)
+{
+    static const std::unordered_map<std::string_view, winsys::Direction> directions = {
+        { "Forward",  winsys::Direction::Forward },
+        { "forward",  winsys::Direction::Forward },
+        { "fwd",      winsys::Direction::Forward },
+        { "Backward", winsys::Direction::Backward },
+        { "backward", winsys::Direction::Backward },
+        { "bwd",      winsys::Direction::Backward },
+    };
+
+    static const std::unordered_map<std::string_view, std::function<void(void)>> commands = {
+        { "toggle_partition",
+            [&,this]() {
+                toggle_partition();
+            }
+        },
+        { "activate_next_partition",
+            [&,this]() {
+                if (!message.args.empty() && directions.count(message.args.front()))
+                    activate_next_partition(directions.at(message.args.front()));
+            }
+        },
+        { "activate_partition",
+            [&,this]() {
+                if (!message.args.empty()) {
+                    std::istringstream index_stream(message.args.front());
+                    Index index = 0;
+
+                    if (index_stream >> index)
+                        activate_partition(index);
+                }
+            }
+        },
+
+        { "toggle_context",
+            [&,this]() {
+                toggle_context();
+            }
+        },
+        { "activate_next_context",
+            [&,this]() {
+                if (!message.args.empty() && directions.count(message.args.front()))
+                    activate_next_context(directions.at(message.args.front()));
+            }
+        },
+        { "activate_context",
+            [&,this]() {
+                if (!message.args.empty()) {
+                    std::istringstream index_stream(message.args.front());
+                    Index index = 0;
+
+                    if (index_stream >> index)
+                        activate_context(index);
+                }
+            }
+        },
+
+        { "toggle_workspace",
+            [&,this]() {
+                toggle_workspace();
+            }
+        },
+        { "activate_next_workspace",
+            [&,this]() {
+                if (!message.args.empty() && directions.count(message.args.front()))
+                    activate_next_workspace(directions.at(message.args.front()));
+            }
+        },
+        { "activate_workspace",
+            [&,this]() {
+                if (!message.args.empty()) {
+                    std::istringstream index_stream(message.args.front());
+                    Index index = 0;
+
+                    if (index_stream >> index)
+                        activate_workspace(index);
+                }
+            }
+        },
+    };
+
+    if (!message.args.empty()) {
+        std::string command = message.args.front();
+        message.args.pop_front();
+
+        if (commands.count(command) > 0)
+            commands.at(command)();
+    }
+}
+
+void
+Model::process_config(winsys::ConfigMessage message)
+{
+}
+
+void
+Model::process_client(winsys::WindowMessage message)
+{
+}
+
+void
+Model::process_workspace(winsys::WorkspaceMessage message)
+{
+}
+
+void
+Model::process_query(winsys::QueryMessage message)
+{
 }
 
 

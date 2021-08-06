@@ -55,6 +55,12 @@ private:
     void handle_frame_extents_request(winsys::FrameExtentsRequestEvent);
     void handle_screen_change();
 
+    void process_command(winsys::CommandMessage);
+    void process_config(winsys::ConfigMessage);
+    void process_client(winsys::WindowMessage);
+    void process_workspace(winsys::WorkspaceMessage);
+    void process_query(winsys::QueryMessage);
+
     void acquire_partitions();
 
     const winsys::Screen& active_screen() const;
@@ -324,7 +330,38 @@ private:
     private:
         Model& m_model;
 
-    } event_visitor = EventVisitor(*this);
+    } m_event_visitor = EventVisitor(*this);
+
+    struct MessageVisitor final
+    {
+        MessageVisitor(Model& model): m_model(model) {}
+
+        void operator()(std::monostate) {}
+
+        void operator()(winsys::CommandMessage message) {
+            m_model.process_command(message);
+        }
+
+        void operator()(winsys::ConfigMessage message) {
+            m_model.process_config(message);
+        }
+
+        void operator()(winsys::WindowMessage message) {
+            m_model.process_client(message);
+        }
+
+        void operator()(winsys::WorkspaceMessage message) {
+            m_model.process_workspace(message);
+        }
+
+        void operator()(winsys::QueryMessage message) {
+            m_model.process_query(message);
+        }
+
+    private:
+        Model& m_model;
+
+    } m_message_visitor = MessageVisitor(*this);
 
 };
 

@@ -1,17 +1,19 @@
 #ifndef __WINSYS_CONNECTION_H_GUARD__
 #define __WINSYS_CONNECTION_H_GUARD__
 
+#include "common.hh"
+#include "event.hh"
+#include "hints.hh"
+#include "message.hh"
+#include "screen.hh"
+#include "window.hh"
+
+#include <functional>
 #include <optional>
 #include <string>
 #include <tuple>
 #include <unordered_set>
 #include <vector>
-
-#include "common.hh"
-#include "event.hh"
-#include "hints.hh"
-#include "screen.hh"
-#include "window.hh"
 
 namespace winsys
 {
@@ -22,7 +24,9 @@ namespace winsys
         virtual ~Connection() {};
 
         virtual bool flush() = 0;
-        virtual Event step() = 0;
+        virtual bool block() = 0;
+        virtual void process_events(std::function<void(Event)>) = 0;
+        virtual void process_messages(std::function<void(Message)>) = 0;
         virtual std::vector<Screen> connected_outputs() = 0;
         virtual std::vector<Window> top_level_windows() = 0;
         virtual Pos get_pointer_position() = 0;

@@ -10,8 +10,6 @@
 #include <optional>
 #include <variant>
 
-#include "spdlog/spdlog.h"
-
 namespace winsys
 {
 
