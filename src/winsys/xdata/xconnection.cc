@@ -48,6 +48,7 @@ XConnection::XConnection(const std::string_view wm_name)
       m_sock_fd(-1),
       m_client_fd(-1),
       m_max_fd(-1),
+      m_wm_name(wm_name),
       m_interned_atoms({}),
       m_atom_names({}),
       m_keys({}),
@@ -126,8 +127,16 @@ XConnection::XConnection(const std::string_view wm_name)
         m_event_dispatcher[event_base + RRScreenChangeNotify]
             = &XConnection::on_screen_change;
     }
+}
 
-    std::string socket_name = wm_name.data() + std::string("_SOCKET");
+XConnection::~XConnection()
+{}
+
+
+void
+XConnection::init_wm_ipc()
+{
+    std::string socket_name = m_wm_name.data() + std::string("_SOCKET");
     std::string wm_socket;
 
     if (const char* env_wm_socket = std::getenv(socket_name.c_str()))
@@ -161,7 +170,7 @@ XConnection::XConnection(const std::string_view wm_name)
             display_nr = display_string.substr(0, screen_nr_pos);
 
         wm_socket = "/tmp/"
-            + std::string(wm_name)
+            + std::string(m_wm_name)
             + delim + host_name
             + delim + display_nr
             + delim + screen_nr;
@@ -198,9 +207,6 @@ XConnection::XConnection(const std::string_view wm_name)
     fcntl(m_sock_fd, F_SETFD, FD_CLOEXEC | fcntl(m_sock_fd, F_GETFD));
 }
 
-XConnection::~XConnection()
-{}
-
 
 bool
 XConnection::flush()
@@ -209,8 +215,19 @@ XConnection::flush()
     return true;
 }
 
+winsys::Event
+XConnection::step()
+{
+    next_event(m_current_event);
+
+    if (m_current_event.type >= 0 && m_current_event.type <= 256)
+        return (this->*(m_event_dispatcher[m_current_event.type]))();
+
+    return std::monostate{};
+}
+
 bool
-XConnection::block()
+XConnection::check_progress()
 {
     XFlush(mp_dpy);
 
@@ -225,14 +242,9 @@ XConnection::block()
 void
 XConnection::process_events(std::function<void(winsys::Event)> callback)
 {
-    if (FD_ISSET(m_dpy_fd, &m_descr)) {
-        while (XPending(mp_dpy)) {
-            next_event(m_current_event);
-
-            if (m_current_event.type >= 0 && m_current_event.type <= 256)
-                callback((this->*(m_event_dispatcher[m_current_event.type]))());
-        }
-    }
+    if (FD_ISSET(m_dpy_fd, &m_descr))
+        while (XPending(mp_dpy))
+            callback(step());
 }
 
 void
@@ -1299,7 +1311,7 @@ XConnection::get_icccm_window_size_hints(winsys::Window window, std::optional<wi
 
 // EWMH
 void
-XConnection::init_for_wm(std::string const& wm_name, std::vector<std::string> const& desktop_names)
+XConnection::init_for_wm(std::vector<std::string> const& desktop_names)
 {
     if (!mp_dpy || !m_root)
         Util::die("unable to set up window manager");
@@ -1319,15 +1331,15 @@ XConnection::init_for_wm(std::string const& wm_name, std::vector<std::string> co
     wa.cursor = XCreateFontCursor(mp_dpy, XC_left_ptr);
     XChangeWindowAttributes(mp_dpy, m_root, CWCursor, &wa);
 
-    std::vector<std::string> wm_class = { wm_name, wm_name };
+    std::vector<std::string> wm_class = { m_wm_name, m_wm_name };
 
-    replace_string_property(m_check_window, "_NET_WM_NAME", wm_name);
+    replace_string_property(m_check_window, "_NET_WM_NAME", m_wm_name);
     replace_stringlist_property(m_check_window, "_WM_CLASS", wm_class);
     replace_card_property(m_check_window, "_NET_WM_PID", getpid());
     replace_window_property(m_check_window, "_NET_SUPPORTING_WM_CHECK", m_check_window);
 
     replace_window_property(m_root, "_NET_SUPPORTING_WM_CHECK", m_check_window);
-    replace_string_property(m_root, "_NET_WM_NAME", wm_name);
+    replace_string_property(m_root, "_NET_WM_NAME", m_wm_name);
     replace_stringlist_property(m_root, "_WM_CLASS", wm_class);
 
     std::vector<Atom> supported_atoms;
@@ -1605,6 +1617,14 @@ XConnection::window_is_sticky(winsys::Window window)
         = { winsys::WindowState::Sticky };
 
     return window_is_any_of_states(window, sticky_state);
+}
+
+
+// IPC client
+void
+XConnection::init_for_client()
+{
+
 }
 
 

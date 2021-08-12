@@ -26,8 +26,10 @@ public:
     XConnection(const std::string_view);
     ~XConnection();
 
+    virtual void init_wm_ipc() override;
     virtual bool flush() override;
-    virtual bool block() override;
+    virtual winsys::Event step() override;
+    virtual bool check_progress() override;
     virtual void process_events(std::function<void(winsys::Event)>) override;
     virtual void process_messages(std::function<void(winsys::Message)>) override;
     virtual std::vector<winsys::Screen> connected_outputs() override;
@@ -91,7 +93,7 @@ public:
     virtual std::optional<winsys::SizeHints> get_icccm_window_size_hints(winsys::Window, std::optional<winsys::Dim>) override;
 
     // EWMH
-    virtual void init_for_wm(std::string const&, std::vector<std::string> const&) override;
+    virtual void init_for_wm(std::vector<std::string> const&) override;
     virtual void set_current_desktop(Index) override;
     virtual void set_root_window_name(std::string const&) override;
     virtual void set_window_desktop(winsys::Window, Index) override;
@@ -112,6 +114,9 @@ public:
     virtual bool window_is_above(winsys::Window) override;
     virtual bool window_is_below(winsys::Window) override;
     virtual bool window_is_sticky(winsys::Window) override;
+
+    // IPC client
+    virtual void init_for_client() override;
 
 private:
     static int s_otherwm_error_handler(Display*, XErrorEvent*);
@@ -191,6 +196,8 @@ private:
 	char m_sock_path[256];
 	char m_state_path[256] = { 0 };
 	struct sockaddr_un m_sock_addr;
+
+    std::string m_wm_name;
 
     XEvent m_current_event;
 

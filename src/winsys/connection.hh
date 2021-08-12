@@ -23,8 +23,10 @@ namespace winsys
     public:
         virtual ~Connection() {};
 
+        virtual void init_wm_ipc() = 0;
         virtual bool flush() = 0;
-        virtual bool block() = 0;
+        virtual Event step() = 0;
+        virtual bool check_progress() = 0;
         virtual void process_events(std::function<void(Event)>) = 0;
         virtual void process_messages(std::function<void(Message)>) = 0;
         virtual std::vector<Screen> connected_outputs() = 0;
@@ -88,7 +90,7 @@ namespace winsys
         virtual std::optional<SizeHints> get_icccm_window_size_hints(Window, std::optional<Dim>) = 0;
 
         // EWMH
-        virtual void init_for_wm(std::string const&, std::vector<std::string> const&) = 0;
+        virtual void init_for_wm(std::vector<std::string> const&) = 0;
         virtual void set_current_desktop(Index) = 0;
         virtual void set_root_window_name(std::string const&) = 0;
         virtual void set_window_desktop(Window, Index) = 0;
@@ -109,6 +111,9 @@ namespace winsys
         virtual bool window_is_above(Window) = 0;
         virtual bool window_is_below(Window) = 0;
         virtual bool window_is_sticky(Window) = 0;
+
+        // IPC client
+        virtual void init_for_client() = 0;
 
     };
 

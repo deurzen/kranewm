@@ -19,6 +19,12 @@ extern "C" {
 #include <unistd.h>
 }
 
+#ifdef ENABLE_IPC
+const bool IPC_ENABLED = true;
+#else
+const bool IPC_ENABLED = false;
+#endif
+
 #ifdef DEBUG
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
 #endif
@@ -713,9 +719,11 @@ Model::Model(Connection& conn)
     for (std::size_t i = 0; i < workspace_names.size(); ++i)
         m_workspaces.insert_at_back(new Workspace(i, workspace_names[i]));
 
-    acquire_partitions();
+    if constexpr (IPC_ENABLED)
+        m_conn.init_wm_ipc();
 
-    m_conn.init_for_wm(WM_NAME, workspace_names);
+    acquire_partitions();
+    m_conn.init_for_wm(workspace_names);
 
     m_contexts.activate_at_index(0);
     m_workspaces.activate_at_index(0);
@@ -872,21 +880,24 @@ void
 Model::run()
 {
     while (m_running)
-        if (m_conn.block()) {
-            // process IPC message
-            m_conn.process_messages(
-                [=,this](winsys::Message message) {
-                    std::visit(m_message_visitor, message);
-                }
-            );
+        if constexpr (IPC_ENABLED) {
+            if (m_conn.check_progress()) {
+                // process IPC message
+                m_conn.process_messages(
+                    [=,this](winsys::Message message) {
+                        std::visit(m_message_visitor, message);
+                    }
+                );
 
-            // process windowing system event
-            m_conn.process_events(
-                [=,this](winsys::Event event) {
-                    std::visit(m_event_visitor, event);
-                }
-            );
-        }
+                // process windowing system event
+                m_conn.process_events(
+                    [=,this](winsys::Event event) {
+                        std::visit(m_event_visitor, event);
+                    }
+                );
+            }
+        } else
+            std::visit(m_event_visitor, m_conn.step());
 }
 
 
@@ -4005,9 +4016,11 @@ Model::process_command(winsys::CommandMessage message)
         { "Forward",  winsys::Direction::Forward },
         { "forward",  winsys::Direction::Forward },
         { "fwd",      winsys::Direction::Forward },
+        { "f",        winsys::Direction::Forward },
         { "Backward", winsys::Direction::Backward },
         { "backward", winsys::Direction::Backward },
         { "bwd",      winsys::Direction::Backward },
+        { "b",        winsys::Direction::Backward },
     };
 
     static const std::unordered_map<std::string_view, std::function<void(void)>> commands = {
@@ -4091,23 +4104,27 @@ Model::process_command(winsys::CommandMessage message)
 }
 
 void
-Model::process_config(winsys::ConfigMessage message)
+Model::process_config(winsys::ConfigMessage)
 {
+    // TODO
 }
 
 void
-Model::process_client(winsys::WindowMessage message)
+Model::process_client(winsys::WindowMessage)
 {
+    // TODO
 }
 
 void
-Model::process_workspace(winsys::WorkspaceMessage message)
+Model::process_workspace(winsys::WorkspaceMessage)
 {
+    // TODO
 }
 
 void
-Model::process_query(winsys::QueryMessage message)
+Model::process_query(winsys::QueryMessage)
 {
+    // TODO
 }
 
 
