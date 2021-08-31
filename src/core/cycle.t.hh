@@ -353,12 +353,17 @@ template <typename T>
 bool
 Cycle<T>::remove_element(T element)
 {
+    std::optional<Index> index = index_of_element(element);
     bool must_resync = is_active_element(element);
 
     std::size_t size_before = m_elements.size();
+
     Util::erase_remove(m_elements, element);
 
     m_stack.remove(element);
+
+    if (m_index != 0 && index && m_index >= *index)
+        --m_index;
 
     if (must_resync)
         sync_active();
