@@ -4,6 +4,7 @@
 #include "model.hh"
 
 #include <algorithm>
+#include <cmath>
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
