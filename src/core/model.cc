@@ -1851,7 +1851,7 @@ Model::unmanage(Client_ptr client)
         return;
 
     for (Client_ptr consumer : client->consumers)
-        check_unconsume_client(consumer);
+        check_unconsume_client(consumer, false);
 
     check_unconsume_client(client);
 
@@ -2924,12 +2924,8 @@ Model::consume_client(Client_ptr producer, Client_ptr client)
     Workspace_ptr pworkspace = get_workspace(producer->workspace);
     Workspace_ptr cworkspace = get_workspace(client->workspace);
 
-    if (client->producer
-        || !cworkspace->contains(client)
-        || !pworkspace->contains(producer)
-    ) {
+    if (client->producer || !cworkspace->contains(client))
         return;
-    }
 
     std::string producer_handle = producer->name
         + ":" + producer->class_
@@ -2972,6 +2968,8 @@ Model::consume_client(Client_ptr producer, Client_ptr client)
     unmap_client(producer);
 
     if (producer->consumers.size() == 0) {
+        producer->managed = false;
+
         if (pworkspace == cworkspace) {
             cworkspace->remove_client(client);
             pworkspace->replace_client(producer, client);
@@ -2983,7 +2981,6 @@ Model::consume_client(Client_ptr producer, Client_ptr client)
     }
 
     client->producer = producer;
-    producer->managed = false;
     producer->consumers.push_back(client);
 
     sync_focus();
@@ -2992,7 +2989,7 @@ Model::consume_client(Client_ptr producer, Client_ptr client)
 }
 
 void
-Model::check_unconsume_client(Client_ptr client)
+Model::check_unconsume_client(Client_ptr client, bool must_replace_consumer)
 {
     Client_ptr producer = client->producer;
 
@@ -3002,15 +2999,22 @@ Model::check_unconsume_client(Client_ptr client)
     Workspace_ptr cworkspace = get_workspace(client->workspace);
 
     client->producer = nullptr;
-    producer->managed = true;
     Util::erase_remove(producer->consumers, client);
 
     if (producer->consumers.size() == 0) {
+        producer->managed = true;
+
         if (cworkspace->contains(client)) {
-            cworkspace->replace_client(client, producer);
+            if (must_replace_consumer)
+                cworkspace->replace_client(client, producer);
+            else
+                cworkspace->remove_client(producer);
+
             producer->workspace = cworkspace->index();
         } else {
-            mp_workspace->add_client(producer);
+            if (must_replace_consumer)
+                mp_workspace->add_client(producer);
+
             producer->workspace = mp_workspace->index();
         }
 

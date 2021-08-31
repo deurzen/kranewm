@@ -181,7 +181,7 @@ private:
     void set_iconify_client(winsys::Toggle, Client_ptr);
 
     void consume_client(Client_ptr, Client_ptr);
-    void check_unconsume_client(Client_ptr);
+    void check_unconsume_client(Client_ptr, bool = true);
 
     void center_focus();
     void center_client(Client_ptr);
