@@ -2916,8 +2916,10 @@ Model::set_iconify_client(Toggle toggle, Client_ptr client)
 void
 Model::consume_client(Client_ptr producer, Client_ptr client)
 {
-    static std::unordered_set<std::string> ignored_producers_memoized;
-    static std::unordered_set<std::string> ignored_consumers_memoized;
+    static std::unordered_set<std::string> ignored_producers_memoized = {};
+    static std::unordered_set<std::string> ignored_consumers_memoized = {};
+    static std::unordered_set<std::string> allowed_producers_memoized = {};
+    static std::unordered_set<std::string> allowed_consumers_memoized = {};
 
     Workspace_ptr pworkspace = get_workspace(producer->workspace);
     Workspace_ptr cworkspace = get_workspace(client->workspace);
@@ -2937,23 +2939,29 @@ Model::consume_client(Client_ptr producer, Client_ptr client)
         + ":" + client->class_
         + ":" + client->instance;
 
-    if (Util::contains(ignored_producers_memoized, producer_handle))
-        return;
-
-    if (Util::contains(ignored_consumers_memoized, consumer_handle))
-        return;
-
-    for (SearchSelector_ptr selector : m_ignored_producers)
-        if (client_matches_search(producer, *selector)) {
-            ignored_producers_memoized.insert(producer_handle);
+    if (!Util::contains(allowed_producers_memoized, producer_handle)) {
+        if (Util::contains(ignored_producers_memoized, producer_handle))
             return;
-        }
 
-    for (SearchSelector_ptr selector : m_ignored_consumers)
-        if (client_matches_search(client, *selector)) {
-            ignored_consumers_memoized.insert(consumer_handle);
+        for (SearchSelector_ptr selector : m_ignored_producers)
+            if (client_matches_search(producer, *selector)) {
+                ignored_producers_memoized.insert(producer_handle);
+                return;
+            }
+                allowed_producers_memoized.insert(producer_handle);
+    }
+
+    if (!Util::contains(allowed_consumers_memoized, producer_handle)) {
+        if (Util::contains(ignored_consumers_memoized, consumer_handle))
             return;
-        }
+
+        for (SearchSelector_ptr selector : m_ignored_consumers)
+            if (client_matches_search(client, *selector)) {
+                ignored_consumers_memoized.insert(consumer_handle);
+                return;
+            } else
+                allowed_consumers_memoized.insert(consumer_handle);
+    }
 
     if (m_move_buffer.client() == producer)
         stop_moving();
