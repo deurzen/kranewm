@@ -3703,6 +3703,9 @@ Model::handle_state_request(StateRequestEvent event)
     }
     case WindowState::DemandsAttention:
     {
+        if (client->focused)
+            return;
+
         bool value;
 
         switch (event.action) {
