@@ -2105,7 +2105,8 @@ XConnection::get_atom_property(winsys::Window window, std::string const& name)
 	if (m_property_status == Success && ucp) {
 		atom = *(Atom*)ucp;
 		XFree(ucp);
-	}
+	} else
+        m_property_status = !Success;
 
 	return atom;
 }
@@ -2184,7 +2185,8 @@ XConnection::get_atomlist_property(winsys::Window window, std::string const& nam
             atomlist.push_back(((Atom*)ucp)[i]);
 
 		XFree(ucp);
-	}
+	} else
+        m_property_status = !Success;
 
 	return atomlist;
 }
@@ -2276,7 +2278,8 @@ XConnection::get_window_property(winsys::Window window, std::string const& name)
 	if (m_property_status == Success && ucp) {
 		window_ = *(winsys::Window*)ucp;
 		XFree(ucp);
-	}
+	} else
+        m_property_status = !Success;
 
 	return window_;
 }
@@ -2355,7 +2358,8 @@ XConnection::get_windowlist_property(winsys::Window window, std::string const& n
             windowlist.push_back(((winsys::Window*)ucp)[i]);
 
 		XFree(ucp);
-	}
+	} else
+        m_property_status = !Success;
 
 	return windowlist;
 }
@@ -2447,7 +2451,8 @@ XConnection::get_string_property(winsys::Window window, std::string const& name)
 	if (m_property_status == Success && ucp) {
 		str_ = std::string((char*)ucp);
 		XFree(ucp);
-	}
+	} else
+        m_property_status = !Success;
 
 	return str_;
 }
@@ -2526,7 +2531,8 @@ XConnection::get_stringlist_property(winsys::Window window, std::string const& n
             stringlist.emplace_back(std::string(((char**)ucp)[i]));
 
 		XFree(ucp);
-	}
+	} else
+        m_property_status = !Success;
 
 	return stringlist;
 }
@@ -2650,7 +2656,8 @@ XConnection::get_card_property(winsys::Window window, std::string const& name)
 	if (m_property_status == Success && ucp) {
 		card = *(winsys::Window*)ucp;
 		XFree(ucp);
-	}
+	} else
+        m_property_status = !Success;
 
 	return card;
 }
@@ -2710,7 +2717,8 @@ XConnection::get_cardlist_property(winsys::Window window, std::string const& nam
             cardlist.push_back(((unsigned long*)ucp)[i]);
 
 		XFree(ucp);
-	}
+	} else
+        m_property_status = !Success;
 
 	return cardlist;
 }
