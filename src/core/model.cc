@@ -4,6 +4,7 @@
 #include "model.hh"
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
@@ -12,6 +13,7 @@
 #include <iostream>
 #include <set>
 #include <sstream>
+#include <thread>
 #include <unordered_set>
 #include <vector>
 
@@ -48,6 +50,7 @@ Model::Model(Connection& conn)
       mp_prev_partition(nullptr),
       mp_prev_context(nullptr),
       mp_prev_workspace(nullptr),
+      mp_attachment(std::atomic(nullptr)),
       m_move_buffer(Buffer::BufferKind::Move),
       m_resize_buffer(Buffer::BufferKind::Resize),
       m_stack({}),
@@ -465,6 +468,9 @@ Model::Model(Connection& conn)
           },
 
           // workspace client movers
+          { { Key::BackSlash, { Main } },
+              CALL(attach_next_client())
+          },
           { { Key::RightBracket, { Main, Shift } },
               CALL(move_focus_to_next_workspace(Direction::Forward))
           },
@@ -1302,6 +1308,7 @@ Model::focus_client(Client_ptr client)
 
     client->focus();
     client->urgent = false;
+    client->attaching = false;
 
     mp_focus = client;
 
@@ -1337,6 +1344,24 @@ Model::sync_focus()
         m_conn.unfocus();
         mp_focus = nullptr;
     }
+}
+
+
+void
+Model::attach_next_client()
+{
+    static std::atomic<unsigned> count = { 0 };
+    static auto attachment_resetter = [&,this]() mutable {
+        unsigned current = ++count;
+
+        std::this_thread::sleep_for(std::chrono::seconds(30));
+
+        if (current == count)
+            mp_attachment.exchange(nullptr);
+    };
+
+    mp_attachment.exchange(mp_workspace);
+    std::thread(attachment_resetter).detach();
 }
 
 
@@ -1692,9 +1717,16 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
     bool fullscreen = m_conn.window_is_fullscreen(window);
     bool sticky = m_conn.window_is_sticky(window);
 
-    Index workspace = m_conn.get_window_desktop(window).value_or(mp_workspace->index());
-    Index context = workspace / m_workspaces.size();
-    workspace %= m_workspaces.size();
+    Index partition = mp_partition->index();
+    Index context = mp_context->index();
+    Index workspace = mp_workspace->index();
+
+    std::optional<Index> desktop = m_conn.get_window_desktop(window);
+
+    if (desktop) {
+        context = *desktop / m_workspaces.size();
+        workspace = *desktop % m_workspaces.size();
+    }
 
     std::optional<Hints> hints = m_conn.get_icccm_window_hints(window);
     std::optional<SizeHints> size_hints
@@ -1722,20 +1754,12 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
         name,
         class_,
         instance,
-        mp_partition->index(),
+        partition,
         context,
         workspace,
         pid,
         ppid
     );
-
-    Rules rules = retrieve_rules(client);
-
-    if (rules.to_context && *rules.to_context <= m_contexts.size())
-        client->context = *rules.to_context;
-
-    if (rules.to_workspace && *rules.to_workspace <= m_workspaces.size())
-        client->workspace = *rules.to_workspace;
 
     if (parent) {
         Client_ptr parent_client = get_client(*parent);
@@ -1754,10 +1778,12 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
         Client_ptr leader_client = get_client(*leader);
 
         if (leader_client) {
-            client->leader = get_client(*leader);
+            client->leader = leader_client;
             floating = true;
         }
     }
+
+    Rules rules = retrieve_rules(client);
 
     if (center || (rules.do_center && *rules.do_center)) {
         const Region screen_region = active_screen().placeable_region();
@@ -1771,26 +1797,25 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
 
     client->set_free_region(geometry);
     client->floating = floating;
-    client->fullscreen = fullscreen;
     client->urgent = hints ? hints->urgent : false;
-    client->partition = m_partitions.active_index();
-    client->context = m_contexts.active_index();
-    client->workspace = m_workspaces.active_index();
     client->size_hints = size_hints;
 
     if (rules.do_float)
         client->floating = *rules.do_float;
 
     if (rules.do_fullscreen)
-        client->fullscreen = *rules.do_fullscreen;
+        fullscreen = *rules.do_fullscreen;
 
-    if (rules.to_partition)
+    if (rules.to_partition && *rules.to_partition < m_partitions.size())
         client->partition = *rules.to_partition;
 
-    if (rules.to_context)
+    if (rules.to_context && *rules.to_context < m_contexts.size())
         client->context = *rules.to_context;
 
-    if (rules.to_workspace)
+    if (mp_attachment) {
+        client->workspace = mp_attachment.exchange(nullptr)->index();
+        client->attaching = true;
+    } else if (rules.to_workspace && *rules.to_workspace < m_workspaces.size())
         client->workspace = *rules.to_workspace;
 
     if (pid)
@@ -1808,21 +1833,21 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
     m_conn.init_window(window, false);
     m_conn.init_frame(frame, false);
     m_conn.set_window_border_width(window, 0);
-    m_conn.set_window_desktop(window, workspace);
+    m_conn.set_window_desktop(window, client->workspace);
     m_conn.set_icccm_window_state(window, IcccmWindowState::Normal);
-
-    mp_workspace->add_client(client);
 
     if (client->size_hints)
         client->size_hints->apply(client->free_region.dim);
 
     client->free_region.apply_minimum_dim(Client::MIN_CLIENT_DIM);
 
-    apply_layout(client->workspace);
+    get_workspace(client->workspace)->add_client(client);
 
-    if (!m_move_buffer.is_occupied()
+    if (client->workspace == mp_workspace->index()
+        && !m_move_buffer.is_occupied()
         && !m_resize_buffer.is_occupied()
     ) {
+        apply_layout(mp_workspace);
         focus_client(client);
     }
 
@@ -3736,7 +3761,7 @@ Model::handle_focus_request(FocusRequestEvent event)
 {
     Client_ptr client = get_client(event.window);
 
-    if (!client || event.on_root)
+    if (!client || client->attaching || event.on_root)
         return;
 
     focus_client(client);

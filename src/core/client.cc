@@ -49,6 +49,7 @@ Client::Client(
       iconified(false),
       disowned(false),
       producing(true),
+      attaching(false),
       pid(pid),
       ppid(ppid),
       last_focused(std::chrono::steady_clock::now()),

@@ -114,6 +114,7 @@ typedef struct Client final
     bool iconified;
     bool disowned;
     bool producing;
+    bool attaching;
     std::optional<winsys::Pid> pid;
     std::optional<winsys::Pid> ppid;
     std::chrono::time_point<std::chrono::steady_clock> last_focused;

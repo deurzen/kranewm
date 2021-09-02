@@ -15,6 +15,7 @@
 #include "stack.hh"
 #include "workspace.hh"
 
+#include <atomic>
 #include <cstddef>
 #include <unordered_map>
 #include <vector>
@@ -90,6 +91,8 @@ private:
     void focus_client(Client_ptr);
     void unfocus_client(Client_ptr);
     void sync_focus();
+
+    void attach_next_client();
 
     void toggle_partition();
     void activate_next_partition(winsys::Direction);
@@ -218,6 +221,8 @@ private:
     Partition_ptr mp_prev_partition;
     Context_ptr mp_prev_context;
     Workspace_ptr mp_prev_workspace;
+
+    std::atomic<Workspace_ptr> mp_attachment;
 
     Buffer m_move_buffer;
     Buffer m_resize_buffer;
