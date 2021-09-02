@@ -58,6 +58,7 @@ Model::Model(Connection& conn)
       m_client_map({}),
       m_pid_map({}),
       m_fullscreen_map({}),
+      m_leader_map({}),
       m_sticky_clients({}),
       m_unmanaged_windows({}),
       m_ignored_producers({}),
@@ -1775,12 +1776,12 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
     }
 
     if (leader) {
-        Client_ptr leader_client = get_client(*leader);
+        if (m_leader_map.count(*leader) > 0)
+            m_leader_map[*leader].push_back(client);
+        else
+            m_leader_map[*leader] = { client };
 
-        if (leader_client) {
-            client->leader = leader_client;
-            floating = true;
-        }
+        client->leader = leader;
     }
 
     Rules rules = retrieve_rules(client);
@@ -1817,6 +1818,35 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
         client->attaching = true;
     } else if (rules.to_workspace && *rules.to_workspace < m_workspaces.size())
         client->workspace = *rules.to_workspace;
+
+    if (leader) {
+        std::vector<Client_ptr>& members = m_leader_map.at(*leader);
+        std::optional<Index> group_attachment = std::nullopt;
+
+        if (std::any_of(
+            members.begin(),
+            members.end(),
+            [&group_attachment](Client_ptr member) mutable -> bool {
+                if (member->attaching) {
+                    group_attachment = member->workspace;
+                    return true;
+                }
+
+                return false;
+            }) && group_attachment
+        ) {
+            client->workspace = *group_attachment;
+        }
+    }
+
+    if (parent) {
+        Client_ptr parent_client = get_client(*parent);
+
+        if (parent_client && parent_client->attaching) {
+            client->workspace = parent_client->workspace;
+            client->attaching = true;
+        }
+    }
 
     if (pid)
         m_pid_map[*pid] = client;
@@ -1906,6 +1936,14 @@ Model::unmanage(Client_ptr client)
     m_client_map.erase(client->frame);
 
     m_fullscreen_map.erase(client);
+
+    if (client->leader) {
+        std::vector<Client_ptr>& members = m_leader_map.at(*client->leader);
+        Util::erase_remove(members, client);
+
+        if (members.empty())
+            m_leader_map.erase(*client->leader);
+    }
 
     Util::erase_remove(m_sticky_clients, client);
     Util::erase_remove(m_order, client->frame);
@@ -2371,22 +2409,42 @@ Model::move_focus_to_workspace(Index index)
 void
 Model::move_client_to_workspace(Index index, Client_ptr client)
 {
-    if (index >= m_workspaces.size() || index == mp_workspace->index() || client->sticky)
+    if (index >= m_workspaces.size()
+        || index == client->workspace
+        || client->sticky
+    ) {
         return;
+    }
+
+    Workspace_ptr from = get_workspace(client->workspace);
+    Workspace_ptr to = get_workspace(index);
 
     client->workspace = index;
-    Workspace_ptr workspace = get_workspace(index);
 
-    unmap_client(client);
+    if (from == mp_workspace)
+        unmap_client(client);
 
-    workspace->add_client(client);
-    apply_layout(workspace);
-    apply_stack(workspace);
+    to->add_client(client);
+    apply_layout(to);
+    apply_stack(to);
 
-    mp_workspace->remove_client(client);
-    apply_layout(mp_workspace);
+    from->remove_client(client);
+    apply_layout(from);
+    apply_stack(from);
 
     sync_focus();
+
+    if (client->leader) {
+        std::vector<Client_ptr>& members = m_leader_map.at(*client->leader);
+
+        std::for_each(
+            members.begin(),
+            members.end(),
+            [this,index](Client_ptr member) {
+                move_client_to_workspace(index, member);
+            }
+        );
+    }
 }
 
 
@@ -2684,6 +2742,9 @@ Model::set_sticky_client(Toggle toggle, Client_ptr client)
         if (client->sticky)
             return;
 
+        if (client->iconified)
+            set_iconify_client(Toggle::Off, client);
+
         std::for_each(
             m_workspaces.begin(),
             m_workspaces.end(),
@@ -2706,6 +2767,18 @@ Model::set_sticky_client(Toggle toggle, Client_ptr client)
         apply_layout(workspace);
         render_decoration(client);
 
+        if (client->leader) {
+            std::vector<Client_ptr>& members = m_leader_map.at(*client->leader);
+
+            std::for_each(
+                members.begin(),
+                members.end(),
+                [this,toggle](Client_ptr member) {
+                    set_sticky_client(toggle, member);
+                }
+            );
+        }
+
         return;
     }
     case Toggle::Off:
@@ -2717,7 +2790,7 @@ Model::set_sticky_client(Toggle toggle, Client_ptr client)
             m_workspaces.begin(),
             m_workspaces.end(),
             [=,this](Workspace_ptr workspace) {
-                if (workspace->index() != mp_workspace->index()) {
+                if (workspace != mp_workspace) {
                     workspace->remove_client(client);
                     workspace->remove_icon(client);
                     workspace->remove_disowned(client);
@@ -2737,6 +2810,18 @@ Model::set_sticky_client(Toggle toggle, Client_ptr client)
 
         apply_layout(mp_workspace);
         render_decoration(client);
+
+        if (client->leader) {
+            std::vector<Client_ptr>& members = m_leader_map.at(*client->leader);
+
+            std::for_each(
+                members.begin(),
+                members.end(),
+                [this,toggle](Client_ptr member) {
+                    set_sticky_client(toggle, member);
+                }
+            );
+        }
 
         return;
     }
@@ -2882,7 +2967,7 @@ Model::set_iconify_client(Toggle toggle, Client_ptr client)
     switch (toggle) {
     case Toggle::On:
     {
-        if (client->iconified)
+        if (client->iconified || client->sticky)
             return;
 
         Workspace_ptr workspace = get_workspace(client->workspace);

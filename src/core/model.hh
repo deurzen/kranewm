@@ -233,6 +233,7 @@ private:
     std::unordered_map<winsys::Window, Client_ptr> m_client_map;
     std::unordered_map<winsys::Pid, Client_ptr> m_pid_map;
     std::unordered_map<Client_ptr, winsys::Region> m_fullscreen_map;
+    std::unordered_map<winsys::Window, std::vector<Client_ptr>> m_leader_map;
 
     std::vector<Client_ptr> m_sticky_clients;
     std::vector<winsys::Window> m_unmanaged_windows;

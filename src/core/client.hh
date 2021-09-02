@@ -96,9 +96,9 @@ typedef struct Client final
     winsys::Decoration active_decoration;
     std::optional<winsys::SizeHints> size_hints;
     std::optional<winsys::Pos> warp_pos;
+    std::optional<winsys::Window> leader;
     Client_ptr parent;
     std::vector<Client_ptr> children;
-    Client_ptr leader;
     Client_ptr producer;
     std::vector<Client_ptr> consumers;
     bool focused;
