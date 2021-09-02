@@ -2604,7 +2604,6 @@ void
 Model::kill_client(Client_ptr client)
 {
     if (!client->invincible) {
-        m_conn.unmap_window(client->frame);
         m_conn.kill_window(client->window);
         m_conn.flush();
     }
