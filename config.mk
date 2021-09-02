@@ -35,7 +35,7 @@ DEPS = $(OBJ_FILES:%.o=%.d)
 
 SANFLAGS = -fsanitize=undefined -fsanitize=address -fsanitize-address-use-after-scope
 CXXFLAGS = -std=c++20 -I./spdlog/include
-LDFLAGS = `pkg-config --libs x11 xrandr xres libprocps`
+LDFLAGS = `pkg-config --libs x11 xrandr xres libprocps` -pthread
 
 DEBUG_CXXFLAGS = -Wall -Wpedantic -Wextra -Wold-style-cast -g -DDEBUG ${SANFLAGS}
 DEBUG_LDFLAGS = ${SANFLAGS}
