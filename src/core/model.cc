@@ -428,7 +428,7 @@ Model::Model(Connection& conn)
               CALL(activate_next_workspace(Direction::Backward))
           },
           { { Key::One, { Main } },
-              CALL(activate_workspace(Util::Change<Index> { 0 }))
+              CALL(activate_workspace(Util::Change<Index>{ 0 }))
           },
           { { Key::Two, { Main } },
               CALL(activate_workspace(1))
@@ -1516,6 +1516,8 @@ Model::render_decoration(Client_ptr client)
 void
 Model::manage(const Window window, const bool ignore, const bool may_map)
 {
+    static std::unordered_map<std::string, Rules> default_rules_memoized = {};
+
     std::optional<Region> window_geometry = m_conn.get_window_geometry(window);
 
     if (ignore || !window_geometry) {
@@ -1546,6 +1548,10 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
     std::string name = m_conn.get_icccm_window_name(window);
     std::string class_ = m_conn.get_icccm_window_class(window);
     std::string instance = m_conn.get_icccm_window_instance(window);
+
+    std::string client_handle = name
+        + ":" + class_
+        + ":" + instance;
 
     std::unordered_set<WindowType> types = m_conn.get_window_types(window);
     std::unordered_set<WindowState> states = m_conn.get_window_states(window);
@@ -1625,7 +1631,19 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
         client->leader = leader;
     }
 
-    Rules rules = Rules::parse_rules(client);
+    std::optional<Rules> default_rules
+        = Util::retrieve(default_rules_memoized, client_handle);
+
+    if (!default_rules)
+        for (auto& [selector,default_rules_] : m_config.default_rules)
+            if (client_matches_search(client, *selector)) {
+                default_rules_memoized[client_handle] = default_rules_;
+                default_rules = default_rules_;
+            }
+
+    Rules rules = default_rules
+        ? Rules::merge_rules(*default_rules, Rules::parse_rules(client->instance))
+        : Rules::parse_rules(client->instance);
 
     if (center || (rules.do_center && *rules.do_center)) {
         const Region screen_region = active_screen().placeable_region();

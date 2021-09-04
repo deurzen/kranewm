@@ -2,6 +2,7 @@
 #define __CONFIG_H_GUARD__
 
 #include "search.hh"
+#include "rules.hh"
 
 #include <string>
 #include <vector>
@@ -34,6 +35,8 @@ struct Config
 
     std::vector<SearchSelector_ptr> ignored_producers;
     std::vector<SearchSelector_ptr> ignored_consumers;
+
+    std::vector<std::tuple<SearchSelector_ptr, Rules>> default_rules;
 
 };
 

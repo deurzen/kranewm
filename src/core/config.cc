@@ -87,6 +87,82 @@ Config::Config()
             }
         }
     }
+
+    { // produce vector of default spawn rules
+        std::ifstream in(directory + std::string("defaultrules"));
+
+        if (in.good()) {
+            std::string line;
+
+            while (std::getline(in, line)) {
+                std::string::size_type pos = line.find('#');
+
+                if (pos != std::string::npos)
+                    line = line.substr(0, pos);
+
+                if (line.length() < 5)
+                    continue;
+
+                line.erase(4, line.find_first_not_of(" \t\n\r\f\v"));
+                line.erase(line.find_last_not_of(" \t\n\r\f\v") + 1);
+
+                if (line.length() < 5)
+                    continue;
+
+                pos = line.find(':');
+                std::string rules = line.substr(0, pos);
+
+                if (pos == std::string::npos || rules.empty() || pos >= (line.size() - 1))
+                    continue;
+
+                line = line.substr(pos + 1);
+
+                if (line.length() < 5)
+                    continue;
+
+                SearchSelector::SelectionCriterium criterium;
+
+                switch (line[1]) {
+                case 'N':
+                {
+                    switch (line[0]) {
+                    case '=': criterium = SearchSelector::SelectionCriterium::ByNameEquals;   break;
+                    case '~': criterium = SearchSelector::SelectionCriterium::ByNameContains; break;
+                    default: continue;
+                    }
+
+                    break;
+                }
+                case 'C':
+                {
+                    switch (line[0]) {
+                    case '=': criterium = SearchSelector::SelectionCriterium::ByClassEquals;   break;
+                    case '~': criterium = SearchSelector::SelectionCriterium::ByClassContains; break;
+                    default: continue;
+                    }
+
+                    break;
+                }
+                case 'I':
+                {
+                    switch (line[0]) {
+                    case '=': criterium = SearchSelector::SelectionCriterium::ByInstanceEquals;   break;
+                    case '~': criterium = SearchSelector::SelectionCriterium::ByInstanceContains; break;
+                    default: continue;
+                    }
+
+                    break;
+                }
+                default: continue;
+                }
+
+                default_rules.push_back({
+                    new SearchSelector{criterium, line.substr(3)},
+                    Rules::parse_rules(rules, true)
+                });
+            }
+        }
+    }
 }
 
 Config::~Config()
