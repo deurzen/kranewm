@@ -1310,6 +1310,9 @@ Model::focus_client(Client_ptr client)
         mp_workspace->activate_client(client);
     }
 
+    if (client->iconified)
+        set_iconify_client(Toggle::Off, client);
+
     unfocus_client(mp_focus);
     m_conn.ungrab_buttons(client->frame);
 
