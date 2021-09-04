@@ -8,9 +8,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
 #include <functional>
-#include <iostream>
 #include <set>
 #include <sstream>
 #include <thread>
@@ -21,12 +19,6 @@ extern "C" {
 #include <sys/wait.h>
 #include <unistd.h>
 }
-
-#ifdef ENABLE_IPC
-const bool IPC_ENABLED = true;
-#else
-const bool IPC_ENABLED = false;
-#endif
 
 #ifdef DEBUG
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
@@ -61,8 +53,6 @@ Model::Model(Connection& conn)
       m_leader_map({}),
       m_sticky_clients({}),
       m_unmanaged_windows({}),
-      m_ignored_producers({}),
-      m_ignored_consumers({}),
       mp_focus(nullptr),
       mp_jumped_from(nullptr),
       m_key_bindings({
@@ -711,7 +701,8 @@ Model::Model(Connection& conn)
                   return false;
              }
           },
-      })
+      }),
+      m_config()
 {
 #ifdef DEBUG
     spdlog::set_level(spdlog::level::debug);
@@ -733,7 +724,7 @@ Model::Model(Connection& conn)
     for (std::size_t i = 0; i < workspace_names.size(); ++i)
         m_workspaces.insert_at_back(new Workspace(i, workspace_names[i]));
 
-    if constexpr (IPC_ENABLED)
+    if constexpr (Config::ipc_enabled)
         m_conn.init_wm_ipc();
 
     acquire_partitions();
@@ -769,90 +760,10 @@ Model::Model(Connection& conn)
     for (auto& window : m_conn.top_level_windows())
         manage(window, !m_conn.must_manage_window(window), true);
 
-    { // user configurations
-        std::stringstream configdir_ss;
-
-        if (const char* env_xdgconf = std::getenv("XDG_CONFIG_HOME"))
-            configdir_ss << env_xdgconf << "/" << WM_NAME << "/";
-        else
-            configdir_ss << "$HOME/.config/" << WM_NAME << "/";
-
-        { // produce vector of to-ignore-{producers,consumers}
-            std::ifstream in(configdir_ss.str() + std::string("consumeignore"));
-
-            if (in.good()) {
-                std::string line;
-
-                while (std::getline(in, line)) {
-                    std::string::size_type pos = line.find('#');
-
-                    if (pos != std::string::npos)
-                        line = line.substr(0, pos);
-
-                    if (line.length() < 5)
-                        continue;
-
-                    line.erase(4, line.find_first_not_of(" \t\n\r\f\v"));
-                    line.erase(line.find_last_not_of(" \t\n\r\f\v") + 1);
-
-                    if (line.length() < 5)
-                        continue;
-
-                    std::vector<SearchSelector_ptr>* ignored;
-                    switch (line[0]) {
-                    case '<': ignored = &m_ignored_producers; break;
-                    case '>': ignored = &m_ignored_consumers; break;
-                    default: continue;
-                    }
-
-                    SearchSelector::SelectionCriterium criterium;
-
-                    switch (line[2]) {
-                    case 'N':
-                    {
-                        switch (line[1]) {
-                        case '=': criterium = SearchSelector::SelectionCriterium::ByNameEquals;   break;
-                        case '~': criterium = SearchSelector::SelectionCriterium::ByNameContains; break;
-                        default: continue;
-                        }
-
-                        break;
-                    }
-                    case 'C':
-                    {
-                        switch (line[1]) {
-                        case '=': criterium = SearchSelector::SelectionCriterium::ByClassEquals;   break;
-                        case '~': criterium = SearchSelector::SelectionCriterium::ByClassContains; break;
-                        default: continue;
-                        }
-
-                        break;
-                    }
-                    case 'I':
-                    {
-                        switch (line[1]) {
-                        case '=': criterium = SearchSelector::SelectionCriterium::ByInstanceEquals;   break;
-                        case '~': criterium = SearchSelector::SelectionCriterium::ByInstanceContains; break;
-                        default: continue;
-                        }
-
-                        break;
-                    }
-                    default: continue;
-                    }
-
-                    ignored->push_back(new SearchSelector{criterium, line.substr(4)});
-                }
-            }
-        }
-
-#ifndef DEBUG
-        { // run user-configured autostart programs
-            spawn_external(configdir_ss.str() + std::string("blocking_autostart"));
-            spawn_external(configdir_ss.str() + std::string("nonblocking_autostart &"));
-            spdlog::info("ran autostart scripts");
-        }
-#endif
+    if constexpr (!Config::debugging) {
+        spawn_external(m_config.directory + m_config.blocking_autostart);
+        spawn_external(m_config.directory + m_config.nonblocking_autostart);
+        spdlog::info("ran autostart scripts");
     }
 
     spdlog::info("initialized " + WM_NAME);
@@ -877,12 +788,6 @@ Model::~Model()
     for (Client_ptr client : clients)
         delete client;
 
-    for (std::size_t i = 0; i < m_ignored_producers.size(); ++i)
-        delete m_ignored_producers[i];
-
-    for (std::size_t i = 0; i < m_ignored_consumers.size(); ++i)
-        delete m_ignored_consumers[i];
-
     m_partitions.clear();
     m_contexts.clear();
     m_workspaces.clear();
@@ -894,7 +799,7 @@ void
 Model::run()
 {
     while (m_running)
-        if constexpr (IPC_ENABLED) {
+        if constexpr (Config::ipc_enabled) {
             if (m_conn.check_progress()) {
                 // process IPC message
                 m_conn.process_messages(
@@ -2999,7 +2904,7 @@ Model::consume_client(Client_ptr producer, Client_ptr client)
         if (Util::contains(ignored_producers_memoized, producer_handle))
             return;
 
-        for (SearchSelector_ptr selector : m_ignored_producers)
+        for (SearchSelector_ptr selector : m_config.ignored_producers)
             if (client_matches_search(producer, *selector)) {
                 ignored_producers_memoized.insert(producer_handle);
                 return;
@@ -3011,7 +2916,7 @@ Model::consume_client(Client_ptr producer, Client_ptr client)
         if (Util::contains(ignored_consumers_memoized, consumer_handle))
             return;
 
-        for (SearchSelector_ptr selector : m_ignored_consumers)
+        for (SearchSelector_ptr selector : m_config.ignored_consumers)
             if (client_matches_search(client, *selector)) {
                 ignored_consumers_memoized.insert(consumer_handle);
                 return;

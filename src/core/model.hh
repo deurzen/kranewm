@@ -5,6 +5,7 @@
 #include "../winsys/event.hh"
 #include "bindings.hh"
 #include "client.hh"
+#include "config.hh"
 #include "context.hh"
 #include "cycle.hh"
 #include "layout.hh"
@@ -238,9 +239,6 @@ private:
     std::vector<Client_ptr> m_sticky_clients;
     std::vector<winsys::Window> m_unmanaged_windows;
 
-    std::vector<SearchSelector_ptr> m_ignored_producers;
-    std::vector<SearchSelector_ptr> m_ignored_consumers;
-
     Client_ptr mp_focus;
     Client_ptr mp_jumped_from;
 
@@ -368,6 +366,8 @@ private:
         Model& m_model;
 
     } m_message_visitor = MessageVisitor(*this);
+
+    Config m_config;
 
 };
 
