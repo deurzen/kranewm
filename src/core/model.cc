@@ -561,6 +561,12 @@ Model::Model(Connection& conn)
           { { Key::Return, { Main, Shift } },
               CALL(spawn_external("st -n " + WM_NAME + ":cf"))
           },
+          { { Key::SemiColon, { Main } },
+              CALL_EXTERNAL(caja)
+          },
+          { { Key::A, { Main } },
+              CALL_EXTERNAL(skippy-xd)
+          },
           { { Key::P, { Main } },
               CALL_EXTERNAL(dmenu_run)
           },
