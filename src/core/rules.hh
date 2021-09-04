@@ -8,7 +8,8 @@
 struct Rules
 {
     Rules()
-        : do_float(std::nullopt),
+        : do_focus(std::nullopt),
+          do_float(std::nullopt),
           do_center(std::nullopt),
           do_fullscreen(std::nullopt),
           to_partition(std::nullopt),
@@ -18,6 +19,7 @@ struct Rules
 
     ~Rules() = default;
 
+    std::optional<bool> do_focus;
     std::optional<bool> do_float;
     std::optional<bool> do_center;
     std::optional<bool> do_fullscreen;

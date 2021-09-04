@@ -1650,6 +1650,9 @@ Model::retrieve_rules(Client_ptr client) const
                 continue;
             }
 
+            if (*iter == '@')
+                rules.do_focus = !invert;
+
             if (*iter == 'f')
                 rules.do_float = !invert;
 
@@ -1882,12 +1885,11 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
 
     get_workspace(client->workspace)->add_client(client);
 
-    if (client->workspace == mp_workspace->index()
-        && !m_move_buffer.is_occupied()
-        && !m_resize_buffer.is_occupied()
-    ) {
+    if (client->workspace == mp_workspace->index()) {
         apply_layout(mp_workspace);
-        focus_client(client);
+
+        if (!rules.do_focus)
+            focus_client(client);
     }
 
     if (Util::contains(states, WindowState::DemandsAttention))
@@ -1906,6 +1908,18 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
 
     if (producer && producer->producing)
         consume_client(producer, client);
+
+    if (rules.do_focus) {
+        if (*rules.do_focus) {
+            stop_moving();
+            stop_resizing();
+            focus_client(client);
+        } else if (mp_focus) {
+            Client_ptr prev_focus = mp_focus;
+            focus_client(client);
+            focus_client(prev_focus);
+        }
+    }
 }
 
 void
