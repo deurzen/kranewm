@@ -1608,82 +1608,6 @@ Model::render_decoration(Client_ptr client)
 }
 
 
-Rules
-Model::retrieve_rules(Client_ptr client) const
-{
-    static std::string prefix = WM_NAME + ":";
-    Rules rules = {};
-
-    if (client->instance.size() <= prefix.size())
-        return rules;
-
-    auto res = std::mismatch(
-        prefix.begin(),
-        prefix.end(),
-        client->instance.begin()
-    );
-
-    if (res.first == prefix.end()) {
-        bool invert = false;
-        bool next_partition = false;
-        bool next_context = false;
-        bool next_workspace = false;
-
-        for (auto iter = res.second; iter != client->instance.end(); ++iter) {
-            if (*iter == '!') {
-                invert = true;
-                continue;
-            }
-
-            if (*iter == 'P') {
-                next_partition = true;
-                continue;
-            }
-
-            if (*iter == 'C') {
-                next_context = true;
-                continue;
-            }
-
-            if (*iter == 'W') {
-                next_workspace = true;
-                continue;
-            }
-
-            if (*iter == '@')
-                rules.do_focus = !invert;
-
-            if (*iter == 'f')
-                rules.do_float = !invert;
-
-            if (*iter == 'F')
-                rules.do_fullscreen = !invert;
-
-            if (*iter == 'c')
-                rules.do_center = !invert;
-
-            if (*iter >= '0' && *iter <= '9') {
-                if (next_partition)
-                    rules.to_partition = *iter - '0';
-
-                if (next_context)
-                    rules.to_context = *iter - '0';
-
-                if (next_workspace)
-                    rules.to_workspace = *iter - '0';
-            }
-
-            invert = false;
-            next_partition = false;
-            next_context = false;
-            next_workspace = false;
-        }
-    }
-
-    return rules;
-}
-
-
 void
 Model::manage(const Window window, const bool ignore, const bool may_map)
 {
@@ -1796,7 +1720,7 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
         client->leader = leader;
     }
 
-    Rules rules = retrieve_rules(client);
+    Rules rules = Rules::parse_rules(client);
 
     if (center || (rules.do_center && *rules.do_center)) {
         const Region screen_region = active_screen().placeable_region();
@@ -1884,6 +1808,10 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
     client->free_region.apply_minimum_dim(Client::MIN_CLIENT_DIM);
 
     get_workspace(client->workspace)->add_client(client);
+
+    if (rules.snap_edges)
+        for(auto& edge : *rules.snap_edges)
+            snap_client(edge, client);
 
     if (client->workspace == mp_workspace->index()) {
         apply_layout(mp_workspace);
