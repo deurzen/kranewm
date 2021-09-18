@@ -1,4 +1,4 @@
 #!/bin/bash
-set -e
-XEPHYR=$(which Xephyr)
-xinit ./xinitrc -- "$XEPHYR" :102 -ac -screen 800x600 -host-cursor
+set -Eeo pipefail
+
+xinit ./xinitrc -- $(which Xephyr) :102 -ac -screen 800x600 -screen 400x400 +xinerama -host-cursor

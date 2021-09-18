@@ -17,6 +17,7 @@ extern "C" {
 #include <X11/Xutil.h>
 #include <X11/extensions/XRes.h>
 #include <X11/extensions/Xrandr.h>
+#include <X11/extensions/Xinerama.h>
 #include <X11/keysym.h>
 #include <X11/keysymdef.h>
 #include <fcntl.h>
@@ -318,36 +319,67 @@ XConnection::process_messages(std::function<void(winsys::Message)> callback)
 std::vector<winsys::Screen>
 XConnection::connected_outputs()
 {
-    XRRScreenResources* screen_resources = XRRGetScreenResources(mp_dpy, m_root);
+    int n_screen_info;
+    XineramaScreenInfo* screen_info = XineramaQueryScreens(mp_dpy, &n_screen_info);
+    std::vector<XineramaScreenInfo*> screen_info_vector;
 
-    if (!screen_resources)
+    if (!screen_info)
         return {};
 
-    XRRCrtcInfo* crtc_info = NULL;
-    std::vector<winsys::Screen> screens = {};
+    screen_info_vector.reserve(n_screen_info);
+    std::transform(
+        &screen_info[0],
+        &screen_info[n_screen_info],
+        std::back_inserter(screen_info_vector),
+        [](XineramaScreenInfo& screen_info) -> XineramaScreenInfo* {
+            return &screen_info;
+        }
+    );
 
-    for (int i = 0; i < screen_resources->ncrtc; ++i) {
-        crtc_info = XRRGetCrtcInfo(
-            mp_dpy,
-            screen_resources,
-            screen_resources->crtcs[i]
-        );
+    std::stable_sort(
+        screen_info_vector.begin(),
+        screen_info_vector.end(),
+        [](XineramaScreenInfo* screen_info1, XineramaScreenInfo* screen_info2) -> bool {
+            if (screen_info1->x_org < screen_info2->x_org)
+                return true;
 
-        if (crtc_info->width > 0 && crtc_info->height > 0) {
+            if (screen_info1->x_org == screen_info2->x_org)
+                return screen_info1->y_org < screen_info2->y_org;
+
+            return false;
+        }
+    );
+
+    std::vector<winsys::Screen> screens;
+    screens.reserve(n_screen_info);
+
+    std::transform(
+        screen_info_vector.begin(),
+        std::remove_if(
+            screen_info_vector.begin(),
+            screen_info_vector.end(),
+            [](XineramaScreenInfo* screen_info) -> bool {
+                return !(screen_info->width > 0 && screen_info->height > 0);
+            }
+        ),
+        std::back_inserter(screens),
+        [i=0](XineramaScreenInfo* screen_info) mutable -> winsys::Screen {
             winsys::Region region = winsys::Region {
                 winsys::Pos {
-                    crtc_info->x,
-                    crtc_info->y
+                    screen_info->x_org,
+                    screen_info->y_org
                 },
                 winsys::Dim {
-                    static_cast<int>(crtc_info->width),
-                    static_cast<int>(crtc_info->height)
+                    screen_info->width,
+                    screen_info->height
                 }
             };
 
-            screens.emplace_back(winsys::Screen(i, region));
+            return winsys::Screen(i++, region);
         }
-    }
+    );
+
+    XFree(screen_info);
 
     return screens;
 }

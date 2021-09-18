@@ -4,6 +4,7 @@
 #include "common.hh"
 #include "geometry.hh"
 #include "window.hh"
+#include "util.hh"
 
 #include <set>
 #include <unordered_map>
