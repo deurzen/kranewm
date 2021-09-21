@@ -81,10 +81,38 @@ public:
     void activate_at_index(Index);
     void activate_element(T);
 
+    template<typename UnaryPredicate>
+    void activate_for_condition(UnaryPredicate predicate)
+    {
+        auto it = std::find_if(
+            m_elements.begin(),
+            m_elements.end(),
+            predicate
+        );
+
+        if (it != m_elements.end())
+            activate_element(*it);
+    }
+
     bool remove_first();
     bool remove_last();
     bool remove_at_index(Index);
     bool remove_element(T);
+
+    template<typename UnaryPredicate>
+    bool remove_for_condition(UnaryPredicate predicate)
+    {
+        auto it = std::find_if(
+            m_elements.begin(),
+            m_elements.end(),
+            predicate
+        );
+
+        if (it != m_elements.end())
+            return remove_element(*it);
+
+        return false;
+    }
 
     std::optional<T> pop_back();
 

@@ -13,6 +13,7 @@ namespace Util
 
     void die(const std::string&&);
     void warn(const std::string&&);
+    void assert(bool, const std::string&&);
 
     template <
         typename T,

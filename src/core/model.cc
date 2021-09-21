@@ -848,23 +848,64 @@ void
 Model::acquire_partitions()
 {
     std::size_t index = m_partitions.active_index();
+    std::vector<Screen> connected_outputs = m_conn.connected_outputs();
 
-    for (std::size_t i = 0; i < m_partitions.size(); ++i)
+    connected_outputs.erase(
+        std::unique(
+            connected_outputs.begin(),
+            connected_outputs.end(),
+            [](Screen const& screen1, Screen const& screen2) {
+                return screen1.full_region() == screen2.full_region();
+            }
+        ),
+        connected_outputs.end()
+    );
+
+    if (connected_outputs.size() > m_contexts.size()) {
+        // TODO: generate more contexts?
+        spdlog::warn("more outputs than available contexts");
+        return;
+    }
+
+    if (connected_outputs.empty()) {
+        spdlog::warn("could not acquire any partitions");
+        return;
+    }
+
+    std::vector<Context_ptr> partition_contexts(
+        std::max(connected_outputs.size(), m_partitions.size()),
+        nullptr
+    );
+
+    std::unordered_set<Index> used_contexts{};
+
+    for (std::size_t i = 0; i < m_partitions.size(); ++i) {
+        partition_contexts[m_partitions[i]->index()] = m_partitions[i]->context();
+        used_contexts.insert(m_partitions[i]->context()->index());
         delete m_partitions[i];
+    }
 
     m_partitions.clear();
 
-    std::vector<Screen> connected_outputs = m_conn.connected_outputs();
+    std::vector<Partition_ptr> contextless_partitions{};
 
-    for (std::size_t i = 0; i < connected_outputs.size(); ++i)
+    for (std::size_t i = 0; i < connected_outputs.size(); ++i) {
         m_partitions.insert_at_back(new Partition(
             connected_outputs[i],
             i
         ));
 
-    if (m_partitions.empty()) {
-        spdlog::warn("could not acquire any partitions");
-        return;
+        if (partition_contexts[i] != nullptr)
+            m_partitions[i]->set_context(partition_contexts[i]);
+        else
+            contextless_partitions.push_back(m_partitions[i]);
+    }
+
+    for (std::size_t i = 0, context_index = 0; i < contextless_partitions.size(); ++context_index) {
+        if (Util::contains(used_contexts, context_index))
+            continue;
+
+        contextless_partitions[i++]->set_context(m_contexts[context_index]);
     }
 
     if (index < m_partitions.size())

@@ -36,7 +36,7 @@ namespace winsys
     };
 
     inline bool
-    operator==(Dim& lhs, Dim& rhs)
+    operator==(Dim const& lhs, Dim const& rhs)
     {
         return lhs.w == rhs.w && lhs.h == rhs.h;
     }
@@ -63,7 +63,7 @@ namespace winsys
     };
 
     inline bool
-    operator==(Pos& lhs, Pos& rhs)
+    operator==(Pos const& lhs, Pos const& rhs)
     {
         return lhs.x == rhs.x && lhs.y == rhs.y;
     }
@@ -89,7 +89,7 @@ namespace winsys
     };
 
     inline bool
-    operator==(Region& lhs, Region& rhs)
+    operator==(Region const& lhs, Region const& rhs)
     {
         return lhs.pos == rhs.pos && lhs.dim == rhs.dim;
     }
