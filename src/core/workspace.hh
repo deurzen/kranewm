@@ -32,8 +32,6 @@ public:
           m_client_region(std::nullopt)
     {}
 
-    ~Buffer() {}
-
     bool is_occupied() const;
 
     Client_ptr client() const;
@@ -60,7 +58,6 @@ class Scratchpad final
 {
 public:
     Scratchpad() {}
-    ~Scratchpad() {}
 
 private:
 
@@ -100,10 +97,10 @@ public:
         criterium() const
         {
             switch (m_tag) {
-            case ClientSelectorTag::AtFirst:  return SelectionCriterium::AtFirst;
-            case ClientSelectorTag::AtLast:   return SelectionCriterium::AtLast;
-            case ClientSelectorTag::AtMain:   return SelectionCriterium::AtMain;
-            case ClientSelectorTag::AtIndex:  return SelectionCriterium::AtIndex;
+            case ClientSelectorTag::AtFirst: return SelectionCriterium::AtFirst;
+            case ClientSelectorTag::AtLast:  return SelectionCriterium::AtLast;
+            case ClientSelectorTag::AtMain:  return SelectionCriterium::AtMain;
+            case ClientSelectorTag::AtIndex: return SelectionCriterium::AtIndex;
             default: Util::die("no associated criterium");
             }
 
@@ -138,8 +135,6 @@ public:
           m_icons({}, true),
           m_disowned({}, true)
     {}
-
-    ~Workspace() {}
 
     bool empty() const;
     bool contains(Client_ptr) const;

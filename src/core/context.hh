@@ -13,8 +13,6 @@ public:
           m_name(name)
     {}
 
-    ~Context() {}
-
     Index
     index() const
     {

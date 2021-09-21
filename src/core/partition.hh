@@ -12,8 +12,6 @@ public:
           m_index(index)
     {}
 
-    ~Partition() {}
-
     winsys::Screen&
     screen()
     {
