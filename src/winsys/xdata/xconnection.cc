@@ -16,7 +16,6 @@ extern "C" {
 #include <X11/Xproto.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/XRes.h>
-#include <X11/extensions/Xrandr.h>
 #include <X11/extensions/Xinerama.h>
 #include <X11/keysym.h>
 #include <X11/keysymdef.h>
@@ -103,7 +102,7 @@ XConnection::XConnection(const std::string_view wm_name)
     for (auto&& [id,name] : NETWM_ATOM_NAMES)
         m_netwm_atoms[id] = get_atom(name);
 
-    for (std::size_t i = 0; i < 256; ++i)
+    for (std::size_t i = 0; i < LASTEvent; ++i)
         m_event_dispatcher[i] = &XConnection::on_unimplemented;
 
     m_event_dispatcher[ButtonPress] = &XConnection::on_button_press;
@@ -122,12 +121,6 @@ XConnection::XConnection(const std::string_view wm_name)
     m_event_dispatcher[MotionNotify] = &XConnection::on_motion_notify;
     m_event_dispatcher[PropertyNotify] = &XConnection::on_property_notify;
     m_event_dispatcher[UnmapNotify] = &XConnection::on_unmap_notify;
-
-    int event_base, _error_base;
-    if (XRRQueryExtension(mp_dpy, &event_base, &_error_base)) {
-        m_event_dispatcher[event_base + RRScreenChangeNotify]
-            = &XConnection::on_screen_change;
-    }
 }
 
 XConnection::~XConnection()
@@ -1361,12 +1354,6 @@ XConnection::init_for_wm(std::vector<std::string> const& desktop_names)
 
     map_window(m_check_window);
     stack_window_below(m_check_window, std::nullopt);
-
-    XRRSelectInput(
-        mp_dpy,
-        m_check_window,
-        RRScreenChangeNotifyMask
-    );
 
     XSetWindowAttributes wa;
     wa.cursor = XCreateFontCursor(mp_dpy, XC_left_ptr);
@@ -3538,7 +3525,6 @@ XConnection::on_unmap_notify()
 winsys::Event
 XConnection::on_screen_change()
 {
-    XRRUpdateConfiguration(&m_current_event);
     return winsys::ScreenChangeEvent {};
 }
 

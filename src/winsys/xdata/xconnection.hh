@@ -310,7 +310,7 @@ private:
     void check_otherwm();
 
     // event dispatching logic
-    winsys::Event (XConnection::*m_event_dispatcher[256])();
+    winsys::Event (XConnection::*m_event_dispatcher[LASTEvent])();
 
     winsys::Event on_button_press();
     winsys::Event on_button_release();

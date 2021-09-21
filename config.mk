@@ -2,7 +2,7 @@ PROJECT = kranewm
 BAR = kranebar
 CLIENT = kranec
 
-DEPENDENCIES = x11 xrandr xinerama xres libprocps spdlog
+DEPENDENCIES = x11 xinerama xres libprocps spdlog
 
 OBJDIR = obj
 SRCDIR = src
