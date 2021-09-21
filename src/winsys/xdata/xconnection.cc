@@ -1017,8 +1017,19 @@ yield:
 bool
 XConnection::must_manage_window(winsys::Window window)
 {
-    static const std::vector<winsys::WindowType> ignore_types
-        = { winsys::WindowType::Dock, winsys::WindowType::Toolbar };
+    static const std::vector<winsys::WindowType> ignore_types = {
+        winsys::WindowType::Desktop,
+        winsys::WindowType::Dock,
+        winsys::WindowType::Toolbar,
+        winsys::WindowType::Menu,
+        winsys::WindowType::Splash,
+        winsys::WindowType::DropdownMenu,
+        winsys::WindowType::PopupMenu,
+        winsys::WindowType::Tooltip,
+        winsys::WindowType::Notification,
+        winsys::WindowType::Combo,
+        winsys::WindowType::Dnd,
+    };
 
     XWindowAttributes wa;
     return XGetWindowAttributes(mp_dpy, window, &wa)
@@ -1037,8 +1048,6 @@ XConnection::must_free_window(winsys::Window window)
     static const std::vector<winsys::WindowType> free_types = {
         winsys::WindowType::Dialog,
         winsys::WindowType::Utility,
-        winsys::WindowType::Toolbar,
-        winsys::WindowType::Splash
     };
 
     std::optional<Index> desktop = get_window_desktop(window);
