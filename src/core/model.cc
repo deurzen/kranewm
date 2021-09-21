@@ -3847,7 +3847,6 @@ Model::handle_grip_request(GripRequestEvent event)
     stop_resizing();
 
     if (event.grip) {
-
         m_resize_buffer.set(
             client,
             *event.grip,
