@@ -47,7 +47,7 @@ struct Rules
             }
         };
 
-        Rules rules = {};
+        Rules rules{};
 
         if (!ignore_prefix && rule.size() <= prefix.size())
             return rules;

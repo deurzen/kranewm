@@ -252,7 +252,7 @@ XConnection::process_messages(std::function<void(winsys::Message)> callback)
         Query
     };
 
-    static const std::unordered_map<std::string_view, MessageType> message_types = {
+    static const std::unordered_map<std::string_view, MessageType> message_types{
         { "command",   Command },
         { "cmd",       Command },
         { "config",    Config },
@@ -267,7 +267,7 @@ XConnection::process_messages(std::function<void(winsys::Message)> callback)
     };
 
     static int n = 0;
-    static char msg[BUFSIZ] = { 0 };
+    static char msg[BUFSIZ] = {};
 
     if (FD_ISSET(m_sock_fd, &m_descr)) {
         m_client_fd = accept(m_sock_fd, NULL, 0);
@@ -279,7 +279,7 @@ XConnection::process_messages(std::function<void(winsys::Message)> callback)
             if (rply != NULL) {
                 winsys::Message message = std::monostate{};
 
-                std::deque<std::string> words = {};
+                std::deque<std::string> words{};
                 std::istringstream word_stream(msg);
                 std::string word;
 
@@ -791,7 +791,7 @@ XConnection::grab_bindings(std::vector<winsys::KeyInput>& key_inputs, std::vecto
         }
     };
 
-    std::vector<std::size_t> modifiers_to_ignore = {
+    std::vector<std::size_t> modifiers_to_ignore{
         0,
         Mod2Mask,
         Mod5Mask
@@ -953,7 +953,7 @@ XConnection::get_window_geometry(winsys::Window window)
 std::optional<winsys::Pid>
 XConnection::get_window_pid(winsys::Window window)
 {
-    XResClientIdSpec spec = {
+    XResClientIdSpec spec{
         window,
         XRES_CLIENT_ID_PID_MASK
     };
@@ -1010,7 +1010,7 @@ yield:
 bool
 XConnection::must_manage_window(winsys::Window window)
 {
-    static const std::vector<winsys::WindowType> ignore_types = {
+    static const std::vector<winsys::WindowType> ignore_types{
         winsys::WindowType::Desktop,
         winsys::WindowType::Dock,
         winsys::WindowType::Toolbar,
@@ -1034,11 +1034,11 @@ XConnection::must_manage_window(winsys::Window window)
 bool
 XConnection::must_free_window(winsys::Window window)
 {
-    static const std::vector<winsys::WindowState> free_states = {
+    static const std::vector<winsys::WindowState> free_states{
         winsys::WindowState::Modal
     };
 
-    static const std::vector<winsys::WindowType> free_types = {
+    static const std::vector<winsys::WindowType> free_types{
         winsys::WindowType::Dialog,
         winsys::WindowType::Utility,
     };
@@ -1359,7 +1359,7 @@ XConnection::init_for_wm(std::vector<std::string> const& desktop_names)
     wa.cursor = XCreateFontCursor(mp_dpy, XC_left_ptr);
     XChangeWindowAttributes(mp_dpy, m_root, CWCursor, &wa);
 
-    std::vector<std::string> wm_class = { m_wm_name, m_wm_name };
+    std::vector<std::string> wm_class{ m_wm_name, m_wm_name };
 
     replace_string_property(m_check_window, "_NET_WM_NAME", m_wm_name);
     replace_stringlist_property(m_check_window, "_WM_CLASS", wm_class);
@@ -1409,7 +1409,7 @@ XConnection::set_window_state(winsys::Window window, winsys::WindowState state, 
         return;
 
     if (on) {
-        std::vector<winsys::WindowState> check_state = { state };
+        std::vector<winsys::WindowState> check_state{ state };
         if (window_is_any_of_states(window, check_state))
             return;
 
@@ -1437,7 +1437,7 @@ XConnection::set_window_state(winsys::Window window, winsys::WindowState state, 
 void
 XConnection::set_window_frame_extents(winsys::Window window, winsys::Extents extents)
 {
-    std::vector<unsigned long> frame_extents = {
+    std::vector<unsigned long> frame_extents{
         static_cast<unsigned>(extents.left),
         static_cast<unsigned>(extents.right),
         static_cast<unsigned>(extents.top),
@@ -1587,7 +1587,7 @@ XConnection::get_window_types(winsys::Window window)
     if (!property_status_ok())
         return {};
 
-    std::unordered_set<winsys::WindowType> window_types = {};
+    std::unordered_set<winsys::WindowType> window_types{};
 
     for (Atom atom : window_type_atoms)
         window_types.insert(get_window_type_from_atom(atom));
@@ -1603,7 +1603,7 @@ XConnection::get_window_states(winsys::Window window)
     if (!property_status_ok())
         return {};
 
-    std::unordered_set<winsys::WindowState> window_states = {};
+    std::unordered_set<winsys::WindowState> window_states{};
 
     for (Atom atom : window_state_atoms)
         window_states.insert(get_window_state_from_atom(atom));
@@ -1614,8 +1614,9 @@ XConnection::get_window_states(winsys::Window window)
 bool
 XConnection::window_is_fullscreen(winsys::Window window)
 {
-    static const std::vector<winsys::WindowState> fullscreen_state
-        = { winsys::WindowState::Fullscreen };
+    static const std::vector<winsys::WindowState> fullscreen_state{
+        winsys::WindowState::Fullscreen
+    };
 
     return window_is_any_of_states(window, fullscreen_state);
 }
@@ -1623,8 +1624,9 @@ XConnection::window_is_fullscreen(winsys::Window window)
 bool
 XConnection::window_is_above(winsys::Window window)
 {
-    static const std::vector<winsys::WindowState> above_state
-        = { winsys::WindowState::Above_ };
+    static const std::vector<winsys::WindowState> above_state{
+        winsys::WindowState::Above_
+    };
 
     return window_is_any_of_states(window, above_state);
 }
@@ -1632,8 +1634,9 @@ XConnection::window_is_above(winsys::Window window)
 bool
 XConnection::window_is_below(winsys::Window window)
 {
-    static const std::vector<winsys::WindowState> below_state
-        = { winsys::WindowState::Below_ };
+    static const std::vector<winsys::WindowState> below_state{
+        winsys::WindowState::Below_
+    };
 
     return window_is_any_of_states(window, below_state);
 }
@@ -1641,8 +1644,9 @@ XConnection::window_is_below(winsys::Window window)
 bool
 XConnection::window_is_sticky(winsys::Window window)
 {
-    static const std::vector<winsys::WindowState> sticky_state
-        = { winsys::WindowState::Sticky };
+    static const std::vector<winsys::WindowState> sticky_state{
+        winsys::WindowState::Sticky
+    };
 
     return window_is_any_of_states(window, sticky_state);
 }
@@ -2196,7 +2200,7 @@ XConnection::get_atomlist_property(winsys::Window window, std::string const& nam
     unsigned long _ul;
     unsigned char* ucp = nullptr;
     Atom _a = None;
-    std::vector<Atom> atomlist = {};
+    std::vector<Atom> atomlist{};
 
     m_property_status = XGetWindowProperty(
         mp_dpy,
@@ -2369,7 +2373,7 @@ XConnection::get_windowlist_property(winsys::Window window, std::string const& n
     unsigned long _ul;
     unsigned char* ucp = nullptr;
     Atom _a = None;
-    std::vector<winsys::Window> windowlist = {};
+    std::vector<winsys::Window> windowlist{};
 
     m_property_status = XGetWindowProperty(
         mp_dpy,
@@ -2464,7 +2468,7 @@ XConnection::get_string_property(winsys::Window window, std::string const& name)
     unsigned long _ul;
     unsigned char* ucp = nullptr;
     Atom _a = None;
-    std::string str_ = {};
+    std::string str_{};
 
     m_property_status = XGetWindowProperty(
         mp_dpy,
@@ -2542,7 +2546,7 @@ XConnection::get_stringlist_property(winsys::Window window, std::string const& n
     unsigned long _ul;
     unsigned char* ucp = nullptr;
     Atom _a = None;
-    std::vector<std::string> stringlist = {};
+    std::vector<std::string> stringlist{};
 
     m_property_status = XGetWindowProperty(
         mp_dpy,
@@ -2728,7 +2732,7 @@ XConnection::get_cardlist_property(winsys::Window window, std::string const& nam
     unsigned long _ul;
     unsigned char* ucp = nullptr;
     Atom _a = None;
-    std::vector<unsigned long> cardlist = {};
+    std::vector<unsigned long> cardlist{};
 
     m_property_status = XGetWindowProperty(
         mp_dpy,
@@ -2950,7 +2954,7 @@ XConnection::on_button_press()
         }
     };
 
-    std::unordered_set<winsys::Modifier> modifiers = {};
+    std::unordered_set<winsys::Modifier> modifiers{};
     for (auto& x11_modifier : x11_modifiers)
         if ((event.state & x11_modifier) > 0)
             modifiers.insert(x11_to_modifier(x11_modifier));
@@ -3020,7 +3024,7 @@ XConnection::on_button_release()
         }
     };
 
-    std::unordered_set<winsys::Modifier> modifiers = {};
+    std::unordered_set<winsys::Modifier> modifiers{};
     for (auto& x11_modifier : x11_modifiers)
         if ((event.state & x11_modifier) > 0)
             modifiers.insert(x11_to_modifier(x11_modifier));
@@ -3114,8 +3118,8 @@ XConnection::on_client_message()
     }
     case NetWMID::NetMoveResizeWindow:
     {
-        std::optional<winsys::Pos> pos = {};
-        std::optional<winsys::Dim> dim = {};
+        std::optional<winsys::Pos> pos{};
+        std::optional<winsys::Dim> dim{};
 
         pos = winsys::Pos {
             static_cast<int>(event.data.l[1]),
@@ -3350,7 +3354,7 @@ XConnection::on_key_press()
         }
     };
 
-    std::unordered_set<winsys::Modifier> modifiers = {};
+    std::unordered_set<winsys::Modifier> modifiers{};
     for (auto& x11_modifier : x11_modifiers)
         if ((event.state & x11_modifier) != 0)
             modifiers.insert(x11_to_modifier(x11_modifier));
@@ -3437,7 +3441,7 @@ XConnection::on_motion_notify()
         }
     };
 
-    std::unordered_set<winsys::Modifier> modifiers = {};
+    std::unordered_set<winsys::Modifier> modifiers{};
     for (auto& x11_modifier : x11_modifiers)
         if ((event.state & x11_modifier) != 0)
             modifiers.insert(x11_to_modifier(x11_modifier));

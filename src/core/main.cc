@@ -7,7 +7,7 @@
 int
 main(int, char **)
 {
-    XConnection conn = { WM_NAME };
+    XConnection conn{ WM_NAME };
     Model model(conn);
     model.run();
     return 0;

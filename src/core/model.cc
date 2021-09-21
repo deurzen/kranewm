@@ -710,11 +710,11 @@ Model::Model(Connection& conn)
 
     g_instance = this;
 
-    static const std::vector<std::string> context_names = {
+    static const std::vector<std::string> context_names{
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
     };
 
-    static const std::vector<std::string> workspace_names = {
+    static const std::vector<std::string> workspace_names{
         "1:main", "2:web", "3:term", "4", "5", "6", "7", "8", "9", "10"
     };
 
@@ -780,7 +780,7 @@ Model::~Model()
     for (std::size_t i = 0; i < m_workspaces.size(); ++i)
         delete m_workspaces[i];
 
-    std::unordered_set<Client_ptr> clients = {};
+    std::unordered_set<Client_ptr> clients{};
 
     for (auto [_,client] : m_client_map)
         clients.insert(client);
@@ -877,8 +877,7 @@ Model::acquire_partitions()
 
     screen.compute_placeable_region();
 
-    std::vector<Region> workspace_regions
-        = { m_workspaces.size(), screen.full_region() };
+    std::vector<Region> workspace_regions(m_workspaces.size(), screen.full_region());
 
     m_conn.set_desktop_geometry(workspace_regions);
     m_conn.set_desktop_viewport(workspace_regions);
@@ -928,10 +927,9 @@ Model::search_client(SearchSelector const& selector)
         {
             return lhs->last_focused < rhs->last_focused;
         }
-    } last_focused_comparer = {};
+    } last_focused_comparer{};
 
-    static std::set<Client_ptr, LastFocusedComparer> clients
-        = {{}, last_focused_comparer};
+    static std::set<Client_ptr, LastFocusedComparer> clients{{}, last_focused_comparer};
 
     clients.clear();
 
@@ -1265,7 +1263,7 @@ Model::sync_focus()
 void
 Model::attach_next_client()
 {
-    static std::atomic<unsigned> count = { 0 };
+    static std::atomic<unsigned> count{ 0 };
     static auto attachment_resetter = [&,this]() mutable {
         unsigned current = ++count;
 
@@ -1516,7 +1514,7 @@ Model::render_decoration(Client_ptr client)
 void
 Model::manage(const Window window, const bool ignore, const bool may_map)
 {
-    static std::unordered_map<std::string, Rules> default_rules_memoized = {};
+    static std::unordered_map<std::string, Rules> default_rules_memoized{};
 
     std::optional<Region> window_geometry = m_conn.get_window_geometry(window);
 
@@ -2138,10 +2136,9 @@ Model::apply_stack(Workspace_ptr workspace)
         {
             return lhs->managed_since < rhs->managed_since;
         }
-    } managed_since_comparer = {};
+    } managed_since_comparer{};
 
-    static std::set<Client_ptr, ManagedSinceComparer> managed_since_clients
-        = {{}, managed_since_comparer};
+    static std::set<Client_ptr, ManagedSinceComparer> managed_since_clients{{}, managed_since_comparer};
 
     managed_since_clients.clear();
 
@@ -2174,10 +2171,9 @@ Model::apply_stack(Workspace_ptr workspace)
         {
             return lhs->last_focused < rhs->last_focused;
         }
-    } last_focused_comparer = {};
+    } last_focused_comparer{};
 
-    static std::set<Client_ptr, LastFocusedComparer> last_focused_clients
-        = {{}, last_focused_comparer};
+    static std::set<Client_ptr, LastFocusedComparer> last_focused_clients{{}, last_focused_comparer};
 
     last_focused_clients.clear();
 
@@ -2899,10 +2895,10 @@ Model::set_iconify_client(Toggle toggle, Client_ptr client)
 void
 Model::consume_client(Client_ptr producer, Client_ptr client)
 {
-    static std::unordered_set<std::string> ignored_producers_memoized = {};
-    static std::unordered_set<std::string> ignored_consumers_memoized = {};
-    static std::unordered_set<std::string> allowed_producers_memoized = {};
-    static std::unordered_set<std::string> allowed_consumers_memoized = {};
+    static std::unordered_set<std::string> ignored_producers_memoized{};
+    static std::unordered_set<std::string> ignored_consumers_memoized{};
+    static std::unordered_set<std::string> allowed_producers_memoized{};
+    static std::unordered_set<std::string> allowed_consumers_memoized{};
 
     Workspace_ptr pworkspace = get_workspace(producer->workspace);
     Workspace_ptr cworkspace = get_workspace(client->workspace);
@@ -3825,7 +3821,7 @@ Model::handle_placement_request(PlacementRequestEvent event)
 
     client->set_free_region(region);
 
-    Placement placement = {
+    Placement placement{
         Placement::PlacementMethod::Free,
         client,
         client->free_decoration,
@@ -4010,7 +4006,7 @@ Model::handle_screen_change()
 void
 Model::process_command(winsys::CommandMessage message)
 {
-    static const std::unordered_map<std::string_view, winsys::Direction> directions = {
+    static const std::unordered_map<std::string_view, winsys::Direction> directions{
         { "Forward",  winsys::Direction::Forward },
         { "forward",  winsys::Direction::Forward },
         { "fwd",      winsys::Direction::Forward },
@@ -4021,7 +4017,7 @@ Model::process_command(winsys::CommandMessage message)
         { "b",        winsys::Direction::Backward },
     };
 
-    static const std::unordered_map<std::string_view, std::function<void(void)>> commands = {
+    static const std::unordered_map<std::string_view, std::function<void(void)>> commands{
         { "toggle_partition",
             [&,this]() {
                 toggle_partition();

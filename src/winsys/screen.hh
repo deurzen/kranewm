@@ -96,7 +96,7 @@ namespace winsys
             {
                 return lhs.width < rhs.width;
             }
-        } s_strut_comparer = {};
+        } s_strut_comparer{};
 
         std::unordered_map<Window, std::vector<Edge>> m_windows;
         std::unordered_map<Edge, std::set<Strut, StrutComparer>> m_struts;

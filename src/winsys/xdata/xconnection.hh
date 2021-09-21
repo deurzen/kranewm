@@ -194,7 +194,7 @@ private:
 
 	fd_set m_descr;
 	char m_sock_path[256];
-	char m_state_path[256] = { 0 };
+	char m_state_path[256] = {};
 	struct sockaddr_un m_sock_addr;
 
     std::string m_wm_name;
