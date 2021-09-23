@@ -52,6 +52,12 @@ public:
         return mp_partition;
     }
 
+    Workspace_ptr
+    workspace() const
+    {
+        return mp_active;
+    }
+
     void
     register_workspace(Workspace_ptr workspace)
     {
@@ -62,12 +68,14 @@ public:
     activate_workspace(Workspace_ptr workspace)
     {
         m_workspaces.activate_element(workspace);
+        mp_active = workspace;
     }
 
     void
     activate_workspace(Index index)
     {
         m_workspaces.activate_at_index(index);
+        mp_active = *m_workspaces.active_element();
     }
 
     Cycle<Workspace_ptr> const&

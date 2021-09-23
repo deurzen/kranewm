@@ -756,7 +756,6 @@ Model::Model(Connection& conn)
     m_workspaces.activate_at_index(0);
 
     mp_context = *m_contexts.active_element();
-    mp_workspace = *m_workspaces.active_element();
 
     m_conn.set_current_desktop(0);
 
@@ -1168,7 +1167,7 @@ Model::get_partition(Index index) const
 Context_ptr
 Model::active_context() const
 {
-    return mp_context;
+    return active_partition()->context();
 }
 
 Context_ptr
@@ -1184,7 +1183,7 @@ Model::get_context(Index index) const
 Workspace_ptr
 Model::active_workspace() const
 {
-    return mp_workspace;
+    return active_context()->workspace();
 }
 
 Workspace_ptr
@@ -1203,7 +1202,7 @@ Model::is_free(Client_ptr client) const
     return Client::is_free(client)
         || ((!client->fullscreen || client->contained)
             && (client->sticky
-                    ? mp_workspace
+                    ? active_workspace()
                     : client->workspace
                )->layout_is_free());
 }
@@ -1282,7 +1281,7 @@ Model::focus_client(Client_ptr client)
 {
     if (!client->sticky) {
         activate_workspace(client->workspace);
-        mp_workspace->activate_client(client);
+        active_workspace()->activate_client(client);
     }
 
     if (client->iconified)
@@ -1297,14 +1296,14 @@ Model::focus_client(Client_ptr client)
 
     mp_focus = client;
 
-    if (mp_workspace->layout_is_persistent() || mp_workspace->layout_is_single())
-        apply_layout(mp_workspace);
+    if (active_workspace()->layout_is_persistent() || active_workspace()->layout_is_single())
+        apply_layout(active_workspace());
 
     if (m_conn.get_focused_window() != client->window)
         m_conn.focus_window(client->window);
 
     render_decoration(client);
-    apply_stack(mp_workspace);
+    apply_stack(active_workspace());
 }
 
 void
@@ -1321,11 +1320,11 @@ Model::unfocus_client(Client_ptr client)
 void
 Model::sync_focus()
 {
-    Client_ptr active = mp_workspace->active();
+    Client_ptr active = active_workspace()->active();
 
     if (active && active != mp_focus)
         focus_client(active);
-    else if (mp_workspace->empty()) {
+    else if (active_workspace()->empty()) {
         m_conn.unfocus();
         mp_focus = nullptr;
     }
@@ -1345,7 +1344,7 @@ Model::attach_next_client()
             mp_attachment.exchange(nullptr);
     };
 
-    mp_attachment.exchange(mp_workspace);
+    mp_attachment.exchange(active_workspace());
     std::thread(attachment_resetter).detach();
 }
 
@@ -1451,28 +1450,26 @@ Model::activate_workspace(Util::Change<Index> index)
 void
 Model::activate_workspace(Workspace_ptr next_workspace)
 {
-    if (next_workspace == mp_workspace)
+    if (next_workspace == active_workspace())
         return;
 
     Context_ptr next_context = next_workspace->context();
-    if (next_context != mp_context) {
+    if (next_context != mp_context)
         activate_context(next_context);
-
-    }
 
     stop_moving();
     stop_resizing();
 
     m_conn.set_current_desktop(next_workspace->index());
 
-    Workspace_ptr prev_workspace = mp_workspace;
+    Workspace_ptr prev_workspace = active_workspace();
     mp_prev_workspace = prev_workspace;
 
     for (Client_ptr client : next_workspace->clients())
         if (!client->mapped)
             map_client(client);
 
-    for (Client_ptr client : mp_workspace->clients())
+    for (Client_ptr client : active_workspace()->clients())
         if (client->mapped && !client->sticky)
             unmap_client(client);
 
@@ -1480,7 +1477,7 @@ Model::activate_workspace(Workspace_ptr next_workspace)
         client->workspace = next_workspace;
 
     m_workspaces.activate_element(next_workspace);
-    mp_workspace = next_workspace;
+    mp_context->activate_workspace(next_workspace);
 
     apply_layout(next_workspace);
     apply_stack(next_workspace);
@@ -1648,7 +1645,7 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
 
     Index partition = active_partition()->index();
     Index context = mp_context->index();
-    Index workspace = mp_workspace->index();
+    Index workspace = active_workspace()->index();
 
     std::optional<Index> desktop = m_conn.get_window_desktop(window);
 
@@ -1817,8 +1814,8 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
         for(Edge edge : *rules.snap_edges)
             snap_client(edge, client);
 
-    if (client->workspace == mp_workspace) {
-        apply_layout(mp_workspace);
+    if (client->workspace == active_workspace()) {
+        apply_layout(active_workspace());
 
         if (!rules.do_focus)
             focus_client(client);
@@ -2112,7 +2109,7 @@ Model::apply_layout(Index index)
 void
 Model::apply_layout(Workspace_ptr workspace)
 {
-    if (workspace != mp_workspace)
+    if (workspace != active_workspace())
         return;
 
     for (Placement& placement : workspace->arrange())
@@ -2132,7 +2129,7 @@ Model::apply_stack(Workspace_ptr workspace)
 {
     static std::vector<Window> stack;
 
-    if (workspace != mp_workspace)
+    if (workspace != active_workspace())
         return;
 
     std::vector<Client_ptr> clients = workspace->stack_after_focus();
@@ -2287,39 +2284,39 @@ Model::apply_stack(Workspace_ptr workspace)
 void
 Model::cycle_focus(Direction direction)
 {
-    if (mp_workspace->size() <= 1)
+    if (active_workspace()->size() <= 1)
         return;
 
-    mp_workspace->cycle(direction);
-    focus_client(mp_workspace->active());
+    active_workspace()->cycle(direction);
+    focus_client(active_workspace()->active());
     sync_focus();
 }
 
 void
 Model::drag_focus(Direction direction)
 {
-    if (mp_workspace->size() <= 1)
+    if (active_workspace()->size() <= 1)
         return;
 
-    mp_workspace->drag(direction);
-    focus_client(mp_workspace->active());
+    active_workspace()->drag(direction);
+    focus_client(active_workspace()->active());
     sync_focus();
 
-    apply_layout(mp_workspace);
+    apply_layout(active_workspace());
 }
 
 
 void
 Model::rotate_clients(Direction direction)
 {
-    if (mp_workspace->size() <= 1)
+    if (active_workspace()->size() <= 1)
         return;
 
-    mp_workspace->rotate(direction);
-    focus_client(mp_workspace->active());
+    active_workspace()->rotate(direction);
+    focus_client(active_workspace()->active());
     sync_focus();
 
-    apply_layout(mp_workspace);
+    apply_layout(active_workspace());
 }
 
 
@@ -2333,7 +2330,7 @@ Model::move_focus_to_next_workspace(Direction direction)
 void
 Model::move_client_to_next_workspace(Direction direction, Client_ptr client)
 {
-    Index index = mp_workspace->index();
+    Index index = active_workspace()->index();
 
     switch (direction) {
     case Direction::Forward:
@@ -2374,7 +2371,7 @@ Model::move_client_to_workspace(Index index, Client_ptr client)
 
     client->workspace = to;
 
-    if (from == mp_workspace)
+    if (from == active_workspace())
         unmap_client(client);
 
     to->add_client(client);
@@ -2404,31 +2401,31 @@ Model::move_client_to_workspace(Index index, Client_ptr client)
 void
 Model::toggle_layout()
 {
-    mp_workspace->toggle_layout();
-    apply_layout(mp_workspace);
-    apply_stack(mp_workspace);
+    active_workspace()->toggle_layout();
+    apply_layout(active_workspace());
+    apply_stack(active_workspace());
 }
 
 void
 Model::set_layout(LayoutHandler::LayoutKind layout)
 {
-    mp_workspace->set_layout(layout);
-    apply_layout(mp_workspace);
-    apply_stack(mp_workspace);
+    active_workspace()->set_layout(layout);
+    apply_layout(active_workspace());
+    apply_stack(active_workspace());
 }
 
 void
 Model::set_layout_retain_region(LayoutHandler::LayoutKind layout)
 {
     std::vector<Region> regions;
-    bool was_tiled = !mp_workspace->layout_is_free();
+    bool was_tiled = !active_workspace()->layout_is_free();
 
     if (was_tiled) {
-        regions.reserve(mp_workspace->size());
+        regions.reserve(active_workspace()->size());
 
         std::transform(
-            mp_workspace->begin(),
-            mp_workspace->end(),
+            active_workspace()->begin(),
+            active_workspace()->end(),
             std::back_inserter(regions),
             [=,this](Client_ptr client) -> Region {
                 if (is_free(client))
@@ -2439,110 +2436,110 @@ Model::set_layout_retain_region(LayoutHandler::LayoutKind layout)
         );
     }
 
-    mp_workspace->set_layout(layout);
+    active_workspace()->set_layout(layout);
 
-    if (was_tiled && mp_workspace->layout_is_free()) {
+    if (was_tiled && active_workspace()->layout_is_free()) {
         std::size_t i = 0;
-        for (Client_ptr client : *mp_workspace)
+        for (Client_ptr client : *active_workspace())
             client->set_free_region(regions[i++]);
     }
 
-    apply_layout(mp_workspace);
-    apply_stack(mp_workspace);
+    apply_layout(active_workspace());
+    apply_stack(active_workspace());
 }
 
 
 void
 Model::toggle_layout_data()
 {
-    mp_workspace->toggle_layout_data();
-    apply_layout(mp_workspace);
+    active_workspace()->toggle_layout_data();
+    apply_layout(active_workspace());
 }
 
 void
 Model::cycle_layout_data(Direction direction)
 {
-    mp_workspace->cycle_layout_data(direction);
-    apply_layout(mp_workspace);
+    active_workspace()->cycle_layout_data(direction);
+    apply_layout(active_workspace());
 }
 
 void
 Model::copy_data_from_prev_layout()
 {
-    mp_workspace->copy_data_from_prev_layout();
-    apply_layout(mp_workspace);
+    active_workspace()->copy_data_from_prev_layout();
+    apply_layout(active_workspace());
 }
 
 
 void
 Model::change_gap_size(Util::Change<int> change)
 {
-    mp_workspace->change_gap_size(change);
-    apply_layout(mp_workspace);
+    active_workspace()->change_gap_size(change);
+    apply_layout(active_workspace());
 }
 
 void
 Model::change_main_count(Util::Change<int> change)
 {
-    mp_workspace->change_main_count(change);
-    apply_layout(mp_workspace);
+    active_workspace()->change_main_count(change);
+    apply_layout(active_workspace());
 }
 
 void
 Model::change_main_factor(Util::Change<float> change)
 {
-    mp_workspace->change_main_factor(change);
-    apply_layout(mp_workspace);
+    active_workspace()->change_main_factor(change);
+    apply_layout(active_workspace());
 }
 
 void
 Model::change_margin(Util::Change<int> change)
 {
-    mp_workspace->change_margin(change);
-    apply_layout(mp_workspace);
+    active_workspace()->change_margin(change);
+    apply_layout(active_workspace());
 }
 
 void
 Model::change_margin(Edge edge, Util::Change<int> change)
 {
-    mp_workspace->change_margin(edge, change);
-    apply_layout(mp_workspace);
+    active_workspace()->change_margin(edge, change);
+    apply_layout(active_workspace());
 }
 
 void
 Model::reset_gap_size()
 {
-    mp_workspace->reset_gap_size();
-    apply_layout(mp_workspace);
+    active_workspace()->reset_gap_size();
+    apply_layout(active_workspace());
 }
 
 void
 Model::reset_margin()
 {
-    mp_workspace->reset_margin();
-    apply_layout(mp_workspace);
+    active_workspace()->reset_margin();
+    apply_layout(active_workspace());
 }
 
 void
 Model::reset_layout_data()
 {
-    mp_workspace->reset_layout_data();
-    apply_layout(mp_workspace);
+    active_workspace()->reset_layout_data();
+    apply_layout(active_workspace());
 }
 
 
 void
 Model::save_layout(std::size_t number) const
 {
-    mp_workspace->save_layout(number);
+    active_workspace()->save_layout(number);
 }
 
 void
 Model::load_layout(std::size_t number)
 {
-    mp_workspace->load_layout(number);
-    apply_layout(mp_workspace);
-    apply_stack(mp_workspace);
+    active_workspace()->load_layout(number);
+    apply_layout(active_workspace());
+    apply_stack(active_workspace());
 }
 
 
@@ -2742,7 +2739,7 @@ Model::set_sticky_client(Toggle toggle, Client_ptr client)
             m_workspaces.begin(),
             m_workspaces.end(),
             [=,this](Workspace_ptr workspace) {
-                if (workspace != mp_workspace) {
+                if (workspace != active_workspace()) {
                     workspace->remove_client(client);
                     workspace->remove_icon(client);
                     workspace->remove_disowned(client);
@@ -2759,7 +2756,7 @@ Model::set_sticky_client(Toggle toggle, Client_ptr client)
 
         client->unstick();
 
-        apply_layout(mp_workspace);
+        apply_layout(active_workspace());
         render_decoration(client);
 
         if (client->leader) {
@@ -3072,17 +3069,17 @@ Model::check_unconsume_client(Client_ptr client, bool must_replace_consumer)
             producer->workspace = cworkspace;
         } else {
             if (must_replace_consumer)
-                mp_workspace->add_client(producer);
+                active_workspace()->add_client(producer);
 
-            producer->workspace = mp_workspace;
+            producer->workspace = active_workspace();
         }
 
-        apply_layout(mp_workspace);
+        apply_layout(active_workspace());
         apply_layout(cworkspace);
     }
 
     sync_focus();
-    apply_stack(mp_workspace);
+    apply_stack(active_workspace());
     apply_stack(cworkspace);
 }
 
@@ -3417,7 +3414,7 @@ Model::activate_screen_struts(winsys::Toggle toggle)
         for (auto& strut : screen.show_and_get_struts(true))
             m_conn.map_window(strut);
 
-        apply_layout(mp_workspace);
+        apply_layout(active_workspace());
 
         return;
     }
@@ -3429,7 +3426,7 @@ Model::activate_screen_struts(winsys::Toggle toggle)
         for (auto& strut : screen.show_and_get_struts(false))
             m_conn.unmap_window(strut);
 
-        apply_layout(mp_workspace);
+        apply_layout(active_workspace());
 
         return;
     }
@@ -3451,7 +3448,7 @@ Model::activate_screen_struts(winsys::Toggle toggle)
 void
 Model::pop_deiconify()
 {
-    std::optional<Client_ptr> icon = mp_workspace->pop_icon();
+    std::optional<Client_ptr> icon = active_workspace()->pop_icon();
 
     if (icon)
         set_iconify_client(Toggle::Off, *icon);
@@ -3460,7 +3457,7 @@ Model::pop_deiconify()
 void
 Model::deiconify_all()
 {
-    for (std::size_t i = 0; i < mp_workspace->size(); ++i)
+    for (std::size_t i = 0; i < active_workspace()->size(); ++i)
         pop_deiconify();
 }
 
@@ -3587,7 +3584,7 @@ Model::handle_map_request(MapRequestEvent event)
             if (m_conn.window_is_mappable(event.window))
                 m_conn.map_window(event.window);
 
-            apply_layout(mp_workspace);
+            apply_layout(active_workspace());
             must_restack = true;
         } else
             may_map = false;
@@ -3649,7 +3646,7 @@ Model::handle_map_request(MapRequestEvent event)
                     screen.compute_placeable_region();
                     m_conn.map_window(strut->window);
 
-                    apply_layout(mp_workspace);
+                    apply_layout(active_workspace());
                 } else
                     may_map = false;
             }
@@ -3667,7 +3664,7 @@ Model::handle_map_request(MapRequestEvent event)
     }
 
     if (must_restack)
-        apply_stack(mp_workspace);
+        apply_stack(active_workspace());
 
     if (!may_map)
         m_conn.unmap_window(event.window);
@@ -3712,8 +3709,8 @@ Model::handle_destroy(DestroyEvent event)
         screen.remove_strut(event.window);
         screen.compute_placeable_region();
 
-        apply_layout(mp_workspace);
-        apply_stack(mp_workspace);
+        apply_layout(active_workspace());
+        apply_stack(active_workspace());
     }
 
     m_stack.remove_window(event.window);
@@ -4037,8 +4034,8 @@ Model::handle_property(PropertyEvent event)
             screen.add_struts(*struts);
             screen.compute_placeable_region();
 
-            apply_layout(mp_workspace);
-            apply_stack(mp_workspace);
+            apply_layout(active_workspace());
+            apply_stack(active_workspace());
         }
 
         return;
