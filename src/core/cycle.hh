@@ -142,10 +142,34 @@ public:
         return m_elements.begin();
     }
 
+    typename std::deque<T>::const_iterator
+    begin() const
+    {
+        return m_elements.begin();
+    }
+
+    typename std::deque<T>::const_iterator
+    cbegin() const
+    {
+        return m_elements.cbegin();
+    }
+
     typename std::deque<T>::iterator
     end()
     {
         return m_elements.end();
+    }
+
+    typename std::deque<T>::const_iterator
+    end() const
+    {
+        return m_elements.end();
+    }
+
+    typename std::deque<T>::const_iterator
+    cend() const
+    {
+        return m_elements.cend();
     }
 
     T operator[](std::size_t index)

@@ -28,3 +28,12 @@ Region::remove_extents(const Extents& extents)
     dim.w -= extents.left + extents.right;
     dim.h -= extents.top + extents.bottom;
 }
+
+bool
+Region::contains(const Pos& pos) const
+{
+    return pos.x >= this->pos.x
+        && pos.y >= this->pos.y
+        && pos.x < this->pos.x + this->dim.w
+        && pos.y < this->pos.y + this->dim.h;
+}

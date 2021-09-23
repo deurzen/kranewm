@@ -38,6 +38,10 @@ public:
         Util::assert(context != nullptr,
             "partition must contain valid context");
 
+        if (mp_context)
+            mp_context->set_partition(nullptr);
+
+        context->set_partition(this);
         mp_context = context;
     }
 
@@ -45,6 +49,18 @@ public:
     context()
     {
         return mp_context;
+    }
+
+    winsys::Region
+    full_region() const
+    {
+        return m_screen.full_region();
+    }
+
+    winsys::Region
+    placeable_region() const
+    {
+        return m_screen.placeable_region();
     }
 
 private:

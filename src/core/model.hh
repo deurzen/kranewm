@@ -73,13 +73,13 @@ private:
     Client_ptr search_client(SearchSelector const&);
     bool client_matches_search(Client_ptr, SearchSelector const&) const;
 
-    Index active_partition() const;
+    Partition_ptr active_partition() const;
     Partition_ptr get_partition(Index) const;
 
-    Index active_context() const;
+    Context_ptr active_context() const;
     Context_ptr get_context(Index) const;
 
-    Index active_workspace() const;
+    Workspace_ptr active_workspace() const;
     Workspace_ptr get_workspace(Index) const;
 
     bool is_free(Client_ptr) const;
@@ -215,7 +215,6 @@ private:
     Cycle<Context_ptr> m_contexts;
     Cycle<Workspace_ptr> m_workspaces;
 
-    Partition_ptr mp_partition;
     Context_ptr mp_context;
     Workspace_ptr mp_workspace;
 

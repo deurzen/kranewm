@@ -1,6 +1,8 @@
 #include "../winsys/util.hh"
-#include "workspace.hh"
+#include "context.hh"
 #include "cycle.t.hh"
+#include "partition.hh"
+#include "workspace.hh"
 
 #include <algorithm>
 #include <optional>
@@ -131,6 +133,13 @@ Workspace::length() const
 }
 
 
+Context_ptr
+Workspace::context() const
+{
+    return mp_context;
+}
+
+
 Index
 Workspace::index() const
 {
@@ -141,6 +150,21 @@ std::string const&
 Workspace::name() const
 {
     return m_name;
+}
+
+std::string
+Workspace::identifier() const
+{
+    if (!m_name.empty())
+        return mp_context->name()
+            + ":"
+            + std::to_string(m_index)
+            + ":"
+            + m_name;
+
+    return mp_context->name()
+        + ":"
+        + std::to_string(m_index);
 }
 
 Client_ptr
@@ -502,8 +526,9 @@ Workspace::set_layout(LayoutHandler::LayoutKind layout)
 }
 
 std::vector<Placement>
-Workspace::arrange(winsys::Region region) const
+Workspace::arrange() const
 {
+    winsys::Region region = mp_context->partition()->placeable_region();
     std::deque<Client_ptr> clients = this->clients();
 
     std::vector<Placement> placements;

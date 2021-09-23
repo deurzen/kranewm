@@ -3,8 +3,9 @@
 
 #include "../winsys/geometry.hh"
 #include "../winsys/input.hh"
-#include "../winsys/window.hh"
+#include "../winsys/screen.hh"
 #include "../winsys/util.hh"
+#include "../winsys/window.hh"
 #include "client.hh"
 #include "cycle.hh"
 #include "cycle.t.hh"
@@ -126,9 +127,10 @@ public:
 
     };
 
-    Workspace(std::size_t index, std::string name)
+    Workspace(std::size_t index, std::string name, Context_ptr context)
         : m_index(index),
           m_name(name),
+          mp_context(context),
           m_layout_handler({}),
           mp_active(nullptr),
           m_clients({}, true),
@@ -149,8 +151,11 @@ public:
     std::size_t size() const;
     std::size_t length() const;
 
+    Context_ptr context() const;
+
     Index index() const;
     std::string const& name() const;
+    std::string identifier() const;
     Client_ptr active() const;
 
     std::deque<Client_ptr> const& clients() const;
@@ -200,7 +205,7 @@ public:
 
     void toggle_layout();
     void set_layout(LayoutHandler::LayoutKind);
-    std::vector<Placement> arrange(winsys::Region) const;
+    std::vector<Placement> arrange() const;
 
     std::deque<Client_ptr>::iterator
     begin()
@@ -217,6 +222,8 @@ public:
 private:
     std::size_t m_index;
     std::string m_name;
+
+    Context_ptr mp_context;
 
     LayoutHandler m_layout_handler;
 

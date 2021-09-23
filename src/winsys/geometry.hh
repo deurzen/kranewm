@@ -86,6 +86,8 @@ namespace winsys
         void apply_minimum_dim(const Dim&);
         void apply_extents(const Extents&);
         void remove_extents(const Extents&);
+
+        bool contains(const Pos&) const;
     };
 
     inline bool

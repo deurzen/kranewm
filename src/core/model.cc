@@ -36,7 +36,6 @@ Model::Model(Connection& conn)
       m_partitions({}, true),
       m_contexts({}, true),
       m_workspaces({}, true),
-      mp_partition(nullptr),
       mp_context(nullptr),
       mp_workspace(nullptr),
       mp_prev_partition(nullptr),
@@ -199,19 +198,19 @@ Model::Model(Connection& conn)
           },
           { { Key::Comma, { Main } },
               CALL(jump_client({
-                  model.active_workspace(),
+                  model.active_workspace()->index(),
                   Workspace::ClientSelector::SelectionCriterium::AtFirst
               }))
           },
           { { Key::Period, { Main } },
               CALL(jump_client({
-                  model.active_workspace(),
+                  model.active_workspace()->index(),
                   Workspace::ClientSelector::SelectionCriterium::AtMain
               }))
           },
           { { Key::Slash, { Main } },
               CALL(jump_client({
-                  model.active_workspace(),
+                  model.active_workspace()->index(),
                   Workspace::ClientSelector::SelectionCriterium::AtLast
               }))
           },
@@ -715,20 +714,43 @@ Model::Model(Connection& conn)
     };
 
     static const std::vector<std::string> workspace_names{
-        "1:main", "2:web", "3:term", "4", "5", "6", "7", "8", "9", "10"
+        "main", "web", "term", {}, {}, {}, {}, {}, {}, {}
     };
 
-    for (std::size_t i = 0; i < context_names.size(); ++i)
-        m_contexts.insert_at_back(new Context(i, context_names[i]));
+    for (std::size_t i = 0; i < context_names.size(); ++i) {
+        Context_ptr context = new Context(i, context_names[i]);
+        m_contexts.insert_at_back(context);
 
-    for (std::size_t i = 0; i < workspace_names.size(); ++i)
-        m_workspaces.insert_at_back(new Workspace(i, workspace_names[i]));
+        for (std::size_t j = 0; j < workspace_names.size(); ++j) {
+            Workspace_ptr workspace = new Workspace(
+                workspace_names.size() * i + j,
+                workspace_names[j],
+                context
+            );
+
+            m_workspaces.insert_at_back(workspace);
+            context->register_workspace(workspace);
+        }
+
+        context->activate_workspace(Index{0});
+    }
 
     if constexpr (Config::ipc_enabled)
         m_conn.init_wm_ipc();
 
     acquire_partitions();
-    m_conn.init_for_wm(workspace_names);
+
+    std::vector<std::string> desktop_names(m_workspaces.size());
+    std::transform(
+        m_workspaces.begin(),
+        m_workspaces.end(),
+        std::back_inserter(desktop_names),
+        [](Workspace_ptr workspace) -> std::string {
+            return workspace->identifier();
+        }
+    );
+
+    m_conn.init_for_wm(desktop_names);
 
     m_contexts.activate_at_index(0);
     m_workspaces.activate_at_index(0);
@@ -901,7 +923,10 @@ Model::acquire_partitions()
             contextless_partitions.push_back(m_partitions[i]);
     }
 
-    for (std::size_t i = 0, context_index = 0; i < contextless_partitions.size(); ++context_index) {
+    for (std::size_t i = 0, context_index = 0;
+        i < contextless_partitions.size();
+        ++context_index
+    ) {
         if (Util::contains(used_contexts, context_index))
             continue;
 
@@ -913,9 +938,7 @@ Model::acquire_partitions()
     else
         m_partitions.activate_at_index(0);
 
-    mp_partition = *m_partitions.active_element();
-    Screen& screen = mp_partition->screen();
-
+    Screen& screen = active_partition()->screen();
     screen.compute_placeable_region();
 
     std::vector<Region> workspace_regions(m_workspaces.size(), screen.full_region());
@@ -943,7 +966,7 @@ Model::acquire_partitions()
 const Screen&
 Model::active_screen() const
 {
-    return mp_partition->const_screen();
+    return active_partition()->const_screen();
 }
 
 Client_ptr
@@ -1118,10 +1141,18 @@ Model::client_matches_search(Client_ptr client, SearchSelector const& selector) 
 }
 
 
-Index
+Partition_ptr
 Model::active_partition() const
 {
-    return mp_partition->index();
+    static Partition_ptr prev_partition = *m_partitions.active_element();
+
+    for (Partition_ptr partition : m_partitions)
+        if (partition->full_region().contains(m_conn.get_pointer_position())) {
+            prev_partition = partition;
+            return partition;
+        }
+
+    return prev_partition;
 }
 
 Partition_ptr
@@ -1134,10 +1165,10 @@ Model::get_partition(Index index) const
 }
 
 
-Index
+Context_ptr
 Model::active_context() const
 {
-    return mp_context->index();
+    return mp_context;
 }
 
 Context_ptr
@@ -1150,10 +1181,10 @@ Model::get_context(Index index) const
 }
 
 
-Index
+Workspace_ptr
 Model::active_workspace() const
 {
-    return mp_workspace->index();
+    return mp_workspace;
 }
 
 Workspace_ptr
@@ -1345,7 +1376,7 @@ Model::activate_partition(Util::Change<Index> index)
 void
 Model::activate_partition(Partition_ptr next_partition)
 {
-    if (next_partition == mp_partition)
+    if (next_partition == active_partition())
         return;
 
     stop_moving();
@@ -1386,7 +1417,12 @@ Model::activate_context(Context_ptr next_context)
     stop_moving();
     stop_resizing();
 
-    // TODO
+    if (next_context->is_partitioned()) {
+        activate_partition(next_context->partition());
+        return;
+    }
+
+    active_partition()->set_context(next_context);
 }
 
 
@@ -1418,6 +1454,12 @@ Model::activate_workspace(Workspace_ptr next_workspace)
     if (next_workspace == mp_workspace)
         return;
 
+    Context_ptr next_context = next_workspace->context();
+    if (next_context != mp_context) {
+        activate_context(next_context);
+
+    }
+
     stop_moving();
     stop_resizing();
 
@@ -1426,15 +1468,15 @@ Model::activate_workspace(Workspace_ptr next_workspace)
     Workspace_ptr prev_workspace = mp_workspace;
     mp_prev_workspace = prev_workspace;
 
-    for (auto& client : next_workspace->clients())
+    for (Client_ptr client : next_workspace->clients())
         if (!client->mapped)
             map_client(client);
 
-    for (auto& client : mp_workspace->clients())
+    for (Client_ptr client : mp_workspace->clients())
         if (client->mapped && !client->sticky)
             unmap_client(client);
 
-    for (auto& client : m_sticky_clients)
+    for (Client_ptr client : m_sticky_clients)
         client->workspace = next_workspace;
 
     m_workspaces.activate_element(next_workspace);
@@ -1604,7 +1646,7 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
     bool fullscreen = m_conn.window_is_fullscreen(window);
     bool sticky = m_conn.window_is_sticky(window);
 
-    Index partition = mp_partition->index();
+    Index partition = active_partition()->index();
     Index context = mp_context->index();
     Index workspace = mp_workspace->index();
 
@@ -1772,7 +1814,7 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
     client->workspace->add_client(client);
 
     if (rules.snap_edges)
-        for(auto& edge : *rules.snap_edges)
+        for(Edge edge : *rules.snap_edges)
             snap_client(edge, client);
 
     if (client->workspace == mp_workspace) {
@@ -2073,7 +2115,7 @@ Model::apply_layout(Workspace_ptr workspace)
     if (workspace != mp_workspace)
         return;
 
-    for (auto& placement : workspace->arrange(active_screen().placeable_region()))
+    for (Placement& placement : workspace->arrange())
         place_client(placement);
 }
 
@@ -3364,7 +3406,7 @@ Model::snap_client(Edge edge, Client_ptr client)
 void
 Model::activate_screen_struts(winsys::Toggle toggle)
 {
-    Screen& screen = mp_partition->screen();
+    Screen& screen = active_partition()->screen();
 
     switch (toggle) {
     case Toggle::On:
@@ -3536,7 +3578,7 @@ Model::handle_map_request(MapRequestEvent event)
         = m_conn.get_window_strut(event.window);
 
     if (struts) {
-        Screen& screen = mp_partition->screen();
+        Screen& screen = active_partition()->screen();
         screen.add_struts(*struts);
 
         if (screen.showing_struts()) {
@@ -3567,7 +3609,7 @@ Model::handle_map_request(MapRequestEvent event)
     else if (Util::contains(types, WindowType::Desktop))
         layer = StackHandler::StackLayer::Desktop;
     else if (Util::contains(types, WindowType::Dock)) {
-        Screen& screen = mp_partition->screen();
+        Screen& screen = active_partition()->screen();
 
         if (region && !screen.contains_strut(event.window)) {
             const Region screen_region = screen.full_region();
@@ -3664,7 +3706,7 @@ Model::handle_leave(LeaveEvent event)
 void
 Model::handle_destroy(DestroyEvent event)
 {
-    Screen& screen = mp_partition->screen();
+    Screen& screen = active_partition()->screen();
 
     if (screen.contains_strut(event.window)) {
         screen.remove_strut(event.window);
@@ -3989,7 +4031,7 @@ Model::handle_property(PropertyEvent event)
             = m_conn.get_window_strut(event.window);
 
         if (struts) {
-            Screen& screen = mp_partition->screen();
+            Screen& screen = active_partition()->screen();
 
             screen.remove_strut(event.window);
             screen.add_struts(*struts);
