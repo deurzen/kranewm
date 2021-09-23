@@ -12,6 +12,10 @@
 #include <string>
 #include <vector>
 
+typedef class Partition* Partition_ptr;
+typedef class Context* Context_ptr;
+typedef class Workspace* Workspace_ptr;
+
 typedef struct Client* Client_ptr;
 typedef struct Client final
 {
@@ -43,9 +47,9 @@ typedef struct Client final
         std::string name,
         std::string class_,
         std::string instance,
-        Index partition,
-        Index context,
-        Index workspace,
+        Partition_ptr partition,
+        Context_ptr context,
+        Workspace_ptr workspace,
         std::optional<winsys::Pid> pid,
         std::optional<winsys::Pid> ppid
     );
@@ -83,9 +87,9 @@ typedef struct Client final
     std::string name;
     std::string class_;
     std::string instance;
-    Index partition;
-    Index context;
-    Index workspace;
+    Partition_ptr partition;
+    Context_ptr context;
+    Workspace_ptr workspace;
     winsys::Region free_region;
     winsys::Region tile_region;
     winsys::Region active_region;
