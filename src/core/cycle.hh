@@ -136,13 +136,13 @@ public:
     std::deque<T> const& as_deque() const;
     std::vector<T> const& stack() const;
 
-    std::deque<T>::iterator
+    typename std::deque<T>::iterator
     begin()
     {
         return m_elements.begin();
     }
 
-    std::deque<T>::iterator
+    typename std::deque<T>::iterator
     end()
     {
         return m_elements.end();

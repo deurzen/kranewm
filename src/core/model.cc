@@ -2378,17 +2378,15 @@ Model::set_layout(LayoutHandler::LayoutKind layout)
 void
 Model::set_layout_retain_region(LayoutHandler::LayoutKind layout)
 {
-    const std::deque<Client_ptr>& clients = mp_workspace->clients();
     std::vector<Region> regions;
-
     bool was_tiled = !mp_workspace->layout_is_free();
 
     if (was_tiled) {
-        regions.reserve(clients.size());
+        regions.reserve(mp_workspace->size());
 
         std::transform(
-            clients.begin(),
-            clients.end(),
+            mp_workspace->begin(),
+            mp_workspace->end(),
             std::back_inserter(regions),
             [=,this](Client_ptr client) -> Region {
                 if (is_free(client))
@@ -2401,9 +2399,11 @@ Model::set_layout_retain_region(LayoutHandler::LayoutKind layout)
 
     mp_workspace->set_layout(layout);
 
-    if (was_tiled && mp_workspace->layout_is_free())
-        for (std::size_t i = 0; i < clients.size(); ++i)
-            clients[i]->set_free_region(regions[i]);
+    if (was_tiled && mp_workspace->layout_is_free()) {
+        std::size_t i = 0;
+        for (Client_ptr client : *mp_workspace)
+            client->set_free_region(regions[i++]);
+    }
 
     apply_layout(mp_workspace);
     apply_stack(mp_workspace);
