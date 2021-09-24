@@ -215,9 +215,6 @@ private:
     Cycle<Context_ptr> m_contexts;
     Cycle<Workspace_ptr> m_workspaces;
 
-    Context_ptr mp_context;
-    Workspace_ptr mp_workspace;
-
     Partition_ptr mp_prev_partition;
     Context_ptr mp_prev_context;
     Workspace_ptr mp_prev_workspace;

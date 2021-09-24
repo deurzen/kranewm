@@ -36,8 +36,6 @@ Model::Model(Connection& conn)
       m_partitions({}, true),
       m_contexts({}, true),
       m_workspaces({}, true),
-      mp_context(nullptr),
-      mp_workspace(nullptr),
       mp_prev_partition(nullptr),
       mp_prev_context(nullptr),
       mp_prev_workspace(nullptr),
@@ -755,8 +753,6 @@ Model::Model(Connection& conn)
     m_contexts.activate_at_index(0);
     m_workspaces.activate_at_index(0);
 
-    mp_context = *m_contexts.active_element();
-
     m_conn.set_current_desktop(0);
 
     std::vector<KeyInput> key_inputs(m_key_bindings.size());
@@ -868,7 +864,7 @@ Model::init_signals() const
 void
 Model::acquire_partitions()
 {
-    std::size_t index = m_partitions.active_index();
+    std::size_t index = active_partition()->index();
     std::vector<Screen> connected_outputs = m_conn.connected_outputs();
 
     connected_outputs.erase(
@@ -1410,7 +1406,7 @@ Model::activate_context(Util::Change<Index> index)
 void
 Model::activate_context(Context_ptr next_context)
 {
-    if (next_context == mp_context)
+    if (next_context == active_context())
         return;
 
     stop_moving();
@@ -1435,16 +1431,20 @@ Model::toggle_workspace()
 void
 Model::activate_next_workspace(Direction direction)
 {
-    activate_workspace(m_workspaces.next_index(direction));
+    activate_workspace(
+        *active_context()->workspaces().next_element(direction)
+    );
 }
 
 void
 Model::activate_workspace(Util::Change<Index> index)
 {
-    if (index >= m_workspaces.size())
+    Context_ptr context = active_context();
+
+    if (index >= context->size())
         return;
 
-    activate_workspace(get_workspace(index));
+    activate_workspace(context->workspaces()[index]);
 }
 
 void
@@ -1454,7 +1454,7 @@ Model::activate_workspace(Workspace_ptr next_workspace)
         return;
 
     Context_ptr next_context = next_workspace->context();
-    if (next_context != mp_context)
+    if (next_context != active_context())
         activate_context(next_context);
 
     stop_moving();
@@ -1477,7 +1477,7 @@ Model::activate_workspace(Workspace_ptr next_workspace)
         client->workspace = next_workspace;
 
     m_workspaces.activate_element(next_workspace);
-    mp_context->activate_workspace(next_workspace);
+    active_context()->activate_workspace(next_workspace);
 
     apply_layout(next_workspace);
     apply_stack(next_workspace);
@@ -1644,7 +1644,7 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
     bool sticky = m_conn.window_is_sticky(window);
 
     Index partition = active_partition()->index();
-    Index context = mp_context->index();
+    Index context = active_context()->index();
     Index workspace = active_workspace()->index();
 
     std::optional<Index> desktop = m_conn.get_window_desktop(window);

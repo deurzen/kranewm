@@ -34,6 +34,12 @@ public:
         return m_name;
     }
 
+    std::size_t
+    size() const
+    {
+        return m_workspaces.size();
+    }
+
     bool
     is_partitioned() const
     {
