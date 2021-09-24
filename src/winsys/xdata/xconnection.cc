@@ -214,7 +214,7 @@ XConnection::step()
 {
     next_event(m_current_event);
 
-    if (m_current_event.type >= 0 && m_current_event.type <= 256)
+    if (m_current_event.type >= 0 && m_current_event.type <= LASTEvent)
         return (this->*(m_event_dispatcher[m_current_event.type]))();
 
     return std::monostate{};
