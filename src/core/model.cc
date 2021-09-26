@@ -1110,7 +1110,7 @@ Model::is_free(Client_ptr client) const
         || ((!client->fullscreen || client->contained)
             && (client->sticky
                     ? mp_workspace
-                    : get_workspace(client->workspace)
+                    : client->workspace
                )->layout_is_free());
 }
 
@@ -1372,7 +1372,7 @@ Model::activate_workspace(Workspace_ptr next_workspace)
             unmap_client(client);
 
     for (auto& client : m_sticky_clients)
-        client->workspace = next_workspace->index();
+        client->workspace = next_workspace;
 
     m_workspaces.activate_element(next_workspace);
     mp_workspace = next_workspace;
@@ -1578,9 +1578,9 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
         name,
         class_,
         instance,
-        partition,
-        context,
-        workspace,
+        get_partition(partition),
+        get_context(context),
+        get_workspace(workspace),
         pid,
         ppid
     );
@@ -1643,20 +1643,20 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
         fullscreen = *rules.do_fullscreen;
 
     if (rules.to_partition && *rules.to_partition < m_partitions.size())
-        client->partition = *rules.to_partition;
+        client->partition = get_partition(*rules.to_partition);
 
     if (rules.to_context && *rules.to_context < m_contexts.size())
-        client->context = *rules.to_context;
+        client->context = get_context(*rules.to_context);
 
     if (mp_attachment) {
-        client->workspace = mp_attachment.exchange(nullptr)->index();
+        client->workspace = mp_attachment.exchange(nullptr);
         client->attaching = true;
     } else if (rules.to_workspace && *rules.to_workspace < m_workspaces.size())
-        client->workspace = *rules.to_workspace;
+        client->workspace = get_workspace(*rules.to_workspace);
 
     if (leader) {
         std::vector<Client_ptr>& members = m_leader_map.at(*leader);
-        std::optional<Index> group_attachment = std::nullopt;
+        Workspace_ptr group_attachment = nullptr;
 
         if (std::any_of(
             members.begin(),
@@ -1670,7 +1670,7 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
                 return false;
             }) && group_attachment
         ) {
-            client->workspace = *group_attachment;
+            client->workspace = group_attachment;
         }
     }
 
@@ -1698,7 +1698,7 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
     m_conn.init_window(window, false);
     m_conn.init_frame(frame, false);
     m_conn.set_window_border_width(window, 0);
-    m_conn.set_window_desktop(window, client->workspace);
+    m_conn.set_window_desktop(window, client->workspace->index());
     m_conn.set_icccm_window_state(window, IcccmWindowState::Normal);
 
     if (client->size_hints)
@@ -1706,13 +1706,13 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
 
     client->free_region.apply_minimum_dim(Client::MIN_CLIENT_DIM);
 
-    get_workspace(client->workspace)->add_client(client);
+    client->workspace->add_client(client);
 
     if (rules.snap_edges)
         for(auto& edge : *rules.snap_edges)
             snap_client(edge, client);
 
-    if (client->workspace == mp_workspace->index()) {
+    if (client->workspace == mp_workspace) {
         apply_layout(mp_workspace);
 
         if (!rules.do_focus)
@@ -1762,7 +1762,7 @@ Model::unmanage(Client_ptr client)
 
     set_sticky_client(winsys::Toggle::Off, client);
 
-    Workspace_ptr workspace = get_workspace(client->workspace);
+    Workspace_ptr workspace = client->workspace;
 
     m_conn.unparent_window(client->window, client->active_region.pos);
 
@@ -2258,16 +2258,16 @@ void
 Model::move_client_to_workspace(Index index, Client_ptr client)
 {
     if (index >= m_workspaces.size()
-        || index == client->workspace
+        || index == client->workspace->index()
         || client->sticky
     ) {
         return;
     }
 
-    Workspace_ptr from = get_workspace(client->workspace);
+    Workspace_ptr from = client->workspace;
     Workspace_ptr to = get_workspace(index);
 
-    client->workspace = index;
+    client->workspace = to;
 
     if (from == mp_workspace)
         unmap_client(client);
@@ -2522,7 +2522,7 @@ Model::set_fullscreen_client(Toggle toggle, Client_ptr client)
             true
         );
 
-        Workspace_ptr workspace = get_workspace(client->workspace);
+        Workspace_ptr workspace = client->workspace;
 
         apply_layout(workspace);
         apply_stack(workspace);
@@ -2548,7 +2548,7 @@ Model::set_fullscreen_client(Toggle toggle, Client_ptr client)
             false
         );
 
-        Workspace_ptr workspace = get_workspace(client->workspace);
+        Workspace_ptr workspace = client->workspace;
 
         apply_layout(workspace);
         apply_stack(workspace);
@@ -2596,7 +2596,7 @@ Model::set_sticky_client(Toggle toggle, Client_ptr client)
             m_workspaces.begin(),
             m_workspaces.end(),
             [client](Workspace_ptr workspace) {
-                if (workspace->index() != client->workspace)
+                if (workspace != client->workspace)
                     workspace->add_client(client);
             }
         );
@@ -2607,7 +2607,7 @@ Model::set_sticky_client(Toggle toggle, Client_ptr client)
             true
         );
 
-        Workspace_ptr workspace = get_workspace(client->workspace);
+        Workspace_ptr workspace = client->workspace;
 
         client->stick();
 
@@ -2641,9 +2641,8 @@ Model::set_sticky_client(Toggle toggle, Client_ptr client)
                     workspace->remove_client(client);
                     workspace->remove_icon(client);
                     workspace->remove_disowned(client);
-                } else {
-                    client->workspace = workspace->index();
-                }
+                } else
+                    client->workspace = workspace;
             }
         );
 
@@ -2702,7 +2701,7 @@ Model::set_contained_client(Toggle toggle, Client_ptr client)
     {
         client->contained = true;
 
-        Workspace_ptr workspace = get_workspace(client->workspace);
+        Workspace_ptr workspace = client->workspace;
 
         apply_layout(workspace);
         apply_stack(workspace);
@@ -2713,7 +2712,7 @@ Model::set_contained_client(Toggle toggle, Client_ptr client)
     {
         client->contained = false;
 
-        Workspace_ptr workspace = get_workspace(client->workspace);
+        Workspace_ptr workspace = client->workspace;
 
         apply_layout(workspace);
         apply_stack(workspace);
@@ -2817,7 +2816,7 @@ Model::set_iconify_client(Toggle toggle, Client_ptr client)
         if (client->iconified || client->sticky)
             return;
 
-        Workspace_ptr workspace = get_workspace(client->workspace);
+        Workspace_ptr workspace = client->workspace;
         workspace->client_to_icon(client);
 
         m_conn.set_icccm_window_state(
@@ -2839,7 +2838,7 @@ Model::set_iconify_client(Toggle toggle, Client_ptr client)
         if (!client->iconified)
             return;
 
-        Workspace_ptr workspace = get_workspace(client->workspace);
+        Workspace_ptr workspace = client->workspace;
         workspace->icon_to_client(client);
 
         m_conn.set_icccm_window_state(
@@ -2878,8 +2877,8 @@ Model::consume_client(Client_ptr producer, Client_ptr client)
     static std::unordered_set<std::string> allowed_producers_memoized{};
     static std::unordered_set<std::string> allowed_consumers_memoized{};
 
-    Workspace_ptr pworkspace = get_workspace(producer->workspace);
-    Workspace_ptr cworkspace = get_workspace(client->workspace);
+    Workspace_ptr pworkspace = producer->workspace;
+    Workspace_ptr cworkspace = client->workspace;
 
     if (client->producer || !cworkspace->contains(client))
         return;
@@ -2953,7 +2952,7 @@ Model::check_unconsume_client(Client_ptr client, bool must_replace_consumer)
     if (!producer || producer->managed)
         return;
 
-    Workspace_ptr cworkspace = get_workspace(client->workspace);
+    Workspace_ptr cworkspace = client->workspace;
 
     client->producer = nullptr;
     Util::erase_remove(producer->consumers, client);
@@ -2967,12 +2966,12 @@ Model::check_unconsume_client(Client_ptr client, bool must_replace_consumer)
             else
                 cworkspace->remove_client(producer);
 
-            producer->workspace = cworkspace->index();
+            producer->workspace = cworkspace;
         } else {
             if (must_replace_consumer)
                 mp_workspace->add_client(producer);
 
-            producer->workspace = mp_workspace->index();
+            producer->workspace = mp_workspace;
         }
 
         apply_layout(mp_workspace);

@@ -1,4 +1,5 @@
 #include "client.hh"
+
 #include <iostream>
 
 Client::Client(
@@ -7,9 +8,9 @@ Client::Client(
     std::string name,
     std::string class_,
     std::string instance,
-    Index partition,
-    Index context,
-    Index workspace,
+    Partition_ptr partition,
+    Context_ptr context,
+    Workspace_ptr workspace,
     std::optional<winsys::Pid> pid,
     std::optional<winsys::Pid> ppid
 )
