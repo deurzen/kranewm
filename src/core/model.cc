@@ -199,19 +199,19 @@ Model::Model(Connection& conn)
           },
           { { Key::Comma, { Main } },
               CALL(jump_client({
-                  model.active_workspace(),
+                  model.active_workspace()->index(),
                   Workspace::ClientSelector::SelectionCriterium::AtFirst
               }))
           },
           { { Key::Period, { Main } },
               CALL(jump_client({
-                  model.active_workspace(),
+                  model.active_workspace()->index(),
                   Workspace::ClientSelector::SelectionCriterium::AtMain
               }))
           },
           { { Key::Slash, { Main } },
               CALL(jump_client({
-                  model.active_workspace(),
+                  model.active_workspace()->index(),
                   Workspace::ClientSelector::SelectionCriterium::AtLast
               }))
           },
@@ -757,7 +757,7 @@ Model::Model(Connection& conn)
 
     m_conn.grab_bindings(key_inputs, mouse_inputs);
 
-    for (auto& window : m_conn.top_level_windows())
+    for (Window window : m_conn.top_level_windows())
         manage(window, !m_conn.must_manage_window(window), true);
 
     if constexpr (!Config::debugging) {
@@ -943,7 +943,7 @@ Model::acquire_partitions()
 const Screen&
 Model::active_screen() const
 {
-    return mp_partition->const_screen();
+    return mp_partition->screen();
 }
 
 Client_ptr
@@ -1055,10 +1055,10 @@ Model::client_matches_search(Client_ptr client, SearchSelector const& selector) 
 }
 
 
-Index
+Partition_ptr
 Model::active_partition() const
 {
-    return mp_partition->index();
+    return mp_partition;
 }
 
 Partition_ptr
@@ -1071,10 +1071,10 @@ Model::get_partition(Index index) const
 }
 
 
-Index
+Context_ptr
 Model::active_context() const
 {
-    return mp_context->index();
+    return mp_context;
 }
 
 Context_ptr
@@ -1087,10 +1087,10 @@ Model::get_context(Index index) const
 }
 
 
-Index
+Workspace_ptr
 Model::active_workspace() const
 {
-    return mp_workspace->index();
+    return mp_workspace;
 }
 
 Workspace_ptr
@@ -1363,15 +1363,15 @@ Model::activate_workspace(Workspace_ptr next_workspace)
     Workspace_ptr prev_workspace = mp_workspace;
     mp_prev_workspace = prev_workspace;
 
-    for (auto& client : next_workspace->clients())
+    for (Client_ptr client : next_workspace->clients())
         if (!client->mapped)
             map_client(client);
 
-    for (auto& client : mp_workspace->clients())
+    for (Client_ptr client : mp_workspace->clients())
         if (client->mapped && !client->sticky)
             unmap_client(client);
 
-    for (auto& client : m_sticky_clients)
+    for (Client_ptr client : m_sticky_clients)
         client->workspace = next_workspace;
 
     m_workspaces.activate_element(next_workspace);
@@ -1705,11 +1705,10 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
         client->size_hints->apply(client->free_region.dim);
 
     client->free_region.apply_minimum_dim(Client::MIN_CLIENT_DIM);
-
     client->workspace->add_client(client);
 
     if (rules.snap_edges)
-        for(auto& edge : *rules.snap_edges)
+        for(Edge edge : *rules.snap_edges)
             snap_client(edge, client);
 
     if (client->workspace == mp_workspace) {
@@ -2010,7 +2009,7 @@ Model::apply_layout(Workspace_ptr workspace)
     if (workspace != mp_workspace)
         return;
 
-    for (auto& placement : workspace->arrange(active_screen().placeable_region()))
+    for (Placement placement : workspace->arrange(active_screen().placeable_region()))
         place_client(placement);
 }
 
@@ -3311,7 +3310,7 @@ Model::activate_screen_struts(winsys::Toggle toggle)
         if (screen.showing_struts())
             return;
 
-        for (auto& strut : screen.show_and_get_struts(true))
+        for (Window strut : screen.show_and_get_struts(true))
             m_conn.map_window(strut);
 
         apply_layout(mp_workspace);
@@ -3323,7 +3322,7 @@ Model::activate_screen_struts(winsys::Toggle toggle)
         if (!screen.showing_struts())
             return;
 
-        for (auto& strut : screen.show_and_get_struts(false))
+        for (Window strut : screen.show_and_get_struts(false))
             m_conn.unmap_window(strut);
 
         apply_layout(mp_workspace);
@@ -3974,10 +3973,7 @@ Model::handle_frame_extents_request(FrameExtentsRequestEvent event)
 
 void
 Model::handle_screen_change()
-{
-    acquire_partitions();
-    apply_layout(m_workspaces.active_index());
-}
+{}
 
 
 void

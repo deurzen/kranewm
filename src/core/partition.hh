@@ -20,8 +20,8 @@ public:
         return m_screen;
     }
 
-    const winsys::Screen&
-    const_screen() const
+    winsys::Screen const&
+    screen() const
     {
         return m_screen;
     }

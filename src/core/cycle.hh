@@ -136,16 +136,40 @@ public:
     std::deque<T> const& as_deque() const;
     std::vector<T> const& stack() const;
 
-    std::deque<T>::iterator
+    typename std::deque<T>::iterator
     begin()
     {
         return m_elements.begin();
     }
 
-    std::deque<T>::iterator
+    typename std::deque<T>::const_iterator
+    begin() const
+    {
+        return m_elements.begin();
+    }
+
+    typename std::deque<T>::const_iterator
+    cbegin() const
+    {
+        return m_elements.cbegin();
+    }
+
+    typename std::deque<T>::iterator
     end()
     {
         return m_elements.end();
+    }
+
+    typename std::deque<T>::const_iterator
+    end() const
+    {
+        return m_elements.end();
+    }
+
+    typename std::deque<T>::const_iterator
+    cend() const
+    {
+        return m_elements.cend();
     }
 
     T operator[](std::size_t index)
