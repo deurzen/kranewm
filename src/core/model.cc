@@ -971,7 +971,6 @@ Model::search_client(SearchSelector const& selector)
     } last_focused_comparer{};
 
     static std::set<Client_ptr, LastFocusedComparer> clients{{}, last_focused_comparer};
-
     clients.clear();
 
     switch (selector.criterium()) {
@@ -989,77 +988,14 @@ Model::search_client(SearchSelector const& selector)
 
         break;
     }
-    case SearchSelector::SelectionCriterium::ByNameEquals:
+    default:
     {
-        std::string const& name = selector.string_value();
-
         for (auto const&[_,client] : m_client_map)
-            if (client->managed && client->name == name)
+            if (client->managed && client_matches_search(client, selector))
                 clients.insert(client);
 
         break;
     }
-    case SearchSelector::SelectionCriterium::ByClassEquals:
-    {
-        std::string const& class_ = selector.string_value();
-
-        for (auto const&[_,client] : m_client_map)
-            if (client->managed && client->class_ == class_)
-                clients.insert(client);
-
-        break;
-    }
-    case SearchSelector::SelectionCriterium::ByInstanceEquals:
-    {
-        std::string const& instance = selector.string_value();
-
-        for (auto const&[_,client] : m_client_map)
-            if (client->managed && client->instance == instance)
-                clients.insert(client);
-
-        break;
-    }
-    case SearchSelector::SelectionCriterium::ByNameContains:
-    {
-        std::string const& name = selector.string_value();
-
-        for (auto const&[_,client] : m_client_map)
-            if (client->managed && client->name.find(name) != std::string::npos)
-                clients.insert(client);
-
-        break;
-    }
-    case SearchSelector::SelectionCriterium::ByClassContains:
-    {
-        std::string const& class_ = selector.string_value();
-
-        for (auto const&[_,client] : m_client_map)
-            if (client->managed && client->class_.find(class_) != std::string::npos)
-                clients.insert(client);
-
-        break;
-    }
-    case SearchSelector::SelectionCriterium::ByInstanceContains:
-    {
-        std::string const& instance = selector.string_value();
-
-        for (auto const&[_,client] : m_client_map)
-            if (client->managed && client->instance.find(instance) != std::string::npos)
-                clients.insert(client);
-
-        break;
-    }
-    case SearchSelector::SelectionCriterium::ForCondition:
-    {
-        std::function<bool(const Client_ptr)> const& filter = selector.filter();
-
-        for (auto const&[_,client] : m_client_map)
-            if (client->managed && filter(client))
-                clients.insert(client);
-
-        break;
-    }
-    default: return nullptr;
     }
 
     return clients.empty()
@@ -1073,43 +1009,44 @@ Model::client_matches_search(Client_ptr client, SearchSelector const& selector) 
     switch (selector.criterium()) {
     case SearchSelector::SelectionCriterium::OnWorkspaceBySelector:
     {
-        // TODO
-        break;
+        auto const& [index,selector_] = selector.workspace_selector();
+
+        if (index <= m_workspaces.size()) {
+            Workspace_ptr workspace = m_workspaces[index];
+            std::optional<Client_ptr> client_ = workspace->find_client(selector_);
+
+            return client_ && client_ == client;
+        }
+
+        return false;
     }
     case SearchSelector::SelectionCriterium::ByNameEquals:
     {
-        return client->managed
-            && client->name == selector.string_value();
+        return client->name == selector.string_value();
     }
     case SearchSelector::SelectionCriterium::ByClassEquals:
     {
-        return client->managed
-            && client->class_ == selector.string_value();
+        return client->class_ == selector.string_value();
     }
     case SearchSelector::SelectionCriterium::ByInstanceEquals:
     {
-        return client->managed
-            && client->instance == selector.string_value();
+        return client->instance == selector.string_value();
     }
     case SearchSelector::SelectionCriterium::ByNameContains:
     {
-        return client->managed
-            && client->name.find(selector.string_value()) != std::string::npos;
+        return client->name.find(selector.string_value()) != std::string::npos;
     }
     case SearchSelector::SelectionCriterium::ByClassContains:
     {
-        return client->managed
-            && client->class_.find(selector.string_value()) != std::string::npos;
+        return client->class_.find(selector.string_value()) != std::string::npos;
     }
     case SearchSelector::SelectionCriterium::ByInstanceContains:
     {
-        return client->managed
-            && client->instance.find(selector.string_value()) != std::string::npos;
+        return client->instance.find(selector.string_value()) != std::string::npos;
     }
     case SearchSelector::SelectionCriterium::ForCondition:
     {
-        return client->managed
-            && selector.filter()(client);
+        return selector.filter()(client);
     }
     default: return false;
     }
