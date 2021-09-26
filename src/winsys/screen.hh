@@ -54,6 +54,18 @@ namespace winsys
             return m_windows.count(window) > 0;
         }
 
+        bool
+        contains(Pos pos) const
+        {
+            return m_full_region.contains(pos);
+        }
+
+        bool
+        contains(Region region) const
+        {
+            return m_full_region.contains(region);
+        }
+
         Index
         index() const
         {

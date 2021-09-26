@@ -4,6 +4,8 @@
 #include "common.hh"
 #include "window.hh"
 
+#include <ostream>
+
 namespace winsys
 {
 
@@ -41,6 +43,11 @@ namespace winsys
         return lhs.w == rhs.w && lhs.h == rhs.h;
     }
 
+    inline std::ostream&
+    operator<<(std::ostream& os, Dim const& dim) {
+        return os << "(" << dim.w << "×" << dim.h << ")";
+    }
+
     struct Pos final
     {
         int x;
@@ -68,6 +75,47 @@ namespace winsys
         return lhs.x == rhs.x && lhs.y == rhs.y;
     }
 
+    inline std::ostream&
+    operator<<(std::ostream& os, Pos const& pos) {
+        return os << "(" << pos.x << ", " << pos.y << ")";
+    }
+
+    inline Pos
+    operator+(Pos const& pos1, Pos const& pos2)
+    {
+        return Pos{
+            pos1.x + pos2.x,
+            pos1.y + pos2.y
+        };
+    }
+
+    inline Pos
+    operator-(Pos const& pos1, Pos const& pos2)
+    {
+        return Pos{
+            pos1.x - pos2.x,
+            pos1.y - pos2.y
+        };
+    }
+
+    inline Pos
+    operator+(Pos const& pos, Dim const& dim)
+    {
+        return Pos{
+            pos.x + dim.w,
+            pos.y + dim.h
+        };
+    }
+
+    inline Pos
+    operator-(Pos const& pos, Dim const& dim)
+    {
+        return Pos{
+            pos.x - dim.w,
+            pos.y - dim.h
+        };
+    }
+
     struct Padding final
     {
         int left;
@@ -78,14 +126,27 @@ namespace winsys
 
     typedef Padding Extents;
 
+    inline std::ostream&
+    operator<<(std::ostream& os, Padding const& padding) {
+        return os << "[" << padding.left
+            << "; " << padding.top
+            << "; " << padding.right
+            << "; " << padding.bottom << "]";
+    }
+
     struct Region final
     {
         Pos pos;
         Dim dim;
 
-        void apply_minimum_dim(const Dim&);
-        void apply_extents(const Extents&);
-        void remove_extents(const Extents&);
+        void apply_minimum_dim(Dim const&);
+        void apply_extents(Extents const&);
+        void remove_extents(Extents const&);
+
+        bool contains(Pos) const;
+        bool contains(Region const&) const;
+
+        Pos center() const;
     };
 
     inline bool
@@ -94,11 +155,21 @@ namespace winsys
         return lhs.pos == rhs.pos && lhs.dim == rhs.dim;
     }
 
+    inline std::ostream&
+    operator<<(std::ostream& os, Region const& region) {
+        return os << "[" << region.pos << " " << region.dim << "]";
+    }
+
     struct Distance final
     {
         int dx;
         int dy;
     };
+
+    inline std::ostream&
+    operator<<(std::ostream& os, Distance const& dist) {
+        return os << "𝛿(" << dist.dx << ", " << dist.dy << ")";
+    }
 
     struct Ratio final
     {

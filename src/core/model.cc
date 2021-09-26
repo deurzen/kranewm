@@ -863,12 +863,12 @@ Model::acquire_partitions()
 
     if (connected_outputs.size() > m_contexts.size()) {
         // TODO: generate more contexts?
-        spdlog::warn("more outputs than available contexts");
+        spdlog::info("more outputs than available contexts");
         return;
     }
 
     if (connected_outputs.empty()) {
-        spdlog::warn("could not acquire any partitions");
+        spdlog::info("could not acquire any partitions");
         return;
     }
 
@@ -3390,17 +3390,17 @@ Model::handle_mouse(MouseEvent event)
     MouseInput input = event.capture.input;
 
     switch (event.capture.kind) {
-    case MouseCapture::MouseCaptureKind::Release:
-    {
-        stop_moving();
-        stop_resizing();
-
-        return;
-    }
     case MouseCapture::MouseCaptureKind::Motion:
     {
         perform_move(event.capture.root_rpos);
         perform_resize(event.capture.root_rpos);
+
+        return;
+    }
+    case MouseCapture::MouseCaptureKind::Release:
+    {
+        stop_moving();
+        stop_resizing();
 
         return;
     }
