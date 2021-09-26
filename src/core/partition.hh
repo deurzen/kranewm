@@ -36,8 +36,12 @@ public:
     set_context(Context_ptr context)
     {
         Util::assert(context != nullptr,
-            "partition must contain valid context");
+            "partition must contain a valid context");
 
+        if (mp_context)
+            mp_context->set_partition(nullptr);
+
+        context->set_partition(this);
         mp_context = context;
     }
 
@@ -45,6 +49,30 @@ public:
     context()
     {
         return mp_context;
+    }
+
+    winsys::Region
+    full_region() const
+    {
+        return m_screen.full_region();
+    }
+
+    winsys::Region
+    placeable_region() const
+    {
+        return m_screen.placeable_region();
+    }
+
+    bool
+    contains(winsys::Pos pos) const
+    {
+        return m_screen.contains(pos);
+    }
+
+    bool
+    contains(winsys::Region region) const
+    {
+        return m_screen.contains(region);
     }
 
 private:

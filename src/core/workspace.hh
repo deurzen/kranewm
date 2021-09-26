@@ -208,10 +208,34 @@ public:
         return m_clients.begin();
     }
 
+    std::deque<Client_ptr>::const_iterator
+    begin() const
+    {
+        return m_clients.begin();
+    }
+
+    std::deque<Client_ptr>::const_iterator
+    cbegin() const
+    {
+        return m_clients.cbegin();
+    }
+
     std::deque<Client_ptr>::iterator
     end()
     {
         return m_clients.end();
+    }
+
+    std::deque<Client_ptr>::const_iterator
+    end() const
+    {
+        return m_clients.end();
+    }
+
+    std::deque<Client_ptr>::const_iterator
+    cend() const
+    {
+        return m_clients.cend();
     }
 
 private:

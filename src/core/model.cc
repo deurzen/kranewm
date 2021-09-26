@@ -1363,11 +1363,11 @@ Model::activate_workspace(Workspace_ptr next_workspace)
     Workspace_ptr prev_workspace = mp_workspace;
     mp_prev_workspace = prev_workspace;
 
-    for (Client_ptr client : next_workspace->clients())
+    for (Client_ptr client : *next_workspace)
         if (!client->mapped)
             map_client(client);
 
-    for (Client_ptr client : mp_workspace->clients())
+    for (Client_ptr client : *mp_workspace)
         if (client->mapped && !client->sticky)
             unmap_client(client);
 
