@@ -715,20 +715,44 @@ Model::Model(Connection& conn)
     };
 
     static const std::vector<std::string> workspace_names{
-        "1:main", "2:web", "3:term", "4", "5", "6", "7", "8", "9", "10"
+        "main", "web", "term", {}, {}, {}, {}, {}, {}, {}
     };
 
-    for (std::size_t i = 0; i < context_names.size(); ++i)
-        m_contexts.insert_at_back(new Context(i, context_names[i]));
+    for (std::size_t i = 0; i < context_names.size(); ++i) {
+        Context_ptr context = new Context(i, context_names[i]);
+        m_contexts.insert_at_back(context);
 
-    for (std::size_t i = 0; i < workspace_names.size(); ++i)
-        m_workspaces.insert_at_back(new Workspace(i, workspace_names[i]));
+        for (std::size_t j = 0; j < workspace_names.size(); ++j) {
+            Workspace_ptr workspace = new Workspace(
+                workspace_names.size() * i + j,
+                workspace_names[j],
+                context
+            );
+
+            m_workspaces.insert_at_back(workspace);
+            context->register_workspace(workspace);
+        }
+
+        context->activate_workspace(Index{0});
+    }
 
     if constexpr (Config::ipc_enabled)
         m_conn.init_wm_ipc();
 
     acquire_partitions();
-    m_conn.init_for_wm(workspace_names);
+
+    std::vector<std::string> desktop_names;
+    desktop_names.reserve(m_workspaces.size());
+    std::transform(
+        m_workspaces.begin(),
+        m_workspaces.end(),
+        std::back_inserter(desktop_names),
+        [](Workspace_ptr workspace) -> std::string {
+            return workspace->identifier();
+        }
+    );
+
+    m_conn.init_for_wm(desktop_names);
 
     m_contexts.activate_at_index(0);
     m_workspaces.activate_at_index(0);
@@ -738,20 +762,23 @@ Model::Model(Connection& conn)
 
     m_conn.set_current_desktop(0);
 
-    std::vector<KeyInput> key_inputs(m_key_bindings.size());
-    std::vector<MouseInput> mouse_inputs(m_mouse_bindings.size());
+    std::vector<KeyInput> key_inputs;
+    std::vector<MouseInput> mouse_inputs;
+
+    key_inputs.reserve(m_key_bindings.size());
+    mouse_inputs.reserve(m_mouse_bindings.size());
 
     std::transform(
         m_key_bindings.begin(),
         m_key_bindings.end(),
-        key_inputs.begin(),
+        std::back_inserter(key_inputs),
         [](auto kv) -> KeyInput { return kv.first; }
     );
 
     std::transform(
         m_mouse_bindings.begin(),
         m_mouse_bindings.end(),
-        mouse_inputs.begin(),
+        std::back_inserter(mouse_inputs),
         [](auto kv) -> MouseInput { return kv.first; }
     );
 

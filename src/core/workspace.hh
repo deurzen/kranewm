@@ -126,10 +126,11 @@ public:
 
     };
 
-    Workspace(std::size_t index, std::string name)
+    Workspace(std::size_t index, std::string name, Context_ptr context)
         : m_index(index),
           m_name(name),
           m_layout_handler({}),
+          mp_context(context),
           mp_active(nullptr),
           m_clients({}, true),
           m_icons({}, true),
@@ -149,8 +150,11 @@ public:
     std::size_t size() const;
     std::size_t length() const;
 
+    Context_ptr context() const;
+
     Index index() const;
     std::string const& name() const;
+    std::string identifier() const;
     Client_ptr active() const;
 
     std::deque<Client_ptr> const& clients() const;
@@ -243,6 +247,8 @@ private:
     std::string m_name;
 
     LayoutHandler m_layout_handler;
+
+    Context_ptr mp_context;
 
     Client_ptr mp_active;
     Cycle<Client_ptr> m_clients;
