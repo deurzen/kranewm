@@ -242,6 +242,18 @@ public:
         return m_clients.cend();
     }
 
+    Client_ptr
+    operator[](std::size_t i)
+    {
+        return m_clients[i];
+    }
+
+    Client_ptr
+    operator[](std::size_t i) const
+    {
+        return m_clients[i];
+    }
+
 private:
     std::size_t m_index;
     std::string m_name;

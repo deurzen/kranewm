@@ -46,7 +46,7 @@ public:
     }
 
     Context_ptr
-    context()
+    context() const
     {
         return mp_context;
     }

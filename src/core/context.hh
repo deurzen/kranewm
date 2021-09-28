@@ -19,6 +19,7 @@ public:
           m_name(name),
           mp_partition(nullptr),
           mp_active(nullptr),
+          mp_prev_active(nullptr),
           m_workspaces({}, true)
     {}
 
@@ -46,6 +47,18 @@ public:
         return mp_active;
     }
 
+    Workspace_ptr
+    prev_workspace() const
+    {
+        return mp_prev_active;
+    }
+
+    Partition_ptr
+    partition() const
+    {
+        return mp_partition;
+    }
+
     bool
     is_partitioned() const
     {
@@ -67,15 +80,23 @@ public:
     void
     activate_workspace(Index index)
     {
+        Workspace_ptr prev_active = mp_active;
         m_workspaces.activate_at_index(index);
         mp_active = *m_workspaces.active_element();
+
+        if (prev_active != mp_active)
+            mp_prev_active = prev_active;
     }
 
     void
     activate_workspace(Workspace_ptr workspace)
     {
+        Workspace_ptr prev_active = mp_active;
         m_workspaces.activate_element(workspace);
         mp_active = workspace;
+
+        if (prev_active != mp_active)
+            mp_prev_active = prev_active;
     }
 
     Cycle<Workspace_ptr> const&
@@ -138,6 +159,18 @@ public:
         return m_workspaces.cend();
     }
 
+    Workspace_ptr
+    operator[](std::size_t i)
+    {
+        return m_workspaces[i];
+    }
+
+    Workspace_ptr
+    operator[](std::size_t i) const
+    {
+        return m_workspaces[i];
+    }
+
 private:
     Index m_index;
     std::string m_name;
@@ -145,6 +178,8 @@ private:
     Partition_ptr mp_partition;
 
     Workspace_ptr mp_active;
+    Workspace_ptr mp_prev_active;
+
     Cycle<Workspace_ptr> m_workspaces;
     std::unordered_set<Client_ptr> m_sticky_clients;
 

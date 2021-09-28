@@ -107,8 +107,11 @@ private:
     void activate_context(Context_ptr);
 
     void toggle_workspace();
+    void toggle_workspace_current_context();
     void activate_next_workspace(winsys::Direction);
+    void activate_next_workspace_current_context(winsys::Direction);
     void activate_workspace(Util::Change<Index>);
+    void activate_workspace_current_context(Util::Change<Index>);
     void activate_workspace(Workspace_ptr);
 
     void render_decoration(Client_ptr);

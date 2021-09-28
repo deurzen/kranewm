@@ -419,43 +419,43 @@ Model::Model(Connection& conn)
 
           // workspace activators
           { { Key::Escape, { Main } },
-              CALL(toggle_workspace())
+              CALL(toggle_workspace_current_context())
           },
           { { Key::RightBracket, { Main } },
-              CALL(activate_next_workspace(Direction::Forward))
+              CALL(activate_next_workspace_current_context(Direction::Forward))
           },
           { { Key::LeftBracket, { Main } },
-              CALL(activate_next_workspace(Direction::Backward))
+              CALL(activate_next_workspace_current_context(Direction::Backward))
           },
           { { Key::One, { Main } },
-              CALL(activate_workspace(Util::Change<Index>{ 0 }))
+              CALL(activate_workspace_current_context(Util::Change<Index>{ 0 }))
           },
           { { Key::Two, { Main } },
-              CALL(activate_workspace(1))
+              CALL(activate_workspace_current_context(1))
           },
           { { Key::Three, { Main } },
-              CALL(activate_workspace(2))
+              CALL(activate_workspace_current_context(2))
           },
           { { Key::Four, { Main } },
-              CALL(activate_workspace(3))
+              CALL(activate_workspace_current_context(3))
           },
           { { Key::Five, { Main } },
-              CALL(activate_workspace(4))
+              CALL(activate_workspace_current_context(4))
           },
           { { Key::Six, { Main } },
-              CALL(activate_workspace(5))
+              CALL(activate_workspace_current_context(5))
           },
           { { Key::Seven, { Main } },
-              CALL(activate_workspace(6))
+              CALL(activate_workspace_current_context(6))
           },
           { { Key::Eight, { Main } },
-              CALL(activate_workspace(7))
+              CALL(activate_workspace_current_context(7))
           },
           { { Key::Nine, { Main } },
-              CALL(activate_workspace(8))
+              CALL(activate_workspace_current_context(8))
           },
           { { Key::Zero, { Main } },
-              CALL(activate_workspace(9))
+              CALL(activate_workspace_current_context(9))
           },
 
           // workspace client movers
@@ -1304,7 +1304,7 @@ Model::toggle_partition()
 void
 Model::activate_next_partition(winsys::Direction direction)
 {
-    activate_partition(m_partitions.next_index(direction));;
+    activate_partition(m_partitions.next_index(direction));
 }
 
 void
@@ -1328,6 +1328,8 @@ Model::activate_partition(Partition_ptr next_partition)
 
     m_partitions.activate_element(next_partition);
     mp_partition = next_partition;
+
+    activate_context(next_partition->context());
 }
 
 
@@ -1341,7 +1343,7 @@ Model::toggle_context()
 void
 Model::activate_next_context(winsys::Direction direction)
 {
-    activate_context(m_contexts.next_index(direction));;
+    activate_context(m_contexts.next_index(direction));
 }
 
 void
@@ -1362,8 +1364,16 @@ Model::activate_context(Context_ptr next_context)
     stop_moving();
     stop_resizing();
 
+    Context_ptr prev_context = mp_context;
+    mp_prev_context = prev_context;
+
+    Partition_ptr next_partition = next_context->partition();
+    Partition_ptr prev_partition = prev_context->partition();
+
     m_contexts.activate_element(next_context);
     mp_context = next_context;
+
+    activate_workspace(next_context->workspace());
 }
 
 
@@ -1375,9 +1385,24 @@ Model::toggle_workspace()
 }
 
 void
+Model::toggle_workspace_current_context()
+{
+    Workspace_ptr prev_workspace = mp_context->prev_workspace();
+
+    if (prev_workspace)
+        activate_workspace(prev_workspace);
+}
+
+void
 Model::activate_next_workspace(Direction direction)
 {
     activate_workspace(m_workspaces.next_index(direction));
+}
+
+void
+Model::activate_next_workspace_current_context(Direction direction)
+{
+    activate_workspace(mp_context->workspaces().next_index(direction));
 }
 
 void
@@ -1390,6 +1415,15 @@ Model::activate_workspace(Util::Change<Index> index)
 }
 
 void
+Model::activate_workspace_current_context(Util::Change<Index> index)
+{
+    if (index >= mp_context->size())
+        return;
+
+    activate_workspace((*mp_context)[index]);
+}
+
+void
 Model::activate_workspace(Workspace_ptr next_workspace)
 {
     if (next_workspace == mp_workspace)
@@ -1398,22 +1432,27 @@ Model::activate_workspace(Workspace_ptr next_workspace)
     stop_moving();
     stop_resizing();
 
-    m_conn.set_current_desktop(next_workspace->index());
-
     Workspace_ptr prev_workspace = mp_workspace;
     mp_prev_workspace = prev_workspace;
 
+    Context_ptr next_context = next_workspace->context();
+    Context_ptr prev_context = prev_workspace->context();
+
+    m_conn.set_current_desktop(next_workspace->index());
+
     for (Client_ptr client : *next_workspace)
-        if (!client->mapped)
-            map_client(client);
+        map_client(client);
 
-    for (Client_ptr client : *mp_workspace)
-        if (client->mapped && !client->sticky)
-            unmap_client(client);
+    if (next_context == prev_context) {
+        for (Client_ptr client : *mp_workspace)
+            if (!client->sticky)
+                unmap_client(client);
 
-    for (Client_ptr client : m_sticky_clients)
-        client->workspace = next_workspace;
+        for (Client_ptr client : m_sticky_clients)
+            client->workspace = next_workspace;
+    }
 
+    next_context->activate_workspace(next_workspace);
     m_workspaces.activate_element(next_workspace);
     mp_workspace = next_workspace;
 
