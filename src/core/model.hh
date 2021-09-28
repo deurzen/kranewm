@@ -64,6 +64,7 @@ private:
     void process_query(winsys::QueryMessage);
 
     void acquire_partitions();
+    void resolve_active_partition(winsys::Pos);
 
     const winsys::Screen& active_screen() const;
 

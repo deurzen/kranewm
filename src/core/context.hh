@@ -40,6 +40,12 @@ public:
         return m_workspaces.size();
     }
 
+    Workspace_ptr
+    workspace() const
+    {
+        return mp_active;
+    }
+
     bool
     is_partitioned() const
     {

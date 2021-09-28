@@ -967,6 +967,17 @@ Model::acquire_partitions()
     spdlog::debug("acquired {} partitions", m_partitions.size());
 }
 
+void
+Model::resolve_active_partition(winsys::Pos pos)
+{
+    if (m_partitions.size() == 1 || mp_partition->contains(pos))
+        return;
+
+    for (Partition_ptr partition : m_partitions)
+        if (partition->contains(pos))
+            activate_partition(partition);
+}
+
 const Screen&
 Model::active_screen() const
 {
@@ -1315,7 +1326,8 @@ Model::activate_partition(Partition_ptr next_partition)
     stop_moving();
     stop_resizing();
 
-    // TODO
+    m_partitions.activate_element(next_partition);
+    mp_partition = next_partition;
 }
 
 
@@ -1350,7 +1362,8 @@ Model::activate_context(Context_ptr next_context)
     stop_moving();
     stop_resizing();
 
-    // TODO
+    m_contexts.activate_element(next_context);
+    mp_context = next_context;
 }
 
 
@@ -3419,6 +3432,8 @@ Model::handle_mouse(MouseEvent event)
     switch (event.capture.kind) {
     case MouseCapture::MouseCaptureKind::Motion:
     {
+        resolve_active_partition(event.capture.root_rpos);
+
         perform_move(event.capture.root_rpos);
         perform_resize(event.capture.root_rpos);
 
