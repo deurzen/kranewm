@@ -66,6 +66,7 @@ private:
     void acquire_partitions();
     void resolve_active_partition(winsys::Pos);
 
+    winsys::Screen& active_screen();
     const winsys::Screen& active_screen() const;
 
     Client_ptr get_client(winsys::Window);

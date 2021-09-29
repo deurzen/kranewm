@@ -941,7 +941,7 @@ Model::acquire_partitions()
         m_partitions.activate_at_index(0);
 
     mp_partition = *m_partitions.active_element();
-    Screen& screen = mp_partition->screen();
+    Screen& screen = active_screen();
 
     screen.compute_placeable_region();
 
@@ -978,7 +978,13 @@ Model::resolve_active_partition(winsys::Pos pos)
             activate_partition(partition);
 }
 
-const Screen&
+Screen&
+Model::active_screen()
+{
+    return mp_partition->screen();
+}
+
+Screen const&
 Model::active_screen() const
 {
     return mp_partition->screen();
@@ -2393,7 +2399,7 @@ Model::set_layout(LayoutHandler::LayoutKind layout)
 void
 Model::set_layout_retain_region(LayoutHandler::LayoutKind layout)
 {
-    const std::deque<Client_ptr>& clients = mp_workspace->clients();
+    std::deque<Client_ptr> const& clients = mp_workspace->clients();
     std::vector<Region> regions;
 
     bool was_tiled = !mp_workspace->layout_is_free();
@@ -3381,7 +3387,7 @@ Model::snap_client(Edge edge, Client_ptr client)
 void
 Model::activate_screen_struts(winsys::Toggle toggle)
 {
-    Screen& screen = mp_partition->screen();
+    Screen& screen = active_screen();
 
     switch (toggle) {
     case Toggle::On:
@@ -3555,7 +3561,7 @@ Model::handle_map_request(MapRequestEvent event)
         = m_conn.get_window_strut(event.window);
 
     if (struts) {
-        Screen& screen = mp_partition->screen();
+        Screen& screen = active_screen();
         screen.add_struts(*struts);
 
         if (screen.showing_struts()) {
@@ -3586,7 +3592,7 @@ Model::handle_map_request(MapRequestEvent event)
     else if (Util::contains(types, WindowType::Desktop))
         layer = StackHandler::StackLayer::Desktop;
     else if (Util::contains(types, WindowType::Dock)) {
-        Screen& screen = mp_partition->screen();
+        Screen& screen = active_screen();
 
         if (region && !screen.contains_strut(event.window)) {
             const Region screen_region = screen.full_region();
@@ -3683,7 +3689,7 @@ Model::handle_leave(LeaveEvent event)
 void
 Model::handle_destroy(DestroyEvent event)
 {
-    Screen& screen = mp_partition->screen();
+    Screen& screen = active_screen();
 
     if (screen.contains_strut(event.window)) {
         screen.remove_strut(event.window);
@@ -4008,7 +4014,7 @@ Model::handle_property(PropertyEvent event)
             = m_conn.get_window_strut(event.window);
 
         if (struts) {
-            Screen& screen = mp_partition->screen();
+            Screen& screen = active_screen();
 
             screen.remove_strut(event.window);
             screen.add_struts(*struts);
