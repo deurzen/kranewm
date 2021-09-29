@@ -2461,6 +2461,8 @@ Model::move_client_to_workspace(Index index, Client_ptr client)
         return;
     }
 
+    m_conn.set_window_desktop(client->window, index);
+
     Workspace_ptr from = client->workspace;
     Workspace_ptr to = get_workspace(index);
 
@@ -2798,6 +2800,7 @@ Model::set_sticky_client(Toggle toggle, Client_ptr client)
             }
         );
 
+        m_conn.set_window_desktop(client->window, 0xFFFFFFFF);
         m_conn.set_window_state(
             client->window,
             WindowState::Sticky,
@@ -2843,6 +2846,7 @@ Model::set_sticky_client(Toggle toggle, Client_ptr client)
             }
         );
 
+        m_conn.set_window_desktop(client->window, mp_workspace->index());
         m_conn.set_window_state(
             client->window,
             WindowState::Sticky,
