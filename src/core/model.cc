@@ -1449,7 +1449,7 @@ Model::activate_next_workspace(Direction direction)
 void
 Model::activate_next_workspace_current_context(Direction direction)
 {
-    activate_workspace(mp_context->workspaces().next_index(direction));
+    activate_workspace(*mp_context->workspaces().next_element(direction));
 }
 
 void
