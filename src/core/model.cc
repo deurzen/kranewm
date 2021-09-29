@@ -417,6 +417,47 @@ Model::Model(Connection& conn)
               CALL(load_layout(11))
           },
 
+          // context activators
+          { { Key::Escape, { Main, Ctrl } },
+              CALL(toggle_context())
+          },
+          { { Key::RightBracket, { Main, Ctrl } },
+              CALL(activate_next_context(Direction::Forward))
+          },
+          { { Key::LeftBracket, { Main, Ctrl } },
+              CALL(activate_next_context(Direction::Backward))
+          },
+          { { Key::One, { Main, Ctrl } },
+              CALL(activate_context(Util::Change<Index>{ 0 }))
+          },
+          { { Key::Two, { Main, Ctrl } },
+              CALL(activate_context(1))
+          },
+          { { Key::Three, { Main, Ctrl } },
+              CALL(activate_context(2))
+          },
+          { { Key::Four, { Main, Ctrl } },
+              CALL(activate_context(3))
+          },
+          { { Key::Five, { Main, Ctrl } },
+              CALL(activate_context(4))
+          },
+          { { Key::Six, { Main, Ctrl } },
+              CALL(activate_context(5))
+          },
+          { { Key::Seven, { Main, Ctrl } },
+              CALL(activate_context(6))
+          },
+          { { Key::Eight, { Main, Ctrl } },
+              CALL(activate_context(7))
+          },
+          { { Key::Nine, { Main, Ctrl } },
+              CALL(activate_context(8))
+          },
+          { { Key::Zero, { Main, Ctrl } },
+              CALL(activate_context(9))
+          },
+
           // workspace activators
           { { Key::Escape, { Main } },
               CALL(toggle_workspace_current_context())
