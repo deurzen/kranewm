@@ -120,7 +120,9 @@ public:
     void swap_elements(T, T);
     void swap_indices(Index, Index);
 
+    void reverse();
     void rotate(winsys::Direction);
+    void rotate_range(winsys::Direction, Index, Index);
     std::optional<T> cycle_active(winsys::Direction);
     std::optional<T> drag_active(winsys::Direction);
 

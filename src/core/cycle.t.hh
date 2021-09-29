@@ -429,6 +429,13 @@ Cycle<T>::swap_indices(Index index1, Index index2)
 
 template <typename T>
 void
+Cycle<T>::reverse()
+{
+    std::reverse(m_elements.begin(), m_elements.end());
+}
+
+template <typename T>
+void
 Cycle<T>::rotate(winsys::Direction direction)
 {
     switch (direction) {
@@ -448,6 +455,38 @@ Cycle<T>::rotate(winsys::Direction direction)
             m_elements.begin(),
             std::next(m_elements.begin()),
             m_elements.end()
+        );
+
+        return;
+    }
+    default: return;
+    }
+}
+
+template <typename T>
+void
+Cycle<T>::rotate_range(winsys::Direction direction, Index begin, Index end)
+{
+    if (begin >= end || begin >= m_elements.size() || end > m_elements.size())
+        return;
+
+    switch (direction) {
+    case winsys::Direction::Backward:
+    {
+        std::rotate(
+            m_elements.begin() + begin,
+            std::next(m_elements.begin() + begin),
+            m_elements.begin() + end
+        );
+
+        return;
+    }
+    case winsys::Direction::Forward:
+    {
+        std::rotate(
+            m_elements.rend() - end,
+            std::next(m_elements.rend() - end),
+            m_elements.rend() - begin
         );
 
         return;

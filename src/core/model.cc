@@ -93,21 +93,49 @@ Model::Model(Connection& conn)
               CALL(deiconify_all())
           },
 
-          // free client arrangers
+          // client arrangers
           { { Key::Space, { Main, Ctrl } },
               CALL(center_focus())
           },
           { { Key::H, { Main, Ctrl } },
-              CALL(nudge_focus(Edge::Left, 15))
+              [](Model& model) {
+                  Client_ptr focus = model.mp_focus;
+
+                  if (focus && model.is_free(focus))
+                      model.nudge_focus(Edge::Left, 15);
+                  else
+                      model.shuffle_main(Direction::Backward);
+              }
           },
           { { Key::J, { Main, Ctrl } },
-              CALL(nudge_focus(Edge::Bottom, 15))
+              [](Model& model) {
+                  Client_ptr focus = model.mp_focus;
+
+                  if (focus && model.is_free(focus))
+                      model.nudge_focus(Edge::Bottom, 15);
+                  else
+                      model.shuffle_stack(Direction::Forward);
+              }
           },
           { { Key::K, { Main, Ctrl } },
-              CALL(nudge_focus(Edge::Top, 15))
+              [](Model& model) {
+                  Client_ptr focus = model.mp_focus;
+
+                  if (focus && model.is_free(focus))
+                      model.nudge_focus(Edge::Top, 15);
+                  else
+                      model.shuffle_stack(Direction::Backward);
+              }
           },
           { { Key::L, { Main, Ctrl } },
-              CALL(nudge_focus(Edge::Right, 15))
+              [](Model& model) {
+                  Client_ptr focus = model.mp_focus;
+
+                  if (focus && model.is_free(focus))
+                      model.nudge_focus(Edge::Right, 15);
+                  else
+                      model.shuffle_main(Direction::Forward);
+              }
           },
           { { Key::H, { Main, Ctrl, Shift } },
               CALL(stretch_focus(Edge::Left, 15))
@@ -145,8 +173,6 @@ Model::Model(Connection& conn)
           { { Key::Right, { Main, Ctrl } },
               CALL(snap_focus(Edge::Right))
           },
-
-          // client order modifiers
           { { Key::J, { Main } },
               CALL(cycle_focus(Direction::Forward))
           },
@@ -158,6 +184,9 @@ Model::Model(Connection& conn)
           },
           { { Key::K, { Main, Shift } },
               CALL(drag_focus(Direction::Backward))
+          },
+          { { Key::R, { Main } },
+              CALL(reverse_clients())
           },
           { { Key::SemiColon, { Main, Shift } },
               CALL(rotate_clients(Direction::Forward))
@@ -2330,6 +2359,20 @@ Model::drag_focus(Direction direction)
 
 
 void
+Model::reverse_clients()
+{
+    if (mp_workspace->size() <= 1)
+        return;
+
+    mp_workspace->reverse();
+    focus_client(mp_workspace->active());
+    sync_focus();
+
+    apply_layout(mp_workspace);
+    apply_stack(mp_workspace);
+}
+
+void
 Model::rotate_clients(Direction direction)
 {
     if (mp_workspace->size() <= 1)
@@ -2340,6 +2383,35 @@ Model::rotate_clients(Direction direction)
     sync_focus();
 
     apply_layout(mp_workspace);
+    apply_stack(mp_workspace);
+}
+
+void
+Model::shuffle_main(winsys::Direction direction)
+{
+    if (mp_workspace->size() <= 1)
+        return;
+
+    mp_workspace->shuffle_main(direction);
+    focus_client(mp_workspace->active());
+    sync_focus();
+
+    apply_layout(mp_workspace);
+    apply_stack(mp_workspace);
+}
+
+void
+Model::shuffle_stack(winsys::Direction direction)
+{
+    if (mp_workspace->size() <= 1)
+        return;
+
+    mp_workspace->shuffle_stack(direction);
+    focus_client(mp_workspace->active());
+    sync_focus();
+
+    apply_layout(mp_workspace);
+    apply_stack(mp_workspace);
 }
 
 

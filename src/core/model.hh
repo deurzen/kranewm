@@ -140,7 +140,10 @@ private:
     void cycle_focus(winsys::Direction);
     void drag_focus(winsys::Direction);
 
+    void reverse_clients();
     void rotate_clients(winsys::Direction);
+    void shuffle_main(winsys::Direction);
+    void shuffle_stack(winsys::Direction);
 
     void move_focus_to_next_workspace(winsys::Direction);
     void move_client_to_next_workspace(winsys::Direction, Client_ptr);

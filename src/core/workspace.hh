@@ -167,7 +167,10 @@ public:
 
     void cycle(winsys::Direction);
     void drag(winsys::Direction);
+    void reverse();
     void rotate(winsys::Direction);
+    void shuffle_main(winsys::Direction);
+    void shuffle_stack(winsys::Direction);
 
     void activate_client(Client_ptr);
 

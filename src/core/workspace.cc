@@ -306,9 +306,30 @@ Workspace::drag(winsys::Direction direction)
 }
 
 void
+Workspace::reverse()
+{
+    m_clients.reverse();
+    mp_active = m_clients.active_element().value_or(nullptr);
+}
+
+void
 Workspace::rotate(winsys::Direction direction)
 {
     m_clients.rotate(direction);
+    mp_active = m_clients.active_element().value_or(nullptr);
+}
+
+void
+Workspace::shuffle_main(winsys::Direction direction)
+{
+    m_clients.rotate_range(direction, 0, m_layout_handler.main_count());
+    mp_active = m_clients.active_element().value_or(nullptr);
+}
+
+void
+Workspace::shuffle_stack(winsys::Direction direction)
+{
+    m_clients.rotate_range(direction, m_layout_handler.main_count(), m_clients.size());
     mp_active = m_clients.active_element().value_or(nullptr);
 }
 
