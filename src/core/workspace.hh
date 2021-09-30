@@ -149,6 +149,7 @@ public:
 
     std::size_t size() const;
     std::size_t length() const;
+    std::size_t main_count() const;
 
     Context_ptr context() const;
 
@@ -157,7 +158,7 @@ public:
     std::string identifier() const;
     Client_ptr active() const;
 
-    std::deque<Client_ptr> const& clients() const;
+    Cycle<Client_ptr> const& clients() const;
     std::vector<Client_ptr> stack_after_focus() const;
 
     Client_ptr next_client() const;

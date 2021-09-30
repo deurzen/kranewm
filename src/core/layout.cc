@@ -33,22 +33,25 @@ LayoutHandler::LayoutHandler()
     : m_kind(LayoutKind::Float),
       m_prev_kind(LayoutKind::Float),
       m_layouts({
-          { LayoutKind::Float,         new Layout(LayoutKind::Float) },
-          { LayoutKind::BLFloat,       new Layout(LayoutKind::BLFloat) },
-          { LayoutKind::SingleFloat,   new Layout(LayoutKind::SingleFloat) },
-          { LayoutKind::BLSingleFloat, new Layout(LayoutKind::BLSingleFloat) },
-          { LayoutKind::Center,        new Layout(LayoutKind::Center) },
-          { LayoutKind::Monocle,       new Layout(LayoutKind::Monocle) },
-          { LayoutKind::Paper,         new Layout(LayoutKind::Paper) },
-          { LayoutKind::SPaper,        new Layout(LayoutKind::SPaper) },
-          { LayoutKind::Stack,         new Layout(LayoutKind::Stack) },
-          { LayoutKind::SStack,        new Layout(LayoutKind::SStack) },
-          { LayoutKind::BStack,        new Layout(LayoutKind::BStack) },
-          { LayoutKind::SBStack,       new Layout(LayoutKind::SBStack) },
-          { LayoutKind::Horz,          new Layout(LayoutKind::Horz) },
-          { LayoutKind::SHorz,         new Layout(LayoutKind::SHorz) },
-          { LayoutKind::Vert,          new Layout(LayoutKind::Vert) },
-          { LayoutKind::SVert,         new Layout(LayoutKind::SVert) }
+#define NEW_LAYOUT(layout) { layout, new Layout(layout) }
+          NEW_LAYOUT(LayoutKind::Float),
+          NEW_LAYOUT(LayoutKind::FramelessFloat),
+          NEW_LAYOUT(LayoutKind::SingleFloat),
+          NEW_LAYOUT(LayoutKind::FramelessSingleFloat),
+          NEW_LAYOUT(LayoutKind::Center),
+          NEW_LAYOUT(LayoutKind::Monocle),
+          NEW_LAYOUT(LayoutKind::MainDeck),
+          NEW_LAYOUT(LayoutKind::StackDeck),
+          NEW_LAYOUT(LayoutKind::DoubleDeck),
+          NEW_LAYOUT(LayoutKind::Paper),
+          NEW_LAYOUT(LayoutKind::CompactPaper),
+          NEW_LAYOUT(LayoutKind::DoubleStack),
+          NEW_LAYOUT(LayoutKind::CompactDoubleStack),
+          NEW_LAYOUT(LayoutKind::HorizontalStack),
+          NEW_LAYOUT(LayoutKind::CompactHorizontalStack),
+          NEW_LAYOUT(LayoutKind::VerticalStack),
+          NEW_LAYOUT(LayoutKind::CompactVerticalStack),
+#undef NEW_LAYOUT
       }),
       mp_layout(m_layouts.at(m_kind)),
       mp_prev_layout(m_layouts.at(m_kind))
@@ -80,22 +83,91 @@ LayoutHandler::arrange(
     }
 
     switch (m_kind) {
-        case LayoutKind::Float:         arrange_float(screen_region, placements, begin, end);         break;
-        case LayoutKind::BLFloat:       arrange_blfloat(screen_region, placements, begin, end);       break;
-        case LayoutKind::SingleFloat:   arrange_singlefloat(screen_region, placements, begin, end);   break;
-        case LayoutKind::BLSingleFloat: arrange_blsinglefloat(screen_region, placements, begin, end); break;
-        case LayoutKind::Center:        arrange_center(screen_region, placements, begin, end);        break;
-        case LayoutKind::Monocle:       arrange_monocle(screen_region, placements, begin, end);       break;
-        case LayoutKind::Paper:         arrange_paper(screen_region, placements, begin, end);         break;
-        case LayoutKind::SPaper:        arrange_spaper(screen_region, placements, begin, end);        break;
-        case LayoutKind::Stack:         arrange_stack(screen_region, placements, begin, end);         break;
-        case LayoutKind::SStack:        arrange_sstack(screen_region, placements, begin, end);        break;
-        case LayoutKind::BStack:        arrange_bstack(screen_region, placements, begin, end);        break;
-        case LayoutKind::SBStack:       arrange_sbstack(screen_region, placements, begin, end);       break;
-        case LayoutKind::Horz:          arrange_horz(screen_region, placements, begin, end);          break;
-        case LayoutKind::SHorz:         arrange_shorz(screen_region, placements, begin, end);         break;
-        case LayoutKind::Vert:          arrange_vert(screen_region, placements, begin, end);          break;
-        case LayoutKind::SVert:         arrange_svert(screen_region, placements, begin, end);         break;
+        case LayoutKind::Float:
+        {
+            arrange_float(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::FramelessFloat:
+        {
+            arrange_frameless_float(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::SingleFloat:
+        {
+            arrange_single_float(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::FramelessSingleFloat:
+        {
+            arrange_frameless_single_float(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::Center:
+        {
+            arrange_center(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::Monocle:
+        {
+            arrange_monocle(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::MainDeck:
+        {
+            arrange_main_deck(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::StackDeck:
+        {
+            arrange_stack_deck(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::DoubleDeck:
+        {
+            arrange_double_deck(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::Paper:
+        {
+            arrange_paper(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::CompactPaper:
+        {
+            arrange_compact_paper(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::DoubleStack:
+        {
+            arrange_double_stack(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::CompactDoubleStack:
+        {
+            arrange_compact_double_stack(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::HorizontalStack:
+        {
+            arrange_horizontal_stack(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::CompactHorizontalStack:
+        {
+            arrange_compact_horizontal_stack(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::VerticalStack:
+        {
+            arrange_vertical_stack(screen_region, placements, begin, end);
+            break;
+        }
+        case LayoutKind::CompactVerticalStack:
+        {
+            arrange_compact_vertical_stack(screen_region, placements, begin, end);
+            break;
+        }
     }
 
     if (mp_layout->config.gap) {
@@ -445,7 +517,7 @@ LayoutHandler::arrange_float(
 }
 
 void
-LayoutHandler::arrange_blfloat(
+LayoutHandler::arrange_frameless_float(
     Region screen_region,
     placement_vector placements,
     client_iter begin,
@@ -456,7 +528,7 @@ LayoutHandler::arrange_blfloat(
 }
 
 void
-LayoutHandler::arrange_singlefloat(
+LayoutHandler::arrange_single_float(
     Region,
     placement_vector placements,
     client_iter begin,
@@ -479,14 +551,14 @@ LayoutHandler::arrange_singlefloat(
 }
 
 void
-LayoutHandler::arrange_blsinglefloat(
+LayoutHandler::arrange_frameless_single_float(
     Region screen_region,
     placement_vector placements,
     client_iter begin,
     client_iter end
 ) const
 {
-    arrange_singlefloat(screen_region, placements, begin, end);
+    arrange_single_float(screen_region, placements, begin, end);
 }
 
 void
@@ -551,6 +623,271 @@ LayoutHandler::arrange_monocle(
                 mp_layout->config.decoration,
                 screen_region
             };
+        }
+    );
+}
+
+void
+LayoutHandler::arrange_main_deck(
+    Region screen_region,
+    placement_vector placements,
+    client_iter begin,
+    client_iter end
+) const
+{
+    const Layout::LayoutData_ptr data = *mp_layout->data.active_element();
+    std::size_t n = end - begin;
+
+    if (n == 1) {
+        placements.emplace_back(Placement {
+            mp_layout->config.method,
+            *begin,
+            Decoration::NO_DECORATION,
+            screen_region
+        });
+
+        return;
+    }
+
+    std::size_t n_main;
+    std::size_t n_stack;
+
+    if (n <= data->main_count) {
+        n_main = n;
+        n_stack = 0;
+    } else {
+        n_main = data->main_count;
+        n_stack = n - n_main;
+    }
+
+    int w_main
+        = data->main_count > 0
+        ? static_cast<float>(screen_region.dim.w) * data->main_factor
+        : 0;
+
+    int x_stack = screen_region.pos.x + w_main;
+    int w_stack = screen_region.dim.w - w_main;
+    int h_main = n_main > 0 ? screen_region.dim.h : 0;
+    int h_stack = n_stack > 0 ? screen_region.dim.h / n_stack : 0;
+
+    std::size_t i = 0;
+
+    std::transform(
+        begin,
+        end,
+        std::back_inserter(placements),
+        [=,this,&i](Client_ptr client) -> Placement {
+            if (i < data->main_count) {
+                ++i;
+                return Placement {
+                    mp_layout->config.method,
+                    client,
+                    mp_layout->config.decoration,
+                    Region {
+                        Pos {
+                            screen_region.pos.x,
+                            screen_region.pos.y
+                        },
+                        Dim {
+                            n_stack == 0 ? screen_region.dim.w : w_main,
+                            h_main
+                        }
+                    }
+                };
+            } else {
+                return Placement {
+                    mp_layout->config.method,
+                    client,
+                    mp_layout->config.decoration,
+                    Region {
+                        Pos {
+                            x_stack,
+                            screen_region.pos.y
+                                + static_cast<int>((i++ - data->main_count) * h_stack)
+                        },
+                        Dim {
+                            w_stack,
+                            h_stack
+                        }
+                    }
+                };
+            }
+        }
+    );
+}
+
+void
+LayoutHandler::arrange_stack_deck(
+    Region screen_region,
+    placement_vector placements,
+    client_iter begin,
+    client_iter end
+) const
+{
+    const Layout::LayoutData_ptr data = *mp_layout->data.active_element();
+    std::size_t n = end - begin;
+
+    if (n == 1) {
+        placements.emplace_back(Placement {
+            mp_layout->config.method,
+            *begin,
+            Decoration::NO_DECORATION,
+            screen_region
+        });
+
+        return;
+    }
+
+    std::size_t n_main;
+    std::size_t n_stack;
+
+    if (n <= data->main_count) {
+        n_main = n;
+        n_stack = 0;
+    } else {
+        n_main = data->main_count;
+        n_stack = n - n_main;
+    }
+
+    int w_main
+        = data->main_count > 0
+        ? static_cast<float>(screen_region.dim.w) * data->main_factor
+        : 0;
+
+    int x_stack = screen_region.pos.x + w_main;
+    int w_stack = screen_region.dim.w - w_main;
+    int h_main = n_main > 0 ? screen_region.dim.h / n_main : 0;
+    int h_stack = n_stack > 0 ? screen_region.dim.h : 0;
+
+    std::size_t i = 0;
+
+    std::transform(
+        begin,
+        end,
+        std::back_inserter(placements),
+        [=,this,&i](Client_ptr client) -> Placement {
+            if (i < data->main_count) {
+                return Placement {
+                    mp_layout->config.method,
+                    client,
+                    mp_layout->config.decoration,
+                    Region {
+                        Pos {
+                            screen_region.pos.x,
+                            screen_region.pos.y
+                                + static_cast<int>(i++) * h_main
+                        },
+                        Dim {
+                            n_stack == 0 ? screen_region.dim.w : w_main,
+                            h_main
+                        }
+                    }
+                };
+            } else {
+                ++i;
+                return Placement {
+                    mp_layout->config.method,
+                    client,
+                    mp_layout->config.decoration,
+                    Region {
+                        Pos {
+                            x_stack,
+                            screen_region.pos.y
+                        },
+                        Dim {
+                            w_stack,
+                            h_stack
+                        }
+                    }
+                };
+            }
+        }
+    );
+}
+
+void
+LayoutHandler::arrange_double_deck(
+    Region screen_region,
+    placement_vector placements,
+    client_iter begin,
+    client_iter end
+) const
+{
+    const Layout::LayoutData_ptr data = *mp_layout->data.active_element();
+    std::size_t n = end - begin;
+
+    if (n == 1) {
+        placements.emplace_back(Placement {
+            mp_layout->config.method,
+            *begin,
+            Decoration::NO_DECORATION,
+            screen_region
+        });
+
+        return;
+    }
+
+    std::size_t n_main;
+    std::size_t n_stack;
+
+    if (n <= data->main_count) {
+        n_main = n;
+        n_stack = 0;
+    } else {
+        n_main = data->main_count;
+        n_stack = n - n_main;
+    }
+
+    int w_main
+        = data->main_count > 0
+        ? static_cast<float>(screen_region.dim.w) * data->main_factor
+        : 0;
+
+    int x_stack = screen_region.pos.x + w_main;
+    int w_stack = screen_region.dim.w - w_main;
+    int h_main = n_main > 0 ? screen_region.dim.h : 0;
+    int h_stack = n_stack > 0 ? screen_region.dim.h : 0;
+
+    std::size_t i = 0;
+
+    std::transform(
+        begin,
+        end,
+        std::back_inserter(placements),
+        [=,this,&i](Client_ptr client) -> Placement {
+            if (i++ < data->main_count) {
+                return Placement {
+                    mp_layout->config.method,
+                    client,
+                    mp_layout->config.decoration,
+                    Region {
+                        Pos {
+                            screen_region.pos.x,
+                            screen_region.pos.y
+                        },
+                        Dim {
+                            n_stack == 0 ? screen_region.dim.w : w_main,
+                            h_main
+                        }
+                    }
+                };
+            } else {
+                return Placement {
+                    mp_layout->config.method,
+                    client,
+                    mp_layout->config.decoration,
+                    Region {
+                        Pos {
+                            x_stack,
+                            screen_region.pos.y
+                        },
+                        Dim {
+                            w_stack,
+                            h_stack
+                        }
+                    }
+                };
+            }
         }
     );
 }
@@ -659,7 +996,7 @@ LayoutHandler::arrange_paper(
 }
 
 void
-LayoutHandler::arrange_spaper(
+LayoutHandler::arrange_compact_paper(
     Region screen_region,
     placement_vector placements,
     client_iter begin,
@@ -670,7 +1007,7 @@ LayoutHandler::arrange_spaper(
 }
 
 void
-LayoutHandler::arrange_stack(
+LayoutHandler::arrange_double_stack(
     Region screen_region,
     placement_vector placements,
     client_iter begin,
@@ -759,40 +1096,18 @@ LayoutHandler::arrange_stack(
 }
 
 void
-LayoutHandler::arrange_sstack(
+LayoutHandler::arrange_compact_double_stack(
     Region screen_region,
     placement_vector placements,
     client_iter begin,
     client_iter end
 ) const
 {
-    arrange_stack(screen_region, placements, begin, end);
+    arrange_double_stack(screen_region, placements, begin, end);
 }
 
 void
-LayoutHandler::arrange_bstack(
-    Region screen_region,
-    placement_vector placements,
-    client_iter begin,
-    client_iter end
-) const
-{
-    arrange_stack(screen_region, placements, begin, end);
-}
-
-void
-LayoutHandler::arrange_sbstack(
-    Region screen_region,
-    placement_vector placements,
-    client_iter begin,
-    client_iter end
-) const
-{
-    arrange_bstack(screen_region, placements, begin, end);
-}
-
-void
-LayoutHandler::arrange_horz(
+LayoutHandler::arrange_horizontal_stack(
     Region screen_region,
     placement_vector placements,
     client_iter begin,
@@ -840,18 +1155,18 @@ LayoutHandler::arrange_horz(
 }
 
 void
-LayoutHandler::arrange_shorz(
+LayoutHandler::arrange_compact_horizontal_stack(
     Region screen_region,
     placement_vector placements,
     client_iter begin,
     client_iter end
 ) const
 {
-    arrange_horz(screen_region, placements, begin, end);
+    arrange_horizontal_stack(screen_region, placements, begin, end);
 }
 
 void
-LayoutHandler::arrange_vert(
+LayoutHandler::arrange_vertical_stack(
     Region screen_region,
     placement_vector placements,
     client_iter begin,
@@ -899,14 +1214,14 @@ LayoutHandler::arrange_vert(
 }
 
 void
-LayoutHandler::arrange_svert(
+LayoutHandler::arrange_compact_vertical_stack(
     Region screen_region,
     placement_vector placements,
     client_iter begin,
     client_iter end
 ) const
 {
-    arrange_vert(screen_region, placements, begin, end);
+    arrange_vertical_stack(screen_region, placements, begin, end);
 }
 
 
@@ -926,7 +1241,7 @@ LayoutHandler::Layout::kind_to_config(LayoutKind kind)
             true
         };
     }
-    case LayoutKind::BLFloat:
+    case LayoutKind::FramelessFloat:
     {
         return LayoutConfig {
             Placement::PlacementMethod::Free,
@@ -950,7 +1265,7 @@ LayoutHandler::Layout::kind_to_config(LayoutKind kind)
             true
         };
     }
-    case LayoutKind::BLSingleFloat:
+    case LayoutKind::FramelessSingleFloat:
     {
         return LayoutConfig {
             Placement::PlacementMethod::Free,
@@ -986,6 +1301,60 @@ LayoutHandler::Layout::kind_to_config(LayoutKind kind)
             true
         };
     }
+    case LayoutKind::MainDeck:
+    {
+        return LayoutConfig {
+            Placement::PlacementMethod::Tile,
+            Decoration {
+                std::nullopt,
+                Frame {
+                    Extents { 0, 0, 3, 0 },
+                    ColorScheme::DEFAULT_COLOR_SCHEME
+                }
+            },
+            true,
+            true,
+            false,
+            false,
+            true
+        };
+    }
+    case LayoutKind::StackDeck:
+    {
+        return LayoutConfig {
+            Placement::PlacementMethod::Tile,
+            Decoration {
+                std::nullopt,
+                Frame {
+                    Extents { 0, 0, 3, 0 },
+                    ColorScheme::DEFAULT_COLOR_SCHEME
+                }
+            },
+            true,
+            true,
+            false,
+            false,
+            true
+        };
+    }
+    case LayoutKind::DoubleDeck:
+    {
+        return LayoutConfig {
+            Placement::PlacementMethod::Tile,
+            Decoration {
+                std::nullopt,
+                Frame {
+                    Extents { 0, 0, 3, 0 },
+                    ColorScheme::DEFAULT_COLOR_SCHEME
+                }
+            },
+            true,
+            true,
+            false,
+            false,
+            true
+        };
+    }
     case LayoutKind::Paper:
     {
         return LayoutConfig {
@@ -1004,7 +1373,7 @@ LayoutHandler::Layout::kind_to_config(LayoutKind kind)
             false
         };
     }
-    case LayoutKind::SPaper:
+    case LayoutKind::CompactPaper:
     {
         return LayoutConfig {
             Placement::PlacementMethod::Tile,
@@ -1022,7 +1391,7 @@ LayoutHandler::Layout::kind_to_config(LayoutKind kind)
             false
         };
     }
-    case LayoutKind::Stack:
+    case LayoutKind::DoubleStack:
     {
         return LayoutConfig {
             Placement::PlacementMethod::Tile,
@@ -1040,7 +1409,7 @@ LayoutHandler::Layout::kind_to_config(LayoutKind kind)
             true
         };
     }
-    case LayoutKind::SStack:
+    case LayoutKind::CompactDoubleStack:
     {
         return LayoutConfig {
             Placement::PlacementMethod::Tile,
@@ -1058,7 +1427,7 @@ LayoutHandler::Layout::kind_to_config(LayoutKind kind)
             true
         };
     }
-    case LayoutKind::BStack:
+    case LayoutKind::HorizontalStack:
     {
         return LayoutConfig {
             Placement::PlacementMethod::Tile,
@@ -1076,7 +1445,7 @@ LayoutHandler::Layout::kind_to_config(LayoutKind kind)
             true
         };
     }
-    case LayoutKind::SBStack:
+    case LayoutKind::CompactHorizontalStack:
     {
         return LayoutConfig {
             Placement::PlacementMethod::Tile,
@@ -1094,43 +1463,7 @@ LayoutHandler::Layout::kind_to_config(LayoutKind kind)
             true
         };
     }
-    case LayoutKind::Horz:
-    {
-        return LayoutConfig {
-            Placement::PlacementMethod::Tile,
-            Decoration {
-                std::nullopt,
-                Frame {
-                    Extents { 0, 0, 3, 0 },
-                    ColorScheme::DEFAULT_COLOR_SCHEME
-                }
-            },
-            true,
-            true,
-            false,
-            false,
-            true
-        };
-    }
-    case LayoutKind::SHorz:
-    {
-        return LayoutConfig {
-            Placement::PlacementMethod::Tile,
-            Decoration {
-                std::nullopt,
-                Frame {
-                    Extents { 0, 0, 3, 0 },
-                    ColorScheme::DEFAULT_COLOR_SCHEME
-                }
-            },
-            true,
-            false,
-            false,
-            false,
-            true
-        };
-    }
-    case LayoutKind::Vert:
+    case LayoutKind::VerticalStack:
     {
         return LayoutConfig {
             Placement::PlacementMethod::Tile,
@@ -1148,7 +1481,7 @@ LayoutHandler::Layout::kind_to_config(LayoutKind kind)
             true
         };
     }
-    case LayoutKind::SVert:
+    case LayoutKind::CompactVerticalStack:
     {
         return LayoutConfig {
             Placement::PlacementMethod::Tile,
@@ -1176,42 +1509,6 @@ LayoutHandler::Layout::LayoutData
 LayoutHandler::Layout::kind_to_default_data(LayoutKind kind)
 {
     switch (kind) {
-    case LayoutKind::Float:
-    {
-        return Layout::LayoutData {
-            Extents { 0, 0, 0, 0 },
-            0,
-            1,
-            .50f
-        };
-    }
-    case LayoutKind::BLFloat:
-    {
-        return Layout::LayoutData {
-            Extents { 0, 0, 0, 0 },
-            0,
-            1,
-            .50f
-        };
-    }
-    case LayoutKind::SingleFloat:
-    {
-        return Layout::LayoutData {
-            Extents { 0, 0, 0, 0 },
-            0,
-            1,
-            .50f
-        };
-    }
-    case LayoutKind::BLSingleFloat:
-    {
-        return Layout::LayoutData {
-            Extents { 0, 0, 0, 0 },
-            0,
-            1,
-            .50f
-        };
-    }
     case LayoutKind::Center:
     {
         return Layout::LayoutData {
@@ -1221,97 +1518,22 @@ LayoutHandler::Layout::kind_to_default_data(LayoutKind kind)
             .40f
         };
     }
-    case LayoutKind::Monocle:
-    {
-        return Layout::LayoutData {
-            Extents { 0, 0, 0, 0 },
-            0,
-            1,
-            .50f
-        };
-    }
-    case LayoutKind::Paper:
-    {
-        return Layout::LayoutData {
-            Extents { 0, 0, 0, 0 },
-            0,
-            1,
-            .50f
-        };
-    }
-    case LayoutKind::SPaper:
-    {
-        return Layout::LayoutData {
-            Extents { 0, 0, 0, 0 },
-            0,
-            1,
-            .50f
-        };
-    }
-    case LayoutKind::Stack:
-    {
-        return Layout::LayoutData {
-            Extents { 0, 0, 0, 0 },
-            0,
-            1,
-            .50f
-        };
-    }
-    case LayoutKind::SStack:
-    {
-        return Layout::LayoutData {
-            Extents { 0, 0, 0, 0 },
-            0,
-            1,
-            .50f
-        };
-    }
-    case LayoutKind::BStack:
-    {
-        return Layout::LayoutData {
-            Extents { 0, 0, 0, 0 },
-            0,
-            1,
-            .50f
-        };
-    }
-    case LayoutKind::SBStack:
-    {
-        return Layout::LayoutData {
-            Extents { 0, 0, 0, 0 },
-            0,
-            1,
-            .50f
-        };
-    }
-    case LayoutKind::Horz:
-    {
-        return Layout::LayoutData {
-            Extents { 0, 0, 0, 0 },
-            0,
-            1,
-            .50f
-        };
-    }
-    case LayoutKind::SHorz:
-    {
-        return Layout::LayoutData {
-            Extents { 0, 0, 0, 0 },
-            0,
-            1,
-            .50f
-        };
-    }
-    case LayoutKind::Vert:
-    {
-        return Layout::LayoutData {
-            Extents { 0, 0, 0, 0 },
-            0,
-            1,
-            .50f
-        };
-    }
-    case LayoutKind::SVert:
+    case LayoutKind::Float:                  // fallthrough
+    case LayoutKind::FramelessFloat:         // fallthrough
+    case LayoutKind::SingleFloat:            // fallthrough
+    case LayoutKind::FramelessSingleFloat:   // fallthrough
+    case LayoutKind::Monocle:                // fallthrough
+    case LayoutKind::MainDeck:               // fallthrough
+    case LayoutKind::StackDeck:              // fallthrough
+    case LayoutKind::DoubleDeck:             // fallthrough
+    case LayoutKind::Paper:                  // fallthrough
+    case LayoutKind::CompactPaper:           // fallthrough
+    case LayoutKind::DoubleStack:            // fallthrough
+    case LayoutKind::CompactDoubleStack:     // fallthrough
+    case LayoutKind::HorizontalStack:        // fallthrough
+    case LayoutKind::CompactHorizontalStack: // fallthrough
+    case LayoutKind::VerticalStack:          // fallthrough
+    case LayoutKind::CompactVerticalStack:
     {
         return Layout::LayoutData {
             Extents { 0, 0, 0, 0 },

@@ -250,49 +250,52 @@ Model::Model(Connection& conn)
               CALL(set_layout(LayoutHandler::LayoutKind::Float))
           },
           { { Key::L, { Main, Shift } },
-              CALL(set_layout(LayoutHandler::LayoutKind::BLFloat))
+              CALL(set_layout(LayoutHandler::LayoutKind::FramelessFloat))
           },
           { { Key::Z, { Main } },
               CALL(set_layout(LayoutHandler::LayoutKind::SingleFloat))
           },
           { { Key::Z, { Main, Shift } },
-              CALL(set_layout(LayoutHandler::LayoutKind::BLSingleFloat))
+              CALL(set_layout(LayoutHandler::LayoutKind::FramelessSingleFloat))
           },
           { { Key::M, { Main } },
               CALL(set_layout(LayoutHandler::LayoutKind::Monocle))
+          },
+          { { Key::D, { Main, Ctrl } },
+              CALL(set_layout(LayoutHandler::LayoutKind::MainDeck))
+          },
+          { { Key::D, { Main, Shift } },
+              CALL(set_layout(LayoutHandler::LayoutKind::StackDeck))
+          },
+          { { Key::D, { Main, Ctrl, Shift } },
+              CALL(set_layout(LayoutHandler::LayoutKind::DoubleDeck))
           },
           { { Key::G, { Main } },
               CALL(set_layout(LayoutHandler::LayoutKind::Center))
           },
           { { Key::T, { Main } },
-              CALL(set_layout(LayoutHandler::LayoutKind::Stack))
+              CALL(set_layout(LayoutHandler::LayoutKind::DoubleStack))
           },
           { { Key::T, { Main, Shift } },
-              CALL(set_layout(LayoutHandler::LayoutKind::SStack))
+              CALL(set_layout(LayoutHandler::LayoutKind::CompactDoubleStack))
           },
           { { Key::P, { Main, Ctrl, Shift } },
               CALL(set_layout(LayoutHandler::LayoutKind::Paper))
           },
           { { Key::P, { Main, Sec, Ctrl, Shift } },
-              CALL(set_layout(LayoutHandler::LayoutKind::SPaper))
-          },
-          { { Key::B, { Main, Ctrl, Shift } },
-              CALL(set_layout(LayoutHandler::LayoutKind::BStack))
-          },
-          { { Key::B, { Main, Sec, Ctrl, Shift } },
-              CALL(set_layout(LayoutHandler::LayoutKind::SBStack))
+              CALL(set_layout(LayoutHandler::LayoutKind::CompactPaper))
           },
           { { Key::Y, { Main, Shift } },
-              CALL(set_layout(LayoutHandler::LayoutKind::Horz))
+              CALL(set_layout(LayoutHandler::LayoutKind::HorizontalStack))
           },
           { { Key::Y, { Main, Ctrl } },
-              CALL(set_layout(LayoutHandler::LayoutKind::SHorz))
+              CALL(set_layout(LayoutHandler::LayoutKind::CompactHorizontalStack))
           },
           { { Key::V, { Main, Shift } },
-              CALL(set_layout(LayoutHandler::LayoutKind::Vert))
+              CALL(set_layout(LayoutHandler::LayoutKind::VerticalStack))
           },
           { { Key::V, { Main, Ctrl } },
-              CALL(set_layout(LayoutHandler::LayoutKind::SVert))
+              CALL(set_layout(LayoutHandler::LayoutKind::CompactVerticalStack))
           },
           { { Key::F, { Main, Ctrl, Shift } },
               CALL(set_layout_retain_region(LayoutHandler::LayoutKind::Float))
@@ -2181,10 +2184,29 @@ Model::apply_stack(Workspace_ptr workspace)
 {
     static std::vector<Window> stack;
 
+    static constexpr struct LastTouchedComparer final {
+        bool
+        operator()(const Client_ptr lhs, const Client_ptr rhs) const
+        {
+            return lhs->last_touched < rhs->last_touched;
+        }
+    } last_touched_comparer{};
+
+    static std::set<Client_ptr, LastTouchedComparer> last_touched_clients{{}, last_touched_comparer};
+
     if (workspace != mp_workspace)
         return;
 
-    std::vector<Client_ptr> clients = workspace->stack_after_focus();
+    last_touched_clients.clear();
+    std::for_each(
+        workspace->begin(),
+        workspace->end(),
+        [](Client_ptr client) {
+            last_touched_clients.insert(client);
+        }
+    );
+
+    std::vector<Client_ptr> clients{last_touched_clients.begin(), last_touched_clients.end()};
 
     auto fullscreen_iter = std::stable_partition(
         clients.begin(),
@@ -2271,7 +2293,6 @@ Model::apply_stack(Workspace_ptr workspace)
     } managed_since_comparer{};
 
     static std::set<Client_ptr, ManagedSinceComparer> managed_since_clients{{}, managed_since_comparer};
-
     managed_since_clients.clear();
 
     std::for_each(
@@ -2297,32 +2318,21 @@ Model::apply_stack(Workspace_ptr workspace)
 
     m_conn.update_client_list(order_list);
 
-    static constexpr struct LastFocusedComparer final {
-        bool
-        operator()(const Client_ptr lhs, const Client_ptr rhs) const
-        {
-            return lhs->last_focused < rhs->last_focused;
-        }
-    } last_focused_comparer{};
-
-    static std::set<Client_ptr, LastFocusedComparer> last_focused_clients{{}, last_focused_comparer};
-
-    last_focused_clients.clear();
-
+    last_touched_clients.clear();
     std::for_each(
         m_client_map.begin(),
         m_client_map.end(),
         [](auto kv) {
-            last_focused_clients.insert(kv.second);
+            last_touched_clients.insert(kv.second);
         }
     );
 
-    order_list.reserve(last_focused_clients.size());
+    order_list.reserve(last_touched_clients.size());
     order_list.clear();
 
     std::transform(
-        last_focused_clients.begin(),
-        last_focused_clients.end(),
+        last_touched_clients.begin(),
+        last_touched_clients.end(),
         std::back_inserter(order_list),
         [](Client_ptr client) -> Window {
             return client->window;
@@ -2389,12 +2399,34 @@ Model::rotate_clients(Direction direction)
 void
 Model::shuffle_main(winsys::Direction direction)
 {
-    if (mp_workspace->size() <= 1)
+    std::size_t main_count
+        = std::min(mp_workspace->main_count(), mp_workspace->size());
+
+    if (main_count <= 1)
         return;
+
+    Index focus_index = *mp_workspace->clients().index();
+    std::optional<Index> last_touched_index = std::nullopt;
+
+    if (focus_index >= main_count) {
+        Client_ptr last_touched = *std::max_element(
+            mp_workspace->begin(),
+            mp_workspace->begin() + main_count,
+            [](Client_ptr client1, Client_ptr client2) -> bool {
+                return client1->last_touched < client2->last_touched;
+            }
+        );
+
+        last_touched_index
+            = mp_workspace->clients().index_of_element(last_touched);
+    }
 
     mp_workspace->shuffle_main(direction);
     focus_client(mp_workspace->active());
     sync_focus();
+
+    if (last_touched_index)
+        (*mp_workspace)[*last_touched_index]->touch();
 
     apply_layout(mp_workspace);
     apply_stack(mp_workspace);
@@ -2403,12 +2435,34 @@ Model::shuffle_main(winsys::Direction direction)
 void
 Model::shuffle_stack(winsys::Direction direction)
 {
-    if (mp_workspace->size() <= 1)
+    std::size_t main_count
+        = std::min(mp_workspace->main_count(), mp_workspace->size());
+
+    if ((mp_workspace->size() - main_count) <= 1)
         return;
+
+    Index focus_index = *mp_workspace->clients().index();
+    std::optional<Index> last_touched_index = std::nullopt;
+
+    if (focus_index < main_count) {
+        Client_ptr last_touched = *std::max_element(
+            mp_workspace->begin() + main_count,
+            mp_workspace->end(),
+            [](Client_ptr client1, Client_ptr client2) -> bool {
+                return client1->last_touched < client2->last_touched;
+            }
+        );
+
+        last_touched_index
+            = mp_workspace->clients().index_of_element(last_touched);
+    }
 
     mp_workspace->shuffle_stack(direction);
     focus_client(mp_workspace->active());
     sync_focus();
+
+    if (last_touched_index)
+        (*mp_workspace)[*last_touched_index]->touch();
 
     apply_layout(mp_workspace);
     apply_stack(mp_workspace);
@@ -2514,7 +2568,7 @@ Model::set_layout(LayoutHandler::LayoutKind layout)
 void
 Model::set_layout_retain_region(LayoutHandler::LayoutKind layout)
 {
-    std::deque<Client_ptr> const& clients = mp_workspace->clients();
+    Cycle<Client_ptr> const& clients = mp_workspace->clients();
     std::vector<Region> regions;
 
     bool was_tiled = !mp_workspace->layout_is_free();

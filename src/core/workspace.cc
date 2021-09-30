@@ -131,6 +131,12 @@ Workspace::length() const
     return m_clients.length();
 }
 
+std::size_t
+Workspace::main_count() const
+{
+    return m_layout_handler.main_count();
+}
+
 
 Context_ptr
 Workspace::context() const
@@ -173,10 +179,10 @@ Workspace::active() const
 }
 
 
-std::deque<Client_ptr> const&
+Cycle<Client_ptr> const&
 Workspace::clients() const
 {
-    return m_clients.as_deque();
+    return m_clients;
 }
 
 std::vector<Client_ptr>
@@ -548,8 +554,7 @@ Workspace::set_layout(LayoutHandler::LayoutKind layout)
 std::vector<Placement>
 Workspace::arrange(winsys::Region region) const
 {
-    std::deque<Client_ptr> clients = this->clients();
-
+    std::deque<Client_ptr> clients = m_clients.as_deque();
     std::vector<Placement> placements;
     placements.reserve(clients.size());
 

@@ -53,6 +53,7 @@ Client::Client(
       attaching(false),
       pid(pid),
       ppid(ppid),
+      last_touched(std::chrono::steady_clock::now()),
       last_focused(std::chrono::steady_clock::now()),
       managed_since(std::chrono::steady_clock::now()),
       expected_unmap_count(0),
@@ -72,10 +73,19 @@ Client::get_outside_state() const
 }
 
 void
+Client::touch()
+{
+    last_touched = std::chrono::steady_clock::now();
+}
+
+void
 Client::focus()
 {
     focused = true;
-    last_focused = std::chrono::steady_clock::now();
+
+    auto now = std::chrono::steady_clock::now();
+    last_touched = now;
+    last_focused = now;
 
     switch (m_outside_state) {
     case OutsideState::Unfocused:         m_outside_state = OutsideState::Focused;         return;

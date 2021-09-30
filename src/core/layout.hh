@@ -20,25 +20,26 @@ public:
     {
         /// free layouts
         Float,
-        BLFloat,
+        FramelessFloat,
         SingleFloat,
-        BLSingleFloat,
+        FramelessSingleFloat,
 
         // overlapping tiled layouts
         Center,
         Monocle,
+        MainDeck,
+        StackDeck,
+        DoubleDeck,
 
         // non-overlapping tiled layouts
         Paper,
-        SPaper,
-        Stack,
-        SStack,
-        BStack,
-        SBStack,
-        Horz,
-        SHorz,
-        Vert,
-        SVert,
+        CompactPaper,
+        DoubleStack,
+        CompactDoubleStack,
+        HorizontalStack,
+        CompactHorizontalStack,
+        VerticalStack,
+        CompactVerticalStack,
     };
 
 private:
@@ -153,21 +154,22 @@ private:
     Layout_ptr mp_prev_layout;
 
     void arrange_float(winsys::Region, placement_vector, client_iter, client_iter) const;
-    void arrange_blfloat(winsys::Region, placement_vector, client_iter, client_iter) const;
-    void arrange_singlefloat(winsys::Region, placement_vector, client_iter, client_iter) const;
-    void arrange_blsinglefloat(winsys::Region, placement_vector, client_iter, client_iter) const;
+    void arrange_frameless_float(winsys::Region, placement_vector, client_iter, client_iter) const;
+    void arrange_single_float(winsys::Region, placement_vector, client_iter, client_iter) const;
+    void arrange_frameless_single_float(winsys::Region, placement_vector, client_iter, client_iter) const;
     void arrange_center(winsys::Region, placement_vector, client_iter, client_iter) const;
     void arrange_monocle(winsys::Region, placement_vector, client_iter, client_iter) const;
+    void arrange_main_deck(winsys::Region, placement_vector, client_iter, client_iter) const;
+    void arrange_stack_deck(winsys::Region, placement_vector, client_iter, client_iter) const;
+    void arrange_double_deck(winsys::Region, placement_vector, client_iter, client_iter) const;
     void arrange_paper(winsys::Region, placement_vector, client_iter, client_iter) const;
-    void arrange_spaper(winsys::Region, placement_vector, client_iter, client_iter) const;
-    void arrange_stack(winsys::Region, placement_vector, client_iter, client_iter) const;
-    void arrange_sstack(winsys::Region, placement_vector, client_iter, client_iter) const;
-    void arrange_bstack(winsys::Region, placement_vector, client_iter, client_iter) const;
-    void arrange_sbstack(winsys::Region, placement_vector, client_iter, client_iter) const;
-    void arrange_horz(winsys::Region, placement_vector, client_iter, client_iter) const;
-    void arrange_shorz(winsys::Region, placement_vector, client_iter, client_iter) const;
-    void arrange_vert(winsys::Region, placement_vector, client_iter, client_iter) const;
-    void arrange_svert(winsys::Region, placement_vector, client_iter, client_iter) const;
+    void arrange_compact_paper(winsys::Region, placement_vector, client_iter, client_iter) const;
+    void arrange_double_stack(winsys::Region, placement_vector, client_iter, client_iter) const;
+    void arrange_compact_double_stack(winsys::Region, placement_vector, client_iter, client_iter) const;
+    void arrange_horizontal_stack(winsys::Region, placement_vector, client_iter, client_iter) const;
+    void arrange_compact_horizontal_stack(winsys::Region, placement_vector, client_iter, client_iter) const;
+    void arrange_vertical_stack(winsys::Region, placement_vector, client_iter, client_iter) const;
+    void arrange_compact_vertical_stack(winsys::Region, placement_vector, client_iter, client_iter) const;
 
 };
 

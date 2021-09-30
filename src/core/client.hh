@@ -61,6 +61,7 @@ typedef struct Client final
 
     OutsideState get_outside_state() const;
 
+    void touch();
     void focus();
     void unfocus();
 
@@ -121,6 +122,7 @@ typedef struct Client final
     bool attaching;
     std::optional<winsys::Pid> pid;
     std::optional<winsys::Pid> ppid;
+    std::chrono::time_point<std::chrono::steady_clock> last_touched;
     std::chrono::time_point<std::chrono::steady_clock> last_focused;
     std::chrono::time_point<std::chrono::steady_clock> managed_since;
     std::size_t expected_unmap_count;
