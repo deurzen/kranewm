@@ -654,6 +654,9 @@ Model::Model(Connection& conn)
           { { Key::G, { Main, Shift } },
               CALL_EXTERNAL($HOME/bin/grabcolor)
           },
+          { { Key::S, { Main, Ctrl } },
+              CALL_EXTERNAL($HOME/bin/simplenote)
+          },
           { { Key::PrintScreen, { Main } },
               CALL_EXTERNAL($HOME/bin/screenshot -s)
           },
