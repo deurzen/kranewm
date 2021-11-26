@@ -619,10 +619,10 @@ Model::Model(Connection& conn)
               CALL_EXTERNAL(amixer -D pulse sset Capture toggle)
           },
           { { Key::Return, { Main } },
-              CALL_EXTERNAL(st)
+              CALL_EXTERNAL(alacritty)
           },
           { { Key::Return, { Main, Shift } },
-              CALL(spawn_external("st -n " + WM_NAME + ":cf"))
+              CALL(spawn_external("alacritty --class " + WM_NAME + ":cf,Alacritty"))
           },
           { { Key::SemiColon, { Main } },
               CALL_EXTERNAL(caja)
@@ -641,6 +641,9 @@ Model::Model(Connection& conn)
           },
           { { Key::Q, { Main, Ctrl } },
               CALL_EXTERNAL(chromium)
+          },
+          { { Key::Apostrophe, { Main } },
+              CALL_EXTERNAL(blueberry)
           },
           { { Key::P, { Main, Shift } },
               CALL_EXTERNAL($HOME/bin/dmenupass)
@@ -773,7 +776,7 @@ Model::Model(Connection& conn)
           },
           { { MouseInput::MouseInputTarget::Global, Button::Left, { Main, Sec, Ctrl } },
              [](Model& model, Client_ptr) {
-                  model.spawn_external("st -n kranewm:cf");
+                  model.spawn_external("alacritty --class " + WM_NAME + ":cf,Alacritty");
                   return false;
              }
           },
@@ -2537,18 +2540,6 @@ Model::move_client_to_workspace(Index index, Client_ptr client)
     apply_stack(from);
 
     sync_focus();
-
-    if (client->leader) {
-        std::vector<Client_ptr>& members = m_leader_map.at(*client->leader);
-
-        std::for_each(
-            members.begin(),
-            members.end(),
-            [this,index](Client_ptr member) {
-                move_client_to_workspace(index, member);
-            }
-        );
-    }
 }
 
 
@@ -2871,18 +2862,6 @@ Model::set_sticky_client(Toggle toggle, Client_ptr client)
         apply_layout(workspace);
         render_decoration(client);
 
-        if (client->leader) {
-            std::vector<Client_ptr>& members = m_leader_map.at(*client->leader);
-
-            std::for_each(
-                members.begin(),
-                members.end(),
-                [this,toggle](Client_ptr member) {
-                    set_sticky_client(toggle, member);
-                }
-            );
-        }
-
         return;
     }
     case Toggle::Off:
@@ -2914,18 +2893,6 @@ Model::set_sticky_client(Toggle toggle, Client_ptr client)
 
         apply_layout(mp_workspace);
         render_decoration(client);
-
-        if (client->leader) {
-            std::vector<Client_ptr>& members = m_leader_map.at(*client->leader);
-
-            std::for_each(
-                members.begin(),
-                members.end(),
-                [this,toggle](Client_ptr member) {
-                    set_sticky_client(toggle, member);
-                }
-            );
-        }
 
         return;
     }

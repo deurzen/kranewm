@@ -548,11 +548,28 @@ XConnection::cleanup()
 winsys::Window
 XConnection::create_frame(winsys::Region region)
 {
-    winsys::Window window = XCreateSimpleWindow(
+    long mask = CWBackPixel | CWBorderPixel;
+    XSetWindowAttributes wa;
+
+    XVisualInfo vinfo;
+    if (XMatchVisualInfo(mp_dpy, DefaultScreen(mp_dpy), 32, TrueColor, &vinfo)) {
+        wa.colormap = XCreateColormap(mp_dpy, m_root, vinfo.visual, AllocNone);
+        mask |= CWColormap;
+    }
+
+    wa.background_pixel = 0;
+    wa.border_pixel = 0;
+
+    winsys::Window window = XCreateWindow(
         mp_dpy, m_root,
         region.pos.x, region.pos.y,
         region.dim.w, region.dim.h,
-        0, 0, 0
+        0,
+        vinfo.depth,
+        InputOutput,
+        vinfo.visual,
+        mask,
+        &wa
     );
 
     flush();
