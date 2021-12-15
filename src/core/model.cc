@@ -245,6 +245,11 @@ Model::Model(Connection& conn)
               }))
           },
 
+          // workspace behavior modifiers
+          { { Key::M, { Main, Shift } },
+              CALL(set_focus_follows_mouse(Toggle::Reverse, model.active_workspace()))
+          },
+
           // workspace layout modifiers
           { { Key::F, { Main, Shift } },
               CALL(set_layout(LayoutHandler::LayoutKind::Float))
@@ -1532,6 +1537,10 @@ Model::activate_workspace(Workspace_ptr next_workspace)
         for (Client_ptr client : *mp_workspace)
             if (!client->sticky)
                 unmap_client(client);
+            else
+                m_conn.set_window_notify_enter(client->frame,
+                    next_workspace->focus_follows_mouse());
+
 
         for (Client_ptr client : m_sticky_clients)
             client->workspace = next_workspace;
@@ -1859,8 +1868,8 @@ Model::manage(const Window window, const bool ignore, const bool may_map)
     m_client_map[frame] = client;
 
     m_conn.insert_window_in_save_set(window);
-    m_conn.init_window(window, false);
-    m_conn.init_frame(frame, false);
+    m_conn.init_window(window);
+    m_conn.init_frame(frame, client->workspace->focus_follows_mouse());
     m_conn.set_window_border_width(window, 0);
     m_conn.set_window_desktop(window, client->workspace->index());
     m_conn.set_icccm_window_state(window, IcccmWindowState::Normal);
@@ -2157,6 +2166,38 @@ Model::perform_resize(Pos& pos)
     };
 
     place_client(placement);
+}
+
+
+void
+Model::set_focus_follows_mouse(Toggle toggle, Index index)
+{
+    if (index < m_workspaces.size())
+        set_focus_follows_mouse(toggle, m_workspaces[index]);
+}
+
+void
+Model::set_focus_follows_mouse(Toggle toggle, Workspace_ptr workspace)
+{
+    bool focus_follows_mouse;
+
+    switch (toggle) {
+    case Toggle::On:      focus_follows_mouse = true;                              break;
+    case Toggle::Off:     focus_follows_mouse = false;                             break;
+    case Toggle::Reverse: focus_follows_mouse = !workspace->focus_follows_mouse(); break;
+    default: return;
+    }
+
+    if (workspace->focus_follows_mouse() != focus_follows_mouse) {
+        workspace->set_focus_follows_mouse(focus_follows_mouse);
+
+        for (Client_ptr client : *mp_workspace)
+            if (!client->sticky)
+                m_conn.set_window_notify_enter(client->frame, focus_follows_mouse);
+
+        for (Client_ptr client : m_sticky_clients)
+            m_conn.set_window_notify_enter(client->frame, focus_follows_mouse);
+    }
 }
 
 
@@ -2525,6 +2566,9 @@ Model::move_client_to_workspace(Index index, Client_ptr client)
 
     Workspace_ptr from = client->workspace;
     Workspace_ptr to = get_workspace(index);
+
+    if (from->focus_follows_mouse() != to->focus_follows_mouse())
+        m_conn.set_window_notify_enter(client->frame, to->focus_follows_mouse());
 
     client->workspace = to;
 

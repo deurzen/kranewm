@@ -42,7 +42,7 @@ namespace winsys
 
         // window manipulation
         virtual Window create_frame(Region) = 0;
-        virtual void init_window(Window, bool) = 0;
+        virtual void init_window(Window) = 0;
         virtual void init_frame(Window, bool) = 0;
         virtual void init_unmanaged(Window) = 0;
         virtual void init_move(Window) = 0;
@@ -69,6 +69,7 @@ namespace winsys
         virtual void set_window_border_width(Window, unsigned) = 0;
         virtual void set_window_border_color(Window, unsigned) = 0;
         virtual void set_window_background_color(Window, unsigned) = 0;
+        virtual void set_window_notify_enter(Window, bool) = 0;
         virtual void update_window_offset(Window, Window) = 0;
         virtual Window get_focused_window() = 0;
         virtual std::optional<Region> get_window_geometry(Window) = 0;

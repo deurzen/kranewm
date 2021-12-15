@@ -83,6 +83,19 @@ Workspace::contains(Client_ptr client) const
 
 
 bool
+Workspace::focus_follows_mouse() const
+{
+    return m_focus_follows_mouse;
+}
+
+void
+Workspace::set_focus_follows_mouse(bool focus_follows_mouse)
+{
+    m_focus_follows_mouse = focus_follows_mouse;
+}
+
+
+bool
 Workspace::layout_is_free() const
 {
     return m_layout_handler.layout_is_free();

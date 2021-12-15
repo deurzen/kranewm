@@ -53,8 +53,6 @@ namespace winsys
     struct EnterEvent final
     {
         Window window;
-        Pos root_rpos;
-        Pos window_rpos;
     };
 
     struct LeaveEvent final

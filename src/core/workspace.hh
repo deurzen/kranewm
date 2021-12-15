@@ -134,11 +134,15 @@ public:
           mp_active(nullptr),
           m_clients({}, true),
           m_icons({}, true),
-          m_disowned({}, true)
+          m_disowned({}, true),
+          m_focus_follows_mouse(false)
     {}
 
     bool empty() const;
     bool contains(Client_ptr) const;
+
+    bool focus_follows_mouse() const;
+    void set_focus_follows_mouse(bool);
 
     bool layout_is_free() const;
     bool layout_has_margin() const;
@@ -270,6 +274,8 @@ private:
     Cycle<Client_ptr> m_clients;
     Cycle<Client_ptr> m_icons;
     Cycle<Client_ptr> m_disowned;
+
+    bool m_focus_follows_mouse;
 
 }* Workspace_ptr;
 

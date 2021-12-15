@@ -114,6 +114,7 @@ XConnection::XConnection(const std::string_view wm_name)
     m_event_dispatcher[DestroyNotify] = &XConnection::on_destroy_notify;
     m_event_dispatcher[Expose] = &XConnection::on_expose;
     m_event_dispatcher[FocusIn] = &XConnection::on_focus_in;
+    m_event_dispatcher[EnterNotify] = &XConnection::on_enter_notify;
     m_event_dispatcher[KeyPress] = &XConnection::on_key_press;
     m_event_dispatcher[MapNotify] = &XConnection::on_map_notify;
     m_event_dispatcher[MapRequest] = &XConnection::on_map_request;
@@ -578,7 +579,7 @@ XConnection::create_frame(winsys::Region region)
 }
 
 void
-XConnection::init_window(winsys::Window window, bool)
+XConnection::init_window(winsys::Window window)
 {
     static const long window_event_mask
         = PropertyChangeMask | StructureNotifyMask | FocusChangeMask;
@@ -910,6 +911,22 @@ XConnection::set_window_background_color(winsys::Window window, unsigned color)
 {
     XSetWindowBackground(mp_dpy, window, color);
     XClearWindow(mp_dpy, window);
+}
+
+void
+XConnection::set_window_notify_enter(winsys::Window window, bool notify_enter)
+{
+    static const long frame_event_mask
+        = StructureNotifyMask | SubstructureNotifyMask | SubstructureRedirectMask
+        | ButtonPressMask | ButtonReleaseMask | PointerMotionMask;
+
+    XSetWindowAttributes wa;
+    wa.event_mask = frame_event_mask;
+
+    if (notify_enter)
+        wa.event_mask |= EnterWindowMask;
+
+    XChangeWindowAttributes(mp_dpy, window, CWEventMask, &wa);
 }
 
 void
@@ -3336,6 +3353,21 @@ winsys::Event
 XConnection::on_focus_in()
 {
     return std::monostate{};
+}
+
+winsys::Event
+XConnection::on_enter_notify()
+{
+    XKeyEvent event = m_current_event.xkey;
+    winsys::Window window = event.window;
+    winsys::Window subwindow = event.subwindow;
+
+    if (window == m_root || window == None)
+        window = subwindow;
+
+    return winsys::EnterEvent {
+        window
+    };
 }
 
 winsys::Event

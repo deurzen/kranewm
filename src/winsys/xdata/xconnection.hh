@@ -45,7 +45,7 @@ public:
 
     // window manipulation
     virtual winsys::Window create_frame(winsys::Region) override;
-    virtual void init_window(winsys::Window, bool) override;
+    virtual void init_window(winsys::Window) override;
     virtual void init_frame(winsys::Window, bool) override;
     virtual void init_unmanaged(winsys::Window) override;
     virtual void init_move(winsys::Window) override;
@@ -72,6 +72,7 @@ public:
     virtual void set_window_border_width(winsys::Window, unsigned) override;
     virtual void set_window_border_color(winsys::Window, unsigned) override;
     virtual void set_window_background_color(winsys::Window, unsigned) override;
+    virtual void set_window_notify_enter(Window, bool) override;
     virtual void update_window_offset(winsys::Window, winsys::Window) override;
     virtual winsys::Window get_focused_window() override;
     virtual std::optional<winsys::Region> get_window_geometry(winsys::Window) override;
@@ -321,6 +322,7 @@ private:
     winsys::Event on_destroy_notify();
     winsys::Event on_expose();
     winsys::Event on_focus_in();
+    winsys::Event on_enter_notify();
     winsys::Event on_key_press();
     winsys::Event on_map_notify();
     winsys::Event on_map_request();

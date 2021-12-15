@@ -131,6 +131,9 @@ private:
     void perform_move(winsys::Pos&);
     void perform_resize(winsys::Pos&);
 
+    void set_focus_follows_mouse(winsys::Toggle, Index);
+    void set_focus_follows_mouse(winsys::Toggle, Workspace_ptr);
+
     void apply_layout(Index);
     void apply_layout(Workspace_ptr);
 
