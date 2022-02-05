@@ -623,6 +623,15 @@ Model::Model(Connection& conn)
           { { Key::MicMute, {} },
               CALL_EXTERNAL(amixer -D pulse sset Capture toggle)
           },
+          { { Key::Space, { Ctrl } },
+              CALL_EXTERNAL(dunstctl close)
+          },
+          { { Key::Space, { Ctrl, Shift } },
+              CALL_EXTERNAL(dunstctl close-all)
+          },
+          { { Key::Comma, { Ctrl, Shift } },
+              CALL_EXTERNAL(dunstctl history-pop)
+          },
           { { Key::Return, { Main } },
               CALL_EXTERNAL(alacritty)
           },
