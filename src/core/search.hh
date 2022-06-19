@@ -56,7 +56,7 @@ public:
             (&m_workspace_selector)->std::pair<
                     Index,
                     Workspace::ClientSelector::SelectionCriterium
-            >::~pair();
+            >::pair::~pair();
 
             return;
         }
@@ -73,7 +73,7 @@ public:
         }
         case SearchSelectorTag::ForCondition:
         {
-            (&m_filter)->std::function<bool(const Client_ptr)>::~function();
+            (&m_filter)->std::function<bool(const Client_ptr)>::function::~function();
 
             return;
         }
